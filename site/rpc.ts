@@ -1,7 +1,6 @@
 export type FromProg = {
+  adjust: { x: number, y: number, w: number, h: number }
   blit: { pixels: Uint8ClampedArray }
-  resize: { w: number, h: number }
-  move: { x: number, y: number }
 }
 
 export type ToProg = {
