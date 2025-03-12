@@ -31,7 +31,9 @@ class Program {
   h = 10
   imgdata = new ImageData(10, 10)
 
-  constructor(absurl: URL) {
+  constructor(path: string) {
+    const absurl = new URL(path, import.meta.url)
+
     this.worker = new Worker(absurl, { type: 'module' })
     this.rpc = new wRPC<Sys, Prog>(this.worker, {
 
@@ -67,9 +69,9 @@ function redrawAllProgs() {
   }
 }
 
-const prog1 = new Program(new URL('./testworker.js', import.meta.url))
-const prog2 = new Program(new URL('./testworker.js', import.meta.url))
-const prog3 = new Program(new URL('./testworker.js', import.meta.url))
+const prog1 = new Program('/testworker.js')
+const prog2 = new Program('/testworker.js')
+const prog3 = new Program('/testworker.js')
 const progs = [prog1, prog2, prog3]
 
 // drawProgs()
