@@ -1,6 +1,12 @@
-const pixels = new Uint8ClampedArray(320 * 180 * 4)
 
-// pixels.fill(255)
+let x = 10
+let y = 20
+let w = 100
+let h = 50
+
+const pixels = new Uint8ClampedArray(w * h * 4)
+
+pixels.fill(255)
 
 import { wRPC, type FromProg, type ToProg } from "./rpc.js"
 
@@ -10,6 +16,7 @@ const rpc = new wRPC<ToProg, FromProg>(self, {
   open: ({ filepath }) => { },
 })
 
+rpc.send('adjust', { x, y, w, h })
 rpc.send('blit', { pixels })
 
 // ontick((d) => {
