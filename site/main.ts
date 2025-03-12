@@ -61,6 +61,7 @@ class Program {
 }
 
 function redrawAllProgs() {
+  ctx.clearRect(0, 0, 320, 180)
   for (const prog of progs) {
     ctx.putImageData(prog.imgdata, prog.x, prog.y)
   }
@@ -78,3 +79,8 @@ canvas.onmousemove = (e) => {
   e.preventDefault()
 
 }
+
+setInterval(() => {
+  progs.pop()?.terminate()
+  redrawAllProgs()
+}, 1000)
