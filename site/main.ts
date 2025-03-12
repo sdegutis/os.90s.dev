@@ -1,14 +1,19 @@
-import gamemaker from "./gamemaker/main.js"
-import { ws } from "./os/desktop/workspace.js"
+const canvas = document.createElement('canvas')
+canvas.width = 320
+canvas.height = 180
+canvas.style.imageRendering = 'pixelated'
+canvas.style.backgroundColor = '#000'
+canvas.style.outline = 'none'
+canvas.style.cursor = 'none'
+canvas.style.transform = `scale(2)`
+document.body.replaceChildren(canvas)
 
-await ws.addProgram("filer", import.meta.resolve("./apps/filer/"))
-await ws.addProgram("settings", import.meta.resolve("./apps/settings/"))
-await ws.addProgram("mapmaker", import.meta.resolve("./apps/mapmaker/"))
-await ws.addProgram("painter", import.meta.resolve("./apps/painter/"))
-await ws.addProgram("writer", import.meta.resolve("./apps/writer/"))
-await ws.addProgram("fontmaker", import.meta.resolve("./apps/fontmaker/"))
+const ctx = canvas.getContext('2d')!
 
-gamemaker
+const w1 = new Worker(new URL('./testworker.js', import.meta.url))
 
-// ws.showDesktop()
-// ws.launch('fontmaker')
+w1.onmessage = (msg) => {
+  const img = msg.data.img as ImageBitmap
+  ctx.drawImage(img, 0, 0)
+  img.close()
+}
