@@ -1,26 +1,34 @@
+import { wRPC, type Prog, type Sys } from "./rpc.js"
 
-let x = 10
-let y = 20
-let w = 100
-let h = 50
+let x = Math.ceil(Math.random() * 10)
+let y = Math.ceil(Math.random() * 20)
+let w = Math.ceil(Math.random() * 100)
+let h = Math.ceil(Math.random() * 50)
 
 const pixels = new Uint8ClampedArray(w * h * 4)
 
-pixels.fill(255)
+pixels.fill(Math.random() * 255)
 
-import { wRPC, type FromProg, type ToProg } from "./rpc.js"
 
-const rpc = new wRPC<ToProg, FromProg>(self, {
+const rpc = new wRPC<Prog, Sys>(self, {
   blur: () => { },
   focus: () => { },
-  open: ({ filepath }) => { },
+  open: (filepath) => { return true },
 })
 
-rpc.send('adjust', { x, y, w, h })
-rpc.send('blit', { pixels })
+// rpc.proxy.adjust()
+
+// rpc.out.adjust()
+
+const p = await rpc.send('newpanel', 100, 100)
+console.log(p)
+
+// await rpc.send('')
+
+rpc.send('adjust', x, y, w, h)
+rpc.send('blit', pixels)
 
 // ontick((d) => {
-
 //   for (let y = 0; y < 180; y++) {
 //     for (let x = 0; x < 320; x++) {
 //       let i = y * 320 * 4 + x * 4
@@ -30,14 +38,12 @@ rpc.send('blit', { pixels })
 //       pixels[i + 3] = 255
 //     }
 //   }
-
-//   postMessage({ pixels })
-
+//   // rpc.send('blit', { pixels })
 // })
 
-// function ontick(fn: (d: number) => void) {
-//   (function tick(d: number) {
-//     fn(d)
-//     requestAnimationFrame(tick)
-//   })(performance.now())
-// }
+function ontick(fn: (d: number) => void) {
+  (function tick(d: number) {
+    fn(d)
+    requestAnimationFrame(tick)
+  })(performance.now())
+}
