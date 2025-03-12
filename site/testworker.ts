@@ -17,9 +17,10 @@ ontick((d) => {
       }
     }
 
-  ctx.putImageData(imgdata, 0, 0)
+  // ctx.putImageData(imgdata, 0, 0)
+  // postMessage({ d, img: c.transferToImageBitmap() })
 
-  postMessage({ img: c.transferToImageBitmap() })
+  postMessage({ pixels, d })
 
 })
 
