@@ -1,3 +1,5 @@
+import { wRPC, type FromProg, type ToProg } from "./rpc.js"
+
 const canvas = document.createElement('canvas')
 canvas.width = 320
 canvas.height = 180
@@ -10,18 +12,26 @@ document.body.replaceChildren(canvas)
 
 const ctx = canvas.getContext('2d')!
 
-const w1 = new Worker(new URL('./testworker.js', import.meta.url))
+class Program {
 
-let last = 0
-w1.onmessage = (msg) => {
-  console.log(msg.data.d - last)
-  last = msg.data.d
+  worker: Worker
+  rpc: wRPC<FromProg, ToProg>
 
-  // const img = msg.data.img as ImageBitmap
-  // ctx.drawImage(img, 0, 0)
-  // img.close()
+  constructor(absurl: URL) {
 
-  const pixels = msg.data.pixels as Uint8ClampedArray
-  const imgdata = new ImageData(pixels, 320, 180)
-  ctx.putImageData(imgdata, 0, 0)
+    this.worker = new Worker(absurl, { type: 'module' })
+
+    this.rpc = new wRPC(this.worker, {
+      blit: ({ pixels }) => {
+        const imgdata = new ImageData(pixels, 320, 180)
+        ctx.putImageData(imgdata, 0, 0)
+      },
+      move: ({ x, y }) => { },
+      resize: ({ w, h }) => { },
+    })
+
+  }
+
 }
+
+const prog1 = new Program(new URL('./testworker.js', import.meta.url))
