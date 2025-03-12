@@ -12,8 +12,16 @@ const ctx = canvas.getContext('2d')!
 
 const w1 = new Worker(new URL('./testworker.js', import.meta.url))
 
+let last = 0
 w1.onmessage = (msg) => {
-  const img = msg.data.img as ImageBitmap
-  ctx.drawImage(img, 0, 0)
-  img.close()
+  console.log(msg.data.d - last)
+  last = msg.data.d
+
+  // const img = msg.data.img as ImageBitmap
+  // ctx.drawImage(img, 0, 0)
+  // img.close()
+
+  const pixels = msg.data.pixels as Uint8ClampedArray
+  const imgdata = new ImageData(pixels, 320, 180)
+  ctx.putImageData(imgdata, 0, 0)
 }
