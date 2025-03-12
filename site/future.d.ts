@@ -13,3 +13,11 @@ declare class FileSystemObserver {
   private unobserve(fileHandle: FileSystemHandle): void
   disconnect(): void
 }
+
+declare namespace JSX {
+
+  type C = typeof import('./controls.ts').controls
+  type IntrinsicElements = { [K in keyof C]: InstanceType<C[K]> }
+  type ElementChildrenAttribute = { children: any }
+
+}

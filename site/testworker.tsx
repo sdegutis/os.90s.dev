@@ -28,19 +28,19 @@ console.log(p)
 rpc.send('adjust', x, y, w, h)
 rpc.send('blit', pixels)
 
-ontick((d) => {
-  for (let y = 0; y < 180; y++) {
-    for (let x = 0; x < 320; x++) {
-      let i = y * 320 * 4 + x * 4
-      pixels[i + 0] = Math.random() * 255
-      pixels[i + 1] = Math.random() * 255
-      pixels[i + 2] = Math.random() * 255
-      pixels[i + 3] = 255
-    }
-  }
-  rpc.send('blit', pixels)
-  console.log('hey')
-})
+// ontick((d) => {
+//   for (let y = 0; y < 180; y++) {
+//     for (let x = 0; x < 320; x++) {
+//       let i = y * 320 * 4 + x * 4
+//       pixels[i + 0] = Math.random() * 255
+//       pixels[i + 1] = Math.random() * 255
+//       pixels[i + 2] = Math.random() * 255
+//       pixels[i + 3] = 255
+//     }
+//   }
+//   rpc.send('blit', pixels)
+//   console.log('hey')
+// })
 
 function ontick(fn: (d: number) => void) {
   (function tick(d: number) {
@@ -48,3 +48,6 @@ function ontick(fn: (d: number) => void) {
     requestAnimationFrame(tick)
   })(performance.now())
 }
+
+console.log(<view x={3}>
+</view>)
