@@ -1,4 +1,4 @@
-import { Prog, Sys, wRPC } from "./rpc.js"
+import { wRPC, type Prog, type Sys } from "./rpc.js"
 
 let x = Math.ceil(Math.random() * 10)
 let y = Math.ceil(Math.random() * 20)
@@ -21,20 +21,22 @@ for (let y = 0; y < h; y++) {
 }
 
 
-const rpc = wRPC(Sys, self, {
+const rpc = wRPC<Prog, Sys>(self, {
   blur: () => { },
   focus: () => { },
   mouseMoved: (x, y) => {
     // console.log(x, y)
-    rpc.adjust(x - 320 / 2, y - 180 / 2, w, h)
+    rpc('adjust', [x - 320 / 2, y - 180 / 2, w, h])
   },
-} as typeof Prog)
+})
 
-rpc.adjust(x, y, w, h)
+// rpc('')
+
+rpc('adjust', [x, y, w, h])
 
 ctx.putImageData(imgdata, 0, 0)
 const bmp = c.transferToImageBitmap()
-rpc.blit(bmp, [bmp])
+rpc('blit', [bmp], [bmp])
 
 ontick((d) => {
   // for (let n = 0; n < 10; n++)
@@ -50,7 +52,7 @@ ontick((d) => {
 
   ctx.putImageData(imgdata, 0, 0)
   const bmp = c.transferToImageBitmap()
-  rpc.blit(bmp, [bmp])
+  rpc('blit', [bmp], [bmp])
 })
 
 function ontick(fn: (d: number) => void) {
