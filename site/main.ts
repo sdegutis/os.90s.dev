@@ -79,7 +79,7 @@ function redrawAllProgs() {
 
 const prog1 = new Program('/testworker.js')
 const prog2 = new Program('/testworker.js')
-const prog3 = new Program('/testworker.js')
+const prog3 = new Program('https://test.minigamemaker.com/testworker.js')
 const progs = [prog1, prog2, prog3]
 
 // drawProgs()
