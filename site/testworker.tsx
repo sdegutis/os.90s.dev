@@ -10,13 +10,18 @@ class View {
 
   canvas = new OffscreenCanvas(0, 0)
 
+  resized = new Listener<View>()
+  moved = new Listener<View>()
+
   resize(w: number, h: number) {
     this.canvas = new OffscreenCanvas(this.w = w, this.h = h)
+    this.resized.dispatch(this)
   }
 
   move(x: number, y: number) {
     this.x = x
     this.y = y
+    this.moved.dispatch(this)
   }
 
 }
@@ -112,9 +117,33 @@ await panel.ready
 //   panel.move(x - panel.w / 2, y - panel.h / 2)
 // })
 
-const ctx = panel.canvas.getContext('2d')!
-const pixels = new Uint8ClampedArray(panel.w * panel.h * 4)
-const imgdata = new ImageData(pixels, panel.w, panel.h)
+class PixelCanvas {
+
+  view
+
+  private ctx!: OffscreenCanvasRenderingContext2D
+  private imgdata!: ImageData
+  pixels!: Uint8ClampedArray
+
+  constructor(view: View) {
+    this.view = view
+    this.rebuild()
+    this.view.resized.watch(() => this.rebuild())
+  }
+
+  private rebuild() {
+    this.ctx = this.view.canvas.getContext('2d')!
+    this.pixels = new Uint8ClampedArray(this.view.w * this.view.h * 4)
+    this.imgdata = new ImageData(this.pixels, this.view.w, this.view.h)
+  }
+
+  blit() {
+    this.ctx.putImageData(this.imgdata, 0, 0)
+  }
+
+}
+
+const pix = new PixelCanvas(panel)
 
 // for (let y = 0; y < h; y++) {
 //   for (let x = 0; x < w; x++) {
@@ -123,9 +152,10 @@ const imgdata = new ImageData(pixels, panel.w, panel.h)
 //   }
 // }
 
-pixels.fill(Math.random() * 255)
+pix.pixels.fill(Math.random() * 255)
 
-ctx.putImageData(imgdata, 0, 0)
+pix.blit()
+
 panel.blit()
 
 
