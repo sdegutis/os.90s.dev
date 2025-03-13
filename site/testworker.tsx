@@ -2,8 +2,8 @@ import { Prog, Sys, wRPC } from "./rpc.js"
 
 let x = Math.ceil(Math.random() * 10)
 let y = Math.ceil(Math.random() * 20)
-let w = Math.ceil(Math.random() * 100)
-let h = Math.ceil(Math.random() * 50)
+let w = 320
+let h = 180
 
 const pixels = new Uint8ClampedArray(w * h * 4)
 
@@ -23,7 +23,7 @@ const rpc = wRPC<typeof Prog, typeof Sys>(Sys, self, {
   open: (filepath) => { return true },
   mouseMoved: (x, y) => {
     // console.log(x, y)
-    rpc.adjust(x, y, w, h)
+    rpc.adjust(x - 320 / 2, y - 180 / 2, w, h)
   },
 })
 
