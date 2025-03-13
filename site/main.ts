@@ -59,6 +59,10 @@ class Program {
     // this.unlisteners.add(mouseDown.watch(button => { this.rpc('mouseDown', [button]) }))
     // this.unlisteners.add(mouseMoved.watch(mouse => { this.rpc('mouseMoved', mouse) }))
 
+    this.x = (last?.x ?? 0) + 20
+    this.y = (last?.y ?? 0) + 20
+    last = this
+
     this.rpc('init', [this.x, this.y, this.w, this.h])
   }
 
@@ -78,6 +82,7 @@ function redrawAllProgs() {
   }
 }
 
+let last: Program | undefined
 // const mouseDown = new Listener<number>()
 // const mouseMoved = new Listener<[number, number]>()
 
