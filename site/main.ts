@@ -50,6 +50,7 @@ class Program {
       },
 
       blit: (pixels) => {
+        this.imgdata?.close()
         this.imgdata = pixels
         redrawAllProgs()
       },
