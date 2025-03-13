@@ -1,4 +1,4 @@
-import { wRPC, type Prog, type Sys } from "./rpc.js"
+import { Prog, Sys, wRPC } from "./rpc.js"
 
 const canvas = document.createElement('canvas')
 canvas.width = 320
@@ -23,7 +23,7 @@ const ctx = canvas.getContext('2d')!
 class Program {
 
   worker: Worker
-  rpc: wRPC<Sys, Prog>
+  rpc
 
   x = 0
   y = 0
@@ -35,7 +35,7 @@ class Program {
     const absurl = new URL(path, import.meta.url)
 
     this.worker = new Worker(absurl, { type: 'module' })
-    this.rpc = new wRPC<Sys, Prog>(this.worker, {
+    this.rpc = new wRPC<typeof Sys, typeof Prog>(Sys, Prog, this.worker, {
 
       newpanel: (w, h) => {
         return Math.random()
