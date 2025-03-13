@@ -82,7 +82,7 @@ class Panel {
         this.resize(w, h)
 
         const pix = new PixelCanvas(this.frame)
-        pix.pixels.fill(255)
+        pix.pixels.fill(77)
         pix.blit()
 
         init.resolve()
