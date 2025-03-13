@@ -1,6 +1,7 @@
 import { controls } from '../views/index.js'
 import { View } from '../views/view.js'
-import { Listener, Ref } from './events.js'
+import { Listener } from './listener.js'
+import { Ref } from './ref.js'
 
 type Controls = typeof controls
 type JsxChildren = (JSX.Element | JSX.Element[] | Ref<JSX.Element> | Ref<JSX.Element[]>)

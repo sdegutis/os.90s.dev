@@ -1,6 +1,6 @@
 import { progRPC } from "../core/rpc.js"
-import { Listener } from "../util/events.js"
 import { $$ } from "../util/jsx.js"
+import { Listener } from "../util/listener.js"
 
 export const panelView = $$(<view>
 

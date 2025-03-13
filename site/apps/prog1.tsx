@@ -1,5 +1,5 @@
-import { $, Ref } from "../util/events.js"
 import { $$ } from "../util/jsx.js"
+import { $, type Ref } from "../util/ref.js"
 import type { Label } from "../views/label.js"
 import { panel } from "./panel.js"
 
