@@ -1,5 +1,6 @@
 import { View } from "./controls/view.js"
 import { $, Listener, Ref } from "./events.js"
+import { $$ } from "./jsx.js"
 import { ontick } from "./ontick.js"
 import { progRPC } from "./rpc.js"
 
@@ -193,69 +194,8 @@ function ViewForSheet(data: { sheet: Ref<SpriteSheet> }) {
   </view>
 }
 
-class IntrinsicNode {
-
-  tag: string
-  data: any
-  children: (IntrinsicNode | FunctionNode)[]
-  view: View
-
-  constructor(tag: string, data: any, children: any[]) {
-    this.tag = tag
-    this.data = data
-    this.children = children
-    this.view = this.render()
-  }
-
-  private render(): View {
-    const res = { tag: this.tag, data: this.data, children: this.children.map(c => c.view) }
-    const view = new View()
-    view.children = this.children.map(c => c.view)
-    return view
-  }
-
-}
-
-class FunctionNode {
-
-  fn: (data: any) => JSX.Element
-  data: any
-  children: (IntrinsicNode | FunctionNode)[]
-  view: View
-
-  constructor(fn: (data: any) => JSX.Element, data: any, children: any[]) {
-    this.fn = fn
-    this.data = data
-    this.children = children
-    this.view = this.render()
-  }
-
-  private render(): View {
-    // return new View()
-    const retval = this.fn({ ...this.data, children: this.children.map(c => c.view) })
-    const node = $$(retval)
-    return node.view
-  }
-
-}
-
 const tree = $$(
   <ViewForSheet sheet={$(new SpriteSheet())} />
 )
 
 console.log(tree.view)
-
-function $$({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element): FunctionNode | IntrinsicNode {
-  children = (
-    children === undefined ? [] :
-      children instanceof Array ? children :
-        [children]
-  ).map($$)
-
-  if (typeof tag === 'function') {
-    return new FunctionNode(tag, jsx, children.map($$))
-  }
-  else {
-    return new IntrinsicNode(tag, jsx, children.map($$))
-  }
-}
