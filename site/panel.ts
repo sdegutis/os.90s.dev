@@ -1,8 +1,8 @@
-import { View } from "./controls/view.js"
 import { Listener } from "./events.js"
+import { panelView } from "./panelview.jsx"
 import { progRPC } from "./rpc.js"
 
-export class Panel {
+class Panel {
 
   private rpc
   keys: Record<string, boolean> = Object.create(null)
@@ -19,8 +19,7 @@ export class Panel {
 
   ready
 
-  private frame = new View()
-  // content = new View()
+  private frame = panelView;
 
   constructor() {
     const init = Promise.withResolvers<void>()
@@ -92,3 +91,6 @@ export class Panel {
   }
 
 }
+
+export const panel = new Panel()
+await panel.ready

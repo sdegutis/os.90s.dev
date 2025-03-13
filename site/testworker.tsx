@@ -1,13 +1,14 @@
 import type { Label } from "./controls/label.js"
 import { $, Ref } from "./events.js"
 import { $$ } from "./jsx.js"
-import { Panel } from "./panel.js"
+import { panel } from "./panel.js"
 
-const panel = new Panel()
-await panel.ready
+panel
 
 function TestView(data: { text: Ref<string> }) {
-  return <label text={data.text} x={1} />
+  return <label text={data.text} x={1}
+
+  />
 }
 
 let mytext = $('hello')
