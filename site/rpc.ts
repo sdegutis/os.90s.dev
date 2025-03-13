@@ -1,6 +1,12 @@
 export interface Sys {
   adjust(x: number, y: number, w: number, h: number): void
   blit(img: ImageBitmap): void
+  quit(): void
+  max(): void
+  min(): void
+  fullscreen(): void
+  restore(): void
+  pong(n: number): void
 }
 
 export interface Prog {
@@ -12,6 +18,7 @@ export interface Prog {
   wheel(n: number): void
   focus(): void
   blur(): void
+  ping(n: number): void
 }
 
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }

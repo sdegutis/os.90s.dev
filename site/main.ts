@@ -36,7 +36,6 @@ class Program {
 
     this.worker = new Worker(absurl, { type: 'module' })
     this.rpc = wRPC<Sys, Prog>(this.worker, {
-
       adjust: (x, y, w, h) => {
         this.x = x
         this.y = y
@@ -50,7 +49,12 @@ class Program {
         this.image = img
         redrawAllProgs()
       },
-
+      quit: function (): void { },
+      max: function (): void { },
+      min: function (): void { },
+      fullscreen: function (): void { },
+      restore: function (): void { },
+      pong: function (n: number): void { },
     })
   }
 

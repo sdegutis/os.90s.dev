@@ -33,6 +33,7 @@ const rpc = wRPC<Prog, Sys>(self, {
   keyDown: function (key: string): void { },
   keyUp: function (key: string): void { },
   wheel: function (n: number): void { },
+  ping: function (n: number): void { },
 })
 
 // rpc('')
