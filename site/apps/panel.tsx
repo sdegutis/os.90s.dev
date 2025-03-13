@@ -19,7 +19,7 @@ class Panel {
 
   ready
 
-  private frame
+  frame
 
   constructor() {
     const init = Promise.withResolvers<void>()
