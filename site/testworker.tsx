@@ -20,11 +20,11 @@ class SpriteSheet {
   current = 0
 }
 
-function ColorSelector(data: { palette: string, index: number }) {
+function ColorSelectorView(data: { palette: string, index: number }) {
   return <view y={data.index}></view>
 }
 
-function ViewForSheet(data: { sheet: Ref<SpriteSheet> }) {
+function SheetView(data: { sheet: Ref<SpriteSheet> }) {
   const number = 11
   const palette = 'hi'
   return <view x={$(2)} draw={function () {
@@ -33,12 +33,12 @@ function ViewForSheet(data: { sheet: Ref<SpriteSheet> }) {
     <border padding={3}>
       <label text={'he'} y={33} />
     </border>
-    <ColorSelector index={number} palette={palette} />
+    <ColorSelectorView index={number} palette={palette} />
   </view>
 }
 
 const tree = $$(
-  <ViewForSheet sheet={$(new SpriteSheet())} />
+  <SheetView sheet={$(new SpriteSheet())} />
 )
 
 console.log(tree.view)

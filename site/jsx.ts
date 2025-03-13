@@ -44,14 +44,16 @@ export function $$({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element):
   }
 }
 
+type IntrinsicData<T = any> = { [K in keyof T]: T[K] | Ref<T[K]> }
+
 class IntrinsicNode {
 
   ctor: typeof View
-  data: any
+  data: IntrinsicData
   children: (IntrinsicNode | FunctionNode)[]
   view: View
 
-  constructor(ctor: typeof View, data: any, children: any[]) {
+  constructor(ctor: typeof View, data: IntrinsicData, children: any[]) {
     this.ctor = ctor
     this.data = data
     this.children = children
@@ -59,9 +61,7 @@ class IntrinsicNode {
   }
 
   private render(): View {
-    const view = new this.ctor()
-    console.log(this.data)
-    Object.assign(view, this.data)
+    const view = new this.ctor(this.data)
     view.children = this.children.map(c => c.view)
     return view
   }
@@ -83,7 +83,6 @@ class FunctionNode {
   }
 
   private render(): View {
-    // return new View()
     const retval = this.fn({ ...this.data, children: this.children.map(c => c.view) })
     const node = $$(retval)
     return node.view

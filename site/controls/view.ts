@@ -2,7 +2,7 @@ import { Listener } from "../events.js"
 
 export class View {
 
-  constructor(data?: any) {
+  constructor(data?: Partial<View>) {
     Object.assign(this, data)
   }
 
