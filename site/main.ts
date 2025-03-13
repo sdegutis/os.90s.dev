@@ -1,4 +1,3 @@
-import { Listener } from "./os/util/events.js"
 import { type Prog, type Sys, wRPC } from "./rpc.js"
 
 const canvas = document.createElement('canvas')
@@ -15,11 +14,9 @@ new ResizeObserver(() => {
   while ((w += 320) <= rect.width && (h += 180) <= rect.height) s++
   canvas.style.transform = `scale(${s})`
 }).observe(canvas.parentElement!)
-
-
-
-
 const ctx = canvas.getContext('2d')!
+
+
 
 class Program {
 
@@ -59,8 +56,8 @@ class Program {
       pong: (n: number) => { },
     })
 
-    this.unlisteners.add(mouseDown.watch(button => { this.rpc('mouseDown', [button]) }))
-    this.unlisteners.add(mouseMoved.watch(mouse => { this.rpc('mouseMoved', mouse) }))
+    // this.unlisteners.add(mouseDown.watch(button => { this.rpc('mouseDown', [button]) }))
+    // this.unlisteners.add(mouseMoved.watch(mouse => { this.rpc('mouseMoved', mouse) }))
 
     this.rpc('init', [this.x, this.y, this.w, this.h])
   }
@@ -81,8 +78,8 @@ function redrawAllProgs() {
   }
 }
 
-const mouseDown = new Listener<number>()
-const mouseMoved = new Listener<[number, number]>()
+// const mouseDown = new Listener<number>()
+// const mouseMoved = new Listener<[number, number]>()
 
 // const url = URL.createObjectURL(new Blob([`import 'https://test.minigamemaker.com/testworker.js'`], { type: 'application/javascript' }))
 const prog1 = new Program('/testworker.js')
@@ -92,9 +89,11 @@ const progs = [prog1, prog2, prog3]
 
 redrawAllProgs()
 
-canvas.onmousedown = (e) => {
-  mouseDown.dispatch(e.button)
-}
+canvas.onkeydown = (e) => { }
+canvas.onkeyup = (e) => { }
+canvas.onmousedown = (e) => { }
+canvas.onmouseup = (e) => { }
+canvas.onwheel = (e) => { }
 
 const mouse = { x: 0, y: 0 }
 canvas.onmousemove = (e) => {
@@ -103,7 +102,7 @@ canvas.onmousemove = (e) => {
   if (x === mouse.x && y === mouse.y) return
   mouse.x = x
   mouse.y = y
-  mouseMoved.dispatch([mouse.x, mouse.y])
+  // mouseMoved.dispatch([mouse.x, mouse.y])
 }
 
 // setInterval(() => {
