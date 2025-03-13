@@ -1,5 +1,5 @@
 type C = typeof import('./controls.ts').controls
-type Reactive<T> = import('./events.js').Reactive<T>
+type Reactive<T> = import('./events.js').Ref<T>
 
 type Partial2<T> = { [K in keyof T]?: T[K] | Reactive<T[K]> }
 

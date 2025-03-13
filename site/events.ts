@@ -23,11 +23,18 @@ export class Listener<T = void, U = void> {
 
 }
 
-export class Reactive<T> {
+export class Ref<T> extends Listener<T, void> {
 
-  data: T
+  private _data: T
+
   constructor(data: T) {
-    this.data = data
+    super()
+    this._data = data
   }
 
+  get data() { return this._data }
+  set data(val: T) { this.dispatch(this._data = val) }
+
 }
+
+export const $ = <T>(data: T) => new Ref(data)

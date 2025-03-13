@@ -1,4 +1,4 @@
-import { Listener, Reactive } from "./events.js"
+import { $, Listener, Ref } from "./events.js"
 import { ontick } from "./ontick.js"
 import { progRPC } from "./rpc.js"
 
@@ -206,37 +206,63 @@ function ColorSelector(data: { palette: string, index: number }) {
   return <view y={data.index}></view>
 }
 
-function ViewForSheet(data: { sheet: SpriteSheet }) {
+function ViewForSheet(data: { sheet: Ref<SpriteSheet> }) {
   const number = 11
   const palette = 'hi'
-  return <view x={new Reactive(2)}>
+  return <view x={$(2)}>
     <ColorSelector index={number} palette={palette} />
   </view>
 }
 
+class IntrinsicNode {
+
+  tag: string
+  data: any
+  preChildren: any[]
+
+  constructor(tag: string, data: any, preChildren: any[]) {
+    this.tag = tag
+    this.data = data
+    this.preChildren = preChildren
+  }
+
+}
+
+class FunctionNode {
+
+  fn: (data: any) => JSX.Element
+  data: any
+  children: any[]
+
+  constructor(fn: (data: any) => JSX.Element, data: any, children: any[]) {
+    this.fn = fn
+    this.data = data
+    this.children = children
+  }
+
+}
+
 console.log(
-  JSON.stringify(
-    render(
-      <ViewForSheet sheet={new SpriteSheet()} />
-    )
-    , null, 2)
+  buildTree(
+    <ViewForSheet sheet={$(new SpriteSheet())} />
+  )
 )
 
-function render(jsx: JSX.Element): any {
+function buildTree(jsx: JSX.Element): any {
   const tag = getTag(jsx)
   console.log('rendering', jsx)
 
+  const children = (
+    jsx.children === undefined ? [] :
+      jsx.children instanceof Array ? jsx.children :
+        [jsx.children]
+  ).map(buildTree)
+
   if (typeof tag === 'function') {
-    const retval = tag(jsx)
-    const newjsx = render(retval)
-    return { ...newjsx, children: newjsx.children?.map?.(render) }
+    return new FunctionNode(tag, jsx, children.map(buildTree))
   }
   else {
-    let children = jsx.children
-    if (children === undefined) children = []
-    if (!(children instanceof Array)) children = [children]
-
-    return { name: tag, ...jsx, children: children?.map?.(render) }
+    return new IntrinsicNode(tag, jsx, children.map(buildTree))
   }
 }
 
