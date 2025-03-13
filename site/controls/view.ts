@@ -15,12 +15,15 @@ export class View {
   parent?: View
 
   canvas = new OffscreenCanvas(0, 0)
+  ctx = this.canvas.getContext('2d')!
 
   resized = new Listener<View>()
   moved = new Listener<View>()
 
   resize(w: number, h: number) {
-    this.canvas = new OffscreenCanvas(this.w = w, this.h = h)
+    this.canvas.width = this.w = w
+    this.canvas.height = this.h = h
+    this.redraw()
     this.resized.dispatch(this)
   }
 
@@ -30,8 +33,9 @@ export class View {
     this.moved.dispatch(this)
   }
 
-  draw() {
-
+  redraw() {
+    this.ctx.fillStyle = '#' + Math.floor(Math.random() * 5).toString(16).repeat(3)
+    this.ctx.fillRect(0, 0, this.w, this.h)
   }
 
 }

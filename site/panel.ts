@@ -30,10 +30,6 @@ export class Panel {
       init: (x, y, w, h) => {
         this.move(x, y)
         this.resize(w, h)
-
-        const ctx = this.frame.canvas.getContext('2d')!
-        ctx.fillStyle = '#333'
-        ctx.fillRect(0, 0, this.frame.w, this.frame.h)
         this.blit()
 
         // const pix = new PixelCanvas(this.frame)
@@ -85,13 +81,13 @@ export class Panel {
 
   resize(w: number, h: number) {
     this.frame.resize(w, h)
-    this.content.resize(w, h)
+    // this.content.resize(w, h)
     this.rpc('adjust', [this.frame.x, this.frame.y, this.frame.w, this.frame.h])
   }
 
   move(x: number, y: number) {
     this.frame.move(x, y)
-    this.content.move(x, y)
+    // this.content.move(x, y)
     this.rpc('adjust', [this.frame.x, this.frame.y, this.frame.w, this.frame.h])
   }
 

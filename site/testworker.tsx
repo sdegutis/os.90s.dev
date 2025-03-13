@@ -27,7 +27,7 @@ function ColorSelectorView(data: { palette: string, index: number }) {
 function SheetView(data: { sheet: Ref<SpriteSheet> }) {
   const number = 11
   const palette = 'hi'
-  return <view x={$(2)} draw={function () {
+  return <view x={$(2)} redraw={function () {
     this.x = 3
   }}>
     <border padding={3}>
