@@ -28,6 +28,11 @@ const rpc = wRPC<Prog, Sys>(self, {
     // console.log(x, y)
     rpc('adjust', [x - 320 / 2, y - 180 / 2, w, h])
   },
+  mouseDown: function (button: number): void { },
+  mouseUp: function (button: number): void { },
+  keyDown: function (key: string): void { },
+  keyUp: function (key: string): void { },
+  wheel: function (n: number): void { },
 })
 
 // rpc('')
