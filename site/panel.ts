@@ -1,6 +1,5 @@
 import { View } from "./controls/view.js"
 import { Listener } from "./events.js"
-import { PixelCanvas } from "./pixel.js"
 import { progRPC } from "./rpc.js"
 
 export class Panel {
@@ -32,9 +31,14 @@ export class Panel {
         this.move(x, y)
         this.resize(w, h)
 
-        const pix = new PixelCanvas(this.frame)
-        pix.pixels.fill(77)
-        pix.blit()
+        const ctx = this.frame.canvas.getContext('2d')!
+        ctx.fillStyle = '#333'
+        ctx.fillRect(0, 0, this.frame.w, this.frame.h)
+        this.blit()
+
+        // const pix = new PixelCanvas(this.frame)
+        // pix.pixels.fill(77)
+        // pix.blit()
 
         init.resolve()
       },
