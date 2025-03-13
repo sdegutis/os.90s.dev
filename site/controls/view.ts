@@ -29,4 +29,8 @@ export class View {
     this.moved.dispatch(this)
   }
 
+  draw() {
+
+  }
+
 }

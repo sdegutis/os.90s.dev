@@ -7,7 +7,9 @@ declare global {
   type Ref<T> = import('./events.js').Ref<T>
 
   type JsxChildren = (JSX.Element | JSX.Element[] | Ref<JSX.Element> | Ref<JSX.Element[]>)
-  type JsxAttrs<T> = { [K in keyof T]?: K extends 'children' ? JsxChildren : T[K] | Ref<T[K]> }
+  type FixIntrinsicMethods<T, K extends keyof T, U> = T[K] extends (...args: infer A) => infer R ? (this: T, ...args: A) => R : U
+  type FixIntrinsicChildren<K, U> = K extends 'children' ? JsxChildren : U
+  type JsxAttrs<T> = { [K in keyof T]?: FixIntrinsicChildren<K, FixIntrinsicMethods<T, K, T[K] | Ref<T[K]>>> }
 
   namespace JSX {
 

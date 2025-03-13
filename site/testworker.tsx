@@ -27,7 +27,9 @@ function ColorSelector(data: { palette: string, index: number }) {
 function ViewForSheet(data: { sheet: Ref<SpriteSheet> }) {
   const number = 11
   const palette = 'hi'
-  return <view x={$(2)}>
+  return <view x={$(2)} draw={function () {
+    this.x = 3
+  }}>
     <border padding={3}>
       <label text={'he'} y={33} />
     </border>
