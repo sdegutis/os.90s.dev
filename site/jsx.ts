@@ -62,7 +62,7 @@ class IntrinsicNode {
     for (const [key, val] of Object.entries(data)) {
       if (val instanceof Ref) {
         const unwatch = val.watch(v => {
-          this.view[key as keyof View] = v
+          (this.view as any)[key] = v
           this.view.changed(key, v)
         })
         this.destroying.watch(unwatch)
@@ -85,7 +85,7 @@ class IntrinsicNode {
     const view = new this.ctor()
 
     for (const [key, val] of Object.entries(this.data)) {
-      view[key as keyof View] = val instanceof Ref ? val.val : val
+      (view as any)[key] = val instanceof Ref ? val.val : val
     }
 
     view.children = this.children.map(c => {
