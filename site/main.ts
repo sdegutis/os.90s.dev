@@ -27,8 +27,8 @@ class Program {
 
   x = 0
   y = 0
-  w = 10
-  h = 10
+  w = 0
+  h = 0
   imgdata?: ImageBitmap
 
   constructor(path: string) {
