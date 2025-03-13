@@ -1,4 +1,4 @@
-import { Prog, Sys, wRPC } from "./rpc.js"
+import { type Prog, type Sys, wRPC } from "./rpc.js"
 
 const canvas = document.createElement('canvas')
 canvas.width = 320
@@ -29,13 +29,13 @@ class Program {
   y = 0
   w = 0
   h = 0
-  imgdata?: ImageBitmap
+  image?: ImageBitmap
 
   constructor(path: string) {
     const absurl = new URL(path, import.meta.url)
 
     this.worker = new Worker(absurl, { type: 'module' })
-    this.rpc = wRPC(Prog, this.worker, {
+    this.rpc = wRPC<Sys, Prog>(this.worker, {
 
       adjust: (x, y, w, h) => {
         this.x = x
@@ -45,17 +45,17 @@ class Program {
         redrawAllProgs()
       },
 
-      blit: (pixels) => {
-        this.imgdata?.close()
-        this.imgdata = pixels
+      blit: (img) => {
+        this.image?.close()
+        this.image = img
         redrawAllProgs()
       },
 
-    } as typeof Sys)
+    })
   }
 
   mouseMoved(x: number, y: number) {
-    this.rpc.mouseMoved(x, y)
+    this.rpc('mouseMoved', [x, y])
   }
 
   terminate() {
@@ -67,8 +67,8 @@ class Program {
 function redrawAllProgs() {
   ctx.clearRect(0, 0, 320, 180)
   for (const prog of progs) {
-    if (prog.imgdata) {
-      ctx.drawImage(prog.imgdata, prog.x, prog.y)
+    if (prog.image) {
+      ctx.drawImage(prog.image, prog.x, prog.y)
     }
   }
 }
