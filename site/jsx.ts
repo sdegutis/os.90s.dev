@@ -58,6 +58,8 @@ class IntrinsicNode {
     this.data = data
     this.children = children
     this.view = this.render()
+
+    // for (const [key,val] of Object.entries(data))
   }
 
   private render(): View {

@@ -25,16 +25,16 @@ export class Listener<T = void, U = void> {
 
 export class Ref<T> extends Listener<T, void> {
 
-  private _data: T
+  private _val: T
 
-  constructor(data: T) {
+  constructor(val: T) {
     super()
-    this._data = data
+    this._val = val
   }
 
-  get data() { return this._data }
-  set data(val: T) { this.dispatch(this._data = val) }
+  get val() { return this._val }
+  set val(val: T) { this.dispatch(this._val = val) }
 
 }
 
-export const $ = <T>(data: T) => new Ref(data)
+export const $ = <T>(val: T) => new Ref(val)
