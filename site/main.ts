@@ -37,10 +37,6 @@ class Program {
     this.worker = new Worker(absurl, { type: 'module' })
     this.rpc = wRPC(Prog, this.worker, {
 
-      newpanel: (w, h) => {
-        return Math.random()
-      },
-
       adjust: (x, y, w, h) => {
         this.x = x
         this.y = y

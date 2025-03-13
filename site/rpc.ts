@@ -1,5 +1,4 @@
 export const Sys = {
-  newpanel(w: number, h: number): number { return 1 },
   adjust(x: number, y: number, w: number, h: number): void { },
   blit(img: ImageBitmap): void { },
 }
