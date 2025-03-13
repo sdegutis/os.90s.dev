@@ -29,7 +29,7 @@ class Program {
   y = 0
   w = 10
   h = 10
-  imgdata = new ImageData(10, 10)
+  imgdata?: ImageBitmap
 
   constructor(path: string) {
     const absurl = new URL(path, import.meta.url)
@@ -50,7 +50,7 @@ class Program {
       },
 
       blit: (pixels) => {
-        this.imgdata = new ImageData(pixels, this.w, this.h)
+        this.imgdata = pixels
         redrawAllProgs()
       },
 
@@ -70,7 +70,9 @@ class Program {
 function redrawAllProgs() {
   ctx.clearRect(0, 0, 320, 180)
   for (const prog of progs) {
-    ctx.putImageData(prog.imgdata, prog.x, prog.y)
+    if (prog.imgdata) {
+      ctx.drawImage(prog.imgdata, prog.x, prog.y)
+    }
   }
 }
 

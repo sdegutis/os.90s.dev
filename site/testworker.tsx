@@ -5,7 +5,11 @@ let y = Math.ceil(Math.random() * 20)
 let w = 320
 let h = 180
 
+const c = new OffscreenCanvas(w, h)
+const ctx = c.getContext('2d')!
+
 const pixels = new Uint8ClampedArray(w * h * 4)
+const imgdata = new ImageData(pixels, w, h)
 
 pixels.fill(Math.random() * 255)
 
@@ -27,12 +31,12 @@ const rpc = wRPC<typeof Prog, typeof Sys>(Sys, self, {
   },
 })
 
-
-const p = await rpc.newpanel(100, 100)
-console.log(p)
-
 rpc.adjust(x, y, w, h)
-rpc.blit(pixels)
+
+ctx.putImageData(imgdata, 0, 0)
+
+const bmp = c.transferToImageBitmap()
+rpc.blit(bmp, [bmp])
 
 ontick((d) => {
   for (let y = 0; y < h; y++) {
@@ -44,7 +48,7 @@ ontick((d) => {
       // pixels[i + 3] = 255
     }
   }
-  rpc.blit(pixels)
+  // rpc.blit(pixels)
   // console.log('hey')
 })
 
