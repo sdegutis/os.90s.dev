@@ -184,3 +184,30 @@ ontick((d) => {
 //     <view />
 //   </view>
 // )
+
+
+
+class SpriteImage {
+
+}
+
+class Sprite {
+
+  w = 8
+  h = 8
+
+  images: SpriteImage[] = []
+  current = 0
+
+}
+
+class SpriteSheet {
+
+  sprites: Sprite[] = []
+  current = 0
+
+}
+
+function viewForSheet(sheet: SpriteSheet) {
+
+}
