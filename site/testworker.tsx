@@ -61,5 +61,8 @@ function ontick(fn: (d: number) => void) {
   // })(performance.now())
 }
 
-console.log((<view x={3}>
-</view>)[Symbol.for('jsx')])
+console.log(
+  <view x={3}>
+    hi
+  </view>
+)
