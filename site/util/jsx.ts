@@ -1,5 +1,5 @@
-import { controls } from './controls.js'
-import { View } from './controls/view.js'
+import { controls } from '../views/index.js'
+import { View } from '../views/view.js'
 import { Listener, Ref } from './events.js'
 
 type Controls = typeof controls

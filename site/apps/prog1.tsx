@@ -1,7 +1,7 @@
-import type { Label } from "./controls/label.js"
-import { $, Ref } from "./events.js"
-import { $$ } from "./jsx.js"
-import { panel } from "./panel.js"
+import { panel } from "../panel.js"
+import { $, Ref } from "../util/events.js"
+import { $$ } from "../util/jsx.js"
+import type { Label } from "../views/label.js"
 
 panel
 

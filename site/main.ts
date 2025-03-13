@@ -87,9 +87,9 @@ let last: Program | undefined
 // const mouseMoved = new Listener<[number, number]>()
 
 // const url = URL.createObjectURL(new Blob([`import 'https://test.minigamemaker.com/testworker.js'`], { type: 'application/javascript' }))
-const prog1 = new Program('/testworker.js')
-// const prog2 = new Program('/testworker.js')
-// const prog3 = new Program('/testworker.js')
+const prog1 = new Program('/apps/prog1.js')
+// const prog2 = new Program('/apps/prog1.js')
+// const prog3 = new Program('/apps/prog1.js')
 const progs = [prog1]
 
 redrawAllProgs()
