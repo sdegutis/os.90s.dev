@@ -23,7 +23,7 @@ class View {
 
 class Panel extends View {
 
-  rpc
+  private rpc
   keys: Record<string, boolean> = Object.create(null)
   focused = false
 
