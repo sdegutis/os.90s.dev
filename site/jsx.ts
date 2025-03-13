@@ -62,7 +62,11 @@ class IntrinsicNode {
 
   private render(): View {
     const view = new this.ctor(this.data)
-    view.children = this.children.map(c => c.view)
+    view.children = this.children.map(c => {
+      const child = c.view
+      child.parent = view
+      return child
+    })
     return view
   }
 

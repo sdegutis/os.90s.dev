@@ -12,6 +12,7 @@ export class View {
   h = 0
 
   children: readonly View[] = []
+  parent?: View
 
   canvas = new OffscreenCanvas(0, 0)
 
