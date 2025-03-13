@@ -185,7 +185,8 @@ function ontick(fn: (d: number) => void) {
 }
 
 console.log(
-  <view x={3}>
-    hi
+  <view x={2} >
+    <view />
+    <view />
   </view>
 )
