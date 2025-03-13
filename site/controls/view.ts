@@ -38,4 +38,8 @@ export class View {
     this.ctx.fillRect(0, 0, this.w, this.h)
   }
 
+  changed(key: string, val: any) {
+    console.log('changed', this, key, val)
+  }
+
 }

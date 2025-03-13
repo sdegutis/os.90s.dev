@@ -33,7 +33,10 @@ export class Ref<T> extends Listener<T, void> {
   }
 
   get val() { return this._val }
-  set val(val: T) { this.dispatch(this._val = val) }
+  set val(val: T) {
+    if (this._val === val) return
+    this.dispatch(this._val = val)
+  }
 
 }
 

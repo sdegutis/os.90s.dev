@@ -1,6 +1,6 @@
 import { controls } from './controls.js'
 import { View } from './controls/view.js'
-import type { Ref } from './events.js'
+import { Listener, Ref } from './events.js'
 
 type Controls = typeof controls
 type JsxChildren = (JSX.Element | JSX.Element[] | Ref<JSX.Element> | Ref<JSX.Element[]>)
@@ -44,26 +44,45 @@ export function $$({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element):
   }
 }
 
-type IntrinsicData<T = any> = { [K in keyof T]: T[K] | Ref<T[K]> }
-
 class IntrinsicNode {
 
   ctor: typeof View
-  data: IntrinsicData
+  data: Record<string, any>
   children: (IntrinsicNode | FunctionNode)[]
   view: View
 
-  constructor(ctor: typeof View, data: IntrinsicData, children: any[]) {
+  private destroying = new Listener()
+
+  constructor(ctor: typeof View, data: Record<string, any>, children: any[]) {
     this.ctor = ctor
     this.data = data
     this.children = children
-    this.view = this.render()
+    this.view = this.createView()
 
-    // for (const [key,val] of Object.entries(data))
+    for (const [key, val] of Object.entries(data)) {
+      if (val instanceof Ref) {
+        const unwatch = val.watch(v => {
+          this.view[key as keyof View] = v
+          this.view.changed(key, v)
+        })
+        this.destroying.watch(unwatch)
+      }
+    }
   }
 
-  private render(): View {
-    const view = new this.ctor(this.data)
+  detach() {
+    this.destroying.dispatch()
+    this.destroying.clear()
+  }
+
+  private realizeData() {
+    return Object.fromEntries(Object.entries(this.data).map(([k, v]) => {
+      return [k, v instanceof Ref ? v.val : v]
+    }))
+  }
+
+  private createView(): View {
+    const view = new this.ctor(this.realizeData())
     view.children = this.children.map(c => {
       const child = c.view
       child.parent = view
@@ -76,19 +95,19 @@ class IntrinsicNode {
 
 class FunctionNode {
 
-  fn: (data: any) => JSX.Element
-  data: any
+  fn: (data: Record<string, any>) => JSX.Element
+  data: Record<string, any>
   children: (IntrinsicNode | FunctionNode)[]
   view: View
 
-  constructor(fn: (data: any) => JSX.Element, data: any, children: any[]) {
+  constructor(fn: (data: any) => JSX.Element, data: Record<string, any>, children: any[]) {
     this.fn = fn
     this.data = data
     this.children = children
-    this.view = this.render()
+    this.view = this.createView()
   }
 
-  private render(): View {
+  private createView(): View {
     const retval = this.fn({ ...this.data, children: this.children.map(c => c.view) })
     const node = $$(retval)
     return node.view
