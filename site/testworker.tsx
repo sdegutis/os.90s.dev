@@ -1,3 +1,4 @@
+import { Listener } from "./os/util/events.js"
 import { wRPC, type Prog, type Sys } from "./rpc.js"
 
 let x = Math.ceil(Math.random() * 10)
@@ -20,21 +21,65 @@ for (let y = 0; y < h; y++) {
   }
 }
 
+class System {
 
-const rpc = wRPC<Prog, Sys>(self, {
-  blur: () => { },
-  focus: () => { },
-  mouseMoved: (x, y) => {
-    // console.log(x, y)
-    rpc('adjust', [x - 320 / 2, y - 180 / 2, w, h])
-  },
-  mouseDown: function (button: number): void { },
-  mouseUp: function (button: number): void { },
-  keyDown: function (key: string): void { },
-  keyUp: function (key: string): void { },
-  wheel: function (n: number): void { },
-  ping: function (n: number): void { },
-})
+  rpc
+  keys: Record<string, boolean> = Object.create(null)
+  focused = false
+
+  mouseMoved = new Listener<{ x: number, y: number }>()
+  mouseDown = new Listener<number>()
+  mouseUp = new Listener<number>()
+  keyDown = new Listener<string>()
+  keyUp = new Listener<string>()
+  wheel = new Listener<number>()
+  focus = new Listener<void>()
+  blur = new Listener<void>()
+
+  constructor() {
+    this.rpc = wRPC<Prog, Sys>(self, {
+      mouseMoved: (x, y) => {
+        this.mouseMoved.dispatch({ x, y })
+      },
+      mouseDown: (button: number) => {
+        if (!this.focused) return
+        this.mouseDown.dispatch(button)
+      },
+      mouseUp: (button: number) => {
+        if (!this.focused) return
+        this.mouseUp.dispatch(button)
+      },
+      keyDown: (key: string) => {
+        this.keys[key] = true
+        if (!this.focused) return
+        this.keyDown.dispatch(key)
+      },
+      keyUp: (key: string) => {
+        this.keys[key] = false
+        if (!this.focused) return
+        this.keyUp.dispatch(key)
+      },
+      wheel: (n: number) => {
+        this.wheel.dispatch(n)
+      },
+      focus: () => {
+        this.focus.dispatch()
+      },
+      blur: () => {
+        this.blur.dispatch()
+      },
+      ping: (n: number) => {
+        rpc('pong', [n])
+      },
+    })
+  }
+
+}
+
+const sys = new System()
+const rpc = sys.rpc
+
+rpc('adjust', [x - 320 / 2, y - 180 / 2, w, h])
 
 // rpc('')
 
