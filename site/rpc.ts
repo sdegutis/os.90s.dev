@@ -5,7 +5,6 @@ export const Sys = {
 
 export const Prog = {
   mouseMoved(x: number, y: number): void { },
-  open(filepath: string): boolean { return true },
   focus(): void { },
   blur(): void { },
 }
