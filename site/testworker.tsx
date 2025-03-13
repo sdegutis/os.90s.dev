@@ -21,7 +21,7 @@ for (let y = 0; y < h; y++) {
 }
 
 
-const rpc = wRPC<typeof Prog, typeof Sys>(Sys, self, {
+const rpc = wRPC(Sys, self, {
   blur: () => { },
   focus: () => { },
   open: (filepath) => { return true },
@@ -29,7 +29,7 @@ const rpc = wRPC<typeof Prog, typeof Sys>(Sys, self, {
     // console.log(x, y)
     rpc.adjust(x - 320 / 2, y - 180 / 2, w, h)
   },
-})
+} as typeof Prog)
 
 rpc.adjust(x, y, w, h)
 
