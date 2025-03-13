@@ -26,7 +26,33 @@ class View {
 
 }
 
-class Panel extends View {
+class PixelCanvas {
+
+  view
+
+  private ctx!: OffscreenCanvasRenderingContext2D
+  private imgdata!: ImageData
+  pixels!: Uint8ClampedArray
+
+  constructor(view: View) {
+    this.view = view
+    this.rebuild()
+    this.view.resized.watch(() => this.rebuild())
+  }
+
+  private rebuild() {
+    this.ctx = this.view.canvas.getContext('2d')!
+    this.pixels = new Uint8ClampedArray(this.view.w * this.view.h * 4)
+    this.imgdata = new ImageData(this.pixels, this.view.w, this.view.h)
+  }
+
+  blit() {
+    this.ctx.putImageData(this.imgdata, 0, 0)
+  }
+
+}
+
+class Panel {
 
   private rpc
   keys: Record<string, boolean> = Object.create(null)
@@ -43,8 +69,10 @@ class Panel extends View {
 
   ready
 
+  private frame = new View()
+  content = new View()
+
   constructor() {
-    super()
     const init = Promise.withResolvers<void>()
     this.ready = init.promise
 
@@ -52,6 +80,11 @@ class Panel extends View {
       init: (x, y, w, h) => {
         this.move(x, y)
         this.resize(w, h)
+
+        const pix = new PixelCanvas(this.frame)
+        pix.pixels.fill(255)
+        pix.blit()
+
         init.resolve()
       },
       mouseMoved: (x, y) => {
@@ -91,18 +124,20 @@ class Panel extends View {
   }
 
   blit() {
-    const bmp = this.canvas.transferToImageBitmap()
+    const bmp = this.frame.canvas.transferToImageBitmap()
     this.rpc('blit', [bmp], [bmp])
   }
 
-  override resize(w: number, h: number) {
-    super.resize(w, h)
-    this.rpc('adjust', [this.x, this.y, this.w, this.h])
+  resize(w: number, h: number) {
+    this.frame.resize(w, h)
+    this.content.resize(w, h)
+    this.rpc('adjust', [this.frame.x, this.frame.y, this.frame.w, this.frame.h])
   }
 
-  override move(x: number, y: number) {
-    super.move(x, y)
-    this.rpc('adjust', [this.x, this.y, this.w, this.h])
+  move(x: number, y: number) {
+    this.frame.move(x, y)
+    this.content.move(x, y)
+    this.rpc('adjust', [this.frame.x, this.frame.y, this.frame.w, this.frame.h])
   }
 
 }
@@ -110,40 +145,7 @@ class Panel extends View {
 const panel = new Panel()
 await panel.ready
 
-// panel.mouseMoved.watch(([x, y]) => {
-//   const a = new Int8Array(1)
-//   crypto.getRandomValues(a)
-//   if (a[0] < 100) return
-//   panel.move(x - panel.w / 2, y - panel.h / 2)
-// })
-
-class PixelCanvas {
-
-  view
-
-  private ctx!: OffscreenCanvasRenderingContext2D
-  private imgdata!: ImageData
-  pixels!: Uint8ClampedArray
-
-  constructor(view: View) {
-    this.view = view
-    this.rebuild()
-    this.view.resized.watch(() => this.rebuild())
-  }
-
-  private rebuild() {
-    this.ctx = this.view.canvas.getContext('2d')!
-    this.pixels = new Uint8ClampedArray(this.view.w * this.view.h * 4)
-    this.imgdata = new ImageData(this.pixels, this.view.w, this.view.h)
-  }
-
-  blit() {
-    this.ctx.putImageData(this.imgdata, 0, 0)
-  }
-
-}
-
-const pix = new PixelCanvas(panel)
+const pix = new PixelCanvas(panel.content)
 
 // for (let y = 0; y < h; y++) {
 //   for (let x = 0; x < w; x++) {
