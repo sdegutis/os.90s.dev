@@ -82,12 +82,20 @@ class IntrinsicNode {
   }
 
   private createView(): View {
-    const view = new this.ctor(this.realizeData())
+    const view = new this.ctor()
+
+    for (const [key, val] of Object.entries(this.data)) {
+      view[key as keyof View] = val instanceof Ref ? val.val : val
+    }
+
     view.children = this.children.map(c => {
       const child = c.view
       child.parent = view
       return child
     })
+
+    view.init?.()
+
     return view
   }
 

@@ -2,10 +2,6 @@ import { Listener } from "../events.js"
 
 export class View {
 
-  constructor(data?: Partial<View>) {
-    Object.assign(this, data)
-  }
-
   x = 0
   y = 0
   w = 0
@@ -19,6 +15,8 @@ export class View {
 
   resized = new Listener<View>()
   moved = new Listener<View>()
+
+  init?(): void
 
   resize(w: number, h: number) {
     this.canvas.width = this.w = w
