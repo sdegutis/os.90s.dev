@@ -2,20 +2,16 @@ import { Listener } from "../events.js"
 
 export class View {
 
-  private _x = 0
-  get x() { return this._x }
+  get x() { return this._x } private _x = 0;
   set x(n: number) { if (this.x !== n) this.move(this._x = n, this.y) }
 
-  private _y = 0
-  get y() { return this._y }
+  get y() { return this._y } private _y = 0;
   set y(n: number) { if (this.y !== n) this.move(this.x, this._y = n) }
 
-  private _w = 0
-  get w() { return this._w }
+  get w() { return this._w } private _w = 0;
   set w(n: number) { if (this.w !== n) this.resize(this._w = n, this.h) }
 
-  private _h = 0
-  get h() { return this._h }
+  get h() { return this._h } private _h = 0;
   set h(n: number) { if (this.h !== n) this.resize(this.w, this._h = n) }
 
   children: readonly View[] = []
