@@ -1,5 +1,5 @@
-import { View } from "./controls/view.js"
 import { Listener } from "./events.js"
+import { panelView } from "./panelview.js"
 import { progRPC } from "./rpc.js"
 
 class Panel {
@@ -19,11 +19,13 @@ class Panel {
 
   ready
 
-  private frame = new View();
+  private frame
 
   constructor() {
     const init = Promise.withResolvers<void>()
     this.ready = init.promise
+
+    this.frame = panelView
 
     this.rpc = progRPC(self, {
       init: (x, y, w, h) => {
