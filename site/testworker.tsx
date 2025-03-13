@@ -1,4 +1,4 @@
-import { wRPC, type Prog, type Sys } from "./rpc.js"
+import { Prog, Sys, wRPC } from "./rpc.js"
 
 let x = Math.ceil(Math.random() * 10)
 let y = Math.ceil(Math.random() * 20)
@@ -17,12 +17,12 @@ for (let y = 0; y < h; y++) {
 }
 
 
-const rpc = new wRPC<Prog, Sys>(self, {
+const rpc = new wRPC<typeof Prog, typeof Sys>(Prog, Sys, self, {
   blur: () => { },
   focus: () => { },
   open: (filepath) => { return true },
   mouseMoved: (x, y) => {
-    console.log(x, y)
+    // console.log(x, y)
     rpc.send('adjust', x, y, w, h)
   },
 })
@@ -54,10 +54,10 @@ ontick((d) => {
 })
 
 function ontick(fn: (d: number) => void) {
-  // (function tick(d: number) {
-  //   fn(d)
-  //   requestAnimationFrame(tick)
-  // })(performance.now())
+  (function tick(d: number) {
+    fn(d)
+    requestAnimationFrame(tick)
+  })(performance.now())
 }
 
 console.log((<view x={3}>
