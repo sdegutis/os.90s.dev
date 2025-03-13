@@ -1,3 +1,4 @@
+import { Listener } from "./os/util/events.js"
 import { type Prog, type Sys, wRPC } from "./rpc.js"
 
 const canvas = document.createElement('canvas')
@@ -31,6 +32,8 @@ class Program {
   h = 100
   image?: ImageBitmap
 
+  unlisteners = new Set<() => void>()
+
   constructor(path: string) {
     const absurl = new URL(path, import.meta.url)
 
@@ -43,28 +46,27 @@ class Program {
         this.h = h
         redrawAllProgs()
       },
-
       blit: (img) => {
         this.image?.close()
         this.image = img
         redrawAllProgs()
       },
-      quit: function (): void { },
-      max: function (): void { },
-      min: function (): void { },
-      fullscreen: function (): void { },
-      restore: function (): void { },
-      pong: function (n: number): void { },
+      quit: () => { },
+      max: () => { },
+      min: () => { },
+      fullscreen: () => { },
+      restore: () => { },
+      pong: (n: number) => { },
     })
+
+    this.unlisteners.add(mouseDown.watch(button => { this.rpc('mouseDown', [button]) }))
+    this.unlisteners.add(mouseMoved.watch(mouse => { this.rpc('mouseMoved', mouse) }))
 
     this.rpc('init', [this.x, this.y, this.w, this.h])
   }
 
-  mouseMoved(x: number, y: number) {
-    this.rpc('mouseMoved', [x, y])
-  }
-
   terminate() {
+    this.unlisteners.forEach(fn => fn())
     this.worker.terminate()
   }
 
@@ -79,24 +81,29 @@ function redrawAllProgs() {
   }
 }
 
-// const url = URL.createObjectURL(new Blob([`import 'https://test.minigamemaker.com/testworker.js'`], { type: 'application/javascript' }))
+const mouseDown = new Listener<number>()
+const mouseMoved = new Listener<[number, number]>()
 
+// const url = URL.createObjectURL(new Blob([`import 'https://test.minigamemaker.com/testworker.js'`], { type: 'application/javascript' }))
 const prog1 = new Program('/testworker.js')
 const prog2 = new Program('/testworker.js')
 const prog3 = new Program('/testworker.js')
 const progs = [prog1, prog2, prog3]
 
-// drawProgs()
+redrawAllProgs()
+
+canvas.onmousedown = (e) => {
+  mouseDown.dispatch(e.button)
+}
 
 const mouse = { x: 0, y: 0 }
-
 canvas.onmousemove = (e) => {
   const x = Math.min(320 - 1, e.offsetX)
   const y = Math.min(180 - 1, e.offsetY)
   if (x === mouse.x && y === mouse.y) return
   mouse.x = x
   mouse.y = y
-  prog1.mouseMoved(mouse.x, mouse.y)
+  mouseMoved.dispatch([mouse.x, mouse.y])
 }
 
 // setInterval(() => {
