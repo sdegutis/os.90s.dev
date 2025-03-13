@@ -258,23 +258,17 @@ console.log(
   ).render()
 )
 
-function buildTree(jsx: JSX.Element): FunctionNode | IntrinsicNode {
-  const children = (
-    jsx.children === undefined ? [] :
-      jsx.children instanceof Array ? jsx.children :
-        [jsx.children]
+function buildTree({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element): FunctionNode | IntrinsicNode {
+  children = (
+    children === undefined ? [] :
+      children instanceof Array ? children :
+        [children]
   ).map(buildTree)
-  delete jsx.children
 
-  const tag = getTag(jsx)
   if (typeof tag === 'function') {
     return new FunctionNode(tag, jsx, children.map(buildTree))
   }
   else {
     return new IntrinsicNode(tag, jsx, children.map(buildTree))
   }
-}
-
-function getTag(jsx: JSX.Element) {
-  return jsx[Symbol.for('jsx')]
 }
