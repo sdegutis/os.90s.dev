@@ -13,10 +13,6 @@ export class Listener<T = void, U = void> {
     return () => { this.list.delete(fn) }
   }
 
-  destroy() {
-    this.clear()
-  }
-
   clear() {
     this.list.clear()
   }
