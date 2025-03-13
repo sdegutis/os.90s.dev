@@ -161,7 +161,8 @@ pix.blit()
 panel.blit()
 
 
-ontick((d) => {
+const done = ontick((d) => {
+  console.log(d)
   // // for (let n = 0; n < 10; n++)
   // for (let y = 0; y < h; y++) {
   //   for (let x = 0; x < w; x++) {
@@ -177,11 +178,20 @@ ontick((d) => {
   // panel.blit()
 })
 
-function ontick(fn: (d: number) => void) {
-  (function tick(d: number) {
-    fn(d)
-    requestAnimationFrame(tick)
-  })(performance.now())
+setTimeout(done, 1000)
+
+function ontick(fn: (d: number) => void, fps = 30) {
+  let done: number
+  let last = performance.now();
+  (function tick(now: number) {
+    const delta = now - last
+    if (delta >= 1000 / fps) {
+      last = now
+      fn(delta)
+    }
+    done = requestAnimationFrame(tick)
+  })(last)
+  return () => cancelAnimationFrame(done)
 }
 
 console.log(
