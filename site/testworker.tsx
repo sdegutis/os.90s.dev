@@ -55,10 +55,10 @@ ontick((d) => {
 })
 
 function ontick(fn: (d: number) => void) {
-  (function tick(d: number) {
-    fn(d)
-    requestAnimationFrame(tick)
-  })(performance.now())
+  // (function tick(d: number) {
+  //   fn(d)
+  //   requestAnimationFrame(tick)
+  // })(performance.now())
 }
 
 console.log((<view x={3}>
