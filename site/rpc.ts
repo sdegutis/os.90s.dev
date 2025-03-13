@@ -1,4 +1,4 @@
-export interface Sys {
+interface Sys {
   adjust(x: number, y: number, w: number, h: number): void
   blit(img: ImageBitmap): void
   quit(): void
@@ -9,7 +9,7 @@ export interface Sys {
   pong(n: number): void
 }
 
-export interface Prog {
+interface Prog {
   init(x: number, y: number, w: number, h: number): void
   mouseMoved(x: number, y: number): void
   mouseDown(button: number): void
@@ -24,7 +24,7 @@ export interface Prog {
 
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }
 
-export function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker | Window, handlers: In) {
+function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker | Window, handlers: In) {
   port.onmessage = (msg) => {
     const name = msg.data.pop() as keyof typeof handlers
     handlers[name](...msg.data)
@@ -33,3 +33,6 @@ export function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: W
     port.postMessage([...data, name], transfer ? { transfer } : undefined)
   }
 }
+
+export const progRPC = (wRPC<Prog, Sys>)
+export const sysRPC = (wRPC<Sys, Prog>)

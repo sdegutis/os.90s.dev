@@ -1,4 +1,4 @@
-import { type Prog, type Sys, wRPC } from "./rpc.js"
+import { sysRPC } from "./rpc.js"
 
 const canvas = document.createElement('canvas')
 canvas.width = 320
@@ -35,7 +35,7 @@ class Program {
     const absurl = new URL(path, import.meta.url)
 
     this.worker = new Worker(absurl, { type: 'module' })
-    this.rpc = wRPC<Sys, Prog>(this.worker, {
+    this.rpc = sysRPC(this.worker, {
       adjust: (x, y, w, h) => {
         this.x = x
         this.y = y
