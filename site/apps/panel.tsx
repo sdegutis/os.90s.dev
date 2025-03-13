@@ -2,12 +2,6 @@ import { progRPC } from "../shared/rpc.js"
 import { $$ } from "../util/jsx.js"
 import { Listener } from "../util/listener.js"
 
-export const panelView = $$(<view>
-
-</view>).view
-
-panelView.redraw()
-
 class Panel {
 
   private rpc
@@ -31,7 +25,12 @@ class Panel {
     const init = Promise.withResolvers<void>()
     this.ready = init.promise
 
-    this.frame = panelView
+    this.frame = $$(
+      <view>
+      </view>
+    ).view
+
+    this.frame.redraw()
 
     this.rpc = progRPC(self, {
       init: (x, y, w, h) => {
