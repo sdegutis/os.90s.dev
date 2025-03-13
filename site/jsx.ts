@@ -63,7 +63,6 @@ class IntrinsicNode {
       if (val instanceof Ref) {
         const unwatch = val.watch(v => {
           (this.view as any)[key] = v
-          this.view.changed(key, v)
         })
         this.destroying.watch(unwatch)
       }

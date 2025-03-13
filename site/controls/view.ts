@@ -2,10 +2,21 @@ import { Listener } from "../events.js"
 
 export class View {
 
-  x = 0
-  y = 0
-  w = 0
-  h = 0
+  private _x = 0
+  get x() { return this._x }
+  set x(n: number) { this.move(n, this.y) }
+
+  private _y = 0
+  get y() { return this._y }
+  set y(n: number) { this.move(this.x, n) }
+
+  private _w = 0
+  get w() { return this._w }
+  set w(n: number) { this.resize(n, this.h) }
+
+  private _h = 0
+  get h() { return this._h }
+  set h(n: number) { this.resize(this.w, n) }
 
   children: readonly View[] = []
   parent?: View
@@ -34,10 +45,6 @@ export class View {
   redraw() {
     this.ctx.fillStyle = '#' + Math.floor(Math.random() * 5).toString(16).repeat(3)
     this.ctx.fillRect(0, 0, this.w, this.h)
-  }
-
-  changed(key: string, val: any) {
-    console.log('changed', this, key, val)
   }
 
 }
