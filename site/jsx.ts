@@ -70,17 +70,6 @@ class IntrinsicNode {
     }
   }
 
-  detach() {
-    this.destroying.dispatch()
-    this.destroying.clear()
-  }
-
-  private realizeData() {
-    return Object.fromEntries(Object.entries(this.data).map(([k, v]) => {
-      return [k, v instanceof Ref ? v.val : v]
-    }))
-  }
-
   private createView(): View {
     const view = new this.ctor()
 
@@ -97,6 +86,11 @@ class IntrinsicNode {
     view.init?.()
 
     return view
+  }
+
+  detach() {
+    this.destroying.dispatch()
+    this.destroying.clear()
   }
 
 }

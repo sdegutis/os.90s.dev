@@ -20,7 +20,7 @@ export class Panel {
   ready
 
   private frame = new View()
-  content = new View()
+  // content = new View()
 
   constructor() {
     const init = Promise.withResolvers<void>()
