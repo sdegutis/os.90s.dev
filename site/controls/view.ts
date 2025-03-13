@@ -4,19 +4,19 @@ export class View {
 
   private _x = 0
   get x() { return this._x }
-  set x(n: number) { this.move(n, this.y) }
+  set x(n: number) { if (this.x !== n) this.move(this._x = n, this.y) }
 
   private _y = 0
   get y() { return this._y }
-  set y(n: number) { this.move(this.x, n) }
+  set y(n: number) { if (this.y !== n) this.move(this.x, this._y = n) }
 
   private _w = 0
   get w() { return this._w }
-  set w(n: number) { this.resize(n, this.h) }
+  set w(n: number) { if (this.w !== n) this.resize(this._w = n, this.h) }
 
   private _h = 0
   get h() { return this._h }
-  set h(n: number) { this.resize(this.w, n) }
+  set h(n: number) { if (this.h !== n) this.resize(this.w, this._h = n) }
 
   children: readonly View[] = []
   parent?: View
