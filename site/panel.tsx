@@ -1,6 +1,12 @@
 import { Listener } from "./events.js"
-import { panelView } from "./panelview.js"
+import { $$ } from "./jsx.js"
 import { progRPC } from "./rpc.js"
+
+export const panelView = $$(<view>
+
+</view>).view
+
+panelView.redraw()
 
 class Panel {
 

@@ -1,5 +1,7 @@
 export class View {
 
+  background = 0x000000ff
+
   get x() { return this._x } private _x = 0;
   set x(n: number) { if (this.x !== n) this.move(this._x = n, this.y) }
 
@@ -37,8 +39,8 @@ export class View {
   }
 
   redraw() {
-    this.ctx.fillStyle = '#' + Math.floor(Math.random() * 5).toString(16).repeat(3)
-    this.ctx.fillRect(0, 0, this.w, this.h)
+    // this.ctx.fillStyle = '#' + Math.floor(Math.random() * 5).toString(16).repeat(3)
+    // this.ctx.fillRect(0, 0, this.w, this.h)
   }
 
 }
