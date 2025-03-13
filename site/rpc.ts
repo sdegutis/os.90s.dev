@@ -11,25 +11,9 @@ export const Prog = {
   blur(): void { },
 }
 
-
-
-type PayloadReq<T extends EventMap<T>, K extends keyof T> = {
-  type: 'req'
-  id: number
-  name: K
-  data: Parameters<T[K]>
-}
-
-type PayloadRes<T extends EventMap<T>, K extends keyof T> = {
-  type: 'res'
-  id: number
-  data: ReturnType<T[K]>
-}
-
-type Payload<T extends EventMap<T>, K extends keyof T> =
-  | PayloadReq<T, K>
-  | PayloadRes<T, K>
-
+type PayloadReq<T extends EventMap<T>, K extends keyof T> = { type: 'req', id: number, data: Parameters<T[K]>, name: K }
+type PayloadRes<T extends EventMap<T>, K extends keyof T> = { type: 'res', id: number, data: ReturnType<T[K]> }
+type Payload<T extends EventMap<T>, K extends keyof T> = | PayloadReq<T, K> | PayloadRes<T, K>
 type EventMap<T> = { [K in keyof T]: (...args: any) => any }
 
 export function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(out: Out, port: Worker | Window, handlers: In) {
