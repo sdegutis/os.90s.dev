@@ -10,8 +10,8 @@ export interface Sys {
 }
 
 export interface Prog {
-  mouseDown(button: number): void
   mouseMoved(x: number, y: number): void
+  mouseDown(button: number): void
   mouseUp(button: number): void
   keyDown(key: string): void
   keyUp(key: string): void
