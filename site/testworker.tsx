@@ -9,6 +9,8 @@ class View {
   w = 0
   h = 0
 
+  children: readonly View[] = []
+
   canvas = new OffscreenCanvas(0, 0)
 
   resized = new Listener<View>()
@@ -210,6 +212,9 @@ function ViewForSheet(data: { sheet: Ref<SpriteSheet> }) {
   const number = 11
   const palette = 'hi'
   return <view x={$(2)}>
+    <border padding={3}>
+      <label text={'he'} />
+    </border>
     <ColorSelector index={number} palette={palette} />
   </view>
 }
@@ -219,15 +224,20 @@ class IntrinsicNode {
   tag: string
   data: any
   children: (IntrinsicNode | FunctionNode)[]
+  view: View
 
   constructor(tag: string, data: any, children: any[]) {
     this.tag = tag
     this.data = data
     this.children = children
+    this.view = this.render()
   }
 
-  render(): {} {
-    return { tag: this.tag, data: this.data, children: this.children.map(c => c.render()) }
+  private render(): View {
+    const res = { tag: this.tag, data: this.data, children: this.children.map(c => c.view) }
+    const view = new View()
+    view.children = this.children.map(c => c.view)
+    return view
   }
 
 }
@@ -237,17 +247,20 @@ class FunctionNode {
   fn: (data: any) => JSX.Element
   data: any
   children: (IntrinsicNode | FunctionNode)[]
+  view: View
 
   constructor(fn: (data: any) => JSX.Element, data: any, children: any[]) {
     this.fn = fn
     this.data = data
     this.children = children
+    this.view = this.render()
   }
 
-  render(): any {
-    const retval = this.fn({ ...this.data, children: this.children.map(c => c.render()) })
+  private render(): View {
+    // return new View()
+    const retval = this.fn({ ...this.data, children: this.children.map(c => c.view) })
     const node = buildTree(retval)
-    return node.render()
+    return node.view
   }
 
 }
@@ -255,7 +268,7 @@ class FunctionNode {
 console.log(
   buildTree(
     <ViewForSheet sheet={$(new SpriteSheet())} />
-  ).render()
+  ).view
 )
 
 function buildTree({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element): FunctionNode | IntrinsicNode {
