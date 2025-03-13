@@ -83,17 +83,15 @@ const progs = [prog1,
 
 // drawProgs()
 
+const mouse = { x: 0, y: 0 }
+
 canvas.onmousemove = (e) => {
-
-  // e.preventDefault()
-
-
-
-  // console.log(e.offsetX, e.offsetY)
-
-  prog1.mouseMoved(e.offsetX, e.offsetY)
-
-
+  const x = Math.min(320 - 1, e.offsetX)
+  const y = Math.min(180 - 1, e.offsetY)
+  if (x === mouse.x && y === mouse.y) return
+  mouse.x = x
+  mouse.y = y
+  prog1.mouseMoved(mouse.x, mouse.y)
 }
 
 // setInterval(() => {
