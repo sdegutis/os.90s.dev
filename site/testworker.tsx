@@ -218,12 +218,16 @@ class IntrinsicNode {
 
   tag: string
   data: any
-  preChildren: any[]
+  children: (IntrinsicNode | FunctionNode)[]
 
-  constructor(tag: string, data: any, preChildren: any[]) {
+  constructor(tag: string, data: any, children: any[]) {
     this.tag = tag
     this.data = data
-    this.preChildren = preChildren
+    this.children = children
+  }
+
+  render(): {} {
+    return { tag: this.tag, data: this.data, children: this.children.map(c => c.render()) }
   }
 
 }
@@ -232,7 +236,7 @@ class FunctionNode {
 
   fn: (data: any) => JSX.Element
   data: any
-  children: any[]
+  children: (IntrinsicNode | FunctionNode)[]
 
   constructor(fn: (data: any) => JSX.Element, data: any, children: any[]) {
     this.fn = fn
@@ -240,24 +244,29 @@ class FunctionNode {
     this.children = children
   }
 
+  render(): any {
+    const retval = this.fn({ ...this.data, children: this.children.map(c => c.render()) })
+    const node = buildTree(retval)
+    return node.render()
+  }
+
 }
 
 console.log(
   buildTree(
     <ViewForSheet sheet={$(new SpriteSheet())} />
-  )
+  ).render()
 )
 
-function buildTree(jsx: JSX.Element): any {
-  const tag = getTag(jsx)
-  console.log('rendering', jsx)
-
+function buildTree(jsx: JSX.Element): FunctionNode | IntrinsicNode {
   const children = (
     jsx.children === undefined ? [] :
       jsx.children instanceof Array ? jsx.children :
         [jsx.children]
   ).map(buildTree)
+  delete jsx.children
 
+  const tag = getTag(jsx)
   if (typeof tag === 'function') {
     return new FunctionNode(tag, jsx, children.map(buildTree))
   }
