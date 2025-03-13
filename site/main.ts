@@ -88,9 +88,9 @@ let last: Program | undefined
 
 // const url = URL.createObjectURL(new Blob([`import 'https://test.minigamemaker.com/testworker.js'`], { type: 'application/javascript' }))
 const prog1 = new Program('/testworker.js')
-const prog2 = new Program('/testworker.js')
-const prog3 = new Program('/testworker.js')
-const progs = [prog1, prog2, prog3]
+// const prog2 = new Program('/testworker.js')
+// const prog3 = new Program('/testworker.js')
+const progs = [prog1]
 
 redrawAllProgs()
 

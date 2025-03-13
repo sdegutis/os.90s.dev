@@ -6,7 +6,7 @@ export class View {
 
   w = 'hi'
 
-  children?: View[] | View
+  children?: JSX.Element[] | JSX.Element
 
   constructor(config: Partial<View>) {
     // this.x = config.x ?? this.x

@@ -188,26 +188,58 @@ ontick((d) => {
 
 
 class SpriteImage {
-
 }
 
 class Sprite {
-
   w = 8
   h = 8
-
   images: SpriteImage[] = []
   current = 0
-
 }
 
 class SpriteSheet {
-
   sprites: Sprite[] = []
   current = 0
-
 }
 
-function viewForSheet(sheet: SpriteSheet) {
+function ColorSelector(data: { palette: string, index: number }) {
+  return <view y={data.index}></view>
+}
 
+function ViewForSheet(data: { sheet: SpriteSheet }) {
+  const number = 11
+  const palette = 'hi'
+  return <view x={2}>
+    <ColorSelector index={number} palette={palette} />
+  </view>
+}
+
+console.log(
+  JSON.stringify(
+    render(
+      <ViewForSheet sheet={new SpriteSheet()} />
+    )
+    , null, 2)
+)
+
+function render(jsx: JSX.Element): any {
+  const tag = getTag(jsx)
+  console.log('rendering', jsx)
+
+  if (typeof tag === 'function') {
+    const retval = tag(jsx)
+    const newjsx = render(retval)
+    return { ...newjsx, children: newjsx.children?.map?.(render) }
+  }
+  else {
+    let children = jsx.children
+    if (children === undefined) children = []
+    if (!(children instanceof Array)) children = [children]
+
+    return { name: tag, ...jsx, children: children?.map?.(render) }
+  }
+}
+
+function getTag(jsx: JSX.Element) {
+  return jsx[Symbol.for('jsx')]
 }
