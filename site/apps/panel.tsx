@@ -1,4 +1,4 @@
-import { progRPC } from "../core/rpc.js"
+import { progRPC } from "../shared/rpc.js"
 import { $$ } from "../util/jsx.js"
 import { Listener } from "../util/listener.js"
 

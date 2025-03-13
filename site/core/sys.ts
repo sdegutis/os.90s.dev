@@ -1,4 +1,4 @@
-import { sysRPC } from "./rpc.js"
+import { sysRPC } from "../shared/rpc.js"
 
 export function start() {
 
