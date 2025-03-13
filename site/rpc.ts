@@ -4,7 +4,12 @@ export interface Sys {
 }
 
 export interface Prog {
+  mouseDown(button: number): void
   mouseMoved(x: number, y: number): void
+  mouseUp(button: number): void
+  keyDown(key: string): void
+  keyUp(key: string): void
+  wheel(n: number): void
   focus(): void
   blur(): void
 }
