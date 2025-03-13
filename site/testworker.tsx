@@ -1,33 +1,7 @@
+import { View } from "./controls/view.js"
 import { $, Listener, Ref } from "./events.js"
 import { ontick } from "./ontick.js"
 import { progRPC } from "./rpc.js"
-
-class View {
-
-  x = 0
-  y = 0
-  w = 0
-  h = 0
-
-  children: readonly View[] = []
-
-  canvas = new OffscreenCanvas(0, 0)
-
-  resized = new Listener<View>()
-  moved = new Listener<View>()
-
-  resize(w: number, h: number) {
-    this.canvas = new OffscreenCanvas(this.w = w, this.h = h)
-    this.resized.dispatch(this)
-  }
-
-  move(x: number, y: number) {
-    this.x = x
-    this.y = y
-    this.moved.dispatch(this)
-  }
-
-}
 
 class PixelCanvas {
 
@@ -259,29 +233,29 @@ class FunctionNode {
   private render(): View {
     // return new View()
     const retval = this.fn({ ...this.data, children: this.children.map(c => c.view) })
-    const node = buildTree(retval)
+    const node = $$(retval)
     return node.view
   }
 
 }
 
-console.log(
-  buildTree(
-    <ViewForSheet sheet={$(new SpriteSheet())} />
-  ).view
+const tree = $$(
+  <ViewForSheet sheet={$(new SpriteSheet())} />
 )
 
-function buildTree({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element): FunctionNode | IntrinsicNode {
+console.log(tree.view)
+
+function $$({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element): FunctionNode | IntrinsicNode {
   children = (
     children === undefined ? [] :
       children instanceof Array ? children :
         [children]
-  ).map(buildTree)
+  ).map($$)
 
   if (typeof tag === 'function') {
-    return new FunctionNode(tag, jsx, children.map(buildTree))
+    return new FunctionNode(tag, jsx, children.map($$))
   }
   else {
-    return new IntrinsicNode(tag, jsx, children.map(buildTree))
+    return new IntrinsicNode(tag, jsx, children.map($$))
   }
 }
