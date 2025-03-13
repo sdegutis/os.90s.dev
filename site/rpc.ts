@@ -10,6 +10,7 @@ export interface Sys {
 }
 
 export interface Prog {
+  init(x: number, y: number, w: number, h: number): void
   mouseMoved(x: number, y: number): void
   mouseDown(button: number): void
   mouseUp(button: number): void

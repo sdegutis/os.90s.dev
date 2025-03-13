@@ -1,31 +1,33 @@
 import { Listener } from "./os/util/events.js"
 import { wRPC, type Prog, type Sys } from "./rpc.js"
 
-let x = Math.ceil(Math.random() * 10)
-let y = Math.ceil(Math.random() * 20)
-let w = 320
-let h = 180
+class View {
 
-const c = new OffscreenCanvas(w, h)
-const ctx = c.getContext('2d')!
+  x = 0
+  y = 0
+  w = 0
+  h = 0
 
-const pixels = new Uint8ClampedArray(w * h * 4)
-const imgdata = new ImageData(pixels, w, h)
+  canvas = new OffscreenCanvas(0, 0)
 
-pixels.fill(Math.random() * 255)
-
-for (let y = 0; y < h; y++) {
-  for (let x = 0; x < w; x++) {
-    const i = y * w * 4 + x * 4
-    pixels[i + 3] = 128
+  resize(w: number, h: number) {
+    this.canvas = new OffscreenCanvas(this.w = w, this.h = h)
   }
+
+  move(x: number, y: number) {
+    this.x = x
+    this.y = y
+  }
+
 }
 
-class System {
+class Panel {
 
   rpc
   keys: Record<string, boolean> = Object.create(null)
   focused = false
+
+  view = new View()
 
   mouseMoved = new Listener<{ x: number, y: number }>()
   mouseDown = new Listener<number>()
@@ -36,8 +38,18 @@ class System {
   focus = new Listener<void>()
   blur = new Listener<void>()
 
+  ready
+
   constructor() {
+    const init = Promise.withResolvers<void>()
+    this.ready = init.promise
+
     this.rpc = wRPC<Prog, Sys>(self, {
+      init: (x, y, w, h) => {
+        this.view.move(x, y)
+        this.view.resize(w, h)
+        init.resolve()
+      },
       mouseMoved: (x, y) => {
         this.mouseMoved.dispatch({ x, y })
       },
@@ -69,48 +81,74 @@ class System {
         this.blur.dispatch()
       },
       ping: (n: number) => {
-        rpc('pong', [n])
+        this.rpc('pong', [n])
       },
     })
   }
 
-}
-
-const sys = new System()
-const rpc = sys.rpc
-
-rpc('adjust', [x - 320 / 2, y - 180 / 2, w, h])
-
-// rpc('')
-
-rpc('adjust', [x, y, w, h])
-
-ctx.putImageData(imgdata, 0, 0)
-const bmp = c.transferToImageBitmap()
-rpc('blit', [bmp], [bmp])
-
-ontick((d) => {
-  // for (let n = 0; n < 10; n++)
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      let i = y * w * 4 + x * 4
-      pixels[i + 0] = Math.random() * 255
-      pixels[i + 1] = Math.random() * 255
-      pixels[i + 2] = Math.random() * 255
-      // pixels[i + 3] = 255
-    }
+  blit() {
+    const bmp = panel.view.canvas.transferToImageBitmap()
+    this.rpc('blit', [bmp], [bmp])
   }
 
-  ctx.putImageData(imgdata, 0, 0)
-  const bmp = c.transferToImageBitmap()
-  rpc('blit', [bmp], [bmp])
+  resize(w: number, h: number) {
+    this.view.resize(w, h)
+    this.rpc('adjust', [this.view.x, this.view.y, this.view.w, this.view.h])
+  }
+
+  move(x: number, y: number) {
+    this.view.move(x, y)
+    this.rpc('adjust', [this.view.x, this.view.y, this.view.w, this.view.h])
+  }
+
+}
+
+const panel = new Panel()
+
+await panel.ready
+
+panel.mouseMoved.watch(mouse => {
+  panel.move(mouse.x - panel.view.w / 2, mouse.y - panel.view.h / 2)
+})
+
+const ctx = panel.view.canvas.getContext('2d')!
+const pixels = new Uint8ClampedArray(panel.view.w * panel.view.h * 4)
+const imgdata = new ImageData(pixels, panel.view.w, panel.view.h)
+
+// for (let y = 0; y < h; y++) {
+//   for (let x = 0; x < w; x++) {
+//     const i = y * w * 4 + x * 4
+//     pixels[i + 3] = 128
+//   }
+// }
+
+pixels.fill(Math.random() * 255)
+
+ctx.putImageData(imgdata, 0, 0)
+panel.blit()
+
+
+ontick((d) => {
+  // // for (let n = 0; n < 10; n++)
+  // for (let y = 0; y < h; y++) {
+  //   for (let x = 0; x < w; x++) {
+  //     let i = y * w * 4 + x * 4
+  //     pixels[i + 0] = Math.random() * 255
+  //     pixels[i + 1] = Math.random() * 255
+  //     pixels[i + 2] = Math.random() * 255
+  //     // pixels[i + 3] = 255
+  //   }
+  // }
+
+  // ctx.putImageData(imgdata, 0, 0)
+  // panel.blit()
 })
 
 function ontick(fn: (d: number) => void) {
-  // (function tick(d: number) {
-  //   fn(d)
-  //   requestAnimationFrame(tick)
-  // })(performance.now())
+  (function tick(d: number) {
+    fn(d)
+    requestAnimationFrame(tick)
+  })(performance.now())
 }
 
 console.log(

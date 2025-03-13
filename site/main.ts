@@ -27,8 +27,8 @@ class Program {
 
   x = 0
   y = 0
-  w = 0
-  h = 0
+  w = 100
+  h = 100
   image?: ImageBitmap
 
   constructor(path: string) {
@@ -56,6 +56,8 @@ class Program {
       restore: function (): void { },
       pong: function (n: number): void { },
     })
+
+    this.rpc('init', [this.x, this.y, this.w, this.h])
   }
 
   mouseMoved(x: number, y: number) {
