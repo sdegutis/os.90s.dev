@@ -1,20 +1,22 @@
 
 export class View {
 
-  x: number
-  y?: number
+  x = 0
+  y = 0
 
-  children?: string
+  w = 'hi'
 
-  constructor(config: View) {
-    this.x = config.x
-    this.children = ''
+  children?: View[] | View
+
+  constructor(config: Partial<View>) {
+    // this.x = config.x ?? this.x
+    // this.children = ''
   }
 
 }
 
 export const controls = {
 
-  view: View
+  View
 
 }
