@@ -5,6 +5,7 @@ export interface Sys {
 }
 
 export interface Prog {
+  mouseMoved(x: number, y: number): void
   open(filepath: string): boolean
   focus(): void
   blur(): void

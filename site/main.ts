@@ -46,6 +46,7 @@ class Program {
         this.y = y
         this.w = w
         this.h = h
+        redrawAllProgs()
       },
 
       blit: (pixels) => {
@@ -54,6 +55,10 @@ class Program {
       },
 
     })
+  }
+
+  mouseMoved(x: number, y: number) {
+    this.rpc.send('mouseMoved', x, y)
   }
 
   terminate() {
@@ -70,19 +75,28 @@ function redrawAllProgs() {
 }
 
 const prog1 = new Program('/testworker.js')
-const prog2 = new Program('/testworker.js')
-const prog3 = new Program('/testworker.js')
-const progs = [prog1, prog2, prog3]
+// const prog2 = new Program('/testworker.js')
+// const prog3 = new Program('/testworker.js')
+const progs = [prog1,
+  // prog2, prog3
+]
 
 // drawProgs()
 
 canvas.onmousemove = (e) => {
 
-  e.preventDefault()
+  // e.preventDefault()
+
+
+
+  // console.log(e.offsetX, e.offsetY)
+
+  prog1.mouseMoved(e.offsetX, e.offsetY)
+
 
 }
 
-setInterval(() => {
-  progs.pop()?.terminate()
-  redrawAllProgs()
-}, 1000)
+// setInterval(() => {
+//   progs.pop()?.terminate()
+//   redrawAllProgs()
+// }, 1000)
