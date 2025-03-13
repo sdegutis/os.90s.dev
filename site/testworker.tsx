@@ -185,7 +185,7 @@ function ontick(fn: (d: number) => void, fps = 30) {
   let last = performance.now();
   (function tick(now: number) {
     const delta = now - last
-    if (delta >= 1000 / fps) {
+    if (delta + 1 >= 1000 / fps) {
       last = now
       fn(delta)
     }
