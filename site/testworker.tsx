@@ -34,11 +34,11 @@ const rpc = wRPC<typeof Prog, typeof Sys>(Sys, self, {
 rpc.adjust(x, y, w, h)
 
 ctx.putImageData(imgdata, 0, 0)
-
 const bmp = c.transferToImageBitmap()
 rpc.blit(bmp, [bmp])
 
 ontick((d) => {
+  // for (let n = 0; n < 10; n++)
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       let i = y * w * 4 + x * 4
@@ -48,15 +48,17 @@ ontick((d) => {
       // pixels[i + 3] = 255
     }
   }
-  // rpc.blit(pixels)
-  // console.log('hey')
+
+  ctx.putImageData(imgdata, 0, 0)
+  const bmp = c.transferToImageBitmap()
+  rpc.blit(bmp, [bmp])
 })
 
 function ontick(fn: (d: number) => void) {
-  // (function tick(d: number) {
-  //   fn(d)
-  //   requestAnimationFrame(tick)
-  // })(performance.now())
+  (function tick(d: number) {
+    fn(d)
+    requestAnimationFrame(tick)
+  })(performance.now())
 }
 
 console.log((<view x={3}>
