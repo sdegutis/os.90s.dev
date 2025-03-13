@@ -35,7 +35,7 @@ class Program {
     const absurl = new URL(path, import.meta.url)
 
     this.worker = new Worker(absurl, { type: 'module' })
-    this.rpc = new wRPC<typeof Sys, typeof Prog>(Sys, Prog, this.worker, {
+    this.rpc = wRPC<typeof Sys, typeof Prog>(Prog, this.worker, {
 
       newpanel: (w, h) => {
         return Math.random()
@@ -58,7 +58,7 @@ class Program {
   }
 
   mouseMoved(x: number, y: number) {
-    this.rpc.send('mouseMoved', x, y)
+    this.rpc.mouseMoved(x, y)
   }
 
   terminate() {

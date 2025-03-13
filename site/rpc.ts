@@ -32,41 +32,34 @@ type Payload<T extends EventMap<T>, K extends keyof T> =
 
 type EventMap<T> = { [K in keyof T]: (...args: any) => any }
 
-export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
+export function wRPC<
+  In extends EventMap<In>, Out extends EventMap<Out>
+>(out: Out, port: Worker | Window, handlers: In) {
+  const promises = new Map<number, (data: any) => any>()
+  let lastid = 0
 
-  private port: Worker | Window
-  private promises = new Map<number, (data: any) => any>()
-  private lastid = 0
-
-  inn: In
-  out: Out
-
-  constructor(inn: In, out: Out, port: Worker | Window, handlers: In) {
-    this.inn = inn
-    this.out = out
-    this.port = port
-    this.port.onmessage = (msg) => {
-      const pkg = msg.data as Payload<In, any>
-      if (pkg.type === 'req') {
-        const { id, name } = pkg
-        const data = handlers[name as keyof typeof handlers](...pkg.data)
-        if (id !== -1) this.port.postMessage({ data, id, type: 'res' } as PayloadRes<any, any>)
-      }
-      else {
-        const res = this.promises.get(pkg.id)
-        this.promises.delete(pkg.id)
-        res?.(pkg.data)
-      }
+  port.onmessage = (msg) => {
+    const pkg = msg.data as Payload<In, any>
+    if (pkg.type === 'req') {
+      const { id, name } = pkg
+      const data = handlers[name as keyof typeof handlers](...pkg.data)
+      if (id !== -1) port.postMessage({ data, id, type: 'res' } as PayloadRes<any, any>)
+    }
+    else {
+      const res = promises.get(pkg.id)
+      promises.delete(pkg.id)
+      res?.(pkg.data)
     }
   }
 
-  send<K extends keyof Out>(name: K, ...data: Parameters<Out[K]>): Promise<ReturnType<Out[K]>> {
-    const returns = this.out[name]()
-    let id = -1
-    const p = Promise.withResolvers<ReturnType<Out[K]>>()
-    if (returns) this.promises.set(id = this.lastid++, p.resolve)
-    this.port.postMessage({ id, name, data, type: 'req' } as PayloadReq<Out, K>)
-    return p.promise
-  }
-
+  return Object.fromEntries(Object.entries<() => any>(out).map(([name, fn]) => {
+    const returns = fn()
+    return [name, <K extends keyof Out>(...data: Parameters<Out[K]>): Promise<ReturnType<Out[K]>> => {
+      let id = -1
+      const p = Promise.withResolvers<ReturnType<Out[K]>>()
+      if (returns) promises.set(id = lastid++, p.resolve)
+      port.postMessage({ id, name, data, type: 'req' } as PayloadReq<Out, any>)
+      return p.promise
+    }]
+  })) as { [K in keyof Out]: (...args: Parameters<Out[K]>) => Promise<ReturnType<Out[K]>> }
 }

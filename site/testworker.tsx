@@ -17,27 +17,22 @@ for (let y = 0; y < h; y++) {
 }
 
 
-const rpc = new wRPC<typeof Prog, typeof Sys>(Prog, Sys, self, {
+const rpc = wRPC<typeof Prog, typeof Sys>(Sys, self, {
   blur: () => { },
   focus: () => { },
   open: (filepath) => { return true },
   mouseMoved: (x, y) => {
     // console.log(x, y)
-    rpc.send('adjust', x, y, w, h)
+    rpc.adjust(x, y, w, h)
   },
 })
 
-// rpc.proxy.adjust()
 
-// rpc.out.adjust()
-
-const p = await rpc.send('newpanel', 100, 100)
+const p = await rpc.newpanel(100, 100)
 console.log(p)
 
-// await rpc.send('')
-
-rpc.send('adjust', x, y, w, h)
-rpc.send('blit', pixels)
+rpc.adjust(x, y, w, h)
+rpc.blit(pixels)
 
 ontick((d) => {
   for (let y = 0; y < h; y++) {
@@ -49,7 +44,7 @@ ontick((d) => {
       // pixels[i + 3] = 255
     }
   }
-  rpc.send('blit', pixels)
+  rpc.blit(pixels)
   // console.log('hey')
 })
 
