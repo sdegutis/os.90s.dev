@@ -1,5 +1,5 @@
+import { Listener } from "./events.js"
 import { ontick } from "./ontick.js"
-import { Listener } from "./os/util/events.js"
 import { progRPC } from "./rpc.js"
 
 class View {
