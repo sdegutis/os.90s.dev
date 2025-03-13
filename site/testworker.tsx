@@ -27,7 +27,7 @@ class Panel extends View {
   keys: Record<string, boolean> = Object.create(null)
   focused = false
 
-  mouseMoved = new Listener<{ x: number, y: number }>()
+  mouseMoved = new Listener<[number, number]>()
   mouseDown = new Listener<number>()
   mouseUp = new Listener<number>()
   keyDown = new Listener<string>()
@@ -50,7 +50,7 @@ class Panel extends View {
         init.resolve()
       },
       mouseMoved: (x, y) => {
-        this.mouseMoved.dispatch({ x, y })
+        this.mouseMoved.dispatch([x, y])
       },
       mouseDown: (button: number) => {
         if (!this.focused) return
@@ -103,12 +103,14 @@ class Panel extends View {
 }
 
 const panel = new Panel()
-
 await panel.ready
 
-panel.mouseMoved.watch(mouse => {
-  panel.move(mouse.x - panel.w / 2, mouse.y - panel.h / 2)
-})
+// panel.mouseMoved.watch(([x, y]) => {
+//   const a = new Int8Array(1)
+//   crypto.getRandomValues(a)
+//   if (a[0] < 100) return
+//   panel.move(x - panel.w / 2, y - panel.h / 2)
+// })
 
 const ctx = panel.canvas.getContext('2d')!
 const pixels = new Uint8ClampedArray(panel.w * panel.h * 4)
