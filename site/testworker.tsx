@@ -21,13 +21,11 @@ class View {
 
 }
 
-class Panel {
+class Panel extends View {
 
   rpc
   keys: Record<string, boolean> = Object.create(null)
   focused = false
-
-  view = new View()
 
   mouseMoved = new Listener<{ x: number, y: number }>()
   mouseDown = new Listener<number>()
@@ -41,13 +39,14 @@ class Panel {
   ready
 
   constructor() {
+    super()
     const init = Promise.withResolvers<void>()
     this.ready = init.promise
 
     this.rpc = wRPC<Prog, Sys>(self, {
       init: (x, y, w, h) => {
-        this.view.move(x, y)
-        this.view.resize(w, h)
+        this.move(x, y)
+        this.resize(w, h)
         init.resolve()
       },
       mouseMoved: (x, y) => {
@@ -87,18 +86,18 @@ class Panel {
   }
 
   blit() {
-    const bmp = panel.view.canvas.transferToImageBitmap()
+    const bmp = this.canvas.transferToImageBitmap()
     this.rpc('blit', [bmp], [bmp])
   }
 
-  resize(w: number, h: number) {
-    this.view.resize(w, h)
-    this.rpc('adjust', [this.view.x, this.view.y, this.view.w, this.view.h])
+  override resize(w: number, h: number) {
+    super.resize(w, h)
+    this.rpc('adjust', [this.x, this.y, this.w, this.h])
   }
 
-  move(x: number, y: number) {
-    this.view.move(x, y)
-    this.rpc('adjust', [this.view.x, this.view.y, this.view.w, this.view.h])
+  override move(x: number, y: number) {
+    super.move(x, y)
+    this.rpc('adjust', [this.x, this.y, this.w, this.h])
   }
 
 }
@@ -108,12 +107,12 @@ const panel = new Panel()
 await panel.ready
 
 panel.mouseMoved.watch(mouse => {
-  panel.move(mouse.x - panel.view.w / 2, mouse.y - panel.view.h / 2)
+  panel.move(mouse.x - panel.w / 2, mouse.y - panel.h / 2)
 })
 
-const ctx = panel.view.canvas.getContext('2d')!
-const pixels = new Uint8ClampedArray(panel.view.w * panel.view.h * 4)
-const imgdata = new ImageData(pixels, panel.view.w, panel.view.h)
+const ctx = panel.canvas.getContext('2d')!
+const pixels = new Uint8ClampedArray(panel.w * panel.h * 4)
+const imgdata = new ImageData(pixels, panel.w, panel.h)
 
 // for (let y = 0; y < h; y++) {
 //   for (let x = 0; x < w; x++) {
