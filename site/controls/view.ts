@@ -10,11 +10,11 @@ export class View {
   children: readonly View[] = []
   parent?: View
 
-  canvas = new OffscreenCanvas(0, 0)
-  ctx = this.canvas.getContext('2d')!
+  readonly canvas = new OffscreenCanvas(0, 0)
+  readonly ctx = this.canvas.getContext('2d')!
 
-  resized = new Listener<View>()
-  moved = new Listener<View>()
+  readonly resized = new Listener<View>()
+  readonly moved = new Listener<View>()
 
   init?(): void
 
