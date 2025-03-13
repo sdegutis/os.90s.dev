@@ -161,8 +161,7 @@ pix.blit()
 panel.blit()
 
 
-const done = ontick((d) => {
-  console.log(d)
+ontick((d) => {
   // // for (let n = 0; n < 10; n++)
   // for (let y = 0; y < h; y++) {
   //   for (let x = 0; x < w; x++) {
@@ -176,9 +175,7 @@ const done = ontick((d) => {
 
   // ctx.putImageData(imgdata, 0, 0)
   // panel.blit()
-})
-
-setTimeout(done, 1000)
+})()
 
 function ontick(fn: (d: number) => void, fps = 30) {
   let done: number
