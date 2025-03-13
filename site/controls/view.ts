@@ -1,5 +1,3 @@
-import { Listener } from "../events.js"
-
 export class View {
 
   get x() { return this._x } private _x = 0;
@@ -20,8 +18,8 @@ export class View {
   readonly canvas = new OffscreenCanvas(0, 0)
   readonly ctx = this.canvas.getContext('2d')!
 
-  readonly resized = new Listener<View>()
-  readonly moved = new Listener<View>()
+  // readonly resized = new Listener<View>()
+  // readonly moved = new Listener<View>()
 
   init?(): void
 
@@ -29,13 +27,13 @@ export class View {
     this.canvas.width = this.w = w
     this.canvas.height = this.h = h
     this.redraw()
-    this.resized.dispatch(this)
+    // this.resized.dispatch(this)
   }
 
   move(x: number, y: number) {
     this.x = x
     this.y = y
-    this.moved.dispatch(this)
+    // this.moved.dispatch(this)
   }
 
   redraw() {
