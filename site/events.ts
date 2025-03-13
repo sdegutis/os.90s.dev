@@ -22,3 +22,12 @@ export class Listener<T = void, U = void> {
   }
 
 }
+
+export class Reactive<T> {
+
+  data: T
+  constructor(data: T) {
+    this.data = data
+  }
+
+}

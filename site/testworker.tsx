@@ -1,4 +1,4 @@
-import { Listener } from "./events.js"
+import { Listener, Reactive } from "./events.js"
 import { ontick } from "./ontick.js"
 import { progRPC } from "./rpc.js"
 
@@ -209,7 +209,7 @@ function ColorSelector(data: { palette: string, index: number }) {
 function ViewForSheet(data: { sheet: SpriteSheet }) {
   const number = 11
   const palette = 'hi'
-  return <view x={2}>
+  return <view x={new Reactive(2)}>
     <ColorSelector index={number} palette={palette} />
   </view>
 }
