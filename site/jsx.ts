@@ -1,3 +1,4 @@
+import { controls } from './controls.js'
 import { View } from './controls/view.js'
 
 declare global {
@@ -10,7 +11,7 @@ declare global {
 
   namespace JSX {
 
-    type IntrinsicElements = { [K in keyof Controls as Lowercase<K>]: JsxAttrs<InstanceType<Controls[K]>> }
+    type IntrinsicElements = { [K in keyof Controls as K]: JsxAttrs<InstanceType<Controls[K]>> }
     type ElementChildrenAttribute = { children: any }
 
     type ElementType =
@@ -34,30 +35,32 @@ export function $$({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element):
   ).map($$)
 
   if (typeof tag === 'function') {
-    return new FunctionNode(tag, jsx, children.map($$))
+    return new FunctionNode(tag, jsx, children)
   }
   else {
-    return new IntrinsicNode(tag, jsx, children.map($$))
+    const ctor = controls[tag.toLowerCase() as keyof typeof controls]
+    return new IntrinsicNode(ctor, jsx, children)
   }
 }
 
 class IntrinsicNode {
 
-  tag: string
+  ctor: typeof View
   data: any
   children: (IntrinsicNode | FunctionNode)[]
   view: View
 
-  constructor(tag: string, data: any, children: any[]) {
-    this.tag = tag
+  constructor(ctor: typeof View, data: any, children: any[]) {
+    this.ctor = ctor
     this.data = data
     this.children = children
     this.view = this.render()
   }
 
   private render(): View {
-    const res = { tag: this.tag, data: this.data, children: this.children.map(c => c.view) }
-    const view = new View()
+    const view = new this.ctor()
+    console.log(this.data)
+    Object.assign(view, this.data)
     view.children = this.children.map(c => c.view)
     return view
   }

@@ -29,7 +29,7 @@ function ViewForSheet(data: { sheet: Ref<SpriteSheet> }) {
   const palette = 'hi'
   return <view x={$(2)}>
     <border padding={3}>
-      <label text={'he'} />
+      <label text={'he'} y={33} />
     </border>
     <ColorSelector index={number} palette={palette} />
   </view>
@@ -38,3 +38,5 @@ function ViewForSheet(data: { sheet: Ref<SpriteSheet> }) {
 const tree = $$(
   <ViewForSheet sheet={$(new SpriteSheet())} />
 )
+
+console.log(tree.view)

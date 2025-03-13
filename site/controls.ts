@@ -3,7 +3,7 @@ import { Label } from "./controls/label.js"
 import { View } from "./controls/view.js"
 
 export const controls = {
-  View,
-  Border,
-  Label,
+  view: View,
+  border: Border,
+  label: Label,
 }
