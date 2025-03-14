@@ -1,10 +1,9 @@
 import { progRPC } from "../shared/rpc.js"
 
-await new Promise(res => setTimeout(res, 1))
-
-console.log('oops')
 
 const rpc = progRPC(self)
+
+rpc.send('init', [])
 const [id] = await rpc.once('init')
 
 console.log('got ', id)
@@ -12,8 +11,7 @@ console.log('got ', id)
 if (id === 1) {
 
   rpc.send('newpanel', [])
-  await new Promise(res => setTimeout(res, 1))
-  const [id, x, y, w, h] = await rpc.once('panel')
+  const [id, x, y, w, h] = await rpc.once('newpanel')
   console.log(id, x, y, w, h)
 
 }

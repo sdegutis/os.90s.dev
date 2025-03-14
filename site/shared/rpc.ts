@@ -1,6 +1,7 @@
 import { Listener } from "./listener.js"
 
-interface Sys {
+interface ToSys {
+  init(): void
   newpanel(): void
 
   // adjust(x: number, y: number, w: number, h: number): void
@@ -12,11 +13,11 @@ interface Sys {
   // restore(): void
 }
 
-interface Prog {
+interface ToProg {
 
   init(id: number): void
 
-  panel(id: number, x: number, y: number, w: number, h: number): void
+  newpanel(id: number, x: number, y: number, w: number, h: number): void
 
   // mouseMoved(x: number, y: number): void
   // mouseDown(button: number): void
@@ -54,16 +55,16 @@ function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker |
   }
 
   function once<K extends keyof In>(name: K) {
-    const p = Promise.withResolvers<Parameters<In[K]>>()
-    const done = listen(name, (...args: Parameters<In[K]>) => {
-      p.resolve(args)
-      done()
+    return new Promise<Parameters<In[K]>>(resolve => {
+      const done = listen(name, (...args: Parameters<In[K]>) => {
+        done()
+        resolve(args)
+      })
     })
-    return p.promise
   }
 
   return { send, listen, once }
 }
 
-export const progRPC = (wRPC<Prog, Sys>)
-export const sysRPC = (wRPC<Sys, Prog>)
+export const progRPC = (wRPC<ToProg, ToSys>)
+export const sysRPC = (wRPC<ToSys, ToProg>)
