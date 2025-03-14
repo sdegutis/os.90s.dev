@@ -61,6 +61,7 @@ export class Panel {
   move(x: number, y: number) {
     this.x = x
     this.y = y
+    this.fixMouse()
     this.rpc.send('adjust', [this.id, this.x, this.y, this.w, this.h])
   }
 
@@ -100,9 +101,7 @@ export class Panel {
   onMouseMoved(x: number, y: number) {
     this.absmouse.x = x
     this.absmouse.y = y
-
-    this.mouse.x = x - this.x
-    this.mouse.y = y - this.y
+    this.fixMouse()
     this.down?.()
   }
 
@@ -116,6 +115,11 @@ export class Panel {
 
   onBlur() {
 
+  }
+
+  private fixMouse() {
+    this.mouse.x = this.absmouse.x - this.x
+    this.mouse.y = this.absmouse.y - this.y
   }
 
 }
