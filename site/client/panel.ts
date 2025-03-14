@@ -1,6 +1,6 @@
-import { type progRPC } from "../shared/rpc.js"
+import { wRPC, type ToProg, type ToSys } from "../shared/rpc.js"
 
-type Rpc = ReturnType<typeof progRPC>
+type Rpc = ReturnType<typeof wRPC<ToProg, ToSys>>
 
 type MousePos = { x: number, y: number }
 

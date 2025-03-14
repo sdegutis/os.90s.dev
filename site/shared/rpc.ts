@@ -2,14 +2,14 @@ import { Listener } from "./listener.js"
 
 export type PanelPos = 'normal' | 'bottom' | 'top'
 
-interface ToSys {
+export interface ToSys {
   init(): void
   newpanel(pos: PanelPos): void
   adjpanel(id: number, x: number, y: number, w: number, h: number): void
   blitpanel(id: number, img: ImageBitmap): void
 }
 
-interface ToProg {
+export interface ToProg {
   init(id: number): void
   newpanel(id: number, x: number, y: number, w: number, h: number): void
   focus(id: number): void
@@ -27,7 +27,7 @@ interface ToProg {
 
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }
 
-function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker | Window) {
+export function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker | Window) {
   const listeners = new Map<keyof In, Listener<Parameters<In[keyof In]>>>()
 
   port.onmessage = (msg) => {
@@ -61,6 +61,3 @@ function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker |
 
   return { send, listen, once }
 }
-
-export const progRPC = (wRPC<ToProg, ToSys>)
-export const sysRPC = (wRPC<ToSys, ToProg>)
