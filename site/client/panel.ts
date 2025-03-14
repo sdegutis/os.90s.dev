@@ -40,7 +40,14 @@ export class Panel {
   blit() {
     const canvas = new OffscreenCanvas(this.w, this.h)
     const ctx = canvas.getContext('2d')!
-    ctx.fillStyle = this.id === 2 ? '#900' : this.id === 3 ? '#090' : this.id === 4 ? '#009' : '#333'
+
+    ctx.fillStyle = ({
+      '/apps/desktop.js': '#333',
+      '/apps/prog1.js': '#900',
+      '/apps/prog2.js': '#090',
+      '/apps/prog3.js': '#009',
+    })[location.pathname]!
+
     ctx.fillRect(0, 0, this.w, this.h)
     const bmp = canvas.transferToImageBitmap()
     this.rpc.send('blitpanel', [this.id, bmp], [bmp])
