@@ -1,4 +1,4 @@
-import { Program } from "../client/prog.js"
+import { Program } from "../client/core/prog.js"
 
 const prog = new Program()
 await prog.init()

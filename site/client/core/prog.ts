@@ -1,5 +1,5 @@
-import { Panel } from "../client/panel.js"
-import { wRPC, type ClientProgram, type PanelPos, type ServerProgram } from "../shared/rpc.js"
+import { wRPC, type ClientProgram, type PanelPos, type ServerProgram } from "../../shared/rpc.js"
+import { Panel } from "./panel.js"
 
 export class Program {
 

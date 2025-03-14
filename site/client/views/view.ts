@@ -1,4 +1,4 @@
-import { Rect } from "../rect.js"
+import { Rect } from "../util/rect.js"
 
 export class View extends Rect {
 

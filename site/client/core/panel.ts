@@ -1,6 +1,6 @@
-import { Listener } from "../shared/listener.js"
-import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../shared/rpc.js"
-import { Rect } from "./rect.js"
+import { Listener } from "../../shared/listener.js"
+import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
+import { Rect } from "../util/rect.js"
 
 type MousePos = { x: number, y: number }
 
