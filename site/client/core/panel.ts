@@ -54,6 +54,11 @@ export class Panel extends Rect {
     })
 
     this.rpc.listen('mousedown', (b) => {
+      if (b > 0) {
+        this.close()
+        return
+      }
+
       this.down = dragMove(this.absmouse, this)
     })
 

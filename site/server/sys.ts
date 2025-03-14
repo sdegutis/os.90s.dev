@@ -28,6 +28,10 @@ export class Sys {
     this.width = w
     this.height = h
 
+    canvas.oncontextmenu = (e) => {
+      e.preventDefault()
+    }
+
     canvas.onkeydown = (e) => {
       this.keymap[e.key] = true
       this.focused?.rpc.send('keydown', [e.key])

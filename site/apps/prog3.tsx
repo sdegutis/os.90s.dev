@@ -13,6 +13,36 @@ const panel = await prog.makePanel({
   view: view,
 })
 
+
+// ontick((d) => {
+
+//   for (let i = 0; i < 15000; i++) {
+//     const x = Math.floor(200 * Math.random())
+//     const y = Math.floor(150 * Math.random())
+
+//     const w = Math.floor(200 / 2 * Math.random()) + 200 / 2
+//     const h = Math.floor(150 / 2 * Math.random()) + 150 / 2
+//     const ctx = view.ctx
+
+//     const c = 0xffffffff * Math.random()
+
+//     const r = (c >> 24 & 0xff).toString(16).padStart(2, '0')
+//     const g = (c >> 16 & 0xff).toString(16).padStart(2, '0')
+//     const b = (c >> 8 & 0xff).toString(16).padStart(2, '0')
+//     const a = (c & 0xff).toString(16).padStart(2, '0')
+//     ctx.fillStyle = `#${r}${g}${b}${a}`
+//     ctx.fillRect(x, y, w, h)
+
+
+//     // view.ctx.drawImage(c.canvas, x, y)
+//   }
+
+//   console.log(d)
+
+//   panel.blit()
+
+// })
+
 // const cs = Array(2000).keys().map(i => {
 //   const w = Math.floor(200 / 2 * Math.random()) + 200 / 2
 //   const h = Math.floor(150 / 2 * Math.random()) + 150 / 2
