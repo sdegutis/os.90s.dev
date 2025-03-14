@@ -1,4 +1,4 @@
-import { wRPC, type ToProg, type ToSys } from '../shared/rpc.js'
+import { wRPC, type ClientProg, type ServerSys } from '../shared/rpc.js'
 import { Panel } from './panel.js'
 import type { Sys } from './sys.js'
 
@@ -19,7 +19,7 @@ export class Process {
     const absurl = new URL(path, import.meta.url)
     const worker = new Worker(absurl, { type: 'module' })
 
-    this.rpc = wRPC<ToSys, ToProg>(worker)
+    this.rpc = wRPC<ServerSys, ClientProg>(worker)
 
     this.rpc.once('init').then(() => {
       this.rpc.send('init', [this.id])

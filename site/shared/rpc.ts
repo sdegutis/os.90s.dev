@@ -2,12 +2,12 @@ import { Listener } from "./listener.js"
 
 export type PanelPos = 'normal' | 'bottom' | 'top'
 
-export interface ToSys {
+export interface ServerSys {
   init(): void
   newpanel(pos: PanelPos): void
 }
 
-export interface ToProg {
+export interface ClientProg {
   init(id: number): void
   newpanel(id: number, x: number, y: number, w: number, h: number, port: MessagePort): void
   // keyDown(key: string): void
@@ -15,12 +15,12 @@ export interface ToProg {
   // wheel(n: number): void
 }
 
-export interface ToPanel {
+export interface ServerPanel {
   adjust(id: number, x: number, y: number, w: number, h: number): void
   blit(id: number, img: ImageBitmap): void
 }
 
-export interface FromPanel {
+export interface ClientPanel {
   focus(): void
   blur(): void
   mouseentered(): void

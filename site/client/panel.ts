@@ -1,4 +1,4 @@
-import { wRPC, type FromPanel, type ToPanel } from "../shared/rpc.js"
+import { wRPC, type ClientPanel, type ServerPanel } from "../shared/rpc.js"
 import { Rect } from "./rect.js"
 
 type MousePos = { x: number, y: number }
@@ -26,7 +26,7 @@ export class Panel extends Rect {
     this._w = w
     this._h = h
 
-    this.rpc = wRPC<FromPanel, ToPanel>(port)
+    this.rpc = wRPC<ClientPanel, ServerPanel>(port)
     this.rpc.listen('mousemoved', (x, y) => this.onMouseMoved(x, y))
     this.rpc.listen('focus', () => this.onFocus())
     this.rpc.listen('mouseentered', () => this.onMouseEntered())

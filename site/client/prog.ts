@@ -1,9 +1,9 @@
 import { Panel } from "../client/panel.js"
-import { wRPC, type PanelPos, type ToProg, type ToSys } from "../shared/rpc.js"
+import { wRPC, type ClientProg, type PanelPos, type ServerSys } from "../shared/rpc.js"
 
 class Program {
 
-  rpc = wRPC<ToProg, ToSys>(self)
+  rpc = wRPC<ClientProg, ServerSys>(self)
   pid = 0
 
   async init() {

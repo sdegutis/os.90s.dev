@@ -1,5 +1,5 @@
 import { Listener } from "../shared/listener.js"
-import { wRPC, type FromPanel, type PanelPos, type ToPanel } from "../shared/rpc.js"
+import { wRPC, type ClientPanel, type PanelPos, type ServerPanel } from "../shared/rpc.js"
 import type { Process } from "./process.js"
 
 export class Panel {
@@ -27,7 +27,7 @@ export class Panel {
   constructor(proc: Process, pos: PanelPos, port: MessagePort) {
     this.proc = proc
     this.pos = pos
-    this.rpc = wRPC<ToPanel, FromPanel>(port)
+    this.rpc = wRPC<ServerPanel, ClientPanel>(port)
 
     Panel.map.set(this.id = ++Panel.id, this)
 
