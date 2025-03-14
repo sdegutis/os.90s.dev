@@ -4,11 +4,10 @@ import { $$ } from "../util/jsx.js"
 const prog = new Program()
 await prog.init()
 
-const desktop = await prog.makePanel('bottom', 100, 100, $$(
+const desktop = await prog.makePanel('bottom', prog.width, prog.height, $$(
   <view background={0x333333ff} />
 ))
 desktop.move(0, 0)
-desktop.resize(prog.width, prog.height)
 desktop.view.draw()
 desktop.blit()
 
