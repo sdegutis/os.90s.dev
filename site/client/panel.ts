@@ -2,6 +2,8 @@ import { type progRPC } from "../shared/rpc.js"
 
 type Rpc = ReturnType<typeof progRPC>
 
+type MousePos = { x: number, y: number }
+
 export class Panel {
 
   static map = new Map<number, Panel>()
@@ -12,6 +14,9 @@ export class Panel {
   y
   w
   h
+
+  mouse: MousePos = { x: 0, y: 0 }
+  down?: () => void
 
   constructor(rpc: Rpc, id: number, x: number, y: number, w: number, h: number) {
     Panel.map.set(id, this)
@@ -54,23 +59,23 @@ export class Panel {
   }
 
   onMouseEntered() {
-    console.log('onMouseEntered', this.id)
   }
 
   onMouseExited() {
-    console.log('onMouseExited', this.id)
-  }
-
-  onMouseMoved(x: number, y: number) {
-    console.log('onMouseMoved', this.id)
   }
 
   onMouseDown(b: number) {
-    console.log('onMouseDown', this.id)
+    this.down = dragMove(this.mouse, this)
+  }
+
+  onMouseMoved(x: number, y: number) {
+    this.mouse.x = x - this.x
+    this.mouse.y = y - this.y
+    this.down?.()
   }
 
   onMouseUp() {
-    console.log('onMouseUp', this.id)
+    delete this.down
   }
 
   onFocus() {
@@ -81,4 +86,17 @@ export class Panel {
 
   }
 
+}
+
+export function dragMove(m: MousePos, o: { x: number, y: number }) {
+  const startPos = { x: o.x, y: o.y }
+  const offx = m.x - startPos.x
+  const offy = m.y - startPos.y
+  return () => {
+    const diffx = m.x - startPos.x
+    const diffy = m.y - startPos.y
+    o.x = startPos.x + diffx - offx
+    o.y = startPos.y + diffy - offy
+    return { x: diffx - offx, y: diffy - offy }
+  }
 }

@@ -36,6 +36,8 @@ export class Process {
       panel.y = y
       panel.w = w
       panel.h = h
+      console.log('got this', x, y)
+      sys.redrawAllPanels()
     })
 
     this.rpc.listen('blitpanel', (id, img) => {
