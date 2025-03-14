@@ -110,7 +110,8 @@ export class Sys {
   }
 
   removePanel(panel: Panel) {
-    Panel.all.delete(panel.id)
+    if (!Panel.all.delete(panel.id)) return
+
     const i = Panel.ordered.indexOf(panel)
     Panel.ordered.splice(i, 1)
 

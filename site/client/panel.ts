@@ -81,13 +81,13 @@ export class Panel extends Rect {
     this.x = x
     this.y = y
     this.fixMouse()
-    this.rpc.send('adjust', [this.id, this.x, this.y, this.w, this.h])
+    this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
   }
 
   override resize(w: number, h: number) {
     this.w = w
     this.h = h
-    this.rpc.send('adjust', [this.id, this.x, this.y, this.w, this.h])
+    this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
     this.blit()
   }
 
@@ -104,7 +104,7 @@ export class Panel extends Rect {
 
     ctx.fillRect(0, 0, this.w, this.h)
     const bmp = canvas.transferToImageBitmap()
-    this.rpc.send('blit', [this.id, bmp], [bmp])
+    this.rpc.send('blit', [bmp], [bmp])
   }
 
   close() {

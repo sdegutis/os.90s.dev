@@ -1,4 +1,4 @@
-import { wRPC, type ClientProg, type ServerSys } from '../shared/rpc.js'
+import { wRPC, type ClientProgram, type ServerProgram } from '../shared/rpc.js'
 import { Panel } from './panel.js'
 import type { Sys } from './sys.js'
 
@@ -21,7 +21,7 @@ export class Process {
     const absurl = new URL(path, import.meta.url)
     this.worker = new Worker(absurl, { type: 'module' })
 
-    const rpc = wRPC<ServerSys, ClientProg>(this.worker)
+    const rpc = wRPC<ServerProgram, ClientProgram>(this.worker)
 
     rpc.once('terminate').then(() => {
       console.log('terminating in server', this.id)

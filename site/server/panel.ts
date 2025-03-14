@@ -43,19 +43,17 @@ export class Panel {
       proc.closePanel(this)
     })
 
-    this.rpc.listen('adjust', (id, x, y, w, h) => {
-      const panel = Panel.all.get(id)!
-      panel.x = x
-      panel.y = y
-      panel.w = w
-      panel.h = h
+    this.rpc.listen('adjust', (x, y, w, h) => {
+      this.x = x
+      this.y = y
+      this.w = w
+      this.h = h
       this.didAdjust.dispatch()
     })
 
-    this.rpc.listen('blit', (id, img) => {
-      const panel = Panel.all.get(id)!
-      panel.img?.close()
-      panel.img = img
+    this.rpc.listen('blit', (img) => {
+      this.img?.close()
+      this.img = img
       this.didRedraw.dispatch()
     })
 

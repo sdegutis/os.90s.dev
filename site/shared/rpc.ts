@@ -3,20 +3,20 @@ import { Listener } from "./listener.js"
 export type PanelPos = 'normal' | 'bottom' | 'top'
 export type KeyMap = Record<string, true>
 
-export interface ServerSys {
+export interface ServerProgram {
   init(): void
   newpanel(pos: PanelPos): void
   terminate(): void
 }
 
-export interface ClientProg {
+export interface ClientProgram {
   init(id: number): void
   newpanel(id: number, x: number, y: number, w: number, h: number, port: MessagePort): void
 }
 
 export interface ServerPanel {
-  adjust(id: number, x: number, y: number, w: number, h: number): void
-  blit(id: number, img: ImageBitmap): void
+  adjust(x: number, y: number, w: number, h: number): void
+  blit(img: ImageBitmap): void
   close(): void
 }
 

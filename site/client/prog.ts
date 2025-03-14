@@ -1,9 +1,9 @@
 import { Panel } from "../client/panel.js"
-import { wRPC, type ClientProg, type PanelPos, type ServerSys } from "../shared/rpc.js"
+import { wRPC, type ClientProgram, type PanelPos, type ServerProgram } from "../shared/rpc.js"
 
 export class Program {
 
-  private rpc = wRPC<ClientProg, ServerSys>(self)
+  private rpc = wRPC<ClientProgram, ServerProgram>(self)
   pid = 0
 
   panels = new Set<Panel>()
