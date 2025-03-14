@@ -9,15 +9,11 @@ cursorctx.fillRect(0, 0, 1, 1)
 export class Sys {
 
   ctx
-  mouse
+  mouse = { x: 0, y: 0 }
 
   constructor() {
-
     const { canvas, ctx } = setupCanvas()
     this.ctx = ctx
-
-
-    this.mouse = { x: 0, y: 0 }
 
     canvas.onmousemove = (e) => {
       const x = Math.min(320 - 1, e.offsetX)
@@ -28,7 +24,6 @@ export class Sys {
       this.redrawAllPanels()
     }
 
-
   }
 
   redrawAllPanels() {
@@ -38,6 +33,10 @@ export class Sys {
         this.ctx.drawImage(panel.img, panel.x, panel.y)
       }
     }
+    this.drawCursor()
+  }
+
+  private drawCursor() {
     this.ctx.drawImage(cursor, this.mouse.x, this.mouse.y)
   }
 
