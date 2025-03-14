@@ -22,8 +22,21 @@ export class Sys {
       this.mouse.x = x
       this.mouse.y = y
       this.redrawAllPanels()
+
+      const hovered = this.findHovered()
+      console.log(hovered?.id)
     }
 
+  }
+
+  private findHovered() {
+    for (const panel of Panel.ordered.toReversed()) {
+      if (this.mouse.x >= panel.x && this.mouse.y >= panel.y &&
+        this.mouse.x < panel.x + panel.w &&
+        this.mouse.y < panel.y + panel.h
+      ) return panel
+    }
+    return null
   }
 
   redrawAllPanels() {
