@@ -1,3 +1,4 @@
+import { Listener } from "../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../shared/rpc.js"
 import { Rect } from "./rect.js"
 
@@ -15,6 +16,8 @@ export class Panel extends Rect {
   keymap: KeyMap = Object.create(null)
 
   down?: () => void
+
+  didClose = new Listener()
 
   constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number) {
     super()
@@ -94,14 +97,19 @@ export class Panel extends Rect {
 
     ctx.fillStyle = ({
       '/apps/desktop.js': '#333',
-      '/apps/prog1.js': '#300',
-      '/apps/prog2.js': '#030',
-      '/apps/prog3.js': '#003',
+      '/apps/prog1.js': '#300c',
+      '/apps/prog2.js': '#030c',
+      '/apps/prog3.js': '#003c',
     })[location.pathname]!
 
     ctx.fillRect(0, 0, this.w, this.h)
     const bmp = canvas.transferToImageBitmap()
     this.rpc.send('blit', [this.id, bmp], [bmp])
+  }
+
+  close() {
+    this.rpc.send('close', [])
+    this.didClose.dispatch()
   }
 
   private fixMouse() {

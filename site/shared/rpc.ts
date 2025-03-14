@@ -6,6 +6,7 @@ export type KeyMap = Record<string, true>
 export interface ServerSys {
   init(): void
   newpanel(pos: PanelPos): void
+  terminate(): void
 }
 
 export interface ClientProg {
@@ -16,6 +17,7 @@ export interface ClientProg {
 export interface ServerPanel {
   adjust(id: number, x: number, y: number, w: number, h: number): void
   blit(id: number, img: ImageBitmap): void
+  close(): void
 }
 
 export interface ClientPanel {

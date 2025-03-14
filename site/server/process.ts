@@ -23,13 +23,18 @@ export class Process {
 
     const rpc = wRPC<ServerSys, ClientProg>(this.worker)
 
+    rpc.once('terminate').then(() => {
+      console.log('terminating in server', this.id)
+      this.terminate()
+    })
+
     rpc.once('init').then(() => {
       rpc.send('init', [this.id])
     })
 
     rpc.listen('newpanel', (pos) => {
       const chan = new MessageChannel()
-      const p = new Panel(chan.port1, pos)
+      const p = new Panel(this, chan.port1, pos)
       rpc.send('newpanel', [p.id, p.x, p.y, p.w, p.h, chan.port2], [chan.port2])
 
       this.panels.add(p)
@@ -42,9 +47,13 @@ export class Process {
   terminate() {
     this.worker.terminate()
     for (const panel of this.panels) {
-      panel.closePort()
-      this.sys.removePanel(panel)
+      this.closePanel(panel)
     }
+  }
+
+  closePanel(panel: Panel) {
+    panel.closePort()
+    this.sys.removePanel(panel)
   }
 
 }

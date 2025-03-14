@@ -1,5 +1,6 @@
 import { Listener } from "../shared/listener.js"
 import { wRPC, type ClientPanel, type PanelPos, type ServerPanel } from "../shared/rpc.js"
+import type { Process } from "./process.js"
 
 export class Panel {
 
@@ -23,7 +24,7 @@ export class Panel {
   didAdjust = new Listener()
   didRedraw = new Listener()
 
-  constructor(port: MessagePort, pos: PanelPos) {
+  constructor(proc: Process, port: MessagePort, pos: PanelPos) {
     this.port = port
     this.rpc = wRPC<ServerPanel, ClientPanel>(port)
     this.pos = pos
@@ -37,6 +38,10 @@ export class Panel {
     this.y = (Panel.focused?.y ?? 0) + 10
 
     Panel.focused = this
+
+    this.rpc.once('close').then(() => {
+      proc.closePanel(this)
+    })
 
     this.rpc.listen('adjust', (id, x, y, w, h) => {
       const panel = Panel.all.get(id)!
