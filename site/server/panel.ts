@@ -1,3 +1,4 @@
+import type { PanelPos } from "../shared/rpc.js"
 import type { Process } from "./process.js"
 
 export class Panel {
@@ -15,7 +16,11 @@ export class Panel {
 
   img?: ImageBitmap
 
-  constructor(proc: Process) {
+  pos
+
+  constructor(proc: Process, pos: PanelPos) {
+    this.pos = pos
+
     Panel.map.set(this.id = ++Panel.id, this)
     Panel.ordered.push(this)
 

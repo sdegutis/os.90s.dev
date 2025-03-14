@@ -15,6 +15,8 @@ export class Sys {
     const { canvas, ctx } = setupCanvas()
     this.ctx = ctx
 
+    let hovered: Panel | null = null
+
     canvas.onmousemove = (e) => {
       const x = Math.min(320 - 1, e.offsetX)
       const y = Math.min(180 - 1, e.offsetY)
@@ -23,8 +25,26 @@ export class Sys {
       this.mouse.y = y
       this.redrawAllPanels()
 
-      const hovered = this.findHovered()
+      hovered = this.findHovered()
       console.log(hovered?.id)
+    }
+
+    canvas.onmousedown = (e) => {
+      if (!hovered) return
+
+      if (hovered.pos === 'normal') {
+
+        const oldi = Panel.ordered.indexOf(hovered)
+        const newi = Panel.ordered.findLastIndex(p => p.pos !== 'top')
+
+        Panel.ordered.splice(oldi, 1)
+        Panel.ordered.splice(newi, 0, hovered)
+
+        this.redrawAllPanels()
+      }
+
+
+      // console.log(hovered)
     }
 
   }
@@ -41,7 +61,7 @@ export class Sys {
 
   redrawAllPanels() {
     this.ctx.clearRect(0, 0, 320, 180)
-    for (const panel of Panel.map.values()) {
+    for (const panel of Panel.ordered) {
       if (panel.img) {
         this.ctx.drawImage(panel.img, panel.x, panel.y)
       }

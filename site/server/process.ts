@@ -25,8 +25,8 @@ export class Process {
       this.rpc.send('init', [this.id])
     })
 
-    this.rpc.listen('newpanel', () => {
-      const p = new Panel(this)
+    this.rpc.listen('newpanel', (pos) => {
+      const p = new Panel(this, pos)
       this.rpc.send('newpanel', [p.id, p.x, p.y, p.w, p.h])
     })
 

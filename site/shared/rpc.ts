@@ -1,8 +1,10 @@
 import { Listener } from "./listener.js"
 
+export type PanelPos = 'normal' | 'bottom' | 'top'
+
 interface ToSys {
   init(): void
-  newpanel(): void
+  newpanel(pos: PanelPos): void
   adjpanel(id: number, x: number, y: number, w: number, h: number): void
   blitpanel(id: number, img: ImageBitmap): void
 }

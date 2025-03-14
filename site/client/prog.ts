@@ -1,5 +1,5 @@
 import { Panel } from "../client/panel.js"
-import { progRPC } from "../shared/rpc.js"
+import { progRPC, type PanelPos } from "../shared/rpc.js"
 
 class Program {
 
@@ -12,8 +12,8 @@ class Program {
     this.pid = id
   }
 
-  async makePanel() {
-    this.rpc.send('newpanel', [])
+  async makePanel(pos: PanelPos) {
+    this.rpc.send('newpanel', [pos])
     const [id, x, y, w, h] = await this.rpc.once('newpanel')
     return new Panel(this.rpc, id, x, y, w, h)
   }
