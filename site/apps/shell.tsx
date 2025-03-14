@@ -1,5 +1,5 @@
 import { Program } from "../client/core/prog.js"
-import { $$ } from "../util/jsx.js"
+import { $$ } from "../client/util/jsx.js"
 
 const prog = new Program()
 await prog.init()
