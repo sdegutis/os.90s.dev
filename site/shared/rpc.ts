@@ -48,7 +48,7 @@ function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker |
     return listener.watch(data => fn(...data))
   }
 
-  function wait<K extends keyof In>(name: K) {
+  function once<K extends keyof In>(name: K) {
     const p = Promise.withResolvers<Parameters<In[K]>>()
     const done = listen(name, (...args: Parameters<In[K]>) => {
       p.resolve(args)
@@ -57,7 +57,7 @@ function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker |
     return p.promise
   }
 
-  return { send, listen, wait }
+  return { send, listen, once }
 }
 
 export const progRPC = (wRPC<Prog, Sys>)

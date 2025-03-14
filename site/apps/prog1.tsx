@@ -10,7 +10,7 @@ let panelp = new Listener<[number, number, number, number, number]>()
 const rpc = progRPC(self)
 
 
-const [id] = await rpc.wait('init')
+const [id] = await rpc.once('init')
 
 console.log('got ', id)
 
@@ -25,9 +25,8 @@ if (id === 1) {
 
 
   rpc.send('newpanel', [])
-
-  const res = await rpc.wait('panel')
-  console.log(res)
+  const [id, x, y, w, h] = await rpc.once('panel')
+  console.log(id, x, y, w, h)
 
 
 
