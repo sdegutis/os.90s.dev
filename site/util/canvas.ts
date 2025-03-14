@@ -1,9 +1,9 @@
-export function setupCanvas() {
+export function setupCanvas(width: number, height: number) {
 
   const canvas = document.createElement('canvas')
 
-  canvas.width = 320
-  canvas.height = 180
+  canvas.width = width
+  canvas.height = height
 
   canvas.style.imageRendering = 'pixelated'
   canvas.style.backgroundColor = '#000'
@@ -17,8 +17,10 @@ export function setupCanvas() {
 
   new ResizeObserver(() => {
     const rect = canvas.parentElement!.getBoundingClientRect()
-    let w = 320, h = 180, s = 1
-    while ((w += 320) <= rect.width && (h += 180) <= rect.height) s++
+    let w = width, h = height, s = 1
+    while (
+      (w += width) <= rect.width &&
+      (h += height) <= rect.height) s++
     canvas.style.transform = `scale(${s})`
   }).observe(canvas.parentElement!)
 

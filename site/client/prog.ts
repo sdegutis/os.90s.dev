@@ -9,10 +9,15 @@ export class Program {
   panels = new Set<Panel>()
   exitsOnLastPanelClose = true
 
+  width = 0
+  height = 0
+
   async init() {
     this.rpc.send('init', [])
-    const [id] = await this.rpc.once('init')
+    const [id, w, h] = await this.rpc.once('init')
     this.pid = id
+    this.width = w
+    this.height = h
   }
 
   async makePanel(pos: PanelPos) {

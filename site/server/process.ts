@@ -29,7 +29,7 @@ export class Process {
     })
 
     rpc.once('init').then(() => {
-      rpc.send('init', [this.id])
+      rpc.send('init', [this.id, this.sys.width, this.sys.height])
     })
 
     rpc.listen('newpanel', (pos) => {

@@ -18,9 +18,15 @@ export class Sys {
   focused: Panel | null = null
   clicking: Panel | null = null
 
-  constructor() {
-    const { canvas, ctx } = setupCanvas()
+  width: number
+  height: number
+
+  constructor(w: number, h: number) {
+    const { canvas, ctx } = setupCanvas(w, h)
     this.ctx = ctx
+
+    this.width = w
+    this.height = h
 
     canvas.onkeydown = (e) => {
       this.keymap[e.key] = true
@@ -35,8 +41,8 @@ export class Sys {
     }
 
     canvas.onmousemove = (e) => {
-      const x = Math.min(320 - 1, e.offsetX)
-      const y = Math.min(180 - 1, e.offsetY)
+      const x = Math.min(w - 1, e.offsetX)
+      const y = Math.min(h - 1, e.offsetY)
 
       if (x === this.mouse.x && y === this.mouse.y) return
       this.mouse.x = x
@@ -96,7 +102,7 @@ export class Sys {
   }
 
   redrawAllPanels() {
-    this.ctx.clearRect(0, 0, 320, 180)
+    this.ctx.clearRect(0, 0, this.width, this.height)
     for (const panel of Panel.ordered) {
       if (panel.img) {
         this.ctx.drawImage(panel.img, panel.x, panel.y)

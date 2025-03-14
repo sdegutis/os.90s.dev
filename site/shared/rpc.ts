@@ -10,7 +10,7 @@ export interface ServerProgram {
 }
 
 export interface ClientProgram {
-  init(id: number): void
+  init(id: number, w: number, h: number): void
   newpanel(id: number, x: number, y: number, w: number, h: number, port: MessagePort): void
 }
 
