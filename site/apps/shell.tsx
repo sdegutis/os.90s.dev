@@ -4,7 +4,7 @@ import { $$ } from "../util/jsx.js"
 const prog = new Program()
 await prog.init()
 
-const desktop = await prog.makePanel('bottom', prog.width, prog.height, $$(
+const desktop = await prog.makePanel('bottom', prog.width, prog.height - 20, $$(
   <view background={0x333333ff} />
 ))
 desktop.move(0, 0)
