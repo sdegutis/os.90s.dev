@@ -53,4 +53,12 @@ export class Panel {
     this.rpc.send('blitpanel', [this.id, bmp], [bmp])
   }
 
+  onFocus() {
+
+  }
+
+  onBlur() {
+
+  }
+
 }

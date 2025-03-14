@@ -16,21 +16,29 @@ export class Sys {
     this.ctx = ctx
 
     let hovered: Panel | null = null
+    let focused: Panel | null = null
 
     canvas.onmousemove = (e) => {
       const x = Math.min(320 - 1, e.offsetX)
       const y = Math.min(180 - 1, e.offsetY)
+
       if (x === this.mouse.x && y === this.mouse.y) return
       this.mouse.x = x
       this.mouse.y = y
+
       this.redrawAllPanels()
 
       hovered = this.findHovered()
-      console.log(hovered?.id)
     }
 
     canvas.onmousedown = (e) => {
       if (!hovered) return
+
+      if (focused !== hovered) {
+        focused?.blur()
+        focused = hovered
+        focused.focus()
+      }
 
       if (hovered.pos === 'normal') {
 
@@ -43,8 +51,6 @@ export class Sys {
         this.redrawAllPanels()
       }
 
-
-      // console.log(hovered)
     }
 
   }

@@ -10,6 +10,14 @@ class Program {
     this.rpc.send('init', [])
     const [id] = await this.rpc.once('init')
     this.pid = id
+
+    this.rpc.listen('focus', id => {
+      Panel.map.get(id)?.onFocus()
+    })
+
+    this.rpc.listen('blur', id => {
+      Panel.map.get(id)?.onBlur()
+    })
   }
 
   async makePanel(pos: PanelPos) {

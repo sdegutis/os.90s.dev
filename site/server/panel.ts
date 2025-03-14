@@ -16,9 +16,11 @@ export class Panel {
 
   img?: ImageBitmap
 
+  proc
   pos
 
   constructor(proc: Process, pos: PanelPos) {
+    this.proc = proc
     this.pos = pos
 
     Panel.map.set(this.id = ++Panel.id, this)
@@ -29,9 +31,15 @@ export class Panel {
     this.x = (Panel.focused?.x ?? 0) + 10
     this.y = (Panel.focused?.y ?? 0) + 10
 
-    console.log(this.id, this.x, this.y, Panel.focused)
-
     Panel.focused = this
+  }
+
+  focus() {
+    this.proc.rpc.send('focus', [this.id])
+  }
+
+  blur() {
+    this.proc.rpc.send('blur', [this.id])
   }
 
 }

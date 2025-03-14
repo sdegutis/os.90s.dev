@@ -12,6 +12,8 @@ interface ToSys {
 interface ToProg {
   init(id: number): void
   newpanel(id: number, x: number, y: number, w: number, h: number): void
+  focus(id: number): void
+  blur(id: number): void
 
   // mouseMoved(x: number, y: number): void
   // mouseDown(button: number): void
@@ -19,8 +21,6 @@ interface ToProg {
   // keyDown(key: string): void
   // keyUp(key: string): void
   // wheel(n: number): void
-  // focus(): void
-  // blur(): void
 }
 
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }
