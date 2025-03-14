@@ -10,36 +10,12 @@ class Program {
     this.rpc.send('init', [])
     const [id] = await this.rpc.once('init')
     this.pid = id
-
-    this.rpc.listen('focus', id => {
-      Panel.map.get(id)?.onFocus()
-    })
-
-    this.rpc.listen('mouseentered', (id) => {
-      Panel.map.get(id)?.onMouseEntered()
-    })
-
-    this.rpc.listen('mouseexited', (id) => {
-      Panel.map.get(id)?.onMouseExited()
-    })
-
-    this.rpc.listen('mousedown', (id, b) => {
-      Panel.map.get(id)?.onMouseDown(b)
-    })
-
-    this.rpc.listen('mouseup', (id) => {
-      Panel.map.get(id)?.onMouseUp()
-    })
-
-    this.rpc.listen('blur', id => {
-      Panel.map.get(id)?.onBlur()
-    })
   }
 
   async makePanel(pos: PanelPos) {
     this.rpc.send('newpanel', [pos])
     const [id, x, y, w, h, port] = await this.rpc.once('newpanel')
-    return new Panel(this.rpc, port, id, x, y, w, h)
+    return new Panel(port, id, x, y, w, h)
   }
 
 }

@@ -5,30 +5,29 @@ export type PanelPos = 'normal' | 'bottom' | 'top'
 export interface ToSys {
   init(): void
   newpanel(pos: PanelPos): void
-  adjpanel(id: number, x: number, y: number, w: number, h: number): void
-  blitpanel(id: number, img: ImageBitmap): void
 }
 
 export interface ToProg {
   init(id: number): void
   newpanel(id: number, x: number, y: number, w: number, h: number, port: MessagePort): void
-  focus(id: number): void
-  blur(id: number): void
-  mouseentered(id: number): void
-  mouseexited(id: number): void
-  mousedown(id: number, b: number): void
-  mouseup(id: number): void
-
   // keyDown(key: string): void
   // keyUp(key: string): void
   // wheel(n: number): void
 }
 
 export interface ToPanel {
+  adjpanel(id: number, x: number, y: number, w: number, h: number): void
+  blitpanel(id: number, img: ImageBitmap): void
 }
 
 export interface FromPanel {
+  focus(): void
+  blur(): void
+  mouseentered(): void
+  mouseexited(): void
   mousemoved(x: number, y: number): void
+  mousedown(b: number): void
+  mouseup(): void
 }
 
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }

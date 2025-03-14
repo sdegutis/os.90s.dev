@@ -1,14 +1,12 @@
 import { wRPC, type FromPanel, type ToPanel, type ToProg, type ToSys } from "../shared/rpc.js"
 
 type Rpc = ReturnType<typeof wRPC<ToProg, ToSys>>
-
 type MousePos = { x: number, y: number }
 
 export class Panel {
 
   static map = new Map<number, Panel>()
 
-  rpc
   id
 
   private _x = 0;
@@ -39,21 +37,25 @@ export class Panel {
   mouse: MousePos = { x: 0, y: 0 }
   down?: () => void
 
-  constructor(rpc: Rpc, port: MessagePort, id: number, x: number, y: number, w: number, h: number) {
+  rpc
+
+  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number) {
     Panel.map.set(id, this)
 
-    const rpc2 = wRPC<FromPanel, ToPanel>(port)
-
-    rpc2.listen('mousemoved', (x, y) => {
-      Panel.map.get(id)?.onMouseMoved(x, y)
-    })
-
-    this.rpc = rpc
     this.id = id
     this._x = x
     this._y = y
     this._w = w
     this._h = h
+
+    this.rpc = wRPC<FromPanel, ToPanel>(port)
+    this.rpc.listen('mousemoved', (x, y) => this.onMouseMoved(x, y))
+    this.rpc.listen('focus', () => this.onFocus())
+    this.rpc.listen('mouseentered', () => this.onMouseEntered())
+    this.rpc.listen('mouseexited', () => this.onMouseExited())
+    this.rpc.listen('mousedown', (b) => this.onMouseDown(b))
+    this.rpc.listen('mouseup', () => this.onMouseUp())
+    this.rpc.listen('blur', () => this.onBlur())
   }
 
   move(x: number, y: number) {

@@ -30,23 +30,6 @@ export class Process {
       const p = new Panel(this, pos, chan.port1)
       this.rpc.send('newpanel', [p.id, p.x, p.y, p.w, p.h, chan.port2], [chan.port2])
     })
-
-    this.rpc.listen('adjpanel', (id, x, y, w, h) => {
-      const panel = Panel.map.get(id)!
-      panel.x = x
-      panel.y = y
-      panel.w = w
-      panel.h = h
-      sys.redrawAllPanels()
-    })
-
-    this.rpc.listen('blitpanel', (id, img) => {
-      const panel = Panel.map.get(id)!
-      panel.img?.close()
-      panel.img = img
-      sys.redrawAllPanels()
-    })
-
   }
 
 }

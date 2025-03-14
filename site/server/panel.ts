@@ -34,16 +34,31 @@ export class Panel {
     this.y = (Panel.focused?.y ?? 0) + 10
 
     Panel.focused = this
+
+    this.rpc.listen('adjpanel', (id, x, y, w, h) => {
+      const panel = Panel.map.get(id)!
+      panel.x = x
+      panel.y = y
+      panel.w = w
+      panel.h = h
+      this.proc.sys.redrawAllPanels()
+    })
+
+    this.rpc.listen('blitpanel', (id, img) => {
+      const panel = Panel.map.get(id)!
+      panel.img?.close()
+      panel.img = img
+      this.proc.sys.redrawAllPanels()
+    })
+
   }
 
-  focus() { this.proc.rpc.send('focus', [this.id]) }
-  blur() { this.proc.rpc.send('blur', [this.id]) }
-  mouseenter() { this.proc.rpc.send('mouseentered', [this.id]) }
-  mousedown(b: number) { this.proc.rpc.send('mousedown', [this.id, b]) }
-  mouseup() { this.proc.rpc.send('mouseup', [this.id]) }
-  mousemove(x: number, y: number) {
-    this.rpc.send('mousemoved', [x, y])
-  }
-  mouseexit() { this.proc.rpc.send('mouseexited', [this.id]) }
+  focus() { this.rpc.send('focus', []) }
+  blur() { this.rpc.send('blur', []) }
+  mouseenter() { this.rpc.send('mouseentered', []) }
+  mousedown(b: number) { this.rpc.send('mousedown', [b]) }
+  mouseup() { this.rpc.send('mouseup', []) }
+  mousemove(x: number, y: number) { this.rpc.send('mousemoved', [x, y]) }
+  mouseexit() { this.rpc.send('mouseexited', []) }
 
 }
