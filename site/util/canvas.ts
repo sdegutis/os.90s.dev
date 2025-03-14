@@ -12,6 +12,9 @@ export function setupCanvas() {
 
   document.body.replaceChildren(canvas)
 
+  canvas.tabIndex = 1
+  canvas.focus()
+
   new ResizeObserver(() => {
     const rect = canvas.parentElement!.getBoundingClientRect()
     let w = 320, h = 180, s = 1

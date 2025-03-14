@@ -1,5 +1,5 @@
 import { Listener } from "../shared/listener.js"
-import { wRPC, type ClientPanel, type PanelPos, type ServerPanel } from "../shared/rpc.js"
+import { wRPC, type ClientPanel, type KeyMap, type PanelPos, type ServerPanel } from "../shared/rpc.js"
 
 export class Panel {
 
@@ -22,9 +22,12 @@ export class Panel {
   didAdjust = new Listener()
   didRedraw = new Listener()
 
-  constructor(port: MessagePort, pos: PanelPos) {
+  keymap: KeyMap
+
+  constructor(keymap: KeyMap, port: MessagePort, pos: PanelPos) {
     this.rpc = wRPC<ServerPanel, ClientPanel>(port)
     this.pos = pos
+    this.keymap = keymap
 
     Panel.map.set(this.id = ++Panel.id, this)
 
@@ -54,13 +57,15 @@ export class Panel {
 
   }
 
-  focus() { this.rpc.send('focus', []) }
+  focus() { this.rpc.send('focus', [this.keymap]) }
   blur() { this.rpc.send('blur', []) }
   mouseenter() { this.rpc.send('mouseentered', []) }
+  mouseexit() { this.rpc.send('mouseexited', []) }
+  mousemove(x: number, y: number) { this.rpc.send('mousemoved', [x, y]) }
   mousedown(b: number) { this.rpc.send('mousedown', [b]) }
   mouseup() { this.rpc.send('mouseup', []) }
   wheel(n: number) { this.rpc.send('wheel', [n]) }
-  mousemove(x: number, y: number) { this.rpc.send('mousemoved', [x, y]) }
-  mouseexit() { this.rpc.send('mouseexited', []) }
+  keydown(key: string) { this.rpc.send('keydown', [key]) }
+  keyup(key: string) { this.rpc.send('keyup', [key]) }
 
 }

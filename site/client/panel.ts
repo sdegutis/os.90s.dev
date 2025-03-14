@@ -1,24 +1,25 @@
-import { wRPC, type ClientPanel, type ServerPanel } from "../shared/rpc.js"
+import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../shared/rpc.js"
 import { Rect } from "./rect.js"
 
 type MousePos = { x: number, y: number }
 
 export class Panel extends Rect {
 
-  static map = new Map<number, Panel>()
+  static all = new Map<number, Panel>()
 
   id
+  rpc
 
   absmouse: MousePos = { x: 0, y: 0 }
   mouse: MousePos = { x: 0, y: 0 }
-  down?: () => void
+  keymap: KeyMap = Object.create(null)
 
-  rpc
+  down?: () => void
 
   constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number) {
     super()
 
-    Panel.map.set(id, this)
+    Panel.all.set(id, this)
 
     this.id = id
     this._x = x
@@ -28,13 +29,15 @@ export class Panel extends Rect {
 
     this.rpc = wRPC<ClientPanel, ServerPanel>(port)
     this.rpc.listen('mousemoved', (x, y) => this.onMouseMoved(x, y))
-    this.rpc.listen('focus', () => this.onFocus())
+    this.rpc.listen('focus', (keymap) => this.onFocus(keymap))
     this.rpc.listen('mouseentered', () => this.onMouseEntered())
     this.rpc.listen('mouseexited', () => this.onMouseExited())
     this.rpc.listen('mousedown', (b) => this.onMouseDown(b))
     this.rpc.listen('mouseup', () => this.onMouseUp())
     this.rpc.listen('blur', () => this.onBlur())
     this.rpc.listen('wheel', (n) => this.onWheel(n))
+    this.rpc.listen('keydown', (key) => this.onKeyDown(key))
+    this.rpc.listen('keyup', (key) => this.onKeyUp(key))
   }
 
   override move(x: number, y: number) {
@@ -78,17 +81,20 @@ export class Panel extends Rect {
   }
 
   onMouseMoved(x: number, y: number) {
+    console.log()
     this.absmouse.x = x
     this.absmouse.y = y
     this.fixMouse()
     this.down?.()
+
+    console.log(this.keymap)
   }
 
   onMouseUp() {
     delete this.down
   }
 
-  onFocus() {
+  onFocus(keymap: KeyMap) {
 
   }
 
@@ -98,6 +104,14 @@ export class Panel extends Rect {
 
   onWheel(n: number) {
 
+  }
+
+  onKeyDown(key: string) {
+    this.keymap[key] = true
+  }
+
+  onKeyUp(key: string) {
+    delete this.keymap[key]
   }
 
   private fixMouse() {

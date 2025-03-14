@@ -1,3 +1,4 @@
+import type { KeyMap } from "../shared/rpc.js"
 import { setupCanvas } from "../util/canvas.js"
 import { Panel } from "./panel.js"
 
@@ -6,10 +7,12 @@ const cursorctx = cursor.getContext('2d')!
 cursorctx.fillStyle = '#fff'
 cursorctx.fillRect(0, 0, 1, 1)
 
+
 export class Sys {
 
   ctx
   mouse = { x: 0, y: 0 }
+  keymap: KeyMap = Object.create(null)
 
   constructor() {
     const { canvas, ctx } = setupCanvas()
@@ -18,6 +21,16 @@ export class Sys {
     let hovered: Panel | null = null
     let focused: Panel | null = null
     let clicking: Panel | null = null
+
+    canvas.onkeydown = (e) => {
+      this.keymap[e.key] = true
+      focused?.keydown(e.key)
+    }
+
+    canvas.onkeyup = (e) => {
+      delete this.keymap[e.key]
+      focused?.keyup(e.key)
+    }
 
     canvas.onmousemove = (e) => {
       const x = Math.min(320 - 1, e.offsetX)
