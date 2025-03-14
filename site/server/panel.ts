@@ -7,6 +7,7 @@ export class Panel {
   static ordered: Panel[] = []
   static all = new Map<number, Panel>()
   static id = 0
+
   id
 
   x = 0
@@ -15,15 +16,13 @@ export class Panel {
   h = 100
 
   img?: ImageBitmap
-
   pos
-  rpc
 
   didAdjust = new Listener()
   didRedraw = new Listener()
 
   constructor(port: MessagePort, pos: PanelPos) {
-    this.rpc = wRPC<ServerPanel, ClientPanel>(port)
+    const rpc = wRPC<ServerPanel, ClientPanel>(port)
     this.pos = pos
 
     Panel.all.set(this.id = ++Panel.id, this)
@@ -36,7 +35,7 @@ export class Panel {
 
     Panel.focused = this
 
-    this.rpc.listen('adjust', (id, x, y, w, h) => {
+    rpc.listen('adjust', (id, x, y, w, h) => {
       const panel = Panel.all.get(id)!
       panel.x = x
       panel.y = y
@@ -45,7 +44,7 @@ export class Panel {
       this.didAdjust.dispatch()
     })
 
-    this.rpc.listen('blit', (id, img) => {
+    rpc.listen('blit', (id, img) => {
       const panel = Panel.all.get(id)!
       panel.img?.close()
       panel.img = img
