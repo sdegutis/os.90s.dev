@@ -34,12 +34,13 @@ export class Panel {
     this.w = w
     this.h = h
     this.rpc.send('adjpanel', [this.id, this.x, this.y, this.w, this.h])
+    this.blit()
   }
 
   blit() {
     const canvas = new OffscreenCanvas(this.w, this.h)
     const ctx = canvas.getContext('2d')!
-    ctx.fillStyle = this.id === 1 ? '#900' : this.id === 2 ? '#090' : '#009'
+    ctx.fillStyle = this.id === 2 ? '#900' : this.id === 3 ? '#090' : this.id === 4 ? '#009' : '#333'
     ctx.fillRect(0, 0, this.w, this.h)
     const bmp = canvas.transferToImageBitmap()
     this.rpc.send('blitpanel', [this.id, bmp], [bmp])
