@@ -80,6 +80,7 @@ export class Panel extends Rect {
       delete this.keymap[key]
     })
 
+    this.blit()
   }
 
   override move(x: number, y: number) {

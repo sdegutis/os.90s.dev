@@ -11,8 +11,6 @@ const desktop = await prog.makePanel('bottom', $$(
 desktop.move(0, 0)
 desktop.resize(prog.width, prog.height)
 
-desktop.blit()
-
 // const taskbar = await prog.makePanel('bottom')
 // taskbar.move(0, 180 - 20)
 // taskbar.resize(320, 20)
