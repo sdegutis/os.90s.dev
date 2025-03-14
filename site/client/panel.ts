@@ -28,16 +28,50 @@ export class Panel extends Rect {
     this._h = h
 
     this.rpc = wRPC<ClientPanel, ServerPanel>(port)
-    this.rpc.listen('mousemoved', (x, y) => this.onMouseMoved(x, y))
-    this.rpc.listen('focus', (keymap) => this.onFocus(keymap))
-    this.rpc.listen('mouseentered', () => this.onMouseEntered())
-    this.rpc.listen('mouseexited', () => this.onMouseExited())
-    this.rpc.listen('mousedown', (b) => this.onMouseDown(b))
-    this.rpc.listen('mouseup', () => this.onMouseUp())
-    this.rpc.listen('blur', () => this.onBlur())
-    this.rpc.listen('wheel', (n) => this.onWheel(n))
-    this.rpc.listen('keydown', (key) => this.onKeyDown(key))
-    this.rpc.listen('keyup', (key) => this.onKeyUp(key))
+
+    this.rpc.listen('focus', (keymap) => {
+      this.keymap = keymap
+    })
+
+    this.rpc.listen('blur', () => {
+
+    })
+
+    this.rpc.listen('mouseentered', () => {
+
+    })
+
+    this.rpc.listen('mouseexited', () => {
+
+    })
+
+    this.rpc.listen('mousedown', (b) => {
+      this.down = dragMove(this.absmouse, this)
+    })
+
+    this.rpc.listen('mousemoved', (x, y) => {
+      this.absmouse.x = x
+      this.absmouse.y = y
+      this.fixMouse()
+      this.down?.()
+    })
+
+    this.rpc.listen('mouseup', () => {
+      delete this.down
+    })
+
+    this.rpc.listen('wheel', (n) => {
+
+    })
+
+    this.rpc.listen('keydown', (key) => {
+      this.keymap[key] = true
+    })
+
+    this.rpc.listen('keyup', (key) => {
+      delete this.keymap[key]
+    })
+
   }
 
   override move(x: number, y: number) {
@@ -68,47 +102,6 @@ export class Panel extends Rect {
     ctx.fillRect(0, 0, this.w, this.h)
     const bmp = canvas.transferToImageBitmap()
     this.rpc.send('blit', [this.id, bmp], [bmp])
-  }
-
-  onMouseEntered() {
-  }
-
-  onMouseExited() {
-  }
-
-  onMouseDown(b: number) {
-    this.down = dragMove(this.absmouse, this)
-  }
-
-  onMouseMoved(x: number, y: number) {
-    this.absmouse.x = x
-    this.absmouse.y = y
-    this.fixMouse()
-    this.down?.()
-  }
-
-  onMouseUp() {
-    delete this.down
-  }
-
-  onFocus(keymap: KeyMap) {
-
-  }
-
-  onBlur() {
-
-  }
-
-  onWheel(n: number) {
-
-  }
-
-  onKeyDown(key: string) {
-    this.keymap[key] = true
-  }
-
-  onKeyUp(key: string) {
-    delete this.keymap[key]
   }
 
   private fixMouse() {
