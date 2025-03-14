@@ -7,3 +7,6 @@ await prog.init()
 const panel = await prog.makePanel('normal', $$(
   <view background={0x00007733} />
 ))
+
+panel.view.draw()
+panel.blit()

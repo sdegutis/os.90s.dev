@@ -4,7 +4,6 @@ import type { Process } from "./process.js"
 
 export class Panel {
 
-  static focused?: Panel
   static ordered: Panel[] = []
   static all = new Map<number, Panel>()
   static id = 0
@@ -31,13 +30,13 @@ export class Panel {
 
     Panel.all.set(this.id = ++Panel.id, this)
 
+    const cascadeFrom = Panel.ordered.findLast(p => p.pos === 'normal')
+
     const posi = pos === 'bottom' ? 0 : Panel.ordered.length
     Panel.ordered.splice(posi, 0, this)
 
-    this.x = (Panel.focused?.x ?? 0) + 10
-    this.y = (Panel.focused?.y ?? 0) + 10
-
-    Panel.focused = this
+    this.x = (cascadeFrom?.x ?? 0) + 10
+    this.y = (cascadeFrom?.y ?? 0) + 10
 
     this.rpc.once('close').then(() => {
       proc.closePanel(this)
