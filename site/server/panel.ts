@@ -1,6 +1,5 @@
 import { Listener } from "../shared/listener.js"
 import { wRPC, type ClientPanel, type PanelPos, type ServerPanel } from "../shared/rpc.js"
-import type { Process } from "./process.js"
 
 export class Panel {
 
@@ -17,17 +16,15 @@ export class Panel {
 
   img?: ImageBitmap
 
-  proc
   pos
   rpc
 
   didAdjust = new Listener()
   didRedraw = new Listener()
 
-  constructor(proc: Process, pos: PanelPos, port: MessagePort) {
-    this.proc = proc
-    this.pos = pos
+  constructor(port: MessagePort, pos: PanelPos) {
     this.rpc = wRPC<ServerPanel, ClientPanel>(port)
+    this.pos = pos
 
     Panel.map.set(this.id = ++Panel.id, this)
 
@@ -62,6 +59,7 @@ export class Panel {
   mouseenter() { this.rpc.send('mouseentered', []) }
   mousedown(b: number) { this.rpc.send('mousedown', [b]) }
   mouseup() { this.rpc.send('mouseup', []) }
+  wheel(n: number) { this.rpc.send('wheel', [n]) }
   mousemove(x: number, y: number) { this.rpc.send('mousemoved', [x, y]) }
   mouseexit() { this.rpc.send('mouseexited', []) }
 

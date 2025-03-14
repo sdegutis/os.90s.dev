@@ -12,7 +12,6 @@ export interface ClientProg {
   newpanel(id: number, x: number, y: number, w: number, h: number, port: MessagePort): void
   // keyDown(key: string): void
   // keyUp(key: string): void
-  // wheel(n: number): void
 }
 
 export interface ServerPanel {
@@ -28,6 +27,7 @@ export interface ClientPanel {
   mousemoved(x: number, y: number): void
   mousedown(b: number): void
   mouseup(): void
+  wheel(n: number): void
 }
 
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }

@@ -34,6 +34,7 @@ export class Panel extends Rect {
     this.rpc.listen('mousedown', (b) => this.onMouseDown(b))
     this.rpc.listen('mouseup', () => this.onMouseUp())
     this.rpc.listen('blur', () => this.onBlur())
+    this.rpc.listen('wheel', (n) => this.onWheel(n))
   }
 
   override move(x: number, y: number) {
@@ -92,6 +93,10 @@ export class Panel extends Rect {
   }
 
   onBlur() {
+
+  }
+
+  onWheel(n: number) {
 
   }
 

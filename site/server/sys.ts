@@ -71,6 +71,10 @@ export class Sys {
       clicking = null
     }
 
+    canvas.onwheel = (e) => {
+      hovered?.wheel(e.deltaY)
+    }
+
   }
 
   private findHovered() {
