@@ -3,12 +3,19 @@ import { sysRPC } from './shared/rpc.js'
 
 const { canvas, ctx } = setupCanvas()
 
-// class Panel {
-//   x = 0
-//   y = 0
-//   w = 0
-//   h = 0
-// }
+class Panel {
+
+  id
+
+  constructor(proc: Process) {
+    this.id = panels.add(this)
+  }
+
+  x = 0
+  y = 0
+  w = 0
+  h = 0
+}
 
 class EternalList<T> {
 
@@ -23,6 +30,7 @@ class EternalList<T> {
 }
 
 const processes = new EternalList<Process>()
+const panels = new EternalList<Panel>()
 
 class Process {
 
@@ -36,12 +44,12 @@ class Process {
     const worker = new Worker(absurl, { type: 'module' })
 
     this.rpc = sysRPC(worker)
+    this.rpc.send('init', [this.id])
 
     this.rpc.listen('newpanel', () => {
-      this.rpc.send('panel', [1, 2, 3, 4, 5])
+      const p = new Panel(this)
+      this.rpc.send('panel', [p.id, p.x, p.y, p.w, p.h])
     })
-
-    this.rpc.send('init', [this.id])
 
 
   }
