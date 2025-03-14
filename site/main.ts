@@ -9,6 +9,6 @@ const proc1 = new Process(sys, '/apps/prog1.js')
 const proc2 = new Process(sys, '/apps/prog2.js')
 const proc3 = new Process(sys, '/apps/prog3.js')
 
-setTimeout(() => {
-  proc2.terminate()
-}, 1000)
+// setTimeout(() => {
+//   proc2.terminate()
+// }, 1000)
