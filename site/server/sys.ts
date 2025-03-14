@@ -25,11 +25,13 @@ export class Sys {
     canvas.onkeydown = (e) => {
       this.keymap[e.key] = true
       focused?.keydown(e.key)
+      this.redrawAllPanels()
     }
 
     canvas.onkeyup = (e) => {
       delete this.keymap[e.key]
       focused?.keyup(e.key)
+      this.redrawAllPanels()
     }
 
     canvas.onmousemove = (e) => {
@@ -77,15 +79,18 @@ export class Sys {
 
       clicking = hovered
       clicking.mousedown(e.button)
+      this.redrawAllPanels()
     }
 
     canvas.onmouseup = (e) => {
       clicking?.mouseup()
       clicking = null
+      this.redrawAllPanels()
     }
 
     canvas.onwheel = (e) => {
       hovered?.wheel(e.deltaY)
+      this.redrawAllPanels()
     }
 
   }
