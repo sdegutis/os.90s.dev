@@ -13,6 +13,8 @@ export class Process {
   private worker
   private panels = new Set<Panel>()
 
+  heartbeat
+
   constructor(sys: Sys, path: string) {
     Process.all.set(this.id = ++Process.id, this)
 
@@ -30,7 +32,24 @@ export class Process {
 
     rpc.once('init').then(() => {
       rpc.send('init', [this.id, this.sys.width, this.sys.height])
+
     })
+
+    this.heartbeat = setInterval(async () => {
+      const n = Math.ceil(Math.random() * 1000)
+      const expected = n % 2 === 0 ? n + 2 : n + 1
+
+      rpc.send('ping', [n])
+
+      const got = await Promise.race([
+        rpc.once('pong').then(([n]) => n),
+        new Promise((r) => setTimeout(r, 1000))
+      ])
+
+      if (got !== expected) {
+        this.terminate()
+      }
+    }, 5000)
 
     rpc.listen('newpanel', (ord, x, y, w, h) => {
       const chan = new MessageChannel()
@@ -45,6 +64,7 @@ export class Process {
   }
 
   terminate() {
+    clearInterval(this.heartbeat)
     this.worker.terminate()
     for (const panel of this.panels) {
       this.closePanel(panel)

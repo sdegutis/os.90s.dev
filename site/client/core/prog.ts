@@ -19,6 +19,10 @@ export class Program {
     this.pid = id
     this.width = w
     this.height = h
+
+    this.rpc.listen('ping', (n) => {
+      this.rpc.send('pong', [n % 2 === 0 ? n + 2 : n + 1])
+    })
   }
 
   async makePanel(config: {

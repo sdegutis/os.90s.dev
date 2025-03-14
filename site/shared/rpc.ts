@@ -8,10 +8,12 @@ export interface ServerProgram {
   init(): void
   newpanel(ord: PanelOrdering, x: number, y: number, w: number, h: number): void
   terminate(): void
+  pong(n: number): void
 }
 
 export interface ClientProgram {
   init(id: number, w: number, h: number): void
+  ping(n: number): void
   newpanel(id: number, x: number, y: number, port: MessagePort): void
 }
 
