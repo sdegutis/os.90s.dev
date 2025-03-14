@@ -1,5 +1,9 @@
 import { prog } from "../client/prog.js"
 
-const panel = await prog.makePanel('bottom')
-panel.move(0, 0)
-panel.resize(320, 180)
+const desktop = await prog.makePanel('bottom')
+desktop.move(0, 0)
+desktop.resize(320, 180)
+
+// const taskbar = await prog.makePanel('bottom')
+// taskbar.move(0, 180 - 20)
+// taskbar.resize(320, 20)

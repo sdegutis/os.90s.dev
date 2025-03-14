@@ -25,13 +25,9 @@ export class Process {
       this.rpc.send('init', [this.id])
     })
 
-    let newpanelSync = Promise.resolve()
-
     this.rpc.listen('newpanel', (pos) => {
-      newpanelSync = newpanelSync.then(() => {
-        const p = new Panel(this, pos)
-        this.rpc.send('newpanel', [p.id, p.x, p.y, p.w, p.h])
-      })
+      const p = new Panel(this, pos)
+      this.rpc.send('newpanel', [p.id, p.x, p.y, p.w, p.h])
     })
 
     this.rpc.listen('adjpanel', (id, x, y, w, h) => {
