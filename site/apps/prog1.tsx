@@ -1,10 +1,13 @@
 import { progRPC } from "../shared/rpc.js"
+import { Listener } from "../util/listener.js"
 
 console.log('hey')
 
 const pid = Promise.withResolvers()
 
-let panelp: PromiseWithResolvers<[number, number, number, number, number]>
+// let panelp: PromiseWithResolvers<[number, number, number, number, number]>
+
+let panelp = new Listener<[number, number, number, number, number]>()
 
 const rpc = progRPC(self, {
 
@@ -13,7 +16,8 @@ const rpc = progRPC(self, {
   },
 
   panel(id, x, y, w, h) {
-    panelp?.resolve([id, x, y, w, h])
+    panelp.dispatch([id, x, y, w, h])
+    // panelp?.resolve([id, x, y, w, h])
   },
 
 })
@@ -24,11 +28,16 @@ console.log('got ', id)
 
 if (id === 1) {
 
-  panelp = Promise.withResolvers()
+  // panelp = Promise.withResolvers()
 
   rpc('newpanel', [])
 
-  const res = await panelp.promise
+  const p = Promise.withResolvers<[number, number, number, number, number]>()
+  const done = panelp.watch(res => {
+    done()
+    p.resolve(res)
+  })
+  const res = await p.promise
 
   console.log(res)
 
