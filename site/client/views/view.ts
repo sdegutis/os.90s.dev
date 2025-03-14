@@ -22,14 +22,14 @@ export class View extends Rect {
   init?(): void
 
   override resize(w: number, h: number) {
-    this.canvas.width = this.w = w
-    this.canvas.height = this.h = h
+    this.canvas.width = this._w = w
+    this.canvas.height = this._h = h
     this.draw()
   }
 
   override move(x: number, y: number) {
-    this.x = x
-    this.y = y
+    this._x = x
+    this._y = y
   }
 
   draw() {
