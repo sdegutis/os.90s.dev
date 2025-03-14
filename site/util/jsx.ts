@@ -1,6 +1,6 @@
+import { Listener } from '../shared/listener.js'
 import { controls } from '../views/index.js'
 import { View } from '../views/view.js'
-import { Listener } from './listener.js'
 import { Ref } from './ref.js'
 
 type Controls = typeof controls

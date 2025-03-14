@@ -35,15 +35,13 @@ class Process {
     const absurl = new URL(path, import.meta.url)
     const worker = new Worker(absurl, { type: 'module' })
 
-    this.rpc = sysRPC(worker, {
+    this.rpc = sysRPC(worker)
 
-      newpanel: () => {
-        this.rpc('panel', [1, 2, 3, 4, 5])
-      },
-
+    this.rpc.listen('newpanel', () => {
+      this.rpc.send('panel', [1, 2, 3, 4, 5])
     })
 
-    this.rpc('init', [this.id])
+    this.rpc.send('init', [this.id])
 
 
   }
