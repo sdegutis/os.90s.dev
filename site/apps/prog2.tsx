@@ -4,7 +4,7 @@ import { $$ } from "../util/jsx.js"
 const prog = new Program()
 await prog.init()
 
-const panel = await prog.makePanel('normal', $$(
+const panel = await prog.makePanel('normal', 100, 100, $$(
   <view background={0x00770033} />
 ))
 

@@ -32,10 +32,10 @@ export class Process {
       rpc.send('init', [this.id, this.sys.width, this.sys.height])
     })
 
-    rpc.listen('newpanel', (pos) => {
+    rpc.listen('newpanel', (ord, w, h) => {
       const chan = new MessageChannel()
-      const p = new Panel(this, chan.port1, pos)
-      rpc.send('newpanel', [p.id, p.x, p.y, p.w, p.h, chan.port2], [chan.port2])
+      const p = new Panel(w, h, this, chan.port1, ord)
+      rpc.send('newpanel', [p.id, p.x, p.y, chan.port2], [chan.port2])
 
       this.panels.add(p)
 

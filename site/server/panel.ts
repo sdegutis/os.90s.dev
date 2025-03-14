@@ -1,5 +1,5 @@
 import { Listener } from "../shared/listener.js"
-import { wRPC, type ClientPanel, type PanelPos, type ServerPanel } from "../shared/rpc.js"
+import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../shared/rpc.js"
 import type { Process } from "./process.js"
 
 export class Panel {
@@ -11,8 +11,8 @@ export class Panel {
 
   x = 0
   y = 0
-  w = 100
-  h = 100
+  w
+  h
 
   img?: ImageBitmap
 
@@ -23,10 +23,13 @@ export class Panel {
   didAdjust = new Listener()
   didRedraw = new Listener()
 
-  constructor(proc: Process, port: MessagePort, pos: PanelPos) {
+  constructor(w: number, h: number, proc: Process, port: MessagePort, pos: PanelOrdering) {
     this.port = port
     this.rpc = wRPC<ServerPanel, ClientPanel>(port)
     this.pos = pos
+
+    this.w = w
+    this.h = h
 
     Panel.all.set(this.id = ++Panel.id, this)
 

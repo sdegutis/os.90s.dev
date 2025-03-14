@@ -1,17 +1,17 @@
 import { Listener } from "./listener.js"
 
-export type PanelPos = 'normal' | 'bottom' | 'top'
+export type PanelOrdering = 'normal' | 'bottom' | 'top'
 export type KeyMap = Record<string, true>
 
 export interface ServerProgram {
   init(): void
-  newpanel(pos: PanelPos): void
+  newpanel(ord: PanelOrdering, w: number, h: number): void
   terminate(): void
 }
 
 export interface ClientProgram {
   init(id: number, w: number, h: number): void
-  newpanel(id: number, x: number, y: number, w: number, h: number, port: MessagePort): void
+  newpanel(id: number, x: number, y: number, port: MessagePort): void
 }
 
 export interface ServerPanel {

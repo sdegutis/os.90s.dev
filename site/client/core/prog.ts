@@ -1,4 +1,4 @@
-import { wRPC, type ClientProgram, type PanelPos, type ServerProgram } from "../../shared/rpc.js"
+import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "../../shared/rpc.js"
 import type { View } from "../views/view.js"
 import { Panel } from "./panel.js"
 
@@ -21,9 +21,9 @@ export class Program {
     this.height = h
   }
 
-  async makePanel(pos: PanelPos, view: View) {
-    this.rpc.send('newpanel', [pos])
-    const [id, x, y, w, h, port] = await this.rpc.once('newpanel')
+  async makePanel(pos: PanelOrdering, w: number, h: number, view: View) {
+    this.rpc.send('newpanel', [pos, w, h])
+    const [id, x, y, port] = await this.rpc.once('newpanel')
 
     const p = new Panel(port, id, x, y, w, h, view)
 
