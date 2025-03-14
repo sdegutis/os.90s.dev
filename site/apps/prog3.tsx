@@ -10,6 +10,3 @@ const panel = await prog.makePanel({
     <view background={0x00007733} />
   ),
 })
-
-panel.view.draw()
-panel.blit()

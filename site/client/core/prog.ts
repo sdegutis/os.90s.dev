@@ -33,17 +33,20 @@ export class Program {
     this.rpc.send('newpanel', [order, mx, my, w, h])
     const [id, x, y, port] = await this.rpc.once('newpanel')
 
-    const p = new Panel(port, id, x, y, w, h, config.view)
+    const panel = new Panel(port, id, x, y, w, h, config.view)
 
-    this.panels.add(p)
-    p.didClose.watch(() => {
-      this.panels.delete(p)
+    this.panels.add(panel)
+    panel.didClose.watch(() => {
+      this.panels.delete(panel)
       if (this.panels.size === 0 && this.exitsOnLastPanelClose) {
         this.terminate()
       }
     })
 
-    return p
+    panel.view.draw()
+    panel.blit()
+
+    return panel
   }
 
   terminate() {

@@ -13,10 +13,6 @@ const desktop = await prog.makePanel({
   )
 })
 
-desktop.view.draw()
-desktop.blit()
-
-
 const taskbar = await prog.makePanel({
   order: 'top',
   size: [prog.width, 20],
@@ -25,6 +21,3 @@ const taskbar = await prog.makePanel({
     <view background={0x444444ff} />
   )
 })
-
-taskbar.view.draw()
-taskbar.blit()
