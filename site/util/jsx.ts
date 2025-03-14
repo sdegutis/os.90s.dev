@@ -49,7 +49,9 @@ function buildTree({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element):
   }
 }
 
-export const $$ = (jsx: JSX.Element) => buildTree(jsx).view
+export function $$(jsx: JSX.Element) {
+  return buildTree(jsx).view
+}
 
 class IntrinsicNode {
 
