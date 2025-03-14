@@ -44,6 +44,7 @@ export class Process {
 
     this.rpc.listen('blitpanel', (id, img) => {
       const panel = Panel.map.get(id)!
+      panel.img?.close()
       panel.img = img
       sys.redrawAllPanels()
     })
