@@ -26,8 +26,9 @@ export class Process {
     })
 
     this.rpc.listen('newpanel', (pos) => {
-      const p = new Panel(this, pos)
-      this.rpc.send('newpanel', [p.id, p.x, p.y, p.w, p.h])
+      const chan = new MessageChannel()
+      const p = new Panel(this, pos, chan.port1)
+      this.rpc.send('newpanel', [p.id, p.x, p.y, p.w, p.h, chan.port2], [chan.port2])
     })
 
     this.rpc.listen('adjpanel', (id, x, y, w, h) => {

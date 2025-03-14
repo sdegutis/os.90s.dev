@@ -1,4 +1,4 @@
-import { wRPC, type ToProg, type ToSys } from "../shared/rpc.js"
+import { wRPC, type FromPanel, type ToPanel, type ToProg, type ToSys } from "../shared/rpc.js"
 
 type Rpc = ReturnType<typeof wRPC<ToProg, ToSys>>
 
@@ -39,8 +39,14 @@ export class Panel {
   mouse: MousePos = { x: 0, y: 0 }
   down?: () => void
 
-  constructor(rpc: Rpc, id: number, x: number, y: number, w: number, h: number) {
+  constructor(rpc: Rpc, port: MessagePort, id: number, x: number, y: number, w: number, h: number) {
     Panel.map.set(id, this)
+
+    const rpc2 = wRPC<FromPanel, ToPanel>(port)
+
+    rpc2.listen('mousemoved', (x, y) => {
+      Panel.map.get(id)?.onMouseMoved(x, y)
+    })
 
     this.rpc = rpc
     this.id = id

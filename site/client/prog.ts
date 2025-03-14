@@ -23,10 +23,6 @@ class Program {
       Panel.map.get(id)?.onMouseExited()
     })
 
-    this.rpc.listen('mousemoved', (id, x, y) => {
-      Panel.map.get(id)?.onMouseMoved(x, y)
-    })
-
     this.rpc.listen('mousedown', (id, b) => {
       Panel.map.get(id)?.onMouseDown(b)
     })
@@ -42,8 +38,8 @@ class Program {
 
   async makePanel(pos: PanelPos) {
     this.rpc.send('newpanel', [pos])
-    const [id, x, y, w, h] = await this.rpc.once('newpanel')
-    return new Panel(this.rpc, id, x, y, w, h)
+    const [id, x, y, w, h, port] = await this.rpc.once('newpanel')
+    return new Panel(this.rpc, port, id, x, y, w, h)
   }
 
 }

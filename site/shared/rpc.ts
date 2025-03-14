@@ -11,12 +11,11 @@ export interface ToSys {
 
 export interface ToProg {
   init(id: number): void
-  newpanel(id: number, x: number, y: number, w: number, h: number): void
+  newpanel(id: number, x: number, y: number, w: number, h: number, port: MessagePort): void
   focus(id: number): void
   blur(id: number): void
   mouseentered(id: number): void
   mouseexited(id: number): void
-  mousemoved(id: number, x: number, y: number): void
   mousedown(id: number, b: number): void
   mouseup(id: number): void
 
@@ -25,9 +24,16 @@ export interface ToProg {
   // wheel(n: number): void
 }
 
+export interface ToPanel {
+}
+
+export interface FromPanel {
+  mousemoved(x: number, y: number): void
+}
+
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }
 
-export function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker | Window) {
+export function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker | Window | MessagePort) {
   const listeners = new Map<keyof In, Listener<Parameters<In[keyof In]>>>()
 
   port.onmessage = (msg) => {
