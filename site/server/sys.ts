@@ -117,6 +117,8 @@ export class Sys {
     if (this.hovered === panel) this.hovered = null
     if (this.clicking === panel) this.clicking = null
     if (this.focused === panel) this.focused = null
+
+    this.redrawAllPanels()
   }
 
 }
