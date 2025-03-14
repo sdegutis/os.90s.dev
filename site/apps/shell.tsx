@@ -14,7 +14,7 @@ desktop.blit()
 
 
 const taskbar = await prog.makePanel('top', $$(
-  <view background={0x999999ff} />
+  <view background={0x444444ff} />
 ))
 taskbar.move(0, prog.height - 20)
 taskbar.resize(prog.width, 20)
