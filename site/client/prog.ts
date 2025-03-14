@@ -6,10 +6,6 @@ class Program {
   rpc = progRPC(self)
   pid = 0
 
-  constructor() {
-
-  }
-
   async init() {
     this.rpc.send('init', [])
     const [id] = await this.rpc.once('init')
