@@ -37,12 +37,11 @@ export class Panel {
 
     Panel.all.set(this.id = ++Panel.id, this)
 
-    const cascadeFrom = Panel.ordered.findLast(p => p.pos === 'normal')
-
     const posi = pos === 'bottom' ? 0 : Panel.ordered.findLastIndex(p => p.pos !== 'top') + 1
     Panel.ordered.splice(posi, 0, this)
 
     if (this.x === -1 || this.y === -1) {
+      const cascadeFrom = Panel.ordered.findLast(p => p.pos === 'normal' && p !== this)
       this.x = (cascadeFrom?.x ?? 0) + 10
       this.y = (cascadeFrom?.y ?? 0) + 10
     }
