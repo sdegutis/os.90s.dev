@@ -8,6 +8,7 @@ console.log('got ', id)
 if (id === 1) {
 
   rpc.send('newpanel', [])
+  await new Promise(res => setTimeout(res, 0))
   const [id, x, y, w, h] = await rpc.once('panel')
   console.log(id, x, y, w, h)
 

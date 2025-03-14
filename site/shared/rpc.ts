@@ -35,7 +35,12 @@ function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker |
 
   port.onmessage = (msg) => {
     const name = msg.data.pop() as keyof In
-    listeners.get(name)?.dispatch(msg.data as Parameters<In[keyof In]>)
+    const listener = listeners.get(name)
+    if (!listener) {
+      console.log('missed message', name, msg.data)
+      return
+    }
+    listener.dispatch(msg.data as Parameters<In[keyof In]>)
   }
 
   function send<K extends keyof Out>(name: K, data: Parameters<Out[K]>, transfer?: Transferable[]) {
