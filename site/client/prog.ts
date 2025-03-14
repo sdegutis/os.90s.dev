@@ -1,7 +1,7 @@
 import { Panel } from "../client/panel.js"
 import { wRPC, type ClientProg, type PanelPos, type ServerSys } from "../shared/rpc.js"
 
-class Program {
+export class Program {
 
   rpc = wRPC<ClientProg, ServerSys>(self)
   pid = 0
@@ -19,6 +19,3 @@ class Program {
   }
 
 }
-
-export const prog = new Program()
-await prog.init()
