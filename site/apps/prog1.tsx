@@ -4,9 +4,13 @@ import { $$ } from "../util/jsx.js"
 const prog = new Program()
 await prog.init()
 
-const panel = await prog.makePanel('normal', 100, 100, $$(
-  <view background={0x77000033} />
-))
+const panel = await prog.makePanel({
+  order: 'normal',
+  w: 100, h: 100,
+  view: $$(
+    <view background={0x77000033} />
+  ),
+})
 
 panel.view.draw()
 panel.blit()
