@@ -38,6 +38,9 @@ export class Sys {
       }
 
       hovered?.mousemove(this.mouse.x, this.mouse.y)
+      if (hovered !== clicking) {
+        clicking?.mousemove(this.mouse.x, this.mouse.y)
+      }
     }
 
     canvas.onmousedown = (e) => {

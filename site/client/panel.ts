@@ -10,11 +10,32 @@ export class Panel {
 
   rpc
   id
-  x
-  y
-  w
-  h
 
+  private _x = 0;
+  get x() { return this._x }
+  set x(n: number) {
+    if (this._x !== n) this.move(this._x = n, this.y)
+  }
+
+  private _y = 0;
+  get y() { return this._y }
+  set y(n: number) {
+    if (this._y !== n) this.move(this.x, this._y = n)
+  }
+
+  private _w = 0;
+  get w() { return this._w }
+  set w(n: number) {
+    if (this._w !== n) this.resize(this._w = n, this.h)
+  }
+
+  private _h = 0;
+  get h() { return this._h }
+  set h(n: number) {
+    if (this._h !== n) this.resize(this.w, this._h = n)
+  }
+
+  absmouse: MousePos = { x: 0, y: 0 }
   mouse: MousePos = { x: 0, y: 0 }
   down?: () => void
 
@@ -23,10 +44,10 @@ export class Panel {
 
     this.rpc = rpc
     this.id = id
-    this.x = x
-    this.y = y
-    this.w = w
-    this.h = h
+    this._x = x
+    this._y = y
+    this._w = w
+    this._h = h
   }
 
   move(x: number, y: number) {
@@ -65,10 +86,13 @@ export class Panel {
   }
 
   onMouseDown(b: number) {
-    this.down = dragMove(this.mouse, this)
+    this.down = dragMove(this.absmouse, this)
   }
 
   onMouseMoved(x: number, y: number) {
+    this.absmouse.x = x
+    this.absmouse.y = y
+
     this.mouse.x = x - this.x
     this.mouse.y = y - this.y
     this.down?.()
