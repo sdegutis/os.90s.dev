@@ -4,6 +4,8 @@ console.log('hey')
 
 const pid = Promise.withResolvers()
 
+let panelp: PromiseWithResolvers<[number, number, number, number, number]>
+
 const rpc = progRPC(self, {
 
   init(id) {
@@ -11,7 +13,7 @@ const rpc = progRPC(self, {
   },
 
   panel(id, x, y, w, h) {
-
+    panelp?.resolve([id, x, y, w, h])
   },
 
 })
@@ -22,7 +24,13 @@ console.log('got ', id)
 
 if (id === 1) {
 
+  panelp = Promise.withResolvers()
+
   rpc('newpanel', [])
+
+  const res = await panelp.promise
+
+  console.log(res)
 
 
 

@@ -38,7 +38,7 @@ class Process {
     this.rpc = sysRPC(worker, {
 
       newpanel: () => {
-
+        this.rpc('panel', [1, 2, 3, 4, 5])
       },
 
     })
