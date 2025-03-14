@@ -34,12 +34,12 @@ export class Panel {
     Panel.focused = this
   }
 
-  focus() {
-    this.proc.rpc.send('focus', [this.id])
-  }
-
-  blur() {
-    this.proc.rpc.send('blur', [this.id])
-  }
+  focus() { this.proc.rpc.send('focus', [this.id]) }
+  blur() { this.proc.rpc.send('blur', [this.id]) }
+  mouseenter() { this.proc.rpc.send('mouseentered', [this.id]) }
+  mousedown(b: number) { this.proc.rpc.send('mousedown', [this.id, b]) }
+  mouseup() { this.proc.rpc.send('mouseup', [this.id]) }
+  mousemove(x: number, y: number) { this.proc.rpc.send('mousemoved', [this.id, x, y]) }
+  mouseexit() { this.proc.rpc.send('mouseexited', [this.id]) }
 
 }

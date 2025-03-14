@@ -53,6 +53,26 @@ export class Panel {
     this.rpc.send('blitpanel', [this.id, bmp], [bmp])
   }
 
+  onMouseEntered() {
+    console.log('onMouseEntered', this.id)
+  }
+
+  onMouseExited() {
+    console.log('onMouseExited', this.id)
+  }
+
+  onMouseMoved(x: number, y: number) {
+    console.log('onMouseMoved', this.id)
+  }
+
+  onMouseDown(b: number) {
+    console.log('onMouseDown', this.id)
+  }
+
+  onMouseUp() {
+    console.log('onMouseUp', this.id)
+  }
+
   onFocus() {
 
   }

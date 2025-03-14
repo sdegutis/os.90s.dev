@@ -14,10 +14,12 @@ interface ToProg {
   newpanel(id: number, x: number, y: number, w: number, h: number): void
   focus(id: number): void
   blur(id: number): void
+  mouseentered(id: number): void
+  mouseexited(id: number): void
+  mousemoved(id: number, x: number, y: number): void
+  mousedown(id: number, b: number): void
+  mouseup(id: number): void
 
-  // mouseMoved(x: number, y: number): void
-  // mouseDown(button: number): void
-  // mouseUp(button: number): void
   // keyDown(key: string): void
   // keyUp(key: string): void
   // wheel(n: number): void

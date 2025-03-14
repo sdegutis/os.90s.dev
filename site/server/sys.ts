@@ -17,6 +17,7 @@ export class Sys {
 
     let hovered: Panel | null = null
     let focused: Panel | null = null
+    let clicking: Panel | null = null
 
     canvas.onmousemove = (e) => {
       const x = Math.min(320 - 1, e.offsetX)
@@ -28,7 +29,15 @@ export class Sys {
 
       this.redrawAllPanels()
 
-      hovered = this.findHovered()
+      const newhovered = this.findHovered()
+
+      if (newhovered !== hovered) {
+        hovered?.mouseexit()
+        hovered = newhovered
+        hovered?.mouseenter()
+      }
+
+      hovered?.mousemove(this.mouse.x, this.mouse.y)
     }
 
     canvas.onmousedown = (e) => {
@@ -41,7 +50,6 @@ export class Sys {
       }
 
       if (hovered.pos === 'normal') {
-
         const oldi = Panel.ordered.indexOf(hovered)
         const newi = Panel.ordered.findLastIndex(p => p.pos !== 'top')
 
@@ -51,6 +59,13 @@ export class Sys {
         this.redrawAllPanels()
       }
 
+      clicking = hovered
+      clicking.mousedown(e.button)
+    }
+
+    canvas.onmouseup = (e) => {
+      clicking?.mouseup()
+      clicking = null
     }
 
   }

@@ -15,6 +15,26 @@ class Program {
       Panel.map.get(id)?.onFocus()
     })
 
+    this.rpc.listen('mouseentered', (id) => {
+      Panel.map.get(id)?.onMouseEntered()
+    })
+
+    this.rpc.listen('mouseexited', (id) => {
+      Panel.map.get(id)?.onMouseExited()
+    })
+
+    this.rpc.listen('mousemoved', (id, x, y) => {
+      Panel.map.get(id)?.onMouseMoved(x, y)
+    })
+
+    this.rpc.listen('mousedown', (id, b) => {
+      Panel.map.get(id)?.onMouseDown(b)
+    })
+
+    this.rpc.listen('mouseup', (id) => {
+      Panel.map.get(id)?.onMouseUp()
+    })
+
     this.rpc.listen('blur', id => {
       Panel.map.get(id)?.onBlur()
     })
