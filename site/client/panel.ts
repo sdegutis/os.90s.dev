@@ -61,13 +61,13 @@ export class Panel {
   move(x: number, y: number) {
     this.x = x
     this.y = y
-    this.rpc.send('adjpanel', [this.id, this.x, this.y, this.w, this.h])
+    this.rpc.send('adjust', [this.id, this.x, this.y, this.w, this.h])
   }
 
   resize(w: number, h: number) {
     this.w = w
     this.h = h
-    this.rpc.send('adjpanel', [this.id, this.x, this.y, this.w, this.h])
+    this.rpc.send('adjust', [this.id, this.x, this.y, this.w, this.h])
     this.blit()
   }
 
@@ -84,7 +84,7 @@ export class Panel {
 
     ctx.fillRect(0, 0, this.w, this.h)
     const bmp = canvas.transferToImageBitmap()
-    this.rpc.send('blitpanel', [this.id, bmp], [bmp])
+    this.rpc.send('blit', [this.id, bmp], [bmp])
   }
 
   onMouseEntered() {

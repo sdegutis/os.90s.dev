@@ -16,8 +16,8 @@ export interface ToProg {
 }
 
 export interface ToPanel {
-  adjpanel(id: number, x: number, y: number, w: number, h: number): void
-  blitpanel(id: number, img: ImageBitmap): void
+  adjust(id: number, x: number, y: number, w: number, h: number): void
+  blit(id: number, img: ImageBitmap): void
 }
 
 export interface FromPanel {

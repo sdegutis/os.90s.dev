@@ -60,8 +60,6 @@ export class Sys {
 
         Panel.ordered.splice(oldi, 1)
         Panel.ordered.splice(newi, 0, hovered)
-
-        this.redrawAllPanels()
       }
 
       clicking = hovered
