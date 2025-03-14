@@ -1,6 +1,21 @@
 import { progRPC } from "../shared/rpc.js"
 import { $$ } from "../util/jsx.js"
 import { Listener } from "../util/listener.js"
+import { View } from "../views/view.js"
+
+
+class Root extends View {
+
+  constructor(config: Partial<Root>) { super() }
+
+  panel!: Panel
+
+  // override draw(): void {
+  //   super.draw()
+  //   this.panel.blit()
+  // }
+
+}
 
 class Panel {
 
@@ -25,23 +40,12 @@ class Panel {
     const init = Promise.withResolvers<void>()
     this.ready = init.promise
 
-    this.frame = $$(
-      <view>
-      </view>
-    ).view
-
-    this.frame.draw()
+    this.frame = $$(<Root panel={this} />).view
 
     this.rpc = progRPC(self, {
       init: (x, y, w, h) => {
         this.move(x, y)
         this.resize(w, h)
-        this.blit()
-
-        // const pix = new PixelCanvas(this.frame)
-        // pix.pixels.fill(77)
-        // pix.blit()
-
         init.resolve()
       },
       mouseMoved: (x, y) => {

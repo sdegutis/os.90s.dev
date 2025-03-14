@@ -19,6 +19,7 @@ declare global {
     type ElementType =
       | keyof IntrinsicElements
       | ((data: any) => Element)
+      | (new (...args: any) => View)
 
     type Element = {
       [jsx: symbol]: any,
@@ -36,7 +37,10 @@ export function $$({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element):
         [children]
   ).map($$)
 
-  if (typeof tag === 'function') {
+  if (tag.prototype instanceof View) {
+    return new IntrinsicNode(tag, jsx, children)
+  }
+  else if (typeof tag === 'function') {
     return new FunctionNode(tag, jsx, children)
   }
   else {
