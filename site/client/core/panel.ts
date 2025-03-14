@@ -1,6 +1,7 @@
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
 import { Rect } from "../util/rect.js"
+import type { View } from "../views/view.js"
 
 type MousePos = { x: number, y: number }
 
@@ -18,8 +19,9 @@ export class Panel extends Rect {
   down?: () => void
 
   didClose = new Listener()
+  view
 
-  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number) {
+  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, view: View) {
     super()
 
     Panel.all.set(id, this)
@@ -29,6 +31,9 @@ export class Panel extends Rect {
     this._y = y
     this._w = w
     this._h = h
+    this.view = view
+
+    this.view.resize(w, h)
 
     this.rpc = wRPC<ClientPanel, ServerPanel>(port)
 
@@ -85,6 +90,7 @@ export class Panel extends Rect {
   }
 
   override resize(w: number, h: number) {
+    this.view.resize(w, h)
     this.w = w
     this.h = h
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
@@ -92,18 +98,8 @@ export class Panel extends Rect {
   }
 
   blit() {
-    const canvas = new OffscreenCanvas(this.w, this.h)
-    const ctx = canvas.getContext('2d')!
-
-    ctx.fillStyle = ({
-      '/apps/desktop.js': '#333',
-      '/apps/prog1.js': '#300c',
-      '/apps/prog2.js': '#030c',
-      '/apps/prog3.js': '#003c',
-    })[location.pathname]!
-
-    ctx.fillRect(0, 0, this.w, this.h)
-    const bmp = canvas.transferToImageBitmap()
+    this.view.draw()
+    const bmp = this.view.canvas.transferToImageBitmap()
     this.rpc.send('blit', [bmp], [bmp])
   }
 

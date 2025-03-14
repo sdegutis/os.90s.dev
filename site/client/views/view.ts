@@ -33,9 +33,7 @@ export class View extends Rect {
   }
 
   draw() {
-    if ((this.background & 0x000000ff) > 0) {
-      this.rectFill(0, 0, this.w, this.h, this.background)
-    }
+    this.rectFill(0, 0, this.w, this.h, this.background)
     // for (const child of this.children) {
     //   this.ctx.drawImage(child.canvas, child.x, child.y)
     // }
@@ -47,6 +45,7 @@ export class View extends Rect {
     const b = (c >> 8 & 0xff).toString(16).padStart(2, '0')
     const a = (c & 0xff).toString(16).padStart(2, '0')
     this.ctx.fillStyle = `#${r}${g}${b}${a}`
+    console.log(this.ctx.fillStyle)
     this.ctx.fillRect(x, y, w, h)
   }
 
