@@ -14,23 +14,23 @@ export class Sys {
   mouse = { x: 0, y: 0 }
   keymap: KeyMap = Object.create(null)
 
+  hovered: Panel | null = null
+  focused: Panel | null = null
+  clicking: Panel | null = null
+
   constructor() {
     const { canvas, ctx } = setupCanvas()
     this.ctx = ctx
 
-    let hovered: Panel | null = null
-    let focused: Panel | null = null
-    let clicking: Panel | null = null
-
     canvas.onkeydown = (e) => {
       this.keymap[e.key] = true
-      focused?.rpc.send('keydown', [e.key])
+      this.focused?.rpc.send('keydown', [e.key])
       this.redrawAllPanels()
     }
 
     canvas.onkeyup = (e) => {
       delete this.keymap[e.key]
-      focused?.rpc.send('keyup', [e.key])
+      this.focused?.rpc.send('keyup', [e.key])
       this.redrawAllPanels()
     }
 
@@ -44,42 +44,42 @@ export class Sys {
 
       const newhovered = this.findHovered()
 
-      if (newhovered !== hovered) {
-        hovered?.rpc.send('mouseexited', [])
-        hovered = newhovered
-        hovered?.rpc.send('mouseentered', [])
+      if (newhovered !== this.hovered) {
+        this.hovered?.rpc.send('mouseexited', [])
+        this.hovered = newhovered
+        this.hovered?.rpc.send('mouseentered', [])
       }
 
-      const sendto = clicking ?? hovered
+      const sendto = this.clicking ?? this.hovered
       sendto?.rpc.send('mousemoved', [this.mouse.x, this.mouse.y])
 
       this.redrawAllPanels()
     }
 
     canvas.onmousedown = (e) => {
-      if (!hovered) return
+      if (!this.hovered) return
 
-      if (focused !== hovered) {
-        focused?.rpc.send('blur', [])
-        focused = hovered
-        focused.rpc.send('focus', [this.keymap])
+      if (this.focused !== this.hovered) {
+        this.focused?.rpc.send('blur', [])
+        this.focused = this.hovered
+        this.focused.rpc.send('focus', [this.keymap])
       }
 
-      hovered.moveToFront()
+      this.hovered.moveToFront()
 
-      clicking = hovered
-      clicking.rpc.send('mousedown', [e.button])
+      this.clicking = this.hovered
+      this.clicking.rpc.send('mousedown', [e.button])
       this.redrawAllPanels()
     }
 
     canvas.onmouseup = (e) => {
-      clicking?.rpc.send('mouseup', [])
-      clicking = null
+      this.clicking?.rpc.send('mouseup', [])
+      this.clicking = null
       this.redrawAllPanels()
     }
 
     canvas.onwheel = (e) => {
-      hovered?.rpc.send('wheel', [e.deltaY])
+      this.hovered?.rpc.send('wheel', [e.deltaY])
       this.redrawAllPanels()
     }
 
@@ -107,6 +107,16 @@ export class Sys {
 
   private drawCursor() {
     this.ctx.drawImage(cursor, this.mouse.x, this.mouse.y)
+  }
+
+  removePanel(panel: Panel) {
+    Panel.all.delete(panel.id)
+    const i = Panel.ordered.indexOf(panel)
+    Panel.ordered.splice(i, 1)
+
+    if (this.hovered === panel) this.hovered = null
+    if (this.clicking === panel) this.clicking = null
+    if (this.focused === panel) this.focused = null
   }
 
 }

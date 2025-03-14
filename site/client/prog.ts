@@ -3,7 +3,7 @@ import { wRPC, type ClientProg, type PanelPos, type ServerSys } from "../shared/
 
 export class Program {
 
-  rpc = wRPC<ClientProg, ServerSys>(self)
+  private rpc = wRPC<ClientProg, ServerSys>(self)
   pid = 0
 
   async init() {

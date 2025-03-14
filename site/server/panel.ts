@@ -16,13 +16,15 @@ export class Panel {
 
   img?: ImageBitmap
 
-  pos
+  port
   rpc
+  pos
 
   didAdjust = new Listener()
   didRedraw = new Listener()
 
   constructor(port: MessagePort, pos: PanelPos) {
+    this.port = port
     this.rpc = wRPC<ServerPanel, ClientPanel>(port)
     this.pos = pos
 
@@ -63,6 +65,10 @@ export class Panel {
 
     Panel.ordered.splice(oldi, 1)
     Panel.ordered.splice(newi, 0, this)
+  }
+
+  closePort() {
+    this.port.close()
   }
 
 }
