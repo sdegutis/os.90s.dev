@@ -1,30 +1,8 @@
-export class View {
+import { Rect } from "../client/rect.js"
+
+export class View extends Rect {
 
   background = 0x000000ff
-
-  private _x = 0;
-  get x() { return this._x }
-  set x(n: number) {
-    if (this._x !== n) this.move(this._x = n, this.y)
-  }
-
-  private _y = 0;
-  get y() { return this._y }
-  set y(n: number) {
-    if (this._y !== n) this.move(this.x, this._y = n)
-  }
-
-  private _w = 0;
-  get w() { return this._w }
-  set w(n: number) {
-    if (this._w !== n) this.resize(this._w = n, this.h)
-  }
-
-  private _h = 0;
-  get h() { return this._h }
-  set h(n: number) {
-    if (this._h !== n) this.resize(this.w, this._h = n)
-  }
 
   private _children: View[] = []
   get children(): readonly View[] { return this._children }
@@ -43,13 +21,13 @@ export class View {
 
   init?(): void
 
-  resize(w: number, h: number) {
+  override resize(w: number, h: number) {
     this.canvas.width = this.w = w
     this.canvas.height = this.h = h
     this.draw()
   }
 
-  move(x: number, y: number) {
+  override move(x: number, y: number) {
     this.x = x
     this.y = y
   }
