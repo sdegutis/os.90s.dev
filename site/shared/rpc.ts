@@ -3,20 +3,12 @@ import { Listener } from "./listener.js"
 interface ToSys {
   init(): void
   newpanel(): void
-
-  // adjust(x: number, y: number, w: number, h: number): void
-  // blit(img: ImageBitmap): void
-  // quit(): void
-  // max(): void
-  // min(): void
-  // fullscreen(): void
-  // restore(): void
+  adjpanel(id: number, x: number, y: number, w: number, h: number): void
+  blitpanel(id: number, img: ImageBitmap): void
 }
 
 interface ToProg {
-
   init(id: number): void
-
   newpanel(id: number, x: number, y: number, w: number, h: number): void
 
   // mouseMoved(x: number, y: number): void
