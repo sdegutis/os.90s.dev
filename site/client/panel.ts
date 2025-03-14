@@ -37,7 +37,7 @@ export class Panel {
 
   absmouse: MousePos = { x: 0, y: 0 }
   mouse: MousePos = { x: 0, y: 0 }
-  down?: () => void
+  // down?: () => void
 
   constructor(rpc: Rpc, id: number, x: number, y: number, w: number, h: number) {
     Panel.map.set(id, this)
@@ -86,7 +86,7 @@ export class Panel {
   }
 
   onMouseDown(b: number) {
-    this.down = dragMove(this.absmouse, this)
+    // this.down = dragMove(this.absmouse, this)
   }
 
   onMouseMoved(x: number, y: number) {
@@ -95,11 +95,11 @@ export class Panel {
 
     this.mouse.x = x - this.x
     this.mouse.y = y - this.y
-    this.down?.()
+    // this.down?.()
   }
 
   onMouseUp() {
-    delete this.down
+    // delete this.down
   }
 
   onFocus() {
@@ -112,15 +112,15 @@ export class Panel {
 
 }
 
-export function dragMove(m: MousePos, o: { x: number, y: number }) {
-  const startPos = { x: o.x, y: o.y }
-  const offx = m.x - startPos.x
-  const offy = m.y - startPos.y
-  return () => {
-    const diffx = m.x - startPos.x
-    const diffy = m.y - startPos.y
-    o.x = startPos.x + diffx - offx
-    o.y = startPos.y + diffy - offy
-    return { x: diffx - offx, y: diffy - offy }
-  }
-}
+// export function dragMove(m: MousePos, o: { x: number, y: number }) {
+//   const startPos = { x: o.x, y: o.y }
+//   const offx = m.x - startPos.x
+//   const offy = m.y - startPos.y
+//   return () => {
+//     const diffx = m.x - startPos.x
+//     const diffy = m.y - startPos.y
+//     o.x = startPos.x + diffx - offx
+//     o.y = startPos.y + diffy - offy
+//     return { x: diffx - offx, y: diffy - offy }
+//   }
+// }
