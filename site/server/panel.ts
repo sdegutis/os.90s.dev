@@ -5,7 +5,7 @@ export class Panel {
 
   static focused?: Panel
   static ordered: Panel[] = []
-  static map = new Map<number, Panel>()
+  static all = new Map<number, Panel>()
   static id = 0
   id
 
@@ -29,7 +29,7 @@ export class Panel {
     this.pos = pos
     this.keymap = keymap
 
-    Panel.map.set(this.id = ++Panel.id, this)
+    Panel.all.set(this.id = ++Panel.id, this)
 
     const posi = pos === 'bottom' ? 0 : Panel.ordered.length
     Panel.ordered.splice(posi, 0, this)
@@ -40,7 +40,7 @@ export class Panel {
     Panel.focused = this
 
     this.rpc.listen('adjust', (id, x, y, w, h) => {
-      const panel = Panel.map.get(id)!
+      const panel = Panel.all.get(id)!
       panel.x = x
       panel.y = y
       panel.w = w
@@ -49,7 +49,7 @@ export class Panel {
     })
 
     this.rpc.listen('blit', (id, img) => {
-      const panel = Panel.map.get(id)!
+      const panel = Panel.all.get(id)!
       panel.img?.close()
       panel.img = img
       this.didRedraw.dispatch()

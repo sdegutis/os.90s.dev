@@ -4,7 +4,7 @@ import type { Sys } from './sys.js'
 
 export class Process {
 
-  static map = new Map<number, Process>()
+  static all = new Map<number, Process>()
   static id = 0
   id
 
@@ -14,7 +14,7 @@ export class Process {
   constructor(sys: Sys, path: string) {
     this.sys = sys
 
-    Process.map.set(this.id = ++Process.id, this)
+    Process.all.set(this.id = ++Process.id, this)
 
     const absurl = new URL(path, import.meta.url)
     const worker = new Worker(absurl, { type: 'module' })
