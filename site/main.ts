@@ -5,6 +5,8 @@ const { canvas, ctx } = setupCanvas()
 
 class Panel {
 
+  static map = new Map<number, Panel>()
+  static id = 0
   id
 
   x = 0
@@ -15,31 +17,15 @@ class Panel {
   img?: ImageBitmap
 
   constructor(proc: Process) {
-    this.id = panels.add(this)
+    Panel.map.set(this.id = ++Panel.id, this)
   }
 
 }
 
-
-class EternalList<T> {
-
-  map = new Map<number, T>()
-  id = 0
-
-  add(t: T) {
-    const id = ++this.id
-    this.map.set(id, t)
-    return id
-  }
-
-}
-
-const processes = new EternalList<Process>()
-const panels = new EternalList<Panel>()
 
 function redrawAllPanels() {
   ctx.clearRect(0, 0, 320, 180)
-  for (const panel of panels.map.values()) {
+  for (const panel of Panel.map.values()) {
     if (panel.img) {
       ctx.drawImage(panel.img, panel.x, panel.y)
     }
@@ -54,11 +40,14 @@ cursorctx.fillRect(0, 0, 1, 1)
 
 class Process {
 
-  id: number
+  static map = new Map<number, Process>()
+  static id = 0
+  id
+
   rpc
 
   constructor(path: string) {
-    this.id = processes.add(this)
+    Process.map.set(this.id = ++Process.id, this)
 
     const absurl = new URL(path, import.meta.url)
     const worker = new Worker(absurl, { type: 'module' })
@@ -75,7 +64,7 @@ class Process {
     })
 
     this.rpc.listen('adjpanel', (id, x, y, w, h) => {
-      const panel = panels.map.get(id)!
+      const panel = Panel.map.get(id)!
       panel.x = x
       panel.y = y
       panel.w = w
@@ -83,7 +72,7 @@ class Process {
     })
 
     this.rpc.listen('blitpanel', (id, img) => {
-      const panel = panels.map.get(id)!
+      const panel = Panel.map.get(id)!
       panel.img = img
       redrawAllPanels()
     })
