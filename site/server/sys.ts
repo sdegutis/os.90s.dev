@@ -27,8 +27,6 @@ export class Sys {
       this.mouse.x = x
       this.mouse.y = y
 
-      this.redrawAllPanels()
-
       const newhovered = this.findHovered()
 
       if (newhovered !== hovered) {
@@ -43,6 +41,8 @@ export class Sys {
       else {
         hovered?.mousemove(this.mouse.x, this.mouse.y)
       }
+
+      this.redrawAllPanels()
     }
 
     canvas.onmousedown = (e) => {
