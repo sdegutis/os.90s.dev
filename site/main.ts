@@ -1,5 +1,5 @@
-import { setupCanvas } from './core/sys.js'
 import { sysRPC } from './shared/rpc.js'
+import { setupCanvas } from './util/canvas.js'
 
 const { canvas, ctx } = setupCanvas()
 
@@ -38,12 +38,19 @@ const processes = new EternalList<Process>()
 const panels = new EternalList<Panel>()
 
 function redrawAllPanels() {
+  ctx.clearRect(0, 0, 320, 180)
   for (const panel of panels.map.values()) {
     if (panel.img) {
       ctx.drawImage(panel.img, panel.x, panel.y)
     }
   }
+  ctx.drawImage(cursor, mouse.x, mouse.y)
 }
+
+const cursor = new OffscreenCanvas(1, 1)
+const cursorctx = cursor.getContext('2d')!
+cursorctx.fillStyle = '#fff'
+cursorctx.fillRect(0, 0, 1, 1)
 
 class Process {
 
@@ -88,3 +95,14 @@ class Process {
 const proc1 = new Process('/apps/prog1.js')
 // const proc2 = new Process('/apps/prog1.js')
 // const proc3 = new Process('/apps/prog1.js')
+
+const mouse = { x: 0, y: 0 }
+
+canvas.onmousemove = (e) => {
+  const x = Math.min(320 - 1, e.offsetX)
+  const y = Math.min(180 - 1, e.offsetY)
+  if (x === mouse.x && y === mouse.y) return
+  mouse.x = x
+  mouse.y = y
+  redrawAllPanels()
+}
