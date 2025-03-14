@@ -2,7 +2,9 @@ import { progRPC } from "../shared/rpc.js"
 
 type Rpc = ReturnType<typeof progRPC>
 
-class PanelProxy {
+class Panel {
+
+  static map = new Map<number, Panel>()
 
   rpc
   id
@@ -12,6 +14,8 @@ class PanelProxy {
   h
 
   constructor(rpc: Rpc, id: number, x: number, y: number, w: number, h: number) {
+    Panel.map.set(id, this)
+
     this.rpc = rpc
     this.id = id
     this.x = x
@@ -35,7 +39,7 @@ class PanelProxy {
   blit() {
     const canvas = new OffscreenCanvas(this.w, this.h)
     const ctx = canvas.getContext('2d')!
-    ctx.fillStyle = '#900'
+    ctx.fillStyle = this.id === 1 ? '#900' : this.id === 2 ? '#090' : '#009'
     ctx.fillRect(0, 0, this.w, this.h)
     const bmp = canvas.transferToImageBitmap()
     rpc.send('blitpanel', [this.id, bmp], [bmp])
@@ -43,22 +47,16 @@ class PanelProxy {
 
 }
 
-const panels = new Map<number, PanelProxy>()
-
 const rpc = progRPC(self)
 
 rpc.send('init', [])
-const [id] = await rpc.once('init')
+const [pid] = await rpc.once('init')
 
 async function makePanel() {
   rpc.send('newpanel', [])
   const [id, x, y, w, h] = await rpc.once('newpanel')
-  const panel = new PanelProxy(rpc, id, x, y, w, h)
-  panels.set(id, panel)
-  return panel
+  return new Panel(rpc, id, x, y, w, h)
 }
 
-if (id === 1) {
-  const panel = await makePanel()
-  panel.blit()
-}
+const panel = await makePanel()
+panel.blit()
