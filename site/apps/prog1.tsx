@@ -1,5 +1,9 @@
 import { progRPC } from "../shared/rpc.js"
 
+await new Promise(res => setTimeout(res, 1))
+
+console.log('oops')
+
 const rpc = progRPC(self)
 const [id] = await rpc.once('init')
 
