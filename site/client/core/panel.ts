@@ -99,7 +99,6 @@ export class Panel extends Rect {
   }
 
   blit() {
-    this.view.draw()
     const bmp = this.view.canvas.transferToImageBitmap()
     this.rpc.send('blit', [bmp], [bmp])
   }
