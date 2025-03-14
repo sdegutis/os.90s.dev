@@ -30,7 +30,7 @@ class Panel {
       </view>
     ).view
 
-    this.frame.redraw()
+    this.frame.draw()
 
     this.rpc = progRPC(self, {
       init: (x, y, w, h) => {

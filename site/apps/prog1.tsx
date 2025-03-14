@@ -12,5 +12,5 @@ panel.frame.children = [
 
 panel.frame.background = 0x99000099
 
-panel.frame.redraw()
+panel.frame.draw()
 panel.blit()
