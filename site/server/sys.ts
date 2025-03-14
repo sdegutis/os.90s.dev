@@ -37,9 +37,11 @@ export class Sys {
         hovered?.mouseenter()
       }
 
-      hovered?.mousemove(this.mouse.x, this.mouse.y)
-      if (hovered !== clicking) {
-        clicking?.mousemove(this.mouse.x, this.mouse.y)
+      if (clicking) {
+        clicking.mousemove(this.mouse.x, this.mouse.y)
+      }
+      else {
+        hovered?.mousemove(this.mouse.x, this.mouse.y)
       }
     }
 
