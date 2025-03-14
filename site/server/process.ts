@@ -27,7 +27,7 @@ export class Process {
 
     this.rpc.listen('newpanel', (pos) => {
       const chan = new MessageChannel()
-      const p = new Panel(sys.keymap, chan.port1, pos)
+      const p = new Panel(chan.port1, pos)
       this.rpc.send('newpanel', [p.id, p.x, p.y, p.w, p.h, chan.port2], [chan.port2])
 
       p.didAdjust.watch(() => sys.redrawAllPanels())

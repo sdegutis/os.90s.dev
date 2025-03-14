@@ -24,13 +24,13 @@ export class Sys {
 
     canvas.onkeydown = (e) => {
       this.keymap[e.key] = true
-      focused?.keydown(e.key)
+      focused?.rpc.send('keydown', [e.key])
       this.redrawAllPanels()
     }
 
     canvas.onkeyup = (e) => {
       delete this.keymap[e.key]
-      focused?.keyup(e.key)
+      focused?.rpc.send('keyup', [e.key])
       this.redrawAllPanels()
     }
 
@@ -45,17 +45,13 @@ export class Sys {
       const newhovered = this.findHovered()
 
       if (newhovered !== hovered) {
-        hovered?.mouseexit()
+        hovered?.rpc.send('mouseexited', [])
         hovered = newhovered
-        hovered?.mouseenter()
+        hovered?.rpc.send('mouseentered', [])
       }
 
-      if (clicking) {
-        clicking.mousemove(this.mouse.x, this.mouse.y)
-      }
-      else {
-        hovered?.mousemove(this.mouse.x, this.mouse.y)
-      }
+      const sendto = clicking ?? hovered
+      sendto?.rpc.send('mousemoved', [this.mouse.x, this.mouse.y])
 
       this.redrawAllPanels()
     }
@@ -64,9 +60,9 @@ export class Sys {
       if (!hovered) return
 
       if (focused !== hovered) {
-        focused?.blur()
+        focused?.rpc.send('blur', [])
         focused = hovered
-        focused.focus()
+        focused.rpc.send('focus', [this.keymap])
       }
 
       if (hovered.pos === 'normal') {
@@ -78,18 +74,18 @@ export class Sys {
       }
 
       clicking = hovered
-      clicking.mousedown(e.button)
+      clicking.rpc.send('mousedown', [e.button])
       this.redrawAllPanels()
     }
 
     canvas.onmouseup = (e) => {
-      clicking?.mouseup()
+      clicking?.rpc.send('mouseup', [])
       clicking = null
       this.redrawAllPanels()
     }
 
     canvas.onwheel = (e) => {
-      hovered?.wheel(e.deltaY)
+      hovered?.rpc.send('wheel', [e.deltaY])
       this.redrawAllPanels()
     }
 
