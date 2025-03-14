@@ -1,11 +1,12 @@
 import { Listener } from "./listener.js"
 
 export type PanelOrdering = 'normal' | 'bottom' | 'top'
+export type PanelPosition = [number, number]
 export type KeyMap = Record<string, true>
 
 export interface ServerProgram {
   init(): void
-  newpanel(ord: PanelOrdering, w: number, h: number): void
+  newpanel(ord: PanelOrdering, x: number, y: number, w: number, h: number): void
   terminate(): void
 }
 

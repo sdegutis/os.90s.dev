@@ -2,6 +2,8 @@ import { Listener } from "../shared/listener.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../shared/rpc.js"
 import type { Process } from "./process.js"
 
+type Rect = { x: number, y: number, w: number, h: number }
+
 export class Panel {
 
   static ordered: Panel[] = []
@@ -23,13 +25,15 @@ export class Panel {
   didAdjust = new Listener()
   didRedraw = new Listener()
 
-  constructor(w: number, h: number, proc: Process, port: MessagePort, pos: PanelOrdering) {
+  constructor(rect: Rect, proc: Process, port: MessagePort, pos: PanelOrdering) {
     this.port = port
     this.rpc = wRPC<ServerPanel, ClientPanel>(port)
     this.pos = pos
 
-    this.w = w
-    this.h = h
+    this.x = rect.x
+    this.y = rect.y
+    this.w = rect.w
+    this.h = rect.h
 
     Panel.all.set(this.id = ++Panel.id, this)
 
@@ -38,8 +42,10 @@ export class Panel {
     const posi = pos === 'bottom' ? 0 : Panel.ordered.findLastIndex(p => p.pos !== 'top') + 1
     Panel.ordered.splice(posi, 0, this)
 
-    this.x = (cascadeFrom?.x ?? 0) + 10
-    this.y = (cascadeFrom?.y ?? 0) + 10
+    if (this.x === -1 || this.y === -1) {
+      this.x = (cascadeFrom?.x ?? 0) + 10
+      this.y = (cascadeFrom?.y ?? 0) + 10
+    }
 
     this.rpc.once('close').then(() => {
       proc.closePanel(this)
