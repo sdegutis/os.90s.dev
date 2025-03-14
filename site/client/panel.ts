@@ -78,9 +78,9 @@ export class Panel {
 
     ctx.fillStyle = ({
       '/apps/desktop.js': '#333',
-      '/apps/prog1.js': '#900',
-      '/apps/prog2.js': '#090',
-      '/apps/prog3.js': '#009',
+      '/apps/prog1.js': '#300',
+      '/apps/prog2.js': '#030',
+      '/apps/prog3.js': '#003',
     })[location.pathname]!
 
     ctx.fillRect(0, 0, this.w, this.h)
