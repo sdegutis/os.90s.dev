@@ -22,10 +22,14 @@ export class Panel {
     this.pos = pos
 
     Panel.map.set(this.id = ++Panel.id, this)
-    Panel.ordered.push(this)
+
+    const posi = pos === 'bottom' ? 0 : Panel.ordered.length
+    Panel.ordered.splice(posi, 0, this)
 
     this.x = (Panel.focused?.x ?? 0) + 10
     this.y = (Panel.focused?.y ?? 0) + 10
+
+    console.log(this.id, this.x, this.y, Panel.focused)
 
     Panel.focused = this
   }
