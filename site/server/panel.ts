@@ -54,4 +54,15 @@ export class Panel {
 
   }
 
+  moveToFront() {
+    if (this.pos !== 'normal') return
+
+    const oldi = Panel.ordered.indexOf(this)
+    const newi = Panel.ordered.findLastIndex(p => p.pos !== 'top')
+    if (oldi === newi) return
+
+    Panel.ordered.splice(oldi, 1)
+    Panel.ordered.splice(newi, 0, this)
+  }
+
 }

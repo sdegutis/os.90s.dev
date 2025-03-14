@@ -65,13 +65,7 @@ export class Sys {
         focused.rpc.send('focus', [this.keymap])
       }
 
-      if (hovered.pos === 'normal') {
-        const oldi = Panel.ordered.indexOf(hovered)
-        const newi = Panel.ordered.findLastIndex(p => p.pos !== 'top')
-
-        Panel.ordered.splice(oldi, 1)
-        Panel.ordered.splice(newi, 0, hovered)
-      }
+      hovered.moveToFront()
 
       clicking = hovered
       clicking.rpc.send('mousedown', [e.button])
