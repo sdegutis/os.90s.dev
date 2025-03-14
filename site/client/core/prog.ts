@@ -21,8 +21,12 @@ export class Program {
     this.height = h
   }
 
-  async makePanel(data: { order: PanelOrdering, w: number, h: number, view: View }) {
-    const { order, w, h, view } = data
+  async makePanel(data: {
+    order: PanelOrdering,
+    size: [number, number],
+    view: View,
+  }) {
+    const { order, size: [w, h], view } = data
     this.rpc.send('newpanel', [order, w, h])
     const [id, x, y, port] = await this.rpc.once('newpanel')
 

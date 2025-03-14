@@ -6,7 +6,7 @@ await prog.init()
 
 const desktop = await prog.makePanel({
   order: 'bottom',
-  w: prog.width, h: prog.height - 20,
+  size: [prog.width, prog.height - 20],
   view: $$(
     <view background={0x333333ff} />
   )
@@ -19,7 +19,7 @@ desktop.blit()
 
 const taskbar = await prog.makePanel({
   order: 'top',
-  w: prog.width, h: 20,
+  size: [prog.width, 20],
   view: $$(
     <view background={0x444444ff} />
   )
