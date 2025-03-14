@@ -30,12 +30,12 @@ declare global {
   }
 }
 
-export function $$({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element): FunctionNode | IntrinsicNode {
+function buildTree({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element): FunctionNode | IntrinsicNode {
   children = (
     children === undefined ? [] :
       children instanceof Array ? children :
         [children]
-  ).map($$)
+  ).map(buildTree)
 
   if (tag.prototype instanceof View) {
     return new IntrinsicNode(tag, jsx, children)
@@ -48,6 +48,8 @@ export function $$({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element):
     return new IntrinsicNode(ctor, jsx, children)
   }
 }
+
+export const $$ = (jsx: JSX.Element) => buildTree(jsx).view
 
 class IntrinsicNode {
 
@@ -115,7 +117,7 @@ class FunctionNode {
 
   private createView(): View {
     const retval = this.fn({ ...this.data, children: this.children.map(c => c.view) })
-    const node = $$(retval)
+    const node = buildTree(retval)
     return node.view
   }
 

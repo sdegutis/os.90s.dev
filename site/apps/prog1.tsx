@@ -6,4 +6,4 @@ await prog.init()
 
 const panel = await prog.makePanel('normal', $$(
   <view background={0x77000033} />
-).view)
+))

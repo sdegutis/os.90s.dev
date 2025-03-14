@@ -45,7 +45,6 @@ export class View extends Rect {
     const b = (c >> 8 & 0xff).toString(16).padStart(2, '0')
     const a = (c & 0xff).toString(16).padStart(2, '0')
     this.ctx.fillStyle = `#${r}${g}${b}${a}`
-    console.log(this.ctx.fillStyle)
     this.ctx.fillRect(x, y, w, h)
   }
 

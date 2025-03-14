@@ -6,7 +6,7 @@ await prog.init()
 
 const desktop = await prog.makePanel('bottom', $$(
   <view background={0x333333ff} />
-).view)
+))
 
 desktop.move(0, 0)
 desktop.resize(prog.width, prog.height)
