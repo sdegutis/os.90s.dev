@@ -1,5 +1,5 @@
 import type { KeyMap } from "../shared/rpc.js"
-import { setupCanvas } from "../util/canvas.js"
+import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 
 const cursor = new OffscreenCanvas(1, 1)
