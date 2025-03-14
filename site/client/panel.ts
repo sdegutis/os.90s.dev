@@ -81,13 +81,10 @@ export class Panel extends Rect {
   }
 
   onMouseMoved(x: number, y: number) {
-    console.log()
     this.absmouse.x = x
     this.absmouse.y = y
     this.fixMouse()
     this.down?.()
-
-    console.log(this.keymap)
   }
 
   onMouseUp() {
