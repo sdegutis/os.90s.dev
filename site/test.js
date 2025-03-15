@@ -1,10 +1,10 @@
-const GRID_W = 320 * 2;
-const GRID_H = 180 * 2;
+const GRID_W = 320 * 1;
+const GRID_H = 180 * 1;
 
 const canvas = document.querySelector("canvas");
 canvas.width = GRID_W
 canvas.height = GRID_H
-canvas.style.transform = `scale(1)`
+canvas.style.transform = `scale(3)`
 canvas.style.imageRendering = 'pixelated'
 canvas.style.backgroundColor = '#000'
 canvas.style.outline = 'none'
@@ -125,7 +125,7 @@ let s = 0
 function render() {
 
   cellStateArray.fill(0)
-  for (let i = s++; i < cellStateArray.length; i += 9) {
+  for (let i = s++; i < cellStateArray.length; i += 6) {
     cellStateArray[i] = 1;
   }
   device.queue.writeBuffer(cellStateStorage, 0, cellStateArray);
@@ -139,7 +139,7 @@ function render() {
     colorAttachments: [{
       view: context.getCurrentTexture().createView(),
       loadOp: "clear",
-      clearValue: { r: 0, g: 0, b: 0.4, a: 1 },
+      clearValue: [0, 0, 0, 1],
       storeOp: "store",
     }]
   });
