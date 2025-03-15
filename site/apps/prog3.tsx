@@ -290,31 +290,54 @@ const panel = await prog.makePanel({
 
 
 
-// const cs = Array(20_000).keys().map(() => {
-//   return {}
+// const cs = Array(2000).keys().map(() => {
+
+//   const spr: number[] = []
+//   for (let y = 0; y < 8; y++) {
+//     for (let x = 0; x < 8; x++) {
+//       const c = Math.floor(0xffffffff * Math.random())
+//       spr.push(c)
+//     }
+//   }
+
+//   function fillrect(px: number, py: number, ctx: OffscreenCanvasRenderingContext2D) {
+//     for (let i = 0; i < 8 * 8; i++) {
+//       const x = i % 8
+//       const y = Math.floor(i / 8)
+//       const c = spr[i]
+//       ctx.fillStyle = '#' + c.toString(16).padStart(8, '0')
+//       ctx.fillRect(px + x, py + y, 1, 1)
+//     }
+//   }
+
+//   const c = new OffscreenCanvas(8, 8)
+//   fillrect(0, 0, c.getContext('2d')!)
+//   const img = c.transferToImageBitmap()
+
+//   const img2 = new Image(8, 8)
+//   img2
+
+//   return { img, fillrect }
+
 // }).toArray()
+
+// const ctx = panel.ctx
 
 // setTimeout(ontick((d) => {
 
-//   for (const { } of cs) {
-//     const x = Math.floor(200 * Math.random())
-//     const y = Math.floor(150 * Math.random())
-//     const w = 100//Math.floor(200 / 2 * Math.random()) + 200 / 2
-//     const h = 100//Math.floor(150 / 2 * Math.random()) + 150 / 2
-//     const c = Math.floor(0xffffffff * Math.random())
+//   for (const o of cs) {
+//     const x = Math.floor((400 - 8) * Math.random())
+//     const y = Math.floor((300 - 8) * Math.random())
 
-//     const ctx = view.ctx
-//     const r = (c >> 24 & 0xff).toString(16).padStart(2, '0')
-//     const g = (c >> 16 & 0xff).toString(16).padStart(2, '0')
-//     const b = (c >> 8 & 0xff).toString(16).padStart(2, '0')
-//     const a = (c & 0xff).toString(16).padStart(2, '0')
-//     ctx.fillStyle = `#${r}${g}${b}${a}`
-//     ctx.fillRect(x, y, w, h)
+//     o.fillrect(x, y, ctx)
+
+//     // ctx.drawImage(img, x, y)
+
 //   }
 
 //   console.log(d)
 
 //   panel.blit()
 
-// }), 5000)
+// }), 1000)
 
