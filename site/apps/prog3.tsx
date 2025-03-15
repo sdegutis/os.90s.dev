@@ -55,8 +55,7 @@ ontick((d) => {
 
 function blit() {
   for (let i = 0; i < cw * ch; i++) {
-    const c = grid[i]
-    dv.setUint32(i * 4, c)
+    dv.setUint32(i * 4, grid[i])
   }
 }
 
