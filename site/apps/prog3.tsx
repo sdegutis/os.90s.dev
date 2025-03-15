@@ -22,8 +22,9 @@ const panel = await prog.makePanel({
 
 
 
-const cs = Array(400_000).keys().map(() => {
-  return {}
+const cs = Array(300000).keys().map(() => {
+  const c = Math.floor(0xffffffff * Math.random())
+  return { c }
 }).toArray()
 
 
@@ -32,13 +33,12 @@ const grid = new Uint32Array(cw * ch)
 
 ontick((d) => {
 
-  for (const { } of cs) {
+  for (const { c } of cs) {
     const x = Math.floor(200 * Math.random())
     const y = Math.floor(150 * Math.random())
     const w = 5//Math.floor(200 / 2 * Math.random()) + 200 / 2
     const h = 5//Math.floor(150 / 2 * Math.random()) + 150 / 2
-    const c = Math.floor(0xffffffff * Math.random())
-    rectFill(x, y, w, h, c)
+    rectFill2(x, y, w, h, c)
   }
 
   blit()
@@ -78,12 +78,20 @@ function rectFill(x: number, y: number, w: number, h: number, c1: number) {
 
 
 
-      const ia = (255 - a2) / 255
-      const aa = (a2 / 255)
+      // const a3 = a1 + (a2 * (0xff - a1) / 0xff)
+      // const r3 = (r1 * a1 + r2 * a2 * (0xff - a1) / 0xff) / a3
+      // const g3 = (g1 * a1 + g2 * a2 * (0xff - a1) / 0xff) / a3
+      // const b3 = (b1 * a1 + b2 * a2 * (0xff - a1) / 0xff) / a3
+
+
+
+
+      const ia = (0xff - a2) / 0xff
+      const aa = (a2 / 0xff)
       const r3 = (r1 * ia) + (r2 * aa)
       const g3 = (g1 * ia) + (g2 * aa)
       const b3 = (b1 * ia) + (b2 * aa)
-      const a3 = a1//(a1 + a2) / 2
+      const a3 = (a1 + a2) / 2
 
       // const c3 = (c1 & c2) + ((c1 ^ c2) >> 1)
 
@@ -91,12 +99,59 @@ function rectFill(x: number, y: number, w: number, h: number, c1: number) {
 
       const c4 = (r3 << 24) | (g3 << 16) | (b3 << 8) | a3
 
-      grid[i] = c1
+      // console.log(c1)
+      // console.log(c1.toString(16))
+
+      grid[i] = c4
     }
 
     // grid.fill(c, i, i + w)
   }
 }
+
+
+
+
+function rectFill2(x: number, y: number, w: number, h: number, c: number) {
+  if ((c & 0xff) === 0xff) {
+    for (let i = y; i < y + h; i++) {
+      grid.fill(c, x, x + w)
+    }
+    return
+  }
+
+  for (let yy = 0; yy < h; yy++) {
+    for (let xx = 0; xx < w; xx++) {
+      const i = (yy + y) * cw + x + xx
+      grid[i] = blendColors(grid[i], c)
+    }
+  }
+}
+
+function blendColors(c1: number, c2: number) {
+  const [r1, g1, b1, a1] = intToRgb(c1)
+  const [r2, g2, b2, a2] = intToRgb(c2)
+  const ia = (0xff - a2) / 0xff
+  const aa = (a2 / 0xff)
+  const r3 = (r1 * ia) + (r2 * aa)
+  const g3 = (g1 * ia) + (g2 * aa)
+  const b3 = (b1 * ia) + (b2 * aa)
+  const a3 = (a1 + a2) / 2
+  return rgbToInt(r3, g3, b3, a3)
+}
+
+function intToRgb(c: number) {
+  const r = c >> 24 & 0xff
+  const g = c >> 16 & 0xff
+  const b = c >> 8 & 0xff
+  const a = c & 0xff
+  return [r, g, b, a]
+}
+
+function rgbToInt(r: number, g: number, b: number, a: number) {
+  return (r << 24) | (g << 16) | (b << 8) | a
+}
+
 
 
 
