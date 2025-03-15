@@ -16,36 +16,24 @@ export class View extends Rect {
 
   parent?: View
 
-  readonly canvas = new OffscreenCanvas(0, 0)
-  readonly ctx = this.canvas.getContext('2d')!
-
   init?(): void
 
   override resize(w: number, h: number) {
-    this.canvas.width = this._w = w
-    this.canvas.height = this._h = h
-    this.draw()
+    this.w = w
+    this.h = h
   }
 
   override move(x: number, y: number) {
-    this._x = x
-    this._y = y
+    this.x = x
+    this.y = y
   }
 
-  draw() {
-    this.rectFill(0, 0, this.w, this.h, this.background)
+  draw(ctx: OffscreenCanvasRenderingContext2D) {
+    ctx.fillStyle = `#${this.background.toString(16).padStart(8, '0')}`
+    ctx.fillRect(0, 0, this.w, this.h)
     // for (const child of this.children) {
     //   this.ctx.drawImage(child.canvas, child.x, child.y)
     // }
-  }
-
-  protected rectFill(x: number, y: number, w: number, h: number, c: number) {
-    const r = (c >> 24 & 0xff).toString(16).padStart(2, '0')
-    const g = (c >> 16 & 0xff).toString(16).padStart(2, '0')
-    const b = (c >> 8 & 0xff).toString(16).padStart(2, '0')
-    const a = (c & 0xff).toString(16).padStart(2, '0')
-    this.ctx.fillStyle = `#${r}${g}${b}${a}`
-    this.ctx.fillRect(x, y, w, h)
   }
 
 }

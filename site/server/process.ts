@@ -50,6 +50,7 @@ export class Process {
         this.terminate()
       }
     }, 5000)
+    clearInterval(this.heartbeat)
 
     rpc.listen('newpanel', (ord, x, y, w, h) => {
       const chan = new MessageChannel()

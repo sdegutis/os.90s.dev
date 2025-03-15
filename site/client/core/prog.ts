@@ -47,7 +47,7 @@ export class Program {
       }
     })
 
-    panel.view.draw()
+    panel.draw()
     panel.blit()
 
     return panel

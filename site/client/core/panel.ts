@@ -19,21 +19,27 @@ export class Panel extends Rect {
   down?: () => void
 
   didClose = new Listener()
-  view
+  root
 
-  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, view: View) {
+  readonly canvas = new OffscreenCanvas(0, 0)
+  readonly ctx = this.canvas.getContext('2d')!
+
+  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: View) {
     super()
 
     Panel.all.set(id, this)
+
+    this.canvas.width = w
+    this.canvas.height = h
 
     this.id = id
     this._x = x
     this._y = y
     this._w = w
     this._h = h
-    this.view = view
+    this.root = root
 
-    this.view.resize(w, h)
+    this.root.resize(w, h)
 
     this.rpc = wRPC<ClientPanel, ServerPanel>(port)
 
@@ -85,6 +91,7 @@ export class Panel extends Rect {
       delete this.keymap[key]
     })
 
+    this.draw()
     this.blit()
   }
 
@@ -96,15 +103,22 @@ export class Panel extends Rect {
   }
 
   override resize(w: number, h: number) {
-    this.view.resize(w, h)
+    this.root.resize(w, h)
     this.w = w
     this.h = h
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
+    this.canvas.width = w
+    this.canvas.height = h
+    this.draw()
     this.blit()
   }
 
+  draw() {
+    this.root.draw(this.ctx)
+  }
+
   blit() {
-    const bmp = this.view.canvas.transferToImageBitmap()
+    const bmp = this.canvas.transferToImageBitmap()
     this.rpc.send('blit', [bmp], [bmp])
   }
 
