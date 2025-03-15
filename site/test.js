@@ -114,8 +114,8 @@ function render() {
 
   cellStateArray.fill(0)
   for (let i = s++; i < cellStateArray.length; i += 6) {
-    // cellStateArray[i] = Math.floor(Math.random() * 0xffffffff);
-    cellStateArray[i] = 0x11;
+    cellStateArray[i] = Math.floor(Math.random() * 0xffffffff);
+    // cellStateArray[i] = 0x330000ff;
   }
   device.queue.writeBuffer(cellStateStorage, 0, cellStateArray);
 

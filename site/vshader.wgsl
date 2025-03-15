@@ -28,5 +28,14 @@ fn vertexMain(input: VertexInput) -> VertexOutput  {
 
 @fragment
 fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
-  return vec4f(input.cell/grid, 1-input.cell.x/grid.x, 1);
+
+  let i = u32(input.cell.x + grid.x * input.cell.y);
+  let c = cellState[i];
+
+  let r = f32((c >> 24) & 0xff) / 0xff;
+  let g = f32((c >> 16) & 0xff) / 0xff;
+  let b = f32((c >> 8) & 0xff) / 0xff;
+  let a = f32(c & 0xff) / 0xff;
+
+  return vec4f(r,g,b,a);
 }
