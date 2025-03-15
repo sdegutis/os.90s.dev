@@ -1,4 +1,4 @@
-const GRID_SIZE = 32;
+const GRID_SIZE = 8;
 
 const canvas = document.querySelector("canvas");
 
@@ -69,6 +69,30 @@ const cellPipeline = device.createRenderPipeline({
 
 
 
+
+// Create a uniform buffer that describes the grid.
+const uniformArray = new Float32Array([GRID_SIZE, GRID_SIZE]);
+const uniformBuffer = device.createBuffer({
+  label: "Grid Uniforms",
+  size: uniformArray.byteLength,
+  usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+});
+device.queue.writeBuffer(uniformBuffer, 0, uniformArray);
+
+const bindGroup = device.createBindGroup({
+  label: "Cell renderer bind group",
+  layout: cellPipeline.getBindGroupLayout(0),
+  entries: [{
+    binding: 0,
+    resource: { buffer: uniformBuffer }
+  }],
+});
+
+
+
+
+
+
 // Clear the canvas with a render pass
 const encoder = device.createCommandEncoder();
 
@@ -83,7 +107,8 @@ const pass = encoder.beginRenderPass({
 
 pass.setPipeline(cellPipeline);
 pass.setVertexBuffer(0, vertexBuffer);
-pass.draw(vertices.length / 2); // 6 vertices
+pass.setBindGroup(0, bindGroup);
+pass.draw(vertices.length / 2, GRID_SIZE ** 2); // 6 vertices
 
 pass.end();
 
