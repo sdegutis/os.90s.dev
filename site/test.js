@@ -1,6 +1,14 @@
-const GRID_SIZE = 32;
+const GRID_W = 320 * 2;
+const GRID_H = 180 * 2;
 
 const canvas = document.querySelector("canvas");
+canvas.width = GRID_W
+canvas.height = GRID_H
+canvas.style.transform = `scale(1)`
+canvas.style.imageRendering = 'pixelated'
+canvas.style.backgroundColor = '#000'
+canvas.style.outline = 'none'
+canvas.style.cursor = 'none'
 
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
@@ -19,7 +27,7 @@ context.configure({
 
 
 // Create an array representing the active state of each cell.
-const cellStateArray = new Uint32Array(GRID_SIZE * GRID_SIZE);
+const cellStateArray = new Uint32Array(GRID_W * GRID_H);
 
 // Create a storage buffer to hold the cell state.
 const cellStateStorage = device.createBuffer({
@@ -31,17 +39,17 @@ const cellStateStorage = device.createBuffer({
 
 
 
-
+const n = 1
 
 const vertices = new Float32Array([
 
-  -0.8, -0.8,
-  0.8, -0.8,
-  0.8, 0.8,
+  -n, -n,
+  n, -n,
+  n, n,
 
-  0.8, 0.8,
-  -0.8, 0.8,
-  -0.8, -0.8,
+  n, n,
+  -n, n,
+  -n, -n,
 
 ]);
 
@@ -91,7 +99,7 @@ const cellPipeline = device.createRenderPipeline({
 
 
 // Create a uniform buffer that describes the grid.
-const uniformArray = new Float32Array([GRID_SIZE, GRID_SIZE]);
+const uniformArray = new Float32Array([GRID_W, GRID_H]);
 const uniformBuffer = device.createBuffer({
   label: "Grid Uniforms",
   size: uniformArray.byteLength,
@@ -117,8 +125,7 @@ let s = 0
 function render() {
 
   cellStateArray.fill(0)
-
-  for (let i = s++; i < cellStateArray.length; i += 3) {
+  for (let i = s++; i < cellStateArray.length; i += 9) {
     cellStateArray[i] = 1;
   }
   device.queue.writeBuffer(cellStateStorage, 0, cellStateArray);
@@ -141,7 +148,7 @@ function render() {
   pass.setPipeline(cellPipeline);
   pass.setVertexBuffer(0, vertexBuffer);
   pass.setBindGroup(0, bindGroup);
-  pass.draw(vertices.length / 2, GRID_SIZE ** 2); // 6 vertices
+  pass.draw(vertices.length / 2, GRID_W * GRID_H); // 6 vertices
 
   pass.end();
 
