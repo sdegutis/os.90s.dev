@@ -1,4 +1,4 @@
-const GRID_SIZE = 8;
+const GRID_SIZE = 32;
 
 const canvas = document.querySelector("canvas");
 
