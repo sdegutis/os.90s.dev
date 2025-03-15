@@ -22,7 +22,7 @@ const panel = await prog.makePanel({
 
 
 
-const cs = Array(270000).keys().map(() => {
+const cs = Array(400000).keys().map(() => {
   return {}
 }).toArray()
 
@@ -33,7 +33,7 @@ const imgdata = new ImageData(pixels, cw, ch)
 const grid = new Uint32Array(cw * ch)
 const dv = new DataView(pixels.buffer)
 
-ontick((d) => {
+setTimeout(ontick((d) => {
 
   for (const { } of cs) {
     const x = Math.floor(200 * Math.random())
@@ -45,24 +45,33 @@ ontick((d) => {
   }
 
   blit()
-  view.ctx.putImageData(imgdata, 0, 0)
 
   console.log(d)
 
   panel.blit()
 
-})
+}), 1000)
 
 function blit() {
   for (let i = 0; i < cw * ch; i++) {
     dv.setUint32(i * 4, grid[i])
   }
+  view.ctx.putImageData(imgdata, 0, 0)
 }
 
 function rectFill(x: number, y: number, w: number, h: number, c: number) {
   for (let yy = y; yy < y + h; yy++) {
-    const i = yy * cw + x
-    grid.fill(c, i, i + w)
+    for (let xx = 0; xx < w; xx++) {
+      const i = yy * cw + x + xx
+
+      const c2 = grid[i]
+
+      const c3 = (c & c2) + ((c ^ c2) >> 1)
+
+      grid[i] = c
+    }
+
+    // grid.fill(c, i, i + w)
   }
 }
 
@@ -71,7 +80,7 @@ function rectFill(x: number, y: number, w: number, h: number, c: number) {
 
 
 
-// const cs = Array(190000).keys().map(() => {
+// const cs = Array(400000).keys().map(() => {
 //   return {}
 // }).toArray()
 
