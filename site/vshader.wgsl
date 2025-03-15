@@ -37,5 +37,9 @@ fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
   let b = f32((c >> 8) & 0xff) / 0xff;
   let a = f32(c & 0xff) / 0xff;
 
+  if (c == 0) {
+    discard;
+  }
+
   return vec4f(r,g,b,a);
 }

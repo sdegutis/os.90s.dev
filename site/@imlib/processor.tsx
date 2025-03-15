@@ -15,7 +15,7 @@ export default (({ inFiles, outFiles }) => {
   const paths = files.map(f => f.path).filter(s => !s.endsWith('.d.js'))
 
   const datas = (paths
-    .filter(s => !['js', 'html'].includes(ext(s)))
+    .filter(s => !['js', 'html', 'wgsl'].includes(ext(s)))
     .map(s => <link rel="preload" as="fetch" href={s.replace(/\.js$/, '')} crossorigin="anonymous" />))
 
   const modules = (paths
