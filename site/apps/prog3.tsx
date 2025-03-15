@@ -22,18 +22,15 @@ const panel = await prog.makePanel({
 
 
 
-const cs = Array(400000).keys().map(() => {
+const cs = Array(400_000).keys().map(() => {
   return {}
 }).toArray()
 
 
 const cw = 400, ch = 300
-const pixels = new Uint8ClampedArray(cw * ch * 4)
-const imgdata = new ImageData(pixels, cw, ch)
 const grid = new Uint32Array(cw * ch)
-const dv = new DataView(pixels.buffer)
 
-setTimeout(ontick((d) => {
+ontick((d) => {
 
   for (const { } of cs) {
     const x = Math.floor(200 * Math.random())
@@ -50,13 +47,10 @@ setTimeout(ontick((d) => {
 
   panel.blit()
 
-}), 1000)
+})
 
 function blit() {
-  for (let i = 0; i < cw * ch; i++) {
-    dv.setUint32(i * 4, grid[i])
-  }
-  view.ctx.putImageData(imgdata, 0, 0)
+  view.ctx.putImageData(new ImageData(new Uint8ClampedArray(grid.buffer), cw, ch), 0, 0)
 }
 
 function rectFill(x: number, y: number, w: number, h: number, c1: number) {
