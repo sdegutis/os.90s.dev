@@ -13,6 +13,26 @@ context.configure({
   format: canvasFormat,
 });
 
+
+
+
+
+
+// Create an array representing the active state of each cell.
+const cellStateArray = new Uint32Array(GRID_SIZE * GRID_SIZE);
+
+// Create a storage buffer to hold the cell state.
+const cellStateStorage = device.createBuffer({
+  label: "Cell State",
+  size: cellStateArray.byteLength,
+  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+});
+
+
+
+
+
+
 const vertices = new Float32Array([
 
   -0.8, -0.8,
@@ -85,32 +105,67 @@ const bindGroup = device.createBindGroup({
   entries: [{
     binding: 0,
     resource: { buffer: uniformBuffer }
+  }, {
+    binding: 1,
+    resource: { buffer: cellStateStorage }
   }],
 });
 
 
+let s = 0
+
+function render() {
+
+  cellStateArray.fill(0)
+
+  for (let i = s++; i < cellStateArray.length; i += 3) {
+    cellStateArray[i] = 1;
+  }
+  device.queue.writeBuffer(cellStateStorage, 0, cellStateArray);
 
 
 
+  // Clear the canvas with a render pass
+  const encoder = device.createCommandEncoder();
 
-// Clear the canvas with a render pass
-const encoder = device.createCommandEncoder();
-
-const pass = encoder.beginRenderPass({
-  colorAttachments: [{
-    view: context.getCurrentTexture().createView(),
-    loadOp: "clear",
-    clearValue: { r: 0, g: 0, b: 0.4, a: 1 },
-    storeOp: "store",
-  }]
-});
-
-pass.setPipeline(cellPipeline);
-pass.setVertexBuffer(0, vertexBuffer);
-pass.setBindGroup(0, bindGroup);
-pass.draw(vertices.length / 2, GRID_SIZE ** 2); // 6 vertices
-
-pass.end();
+  const pass = encoder.beginRenderPass({
+    colorAttachments: [{
+      view: context.getCurrentTexture().createView(),
+      loadOp: "clear",
+      clearValue: { r: 0, g: 0, b: 0.4, a: 1 },
+      storeOp: "store",
+    }]
+  });
 
 
-device.queue.submit([(encoder.finish())]);
+  pass.setPipeline(cellPipeline);
+  pass.setVertexBuffer(0, vertexBuffer);
+  pass.setBindGroup(0, bindGroup);
+  pass.draw(vertices.length / 2, GRID_SIZE ** 2); // 6 vertices
+
+  pass.end();
+
+
+  device.queue.submit([(encoder.finish())]);
+}
+
+render()
+ontick(render, 1)
+
+function ontick(fn, fps = 30) {
+  let done
+  let last = performance.now();
+
+  (function tick(now) {
+
+    const delta = now - last
+    if (delta + 1 >= 1000 / fps) {
+      last = now
+      fn(delta)
+    }
+
+    done = requestAnimationFrame(tick)
+  })(last)
+
+  return () => cancelAnimationFrame(done)
+}
