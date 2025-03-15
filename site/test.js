@@ -53,12 +53,12 @@ const cellPipeline = device.createRenderPipeline({
   layout: "auto",
   vertex: {
     module: cellShaderModule,
-    entryPoint: "vmain",
+    entryPoint: "vertexMain",
     buffers: [vertexBufferLayout]
   },
   fragment: {
     module: cellShaderModule,
-    entryPoint: "fmain",
+    entryPoint: "fragmentMain",
     targets: [{
       format: canvasFormat
     }]

@@ -5,12 +5,13 @@ struct VertexInput {
 
 struct VertexOutput {
   @builtin(position) pos: vec4f,
+  @location(0) cell: vec2f,
 };
 
 @group(0) @binding(0) var<uniform> grid: vec2f;
 
 @vertex
-fn vmain(input: VertexInput) -> VertexOutput  {
+fn vertexMain(input: VertexInput) -> VertexOutput  {
   let i = f32(input.instance);
   let cell = vec2f(i % grid.x, floor(i / grid.x));
   let cellOffset = cell / grid * 2;
@@ -18,10 +19,11 @@ fn vmain(input: VertexInput) -> VertexOutput  {
   
   var output: VertexOutput;
   output.pos = vec4f(gridPos, 0, 1);
+  output.cell = cell;
   return output;
 }
 
 @fragment
-fn fmain() -> @location(0) vec4f {
-  return vec4f(0, .3, 0, 1);
+fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
+  return vec4f(input.cell/grid, 1-input.cell.x/grid.x, 1);
 }
