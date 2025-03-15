@@ -1,7 +1,7 @@
 const GRID_W = 320 * 1;
 const GRID_H = 180 * 1;
 
-const canvas = document.querySelector("canvas");
+const canvas = /** @type {HTMLCanvasElement} */(document.querySelector("canvas"))
 canvas.width = GRID_W
 canvas.height = GRID_H
 canvas.style.transform = `scale(3)`
@@ -10,11 +10,11 @@ canvas.style.backgroundColor = '#000'
 canvas.style.outline = 'none'
 canvas.style.cursor = 'none'
 
-const adapter = await navigator.gpu.requestAdapter();
+const adapter = /** @type {GPUAdapter} */(await navigator.gpu.requestAdapter())
 const device = await adapter.requestDevice();
 
 // Canvas configuration
-const context = canvas.getContext("webgpu");
+const context = /** @type {GPUCanvasContext} */(canvas.getContext("webgpu"))
 const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
 context.configure({
   device: device,
@@ -39,19 +39,8 @@ const cellStateStorage = device.createBuffer({
 
 
 
-const n = 1
-
-const vertices = new Float32Array([
-
-  -n, -n,
-  n, -n,
-  n, n,
-
-  n, n,
-  -n, n,
-  -n, -n,
-
-]);
+const n = 0.8
+const vertices = new Float32Array([-n, -n, n, -n, n, n, n, n, -n, n, -n, -n]);
 
 const vertexBuffer = device.createBuffer({
   label: "Cell vertices",
@@ -61,14 +50,6 @@ const vertexBuffer = device.createBuffer({
 
 device.queue.writeBuffer(vertexBuffer, 0, vertices);
 
-const vertexBufferLayout = {
-  arrayStride: 8,
-  attributes: [{
-    format: "float32x2",
-    offset: 0,
-    shaderLocation: 0, // Position, see vertex shader
-  }],
-};
 
 const cellShaderModule = device.createShaderModule({
   label: "Cell shader",
@@ -82,7 +63,14 @@ const cellPipeline = device.createRenderPipeline({
   vertex: {
     module: cellShaderModule,
     entryPoint: "vertexMain",
-    buffers: [vertexBufferLayout]
+    buffers: [{
+      arrayStride: 8,
+      attributes: [{
+        format: "float32x2",
+        offset: 0,
+        shaderLocation: 0, // Position, see vertex shader
+      }],
+    }]
   },
   fragment: {
     module: cellShaderModule,
@@ -126,7 +114,8 @@ function render() {
 
   cellStateArray.fill(0)
   for (let i = s++; i < cellStateArray.length; i += 6) {
-    cellStateArray[i] = 1;
+    // cellStateArray[i] = Math.floor(Math.random() * 0xffffffff);
+    cellStateArray[i] = 0x11;
   }
   device.queue.writeBuffer(cellStateStorage, 0, cellStateArray);
 
@@ -139,7 +128,6 @@ function render() {
     colorAttachments: [{
       view: context.getCurrentTexture().createView(),
       loadOp: "clear",
-      clearValue: [0, 0, 0, 1],
       storeOp: "store",
     }]
   });
@@ -157,4 +145,4 @@ function render() {
 }
 
 render()
-setInterval(render, 1000)
+// setInterval(render, 1000)

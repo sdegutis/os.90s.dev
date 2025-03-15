@@ -5,6 +5,7 @@
       "DOM",
       "DOM.Iterable",
     ],
+    "checkJs": true,
     "types": [
       "@types/wicg-file-system-access",
       "@webgpu/types"
