@@ -6,7 +6,8 @@
       "DOM.Iterable",
     ],
     "types": [
-      "@types/wicg-file-system-access"
+      "@types/wicg-file-system-access",
+      "@webgpu/types"
     ],
     "moduleDetection": "force",
     "target": "ESNext",
