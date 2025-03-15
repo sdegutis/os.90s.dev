@@ -15,7 +15,14 @@ const panel = await prog.makePanel({
 })
 
 
-const cs = Array(70000).keys().map(() => {
+
+
+
+
+
+
+
+const cs = Array(270000).keys().map(() => {
   return {}
 }).toArray()
 
@@ -23,9 +30,8 @@ const cs = Array(70000).keys().map(() => {
 const cw = 400, ch = 300
 const pixels = new Uint8ClampedArray(cw * ch * 4)
 const imgdata = new ImageData(pixels, cw, ch)
-for (let i = 0; i < cw * ch * 4; i += 4) {
-  pixels[i + 3] = 255
-}
+const grid = new Uint32Array(cw * ch)
+const dv = new DataView(pixels.buffer)
 
 ontick((d) => {
 
@@ -38,6 +44,7 @@ ontick((d) => {
     rectFill(x, y, w, h, c)
   }
 
+  blit()
   view.ctx.putImageData(imgdata, 0, 0)
 
   console.log(d)
@@ -46,36 +53,17 @@ ontick((d) => {
 
 })
 
+function blit() {
+  for (let i = 0; i < cw * ch; i++) {
+    const c = grid[i]
+    dv.setUint32(i * 4, c)
+  }
+}
+
 function rectFill(x: number, y: number, w: number, h: number, c: number) {
-  let x1 = x
-  let y1 = y
-  let x2 = x1 + w - 1
-  let y2 = y1 + h - 1
-
-  const r = c >> 24 & 0xff
-  const g = c >> 16 & 0xff
-  const b = c >> 8 & 0xff
-  const a = c & 0xff
-
-  // if (a === 0) return
-
-  for (y = y1; y <= y2; y++) {
-    for (x = x1; x <= x2; x++) {
-      const i = y * cw * 4 + x * 4
-
-      if (a === 255) {
-        pixels[i + 0] = r
-        pixels[i + 1] = g
-        pixels[i + 2] = b
-      }
-      else {
-        const ia = (255 - a) / 255
-        const aa = (a / 255)
-        pixels[i + 0] = (pixels[i + 0] * ia) + (r * aa)
-        pixels[i + 1] = (pixels[i + 1] * ia) + (g * aa)
-        pixels[i + 2] = (pixels[i + 2] * ia) + (b * aa)
-      }
-    }
+  for (let yy = y; yy < y + h; yy++) {
+    const i = yy * cw + x
+    grid.fill(c, i, i + w)
   }
 }
 
@@ -84,7 +72,7 @@ function rectFill(x: number, y: number, w: number, h: number, c: number) {
 
 
 
-// const cs = Array(70000).keys().map(() => {
+// const cs = Array(190000).keys().map(() => {
 //   return {}
 // }).toArray()
 
