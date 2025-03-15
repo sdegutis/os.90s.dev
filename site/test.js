@@ -150,22 +150,4 @@ function render() {
 }
 
 render()
-ontick(render, 1)
-
-function ontick(fn, fps = 30) {
-  let done
-  let last = performance.now();
-
-  (function tick(now) {
-
-    const delta = now - last
-    if (delta + 1 >= 1000 / fps) {
-      last = now
-      fn(delta)
-    }
-
-    done = requestAnimationFrame(tick)
-  })(last)
-
-  return () => cancelAnimationFrame(done)
-}
+setInterval(render, 1000)
