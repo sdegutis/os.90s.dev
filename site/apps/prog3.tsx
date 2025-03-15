@@ -1,6 +1,5 @@
 import { Program } from "../client/core/prog.js"
 import { $$ } from "../client/util/jsx.js"
-import { ontick } from "../client/util/ontick.js"
 
 const prog = new Program()
 await prog.init()
@@ -246,31 +245,76 @@ const panel = await prog.makePanel({
 
 
 
-const cs = Array(20_000).keys().map(() => {
-  return {}
-}).toArray()
+// const cs = Array(1_000).keys().map(() => {
+//   const x = Math.floor(300 * Math.random())
+//   const y = Math.floor(200 * Math.random())
+//   const w = Math.floor(200 / 2 * Math.random()) + 200 / 2
+//   const h = Math.floor(150 / 2 * Math.random()) + 150 / 2
+//   const c = Math.floor(0xffffffff * Math.random())
 
-setTimeout(ontick((d) => {
+//   const r = (c >> 24 & 0xff).toString(16).padStart(2, '0')
+//   const g = (c >> 16 & 0xff).toString(16).padStart(2, '0')
+//   const b = (c >> 8 & 0xff).toString(16).padStart(2, '0')
+//   const a = (c & 0xff).toString(16).padStart(2, '0')
 
-  for (const { } of cs) {
-    const x = Math.floor(200 * Math.random())
-    const y = Math.floor(150 * Math.random())
-    const w = 100//Math.floor(200 / 2 * Math.random()) + 200 / 2
-    const h = 100//Math.floor(150 / 2 * Math.random()) + 150 / 2
-    const c = Math.floor(0xffffffff * Math.random())
+//   const cstr = `#${r}${g}${b}${a}`
 
-    const ctx = view.ctx
-    const r = (c >> 24 & 0xff).toString(16).padStart(2, '0')
-    const g = (c >> 16 & 0xff).toString(16).padStart(2, '0')
-    const b = (c >> 8 & 0xff).toString(16).padStart(2, '0')
-    const a = (c & 0xff).toString(16).padStart(2, '0')
-    ctx.fillStyle = `#${r}${g}${b}${a}`
-    ctx.fillRect(x, y, w, h)
-  }
+//   const can = new OffscreenCanvas(w, h)
+//   const ctx = can.getContext('2d')!
+//   ctx.fillStyle = cstr
+//   ctx.fillRect(0, 0, w, h)
 
-  console.log(d)
+//   const img = can.transferToImageBitmap()
 
-  panel.blit()
+//   return { x, y, w, h, cstr, img }
+// }).toArray()
 
-}), 5000)
+// setTimeout(ontick((d) => {
+
+//   for (const { img, x, y } of cs) {
+//     view.ctx.drawImage(img, x, y)
+//   }
+
+//   console.log(d)
+
+//   panel.blit()
+
+// }), 5000)
+
+
+
+
+
+
+
+
+
+
+// const cs = Array(20_000).keys().map(() => {
+//   return {}
+// }).toArray()
+
+// setTimeout(ontick((d) => {
+
+//   for (const { } of cs) {
+//     const x = Math.floor(200 * Math.random())
+//     const y = Math.floor(150 * Math.random())
+//     const w = 100//Math.floor(200 / 2 * Math.random()) + 200 / 2
+//     const h = 100//Math.floor(150 / 2 * Math.random()) + 150 / 2
+//     const c = Math.floor(0xffffffff * Math.random())
+
+//     const ctx = view.ctx
+//     const r = (c >> 24 & 0xff).toString(16).padStart(2, '0')
+//     const g = (c >> 16 & 0xff).toString(16).padStart(2, '0')
+//     const b = (c >> 8 & 0xff).toString(16).padStart(2, '0')
+//     const a = (c & 0xff).toString(16).padStart(2, '0')
+//     ctx.fillStyle = `#${r}${g}${b}${a}`
+//     ctx.fillRect(x, y, w, h)
+//   }
+
+//   console.log(d)
+
+//   panel.blit()
+
+// }), 5000)
 
