@@ -22,36 +22,42 @@ const panel = await prog.makePanel({
 
 
 
-const cs = Array(300000).keys().map(() => {
-  const c = Math.floor(0xffffffff * Math.random())
-  return { c }
+const cs = Array(30).keys().map(() => {
+  return {}
 }).toArray()
 
 
 const cw = 400, ch = 300
 const grid = new Uint32Array(cw * ch)
 
-ontick((d) => {
+// grid.fill(0x000000ff)
 
-  for (const { c } of cs) {
+const pixels = new Uint8ClampedArray(cw * ch * 4)
+const imgdata = new ImageData(pixels, cw, ch)
+const dv = new DataView(pixels.buffer)
+
+setTimeout(ontick((d) => {
+
+  for (const { } of cs) {
     const x = Math.floor(200 * Math.random())
     const y = Math.floor(150 * Math.random())
     const w = 5//Math.floor(200 / 2 * Math.random()) + 200 / 2
     const h = 5//Math.floor(150 / 2 * Math.random()) + 150 / 2
+    const c = Math.floor(0xffffffff * Math.random())
     rectFill2(x, y, w, h, c)
   }
 
-  blit()
+  for (let i = 0; i < cw * ch; i++) {
+    dv.setUint32(i * 4, grid[i])
+  }
+
+  view.ctx.putImageData(imgdata, 0, 0)
 
   console.log(d)
 
   panel.blit()
 
-})
-
-function blit() {
-  view.ctx.putImageData(new ImageData(new Uint8ClampedArray(grid.buffer), cw, ch), 0, 0)
-}
+}), 1000)
 
 function rectFill(x: number, y: number, w: number, h: number, c1: number) {
   for (let yy = y; yy < y + h; yy++) {
@@ -114,8 +120,9 @@ function rectFill(x: number, y: number, w: number, h: number, c1: number) {
 
 function rectFill2(x: number, y: number, w: number, h: number, c: number) {
   if ((c & 0xff) === 0xff) {
-    for (let i = y; i < y + h; i++) {
-      grid.fill(c, x, x + w)
+    while (h--) {
+      const i = y++ * cw + x
+      grid.fill(c, i, i + w)
     }
     return
   }
@@ -145,6 +152,7 @@ function blendColors(c1: number, c2: number) {
   const g3 = (g1 * ia) + (g2 * aa)
   const b3 = (b1 * ia) + (b2 * aa)
   const a3 = (a1 + a2) / 2
+  // const a3 = a1
 
   return (r3 << 24) | (g3 << 16) | (b3 << 8) | a3
 }
@@ -238,7 +246,7 @@ function blendColors(c1: number, c2: number) {
 
 
 
-// const cs = Array(30000).keys().map(() => {
+// const cs = Array(200_000).keys().map(() => {
 //   return {}
 // }).toArray()
 
@@ -266,43 +274,3 @@ function blendColors(c1: number, c2: number) {
 
 // }), 1000)
 
-
-
-
-
-
-
-
-// const cs = Array(1000).keys().map(i => {
-//   const w = 5
-//   const h = 5
-//   const canvas = new OffscreenCanvas(w, h)
-//   const ctx = canvas.getContext('2d')!
-
-//   const c = 0xffffffff * Math.random()
-
-//   const r = (c >> 24 & 0xff).toString(16).padStart(2, '0')
-//   const g = (c >> 16 & 0xff).toString(16).padStart(2, '0')
-//   const b = (c >> 8 & 0xff).toString(16).padStart(2, '0')
-//   const a = (c & 0xff).toString(16).padStart(2, '0')
-//   ctx.fillStyle = `#${r}${g}${b}${a}`
-//   ctx.fillRect(0, 0, w, h)
-
-//   const img = canvas.transferToImageBitmap()
-
-//   return { canvas, ctx, img }
-// }).toArray()
-
-// setTimeout(ontick((d) => {
-
-//   for (const c of cs) {
-//     const x = Math.floor(200 * Math.random())
-//     const y = Math.floor(150 * Math.random())
-//     view.ctx.drawImage(c.img, x, y)
-//   }
-
-//   console.log(d)
-
-//   panel.blit()
-
-// }), 1000)
