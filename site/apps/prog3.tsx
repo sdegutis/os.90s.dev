@@ -126,7 +126,7 @@ let s = 0
 function render() {
 
   cellStateArray.fill(0)
-  for (let i = s++; i < cellStateArray.length; i += 6) {
+  for (let i = s++; i < cellStateArray.length; i += 21) {
     cellStateArray[i] = Math.floor(Math.random() * 0xffffffff)
     // cellStateArray[i] = 0x330000ff;
   }
