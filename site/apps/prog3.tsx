@@ -129,28 +129,37 @@ function rectFill2(x: number, y: number, w: number, h: number, c: number) {
 }
 
 function blendColors(c1: number, c2: number) {
-  const [r1, g1, b1, a1] = intToRgb(c1)
-  const [r2, g2, b2, a2] = intToRgb(c2)
+  const r1 = c1 >> 24 & 0xff
+  const g1 = c1 >> 16 & 0xff
+  const b1 = c1 >> 8 & 0xff
+  const a1 = c1 & 0xff
+
+  const r2 = c2 >> 24 & 0xff
+  const g2 = c2 >> 16 & 0xff
+  const b2 = c2 >> 8 & 0xff
+  const a2 = c2 & 0xff
+
   const ia = (0xff - a2) / 0xff
   const aa = (a2 / 0xff)
   const r3 = (r1 * ia) + (r2 * aa)
   const g3 = (g1 * ia) + (g2 * aa)
   const b3 = (b1 * ia) + (b2 * aa)
   const a3 = (a1 + a2) / 2
-  return rgbToInt(r3, g3, b3, a3)
+
+  return (r3 << 24) | (g3 << 16) | (b3 << 8) | a3
 }
 
-function intToRgb(c: number) {
-  const r = c >> 24 & 0xff
-  const g = c >> 16 & 0xff
-  const b = c >> 8 & 0xff
-  const a = c & 0xff
-  return [r, g, b, a]
-}
+// function intToRgb(c: number) {
+//   const r = c >> 24 & 0xff
+//   const g = c >> 16 & 0xff
+//   const b = c >> 8 & 0xff
+//   const a = c & 0xff
+//   return [r, g, b, a]
+// }
 
-function rgbToInt(r: number, g: number, b: number, a: number) {
-  return (r << 24) | (g << 16) | (b << 8) | a
-}
+// function rgbToInt(r: number, g: number, b: number, a: number) {
+//   return (r << 24) | (g << 16) | (b << 8) | a
+// }
 
 
 
