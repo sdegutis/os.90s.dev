@@ -59,16 +59,45 @@ function blit() {
   view.ctx.putImageData(imgdata, 0, 0)
 }
 
-function rectFill(x: number, y: number, w: number, h: number, c: number) {
+function rectFill(x: number, y: number, w: number, h: number, c1: number) {
   for (let yy = y; yy < y + h; yy++) {
     for (let xx = 0; xx < w; xx++) {
       const i = yy * cw + x + xx
 
+
+      const r2 = c1 >> 24 & 0xff
+      const g2 = c1 >> 16 & 0xff
+      const b2 = c1 >> 8 & 0xff
+      const a2 = c1 & 0xff
+
       const c2 = grid[i]
 
-      const c3 = (c & c2) + ((c ^ c2) >> 1)
+      const r1 = c2 >> 24 & 0xff
+      const g1 = c2 >> 16 & 0xff
+      const b1 = c2 >> 8 & 0xff
+      const a1 = c2 & 0xff
 
-      grid[i] = c
+      // const r3 = r1 * a1 * (1 - a2) + r2 * a2
+      // const g3 = g1 * a1 * (1 - a2) + g2 * a2
+      // const b3 = b1 * a1 * (1 - a2) + b2 * a2
+      // const a3 = a1 * (1 - a2) + a2
+
+
+
+      const ia = (255 - a2) / 255
+      const aa = (a2 / 255)
+      const r3 = (r1 * ia) + (r2 * aa)
+      const g3 = (g1 * ia) + (g2 * aa)
+      const b3 = (b1 * ia) + (b2 * aa)
+      const a3 = a1//(a1 + a2) / 2
+
+      // const c3 = (c1 & c2) + ((c1 ^ c2) >> 1)
+
+
+
+      const c4 = (r3 << 24) | (g3 << 16) | (b3 << 8) | a3
+
+      grid[i] = c1
     }
 
     // grid.fill(c, i, i + w)
@@ -92,7 +121,7 @@ function rectFill(x: number, y: number, w: number, h: number, c: number) {
 //   pixels[i + 3] = 255
 // }
 
-// ontick((d) => {
+// setTimeout(ontick((d) => {
 
 //   for (const { } of cs) {
 //     const x = Math.floor(200 * Math.random())
@@ -109,7 +138,7 @@ function rectFill(x: number, y: number, w: number, h: number, c: number) {
 
 //   panel.blit()
 
-// })
+// }), 1000)
 
 // function rectFill(x: number, y: number, w: number, h: number, c: number) {
 //   let x1 = x
@@ -155,7 +184,7 @@ function rectFill(x: number, y: number, w: number, h: number, c: number) {
 //   return {}
 // }).toArray()
 
-// ontick((d) => {
+// setTimeout(ontick((d) => {
 
 //   for (const { } of cs) {
 //     const x = Math.floor(200 * Math.random())
@@ -177,7 +206,7 @@ function rectFill(x: number, y: number, w: number, h: number, c: number) {
 
 //   panel.blit()
 
-// })
+// }), 1000)
 
 
 
@@ -206,7 +235,7 @@ function rectFill(x: number, y: number, w: number, h: number, c: number) {
 //   return { canvas, ctx, img }
 // }).toArray()
 
-// ontick((d) => {
+// setTimeout(ontick((d) => {
 
 //   for (const c of cs) {
 //     const x = Math.floor(200 * Math.random())
@@ -218,4 +247,4 @@ function rectFill(x: number, y: number, w: number, h: number, c: number) {
 
 //   panel.blit()
 
-// })
+// }), 1000)
