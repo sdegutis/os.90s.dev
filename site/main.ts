@@ -1,6 +1,8 @@
 import { Process } from './server/process.js'
 import { Sys } from './server/sys.js'
 
+console.log(location)
+
 const sys = new Sys(320, 180)
 
 const shell = new Process(sys, '/apps/shell.js')
