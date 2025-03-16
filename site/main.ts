@@ -1,7 +1,7 @@
 import { Process } from './server/process.js'
 import { Sys } from './server/sys.js'
 
-const sys = new Sys(320 * 2, 180 * 2)
+const sys = new Sys(320, 180)
 
 const shell = new Process(sys, '/apps/shell.js')
 

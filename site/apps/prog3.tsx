@@ -9,6 +9,6 @@ const view = $$(
 )
 
 const panel = await prog.makePanel({
-  size: [400, 300],
+  size: [200, 100],
   view: view,
 })
