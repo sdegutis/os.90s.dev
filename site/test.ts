@@ -44,7 +44,45 @@ context.configure({
 
 
 
-const shader = `
+
+
+
+
+
+
+
+
+
+
+// Create an array representing the active state of each cell.
+const cellStateArray = new Uint32Array(GRID_W * GRID_H)
+
+// Create a storage buffer to hold the cell state.
+const cellStateStorage = device.createBuffer({
+  label: "Cell State",
+  size: cellStateArray.byteLength,
+  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+})
+
+
+
+
+const n = 0.8
+const vertices = new Float32Array([-n, -n, n, -n, n, n, n, n, -n, n, -n, -n])
+
+const vertexBuffer = device.createBuffer({
+  label: "Cell vertices",
+  size: vertices.byteLength,
+  usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+})
+
+device.queue.writeBuffer(vertexBuffer, 0, vertices)
+
+
+
+const cellShaderModule = device.createShaderModule({
+  label: "Cell shader",
+  code: `
 struct VertexInput {
   @location(0) pos: vec2f,
   @builtin(instance_index) instance: u32,
@@ -90,47 +128,7 @@ fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
 
   return vec4f(r,g,b,a);
 }
-`
-
-
-
-
-
-
-
-
-
-
-
-// Create an array representing the active state of each cell.
-const cellStateArray = new Uint32Array(GRID_W * GRID_H)
-
-// Create a storage buffer to hold the cell state.
-const cellStateStorage = device.createBuffer({
-  label: "Cell State",
-  size: cellStateArray.byteLength,
-  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-})
-
-
-
-
-const n = 0.8
-const vertices = new Float32Array([-n, -n, n, -n, n, n, n, n, -n, n, -n, -n])
-
-const vertexBuffer = device.createBuffer({
-  label: "Cell vertices",
-  size: vertices.byteLength,
-  usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-})
-
-device.queue.writeBuffer(vertexBuffer, 0, vertices)
-
-
-const cellShaderModule = device.createShaderModule({
-  label: "Cell shader",
-  code: shader
-})
+`})
 
 
 const cellPipeline = device.createRenderPipeline({
