@@ -2,7 +2,6 @@ const GRID_W = 320
 const GRID_H = 180
 
 const canvas = document.createElement("canvas")
-document.body.append(canvas)
 
 canvas.width = GRID_W
 canvas.height = GRID_H
@@ -29,8 +28,6 @@ new ResizeObserver(() => {
 
 const adapter = (await navigator.gpu.requestAdapter())!
 const device = await adapter.requestDevice()
-
-
 const context = canvas.getContext('webgpu')!
 const canvasFormat = navigator.gpu.getPreferredCanvasFormat()
 context.configure({
