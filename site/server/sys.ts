@@ -52,13 +52,7 @@ export class Sys {
       this.mouse.x = x
       this.mouse.y = y
 
-      const newhovered = this.findHovered()
-
-      if (newhovered !== this.hovered) {
-        this.hovered?.rpc.send('mouseexited', [])
-        this.hovered = newhovered
-        this.hovered?.rpc.send('mouseentered', [])
-      }
+      this.checkUnderMouse()
 
       const sendto = this.clicking ?? this.hovered
       sendto?.rpc.send('mousemoved', [this.mouse.x, this.mouse.y])
@@ -115,6 +109,15 @@ export class Sys {
     this.drawCursor()
   }
 
+  private checkUnderMouse() {
+    const newhovered = this.findHovered()
+    if (newhovered !== this.hovered) {
+      this.hovered?.rpc.send('mouseexited', [])
+      this.hovered = newhovered
+      this.hovered?.rpc.send('mouseentered', [])
+    }
+  }
+
   private drawCursor() {
     this.ctx.drawImage(cursor, this.mouse.x, this.mouse.y)
   }
@@ -128,6 +131,8 @@ export class Sys {
     if (this.hovered === panel) this.hovered = null
     if (this.clicking === panel) this.clicking = null
     if (this.focused === panel) this.focused = null
+
+    this.checkUnderMouse()
 
     this.redrawAllPanels()
   }
