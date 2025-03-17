@@ -127,10 +127,10 @@ array[3] = 49
 array[4] = 0xff0000ff
 
 array[5 + 0] = 194
-array[5 + 1] = 199
+array[5 + 1] = 209
 array[5 + 2] = 72
-array[5 + 3] = 79
-array[5 + 4] = 0xff0000ff
+array[5 + 3] = 129
+array[5 + 4] = 0x00ff00ff
 
 const storage = device.createBuffer({
   label: 'rects',
