@@ -29,12 +29,8 @@ new ResizeObserver(() => {
 const adapter = (await navigator.gpu.requestAdapter())!
 const device = await adapter.requestDevice()
 const context = canvas.getContext('webgpu')!
-const canvasFormat = navigator.gpu.getPreferredCanvasFormat()
-context.configure({
-  device: device,
-  format: canvasFormat,
-  alphaMode: 'premultiplied',
-})
+const presentationFormat = navigator.gpu.getPreferredCanvasFormat()
+context.configure({ device, format: presentationFormat })
 
 
 
@@ -42,181 +38,128 @@ context.configure({
 
 
 
-
-
-
-
-
-
-
-
-
-// Create an array representing the active state of each cell.
-const cellStateArray = new Uint32Array(GRID_W * GRID_H)
-
-// Create a storage buffer to hold the cell state.
-const cellStateStorage = device.createBuffer({
-  label: "Cell State",
-  size: cellStateArray.byteLength,
-  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-})
-
-
-
-
-const n = 0.8
-const vertices = new Float32Array([-n, -n, n, -n, n, n, n, n, -n, n, -n, -n])
-
-const vertexBuffer = device.createBuffer({
-  label: "Cell vertices",
-  size: vertices.byteLength,
-  usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-})
-
-device.queue.writeBuffer(vertexBuffer, 0, vertices)
-
-
-
-const cellShaderModule = device.createShaderModule({
-  label: "Cell shader",
+const module = device.createShaderModule({
+  label: 'test shaders',
   code: `
-struct VertexInput {
-  @location(0) pos: vec2f,
-  @builtin(instance_index) instance: u32,
-};
+    struct Rect {
+      x1: i32,
+      x2: i32,
+      y1: i32,
+      y2: i32,
+      c: i32,
+    };
 
-struct VertexOutput {
-  @builtin(position) pos: vec4f,
-  @location(0) cell: vec2f,
-};
+    struct Output {
+      @builtin(position) pos: vec4f,
+      @location(0) @interpolate(flat) col: vec4f,
+    };
 
-@group(0) @binding(0) var<uniform> grid: vec2f;
-@group(0) @binding(1) var<storage> cellState: array<u32>;
+    // struct Input {
+    //   @builtin(vertex_index) vertexIndex: u32,
 
-@vertex
-fn vertexMain(input: VertexInput) -> VertexOutput  {
-  let i = f32(input.instance);
-  let cell = vec2f(i % grid.x, floor(i / grid.x));
-  let state = f32(cellState[input.instance]);
+    // };
 
-  let cellOffset = cell / grid * 2;
-  let gridPos = (input.pos + 1) / grid - 1 + cellOffset;
-  
-  var output: VertexOutput;
-  output.pos = vec4f(gridPos, 0, 1);
-  output.cell = cell;
-  return output;
-}
+    // @group(0) @binding(0) var<storage, read> r: Rect;
 
-@fragment
-fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
+    @vertex fn vs(
+      @builtin(vertex_index) vertexIndex : u32
+    ) -> Output {
+      let cx1: f32 = 94;
+      let cx2: f32 = 99;
+      let cy1: f32 = 42;
+      let cy2: f32 = 49;
+      
+      let x1: f32 = (cx1 - 160) / 160f;
+      let x2: f32 = (cx2 - 160) / 160f;
+      let y1: f32 = (cy1 - 90) / -90f;
+      let y2: f32 = (cy2 - 90) / -90f;
 
-  let i = u32(input.cell.x + grid.x * input.cell.y);
-  let c = cellState[i];
+      let verts = array(
+        vec2f(x1,y1),
+        vec2f(x2,y1),
+        vec2f(x1,y2),
+        vec2f(x1,y2),
+        vec2f(x2,y2),
+        vec2f(x2,y1),
+      );
 
-  let r = f32((c >> 24) & 0xff) / 0xff;
-  let g = f32((c >> 16) & 0xff) / 0xff;
-  let b = f32((c >> 8) & 0xff) / 0xff;
-  let a = f32(c & 0xff) / 0xff;
+      var out: Output;
+      out.pos = vec4f(verts[vertexIndex], 0.0, 1.0);
+      out.col = vec4f(0.0, 1.0, 0.0, 1.0);
+      return out;
+    }
 
-  if (c == 0) {
-    discard;
-  }
+    @fragment fn fs(input: Output) -> @location(0) vec4f {
+      return input.col;
+    }
+  `,
+})
 
-  return vec4f(r,g,b,a);
-}
-`})
-
-
-const cellPipeline = device.createRenderPipeline({
-  label: "Cell pipeline",
-  layout: "auto",
+const pipeline = device.createRenderPipeline({
+  label: 'draw rects',
+  layout: 'auto',
   vertex: {
-    module: cellShaderModule,
-    entryPoint: "vertexMain",
-    buffers: [{
-      arrayStride: 8,
-      attributes: [{
-        format: "float32x2",
-        offset: 0,
-        shaderLocation: 0, // Position, see vertex shader
-      }],
-    }]
+    entryPoint: 'vs',
+    module,
   },
   fragment: {
-    module: cellShaderModule,
-    entryPoint: "fragmentMain",
-    targets: [{
-      format: canvasFormat
-    }]
-  }
+    entryPoint: 'fs',
+    module,
+    targets: [{ format: presentationFormat }],
+  },
 })
 
 
 
 
+const array = new Int32Array(5)
 
+array[0] = 94
+array[1] = 99
+array[2] = 42
+array[3] = 49
+array[4] = 0xff0000ff
 
-// Create a uniform buffer that describes the grid.
-const uniformArray = new Float32Array([GRID_W, GRID_H])
-const uniformBuffer = device.createBuffer({
-  label: "Grid Uniforms",
-  size: uniformArray.byteLength,
-  usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-})
-device.queue.writeBuffer(uniformBuffer, 0, uniformArray)
-
-const bindGroup = device.createBindGroup({
-  label: "Cell renderer bind group",
-  layout: cellPipeline.getBindGroupLayout(0),
-  entries: [{
-    binding: 0,
-    resource: { buffer: uniformBuffer }
-  }, {
-    binding: 1,
-    resource: { buffer: cellStateStorage }
-  }],
+const storage = device.createBuffer({
+  label: 'rects',
+  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+  size: array.length * 4,
 })
 
+device.queue.writeBuffer(storage, 0, array)
 
-let s = 0
+
+
+// const bindgroup = device.createBindGroup({
+//   label: 'bindgrup1',
+//   layout: pipeline.getBindGroupLayout(0),
+//   entries: [
+//     { binding: 0, resource: { buffer: storage } },
+//   ]
+// })
+
+
+
 
 function render() {
 
-  cellStateArray.fill(0)
-  for (let i = s++; i < cellStateArray.length; i += 21) {
-    cellStateArray[i] = Math.floor(Math.random() * 0xffffffff)
-    // cellStateArray[i] = 0x330000ff;
-  }
-  device.queue.writeBuffer(cellStateStorage, 0, cellStateArray)
-
-
-
-  // Clear the canvas with a render pass
-  const encoder = device.createCommandEncoder()
+  const encoder = device.createCommandEncoder({ label: 'encoder' })
 
   const pass = encoder.beginRenderPass({
+    label: 'basic',
     colorAttachments: [{
       view: context.getCurrentTexture().createView(),
-      loadOp: "clear",
-      clearValue: [0, 0, 0, 0],
-      storeOp: "store",
-    }]
+      loadOp: 'clear',
+      storeOp: 'store',
+    }],
   })
 
-
-  pass.setPipeline(cellPipeline)
-  pass.setVertexBuffer(0, vertexBuffer)
-  pass.setBindGroup(0, bindGroup)
-  pass.draw(vertices.length / 2, GRID_W * GRID_H) // 6 vertices
-
+  pass.setPipeline(pipeline)
+  // pass.setBindGroup(0, bindgroup)
+  pass.draw(6)
   pass.end()
 
-
   device.queue.submit([(encoder.finish())])
-
-  console.log('here')
 }
 
 render()
-setInterval(render, 1000)
