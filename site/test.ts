@@ -42,10 +42,10 @@ const module = device.createShaderModule({
   label: 'test shaders',
   code: `
     struct Rect {
-      @location(0) x1: i32,
-      @location(1) x2: i32,
-      @location(2) y1: i32,
-      @location(3) y2: i32,
+      @location(0) x: i32,
+      @location(1) w: i32,
+      @location(2) y: i32,
+      @location(3) h: i32,
       @location(4) c: u32,
     };
 
@@ -64,10 +64,10 @@ const module = device.createShaderModule({
     @vertex fn vs(input: Input) -> Output {
       let rect = rects[input.instanceIndex];
 
-      let cx1: f32 = f32(rect.x1);
-      let cx2: f32 = f32(rect.x2);
-      let cy1: f32 = f32(rect.y1);
-      let cy2: f32 = f32(rect.y2);
+      let cx1: f32 = f32(rect.x);
+      let cx2: f32 = f32(rect.x + rect.w);
+      let cy1: f32 = f32(rect.y);
+      let cy2: f32 = f32(rect.y + rect.h);
       
       let x1: f32 = (cx1 - 160) / 160f;
       let x2: f32 = (cx2 - 160) / 160f;
@@ -121,15 +121,15 @@ const pipeline = device.createRenderPipeline({
 const array = new Int32Array(10)
 
 array[0] = 94
-array[1] = 99
+array[1] = 5
 array[2] = 42
-array[3] = 49
+array[3] = 10
 array[4] = 0xff0000ff
 
 array[5 + 0] = 194
-array[5 + 1] = 209
+array[5 + 1] = 15
 array[5 + 2] = 72
-array[5 + 3] = 129
+array[5 + 3] = 20
 array[5 + 4] = 0x00ff00ff
 
 const storage = device.createBuffer({
