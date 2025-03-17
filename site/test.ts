@@ -75,8 +75,8 @@ const rectsmodule = device.createShaderModule({
       
       let x1: f32 = (cx1 - 160) / 160f;
       let x2: f32 = (cx2 - 160) / 160f;
-      let y1: f32 = (cy1 - 90) / -90f;
-      let y2: f32 = (cy2 - 90) / -90f;
+      let y1: f32 = (cy1 -  90) / -90f;
+      let y2: f32 = (cy2 -  90) / -90f;
 
       let verts = array(
         vec2f(x1,y1),
@@ -90,7 +90,7 @@ const rectsmodule = device.createShaderModule({
       let c = rect.c;
       let r = f32((c >> 24) & 0xff) / 255f;
       let g = f32((c >> 16) & 0xff) / 255f;
-      let b = f32((c >> 8) & 0xff) / 255f;
+      let b = f32((c >>  8) & 0xff) / 255f;
       let a = f32(c & 0xff) / 255f;
 
       var out: Output;
@@ -209,6 +209,10 @@ const mousemodule = device.createShaderModule({
 
     struct Mouse {
       pos: vec2f,
+      r: f32,
+      g: f32,
+      b: f32,
+      a: f32,
     };
 
     @group(0) @binding(0) var<storage, read> mouse: Mouse;
@@ -217,11 +221,11 @@ const mousemodule = device.createShaderModule({
       let pos = mouse;
 
       let x1: f32 = (pos.pos.x+1 - 160) / 160f;
-      let y1: f32 = (pos.pos.y+1 - 90) / -90f;
+      let y1: f32 = (pos.pos.y+1 -  90) / -90f;
 
       var out: Output;
       out.pos = vec4f(x1,y1,0,1);
-      out.col = vec4f(1,1,1,.5);
+      out.col = vec4f(pos.r,pos.g,pos.b,pos.a);
       return out;
     }
 
@@ -259,15 +263,15 @@ const mousepipeline = device.createRenderPipeline({
   },
 })
 
-const numpairs = 2
+const numpairs = 1
 
 const mouseStorage = device.createBuffer({
   label: 'mouse',
   usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-  size: 4 * numpairs,
+  size: 4 * 8 * numpairs,
 })
 
-const mouseData = new Float32Array(numpairs)
+const mouseData = new Float32Array(numpairs * 6)
 
 device.queue.writeBuffer(mouseStorage, 0, mouseData)
 
@@ -293,6 +297,11 @@ canvas.onmousemove = (e) => {
 
   mouseData[0] = Math.min(320 - 1, e.offsetX)
   mouseData[1] = Math.min(180 - 1, e.offsetY)
+  mouseData[2] = 1
+  mouseData[3] = 0
+  mouseData[4] = 0
+  mouseData[5] = 1
+  console.log(mouseData.length)
   device.queue.writeBuffer(mouseStorage, 0, mouseData)
   render()
 }
@@ -326,7 +335,7 @@ function render() {
 
   pass.setPipeline(mousepipeline)
   pass.setBindGroup(0, mousebindgroup)
-  pass.draw(1)
+  pass.draw(numpairs)
 
   pass.end()
 
