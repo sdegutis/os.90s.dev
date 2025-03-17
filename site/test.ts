@@ -171,11 +171,7 @@ const pipeline = device.createRenderPipeline({
           srcFactor: 'src-alpha',
           dstFactor: 'one-minus-src-alpha',
         },
-        alpha: {
-          operation: 'add',
-          srcFactor: 'dst-alpha',
-          dstFactor: 'dst-alpha',
-        },
+        alpha: {},
       },
 
     }],
@@ -202,9 +198,6 @@ const pipeline2 = device.createRenderPipeline({
           dstFactor: 'one-minus-src-alpha',
         },
         alpha: {
-          operation: 'add',
-          srcFactor: 'dst-alpha',
-          dstFactor: 'dst-alpha',
         },
       },
 
