@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "generate": "imlib generate",
+    "generate": "immaculata generate",
     "watch": "tsc --erasableSyntaxOnly --watch"
   },
   "devDependencies": {
