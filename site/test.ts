@@ -299,7 +299,7 @@ canvas.onmousemove = (e) => {
   mouseData[1] = Math.min(180 - 1, e.offsetY)
   mouseData[2] = 1
   mouseData[3] = 0
-  mouseData[4] = 0
+  mouseData[4] = 1
   mouseData[5] = 1
   console.log(mouseData.length)
   device.queue.writeBuffer(mouseStorage, 0, mouseData)
