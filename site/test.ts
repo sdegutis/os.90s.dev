@@ -207,13 +207,13 @@ const mousemodule = device.createShaderModule({
       @builtin(vertex_index) vertexIndex: u32,
     };
 
-    @group(0) @binding(0) var<storage, read> mouse: vec2i;
+    @group(0) @binding(0) var<storage, read> mouse: vec2f;
 
     @vertex fn vs(input: Input) -> Output {
       let pos = mouse;
 
-      let x1: f32 = (f32(pos.x)+1 - 160) / 160f;
-      let y1: f32 = (f32(pos.y)+1 - 90) / -90f;
+      let x1: f32 = (pos.x+1 - 160) / 160f;
+      let y1: f32 = (pos.y+1 - 90) / -90f;
 
       var out: Output;
       out.pos = vec4f(x1,y1,0,1);
@@ -263,7 +263,7 @@ const mouseStorage = device.createBuffer({
   size: 4 * numpairs,
 })
 
-const mouseData = new Int32Array(numpairs)
+const mouseData = new Float32Array(numpairs)
 
 device.queue.writeBuffer(mouseStorage, 0, mouseData)
 
