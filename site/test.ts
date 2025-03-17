@@ -255,15 +255,15 @@ const mousepipeline = device.createRenderPipeline({
   },
 })
 
-const numpixels = 2
+const numpairs = 2
 
 const mouseStorage = device.createBuffer({
   label: 'mouse',
   usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-  size: 4 * numpixels,
+  size: 4 * numpairs,
 })
 
-const mouseData = new Int32Array(numpixels)
+const mouseData = new Int32Array(numpairs)
 
 device.queue.writeBuffer(mouseStorage, 0, mouseData)
 
@@ -322,7 +322,7 @@ function render() {
 
   pass.setPipeline(mousepipeline)
   pass.setBindGroup(0, mousebindgroup)
-  pass.draw(6)
+  pass.draw(1)
 
   pass.end()
 
