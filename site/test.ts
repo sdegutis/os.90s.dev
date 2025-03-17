@@ -279,7 +279,7 @@ canvas.onmousemove = (e) => {
 
 let i = 0
 
-setInterval(() => {
+const timer = setInterval(() => {
 
 
   const array = new Int32Array(10)
@@ -317,6 +317,8 @@ setInterval(() => {
   render()
 
 }, 300)
+
+setTimeout(() => clearInterval(timer), 10_000)
 
 
 
