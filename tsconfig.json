@@ -6,6 +6,8 @@
       "DOM.Iterable",
     ],
     "types": [
+      "node",
+      "immaculata/runtime.d.ts",
       "@types/wicg-file-system-access",
       "@webgpu/types"
     ],
@@ -29,13 +31,5 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     // "skipLibCheck": true,
-  },
-  "exclude": [
-    "site/@imlib"
-  ],
-  "references": [
-    {
-      "path": "site/@imlib"
-    }
-  ]
+  }
 }

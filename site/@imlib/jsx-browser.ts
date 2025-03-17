@@ -1,7 +1,7 @@
-import { Listener } from '../../shared/listener.js'
-import { controls } from '../views/index.js'
-import { View } from '../views/view.js'
-import { Ref } from './ref.js'
+import { Ref } from '../client/util/ref.js'
+import { controls } from '../client/views/index.js'
+import { View } from '../client/views/view.js'
+import { Listener } from '../shared/listener.js'
 
 type Controls = typeof controls
 type JsxChildren = (JSX.Element | JSX.Element[] | Ref<JSX.Element> | Ref<JSX.Element[]>)
@@ -21,43 +21,30 @@ declare global {
       | ((data: any) => Element)
       | (new (...args: any) => View)
 
-    type Element = {
-      [jsx: symbol]: any,
-      [attr: string]: any,
-      children?: any,
-    }
+    type Element = View
 
   }
 }
 
-function buildTree({ [Symbol.for('jsx')]: tag, children, ...jsx }: JSX.Element): FunctionNode | IntrinsicNode {
-  children = (
-    children === undefined ? [] :
-      children instanceof Array ? children :
-        [children]
-  ).map(buildTree)
+export const Fragment = ''
 
-  if (tag.prototype instanceof View) {
-    return new IntrinsicNode(tag, jsx, children)
-  }
-  else if (typeof tag === 'function') {
-    return new FunctionNode(tag, jsx, children)
+export const jsx = (tag: any, { children, ...data }: any) => {
+  children = children === undefined ? [] : children instanceof Array ? children : [children]
+
+  if (typeof tag === 'function') {
+    return new FunctionNode(tag, data, children).view
   }
   else {
     const ctor = controls[tag.toLowerCase() as keyof typeof controls]
-    return new IntrinsicNode(ctor, jsx, children)
+    return new IntrinsicNode(ctor, data, children).view
   }
-}
-
-export function $$(jsx: JSX.Element) {
-  return buildTree(jsx).view
 }
 
 class IntrinsicNode {
 
   ctor: typeof View
   data: Record<string, any>
-  children: (IntrinsicNode | FunctionNode)[]
+  children: (View)[]
   view: View
 
   private destroying = new Listener()
@@ -65,7 +52,7 @@ class IntrinsicNode {
   constructor(ctor: typeof View, data: Record<string, any>, children: any[]) {
     this.ctor = ctor
     this.data = data
-    this.children = children
+    this.children = children ?? []
     this.view = this.createView()
 
     for (const [key, val] of Object.entries(data)) {
@@ -86,7 +73,7 @@ class IntrinsicNode {
     }
 
     view.children = this.children.map(c => {
-      const child = c.view
+      const child = c
       child.parent = view
       return child
     })
@@ -107,20 +94,18 @@ class FunctionNode {
 
   fn: (data: Record<string, any>) => JSX.Element
   data: Record<string, any>
-  children: (IntrinsicNode | FunctionNode)[]
+  children: (View)[]
   view: View
 
   constructor(fn: (data: any) => JSX.Element, data: Record<string, any>, children: any[]) {
     this.fn = fn
     this.data = data
-    this.children = children
+    this.children = children ?? []
     this.view = this.createView()
   }
 
   private createView(): View {
-    const retval = this.fn({ ...this.data, children: this.children.map(c => c.view) })
-    const node = buildTree(retval)
-    return node.view
+    return this.fn({ ...this.data, children: this.children.map(c => c) })
   }
 
 }
