@@ -1,3 +1,5 @@
+import { ontick } from "./client/util/ontick.js"
+
 const GRID_W = 320
 const GRID_H = 180
 
@@ -41,7 +43,7 @@ context.configure({
 
 
 
-const module = device.createShaderModule({
+const rectsmodule = device.createShaderModule({
   label: 'test shaders',
   code: `
     struct Rect {
@@ -104,7 +106,7 @@ const module = device.createShaderModule({
   `,
 })
 
-const module2 = device.createShaderModule({
+const mousemodule = device.createShaderModule({
   label: 'module2',
   code: `
     struct Output {
@@ -152,16 +154,16 @@ const module2 = device.createShaderModule({
   `,
 })
 
-const pipeline = device.createRenderPipeline({
+const rectspipeline = device.createRenderPipeline({
   label: 'draw rects',
   layout: 'auto',
   vertex: {
     entryPoint: 'vs',
-    module,
+    module: rectsmodule,
   },
   fragment: {
     entryPoint: 'fs',
-    module,
+    module: rectsmodule,
     targets: [{
       format: presentationFormat,
 
@@ -178,36 +180,11 @@ const pipeline = device.createRenderPipeline({
   },
 })
 
-const pipeline2 = device.createRenderPipeline({
-  label: 'draw rects',
-  layout: 'auto',
-  vertex: {
-    entryPoint: 'vs',
-    module: module2,
-  },
-  fragment: {
-    entryPoint: 'fs',
-    module: module2,
-    targets: [{
-      format: presentationFormat,
-
-      blend: {
-        color: {
-          operation: 'add',
-          srcFactor: 'src-alpha',
-          dstFactor: 'one-minus-src-alpha',
-        },
-        alpha: {
-        },
-      },
-
-    }],
-  },
-})
 
 
+const numrects = 2
 
-const rectsData = new Int32Array(10)
+const rectsData = new Int32Array(numrects * 5)
 
 rectsData[0] = 94
 rectsData[1] = 5
@@ -230,6 +207,55 @@ const rectsStorage = device.createBuffer({
 device.queue.writeBuffer(rectsStorage, 0, rectsData)
 
 
+let bindgroup = device.createBindGroup({
+  label: 'bindgrup1',
+  layout: rectspipeline.getBindGroupLayout(0),
+  entries: [
+    { binding: 0, resource: { buffer: rectsStorage } },
+  ]
+})
+
+function drawrects(pass: GPURenderPassEncoder) {
+
+  pass.setPipeline(rectspipeline)
+  pass.setBindGroup(0, bindgroup)
+  pass.draw(6, numrects)
+
+}
+
+
+
+
+
+
+
+const mousepipeline = device.createRenderPipeline({
+  label: 'draw rects',
+  layout: 'auto',
+  vertex: {
+    entryPoint: 'vs',
+    module: mousemodule,
+  },
+  fragment: {
+    entryPoint: 'fs',
+    module: mousemodule,
+    targets: [{
+      format: presentationFormat,
+
+      blend: {
+        color: {
+          operation: 'add',
+          srcFactor: 'src-alpha',
+          dstFactor: 'one-minus-src-alpha',
+        },
+        alpha: {
+        },
+      },
+
+    }],
+  },
+})
+
 const mouseStorage = device.createBuffer({
   label: 'mouse',
   usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
@@ -240,24 +266,20 @@ const mouseData = new Int32Array(2)
 
 device.queue.writeBuffer(mouseStorage, 0, mouseData)
 
-
-
-
-let bindgroup = device.createBindGroup({
-  label: 'bindgrup1',
-  layout: pipeline.getBindGroupLayout(0),
-  entries: [
-    { binding: 0, resource: { buffer: rectsStorage } },
-  ]
-})
-
-const bindgroup2 = device.createBindGroup({
+const mousebindgroup = device.createBindGroup({
   label: 'bindgrup2',
-  layout: pipeline2.getBindGroupLayout(0),
+  layout: mousepipeline.getBindGroupLayout(0),
   entries: [
     { binding: 0, resource: { buffer: mouseStorage } },
   ]
 })
+
+
+
+
+
+
+
 
 
 
@@ -270,50 +292,16 @@ canvas.onmousemove = (e) => {
   render()
 }
 
-// let i = 0
-
-// const timer = setInterval(() => {
-
-//   console.log('step', i)
-
-//   const array = new Int32Array(10)
-
-//   array[0] = 94 + i++
-//   array[1] = 5
-//   array[2] = 42
-//   array[3] = 10
-//   array[4] = 0xff0000ff
-
-//   array[5 + 0] = 97
-//   array[5 + 1] = 15
-//   array[5 + 2] = 42
-//   array[5 + 3] = 20
-//   array[5 + 4] = 0x00ff0055
-
-//   const storage = device.createBuffer({
-//     label: 'rects',
-//     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-//     size: array.length * 4,
-//   })
-
-//   device.queue.writeBuffer(storage, 0, array)
 
 
 
-//   bindgroup = device.createBindGroup({
-//     label: 'bindgrup1',
-//     layout: pipeline.getBindGroupLayout(0),
-//     entries: [
-//       { binding: 0, resource: { buffer: storage } },
-//     ]
-//   })
 
-//   render()
+setTimeout(ontick((d) => {
 
-// }, 300)
+  console.log(d)
+  render()
 
-// setTimeout(() => clearInterval(timer), 10_000)
-
+}, 60), 1 * 1000)
 
 
 function render() {
@@ -329,13 +317,10 @@ function render() {
     }],
   })
 
-  pass.setPipeline(pipeline)
-  pass.setBindGroup(0, bindgroup)
-  pass.draw(6, 2)
+  drawrects(pass)
 
-
-  pass.setPipeline(pipeline2)
-  pass.setBindGroup(0, bindgroup2)
+  pass.setPipeline(mousepipeline)
+  pass.setBindGroup(0, mousebindgroup)
   pass.draw(6)
 
   pass.end()
