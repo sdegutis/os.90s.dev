@@ -323,7 +323,6 @@ function render() {
     label: 'basic',
     colorAttachments: [{
       view: context.getCurrentTexture().createView(),
-      clearValue: [0, 0, 0, 1],
       loadOp: 'clear',
       storeOp: 'store',
     }],
