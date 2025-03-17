@@ -30,7 +30,11 @@ const adapter = (await navigator.gpu.requestAdapter())!
 const device = await adapter.requestDevice()
 const context = canvas.getContext('webgpu')!
 const presentationFormat = navigator.gpu.getPreferredCanvasFormat()
-context.configure({ device, format: presentationFormat })
+context.configure({
+  device,
+  format: presentationFormat,
+  // alphaMode: 'premultiplied',
+})
 
 
 
@@ -42,11 +46,11 @@ const module = device.createShaderModule({
   label: 'test shaders',
   code: `
     struct Rect {
-      @location(0) x: i32,
-      @location(1) w: i32,
-      @location(2) y: i32,
-      @location(3) h: i32,
-      @location(4) c: u32,
+      x: i32,
+      w: i32,
+      y: i32,
+      h: i32,
+      c: u32,
     };
 
     struct Output {
@@ -111,7 +115,21 @@ const pipeline = device.createRenderPipeline({
   fragment: {
     entryPoint: 'fs',
     module,
-    targets: [{ format: presentationFormat }],
+    targets: [{
+      format: presentationFormat,
+      blend: {
+        color: {
+          operation: 'add',
+          srcFactor: 'one',
+          dstFactor: 'one-minus-src-alpha'
+        },
+        alpha: {
+          operation: 'add',
+          srcFactor: 'one',
+          dstFactor: 'one-minus-src-alpha'
+        },
+      },
+    }],
   },
 })
 
@@ -126,11 +144,11 @@ array[2] = 42
 array[3] = 10
 array[4] = 0xff0000ff
 
-array[5 + 0] = 194
+array[5 + 0] = 97
 array[5 + 1] = 15
-array[5 + 2] = 72
+array[5 + 2] = 42
 array[5 + 3] = 20
-array[5 + 4] = 0x00ff00ff
+array[5 + 4] = 0x00ff0055
 
 const storage = device.createBuffer({
   label: 'rects',
@@ -161,6 +179,7 @@ function render() {
     label: 'basic',
     colorAttachments: [{
       view: context.getCurrentTexture().createView(),
+      clearValue: [0, 0, 0, 1],
       loadOp: 'clear',
       storeOp: 'store',
     }],
