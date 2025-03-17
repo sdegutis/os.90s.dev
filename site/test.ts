@@ -270,48 +270,49 @@ canvas.onmousemove = (e) => {
   render()
 }
 
-let i = 0
+// let i = 0
 
-const timer = setInterval(() => {
+// const timer = setInterval(() => {
+
+//   console.log('step', i)
+
+//   const array = new Int32Array(10)
+
+//   array[0] = 94 + i++
+//   array[1] = 5
+//   array[2] = 42
+//   array[3] = 10
+//   array[4] = 0xff0000ff
+
+//   array[5 + 0] = 97
+//   array[5 + 1] = 15
+//   array[5 + 2] = 42
+//   array[5 + 3] = 20
+//   array[5 + 4] = 0x00ff0055
+
+//   const storage = device.createBuffer({
+//     label: 'rects',
+//     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+//     size: array.length * 4,
+//   })
+
+//   device.queue.writeBuffer(storage, 0, array)
 
 
-  const array = new Int32Array(10)
 
-  array[0] = 94 + i++
-  array[1] = 5
-  array[2] = 42
-  array[3] = 10
-  array[4] = 0xff0000ff
+//   bindgroup = device.createBindGroup({
+//     label: 'bindgrup1',
+//     layout: pipeline.getBindGroupLayout(0),
+//     entries: [
+//       { binding: 0, resource: { buffer: storage } },
+//     ]
+//   })
 
-  array[5 + 0] = 97
-  array[5 + 1] = 15
-  array[5 + 2] = 42
-  array[5 + 3] = 20
-  array[5 + 4] = 0x00ff0055
+//   render()
 
-  const storage = device.createBuffer({
-    label: 'rects',
-    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    size: array.length * 4,
-  })
+// }, 300)
 
-  device.queue.writeBuffer(storage, 0, array)
-
-
-
-  bindgroup = device.createBindGroup({
-    label: 'bindgrup1',
-    layout: pipeline.getBindGroupLayout(0),
-    entries: [
-      { binding: 0, resource: { buffer: storage } },
-    ]
-  })
-
-  render()
-
-}, 300)
-
-setTimeout(() => clearInterval(timer), 10_000)
+// setTimeout(() => clearInterval(timer), 10_000)
 
 
 
