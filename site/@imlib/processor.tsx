@@ -1,12 +1,10 @@
-import { jsxToString, processFile, type SiteProcessor } from "@imlib/core"
-
-const $ = jsxToString
+import { processFile, type SiteProcessor } from "immaculata"
 
 const copyright = `Copyright ©️ ${new Date().getFullYear()} Novo Cantico LLC. All rights reserved.`
 
-const icon = $(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5">
+const icon = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5">
   <path d="M1 0 L3 2 1 4 Z" fill="#19f" />
-</svg>)
+</svg>
 
 const ext = (s: string) => s.match(/\.([^\/]+)$/)?.[1] ?? ''
 
@@ -23,8 +21,9 @@ export default (({ inFiles, outFiles }) => {
     .map(s => <link rel="modulepreload" href={s} />))
 
   const iconlink = <link rel="shortcut icon" href={`data:image/svg+xml,${encodeURIComponent(icon)}`} />
-  const headers = [...datas, ...modules, iconlink]
-  const toinsert = headers.map(s => `  ${$(s)}`).join('\n')
+  const hmr = <script>{`new EventSource('/@imlib/hmr').onmessage = (e) => location.reload()`}</script>
+  const headers = [...datas, ...modules, iconlink, hmr]
+  const toinsert = headers.map(s => `  ${s}`).join('\n')
 
   function insert(s: string) {
     return s.replace('<head>', `<head>\n${toinsert}`)

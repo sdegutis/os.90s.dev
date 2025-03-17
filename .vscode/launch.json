@@ -6,7 +6,7 @@
   "configurations": [
     {
       "name": "Launch Program",
-      "program": "${workspaceFolder}/node_modules/@imlib/core/out/cli.js",
+      "program": "${workspaceFolder}/node_modules/immaculata/out/cli.js",
       "args": [
         "dev"
       ],
