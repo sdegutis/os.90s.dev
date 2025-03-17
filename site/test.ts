@@ -215,10 +215,10 @@ const mousemodule = device.createShaderModule({
       a: f32,
     };
 
-    @group(0) @binding(0) var<storage, read> mouse: Mouse;
+    @group(0) @binding(0) var<storage, read> mouse: array<Mouse>;
 
     @vertex fn vs(input: Input) -> Output {
-      let pos = mouse;
+      let pos = mouse[input.vertexIndex];
 
       let x1: f32 = (pos.pos.x+1 - 160) / 160f;
       let y1: f32 = (pos.pos.y+1 -  90) / -90f;
@@ -263,7 +263,7 @@ const mousepipeline = device.createRenderPipeline({
   },
 })
 
-const numpairs = 1
+const numpairs = 2
 
 const mouseStorage = device.createBuffer({
   label: 'mouse',
@@ -283,6 +283,14 @@ const mousebindgroup = device.createBindGroup({
   ]
 })
 
+function drawpoints(pass: GPURenderPassEncoder) {
+
+  pass.setPipeline(mousepipeline)
+  pass.setBindGroup(0, mousebindgroup)
+  pass.draw(numpairs)
+
+
+}
 
 
 
@@ -301,6 +309,14 @@ canvas.onmousemove = (e) => {
   mouseData[3] = 0
   mouseData[4] = 1
   mouseData[5] = 1
+
+  mouseData[6 + 0] = Math.min(320 - 1, e.offsetX) + 2
+  mouseData[6 + 1] = Math.min(180 - 1, e.offsetY) + 2
+  mouseData[6 + 2] = 1
+  mouseData[6 + 3] = 0
+  mouseData[6 + 4] = 0
+  mouseData[6 + 5] = .5
+
   console.log(mouseData.length)
   device.queue.writeBuffer(mouseStorage, 0, mouseData)
   render()
@@ -332,10 +348,7 @@ function render() {
   })
 
   drawrects(pass)
-
-  pass.setPipeline(mousepipeline)
-  pass.setBindGroup(0, mousebindgroup)
-  pass.draw(numpairs)
+  drawpoints(pass)
 
   pass.end()
 
