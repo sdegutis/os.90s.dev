@@ -33,7 +33,6 @@ const presentationFormat = navigator.gpu.getPreferredCanvasFormat()
 context.configure({
   device,
   format: presentationFormat,
-  // alphaMode: 'premultiplied',
 })
 
 
@@ -117,18 +116,20 @@ const pipeline = device.createRenderPipeline({
     module,
     targets: [{
       format: presentationFormat,
+
       blend: {
         color: {
           operation: 'add',
-          srcFactor: 'one',
-          dstFactor: 'one-minus-src-alpha'
+          srcFactor: 'src-alpha',
+          dstFactor: 'one-minus-src-alpha',
         },
         alpha: {
           operation: 'add',
-          srcFactor: 'one',
-          dstFactor: 'one-minus-src-alpha'
+          srcFactor: 'dst-alpha',
+          dstFactor: 'dst-alpha',
         },
       },
+
     }],
   },
 })
