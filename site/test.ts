@@ -210,16 +210,13 @@ const mousemodule = device.createShaderModule({
     @group(0) @binding(0) var<uniform> mouse: vec2i;
 
     @vertex fn vs(input: Input) -> Output {
-      let rect = mouse;
+      let pos = mouse;
 
-      let cx1: f32 = f32(rect.x);
-      let cy1: f32 = f32(rect.y);
-      
-      let x1: f32 = (cx1+1 - 160) / 160f;
-      let y1: f32 = (cy1+1 - 90) / -90f;
+      let x1: f32 = (f32(pos.x)+1 - 160) / 160f;
+      let y1: f32 = (f32(pos.y)+1 - 90) / -90f;
 
       var out: Output;
-      out.pos = vec4f(x1,y1, 0.0, 1.0);
+      out.pos = vec4f(x1,y1,0,1);
       out.col = vec4f(1,1,1,.5);
       return out;
     }
@@ -231,7 +228,7 @@ const mousemodule = device.createShaderModule({
 })
 
 const mousepipeline = device.createRenderPipeline({
-  label: 'draw rects',
+  label: 'draw mouse',
   layout: 'auto',
   primitive: { topology: 'point-list' },
   vertex: {
