@@ -32,9 +32,15 @@ export default (({ inFiles, outFiles }) => {
 
   for (const file of files) {
     for (let { path, content } of processFile(file)) {
-      if (path.endsWith('.js')) content = `/** ${copyright} */\n` + content.toString('utf8')
-      if (path.endsWith('.html')) content = `<!-- ${copyright} -->\n` + insert(content.toString('utf8'))
+      if (path.endsWith('.js')) content = `/** ${copyright} */\n` + tostring(content)
+      if (path.endsWith('.html')) content = `<!-- ${copyright} -->\n` + insert(tostring(content))
       outFiles.set(path, content)
     }
   }
 }) as SiteProcessor
+
+const dec = new TextDecoder()
+
+function tostring(str: string | Uint8Array) {
+  return typeof str === 'string' ? str : dec.decode(str)
+}
