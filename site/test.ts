@@ -182,44 +182,59 @@ const rectspipeline = device.createRenderPipeline({
 
 
 
-const numrects = 2
+const randint = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min
 
-const rectsData = new Int32Array(numrects * 5)
+const rectgroups = Array(1).keys().map(() => {
 
-rectsData[0] = 94
-rectsData[1] = 5
-rectsData[2] = 42
-rectsData[3] = 10
-rectsData[4] = 0xff0000ff
+  const numrects = 60000
 
-rectsData[5 + 0] = 97
-rectsData[5 + 1] = 15
-rectsData[5 + 2] = 42
-rectsData[5 + 3] = 20
-rectsData[5 + 4] = 0x00ff0055
+  const rectsData = new Int32Array(numrects * 5)
 
-const rectsStorage = device.createBuffer({
-  label: 'rects',
-  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-  size: rectsData.length * 4,
-})
+  const rectsStorage = device.createBuffer({
+    label: 'rects',
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+    size: rectsData.length * 4,
+  })
 
-device.queue.writeBuffer(rectsStorage, 0, rectsData)
+  let bindgroup = device.createBindGroup({
+    label: 'bindgrup1',
+    layout: rectspipeline.getBindGroupLayout(0),
+    entries: [
+      { binding: 0, resource: { buffer: rectsStorage } },
+    ]
+  })
 
+  update()
 
-let bindgroup = device.createBindGroup({
-  label: 'bindgrup1',
-  layout: rectspipeline.getBindGroupLayout(0),
-  entries: [
-    { binding: 0, resource: { buffer: rectsStorage } },
-  ]
-})
+  for (let i = 0; i < numrects; i++) {
+    rectsData[(i * 5) + 0] = randint(0, 320 - 10)
+    rectsData[(i * 5) + 1] = randint(1, 320 / 10)
+    rectsData[(i * 5) + 2] = randint(0, 180 - 10)
+    rectsData[(i * 5) + 3] = randint(1, 180 / 10)
+    rectsData[(i * 5) + 4] = randint(0, 0xffffffff)
+  }
+
+  device.queue.writeBuffer(rectsStorage, 0, rectsData)
+
+  function update() {
+
+  }
+
+  return { bindgroup, numrects, update }
+
+}).toArray()
 
 function drawrects(pass: GPURenderPassEncoder) {
 
-  pass.setPipeline(rectspipeline)
-  pass.setBindGroup(0, bindgroup)
-  pass.draw(6, numrects)
+  for (const group of rectgroups) {
+
+    // group.update()
+
+    pass.setPipeline(rectspipeline)
+    pass.setBindGroup(0, group.bindgroup)
+    pass.draw(6, group.numrects)
+  }
+
 
 }
 
@@ -301,7 +316,7 @@ setTimeout(ontick((d) => {
   console.log(d)
   render()
 
-}, 60), 1 * 1000)
+}, 60), 5 * 1000)
 
 
 function render() {
