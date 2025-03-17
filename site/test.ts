@@ -105,54 +105,6 @@ const rectsmodule = device.createShaderModule({
   `,
 })
 
-const mousemodule = device.createShaderModule({
-  label: 'module2',
-  code: `
-    struct Output {
-      @builtin(position) pos: vec4f,
-      @location(0) @interpolate(flat) col: vec4f,
-    };
-
-    struct Input {
-      @builtin(vertex_index) vertexIndex: u32,
-    };
-
-    @group(0) @binding(0) var<uniform> mouse: vec2i;
-
-    @vertex fn vs(input: Input) -> Output {
-      let rect = mouse;
-
-      let cx1: f32 = f32(rect.x);
-      let cx2: f32 = f32(rect.x + 1);
-      let cy1: f32 = f32(rect.y);
-      let cy2: f32 = f32(rect.y + 1);
-      
-      let x1: f32 = (cx1 - 160) / 160f;
-      let x2: f32 = (cx2 - 160) / 160f;
-      let y1: f32 = (cy1 - 90) / -90f;
-      let y2: f32 = (cy2 - 90) / -90f;
-
-      let verts = array(
-        vec2f(x1,y1),
-        vec2f(x2,y1),
-        vec2f(x1,y2),
-        vec2f(x1,y2),
-        vec2f(x2,y2),
-        vec2f(x2,y1),
-      );
-
-      var out: Output;
-      out.pos = vec4f(verts[input.vertexIndex], 0.0, 1.0);
-      out.col = vec4f(1,1,1,.5);
-      return out;
-    }
-
-    @fragment fn fs(input: Output) -> @location(0) vec4f {
-      return input.col;
-    }
-  `,
-})
-
 const rectspipeline = device.createRenderPipeline({
   label: 'draw rects',
   layout: 'auto',
@@ -243,9 +195,45 @@ function drawrects(pass: GPURenderPassEncoder) {
 
 
 
+const mousemodule = device.createShaderModule({
+  label: 'module2',
+  code: `
+    struct Output {
+      @builtin(position) pos: vec4f,
+      @location(0) @interpolate(flat) col: vec4f,
+    };
+
+    struct Input {
+      @builtin(vertex_index) vertexIndex: u32,
+    };
+
+    @group(0) @binding(0) var<uniform> mouse: vec2i;
+
+    @vertex fn vs(input: Input) -> Output {
+      let rect = mouse;
+
+      let cx1: f32 = f32(rect.x);
+      let cy1: f32 = f32(rect.y);
+      
+      let x1: f32 = (cx1+1 - 160) / 160f;
+      let y1: f32 = (cy1+1 - 90) / -90f;
+
+      var out: Output;
+      out.pos = vec4f(x1,y1, 0.0, 1.0);
+      out.col = vec4f(1,1,1,.5);
+      return out;
+    }
+
+    @fragment fn fs(input: Output) -> @location(0) vec4f {
+      return input.col;
+    }
+  `,
+})
+
 const mousepipeline = device.createRenderPipeline({
   label: 'draw rects',
   layout: 'auto',
+  primitive: { topology: 'point-list' },
   vertex: {
     entryPoint: 'vs',
     module: mousemodule,
@@ -270,13 +258,15 @@ const mousepipeline = device.createRenderPipeline({
   },
 })
 
+const numpixels = 2
+
 const mouseStorage = device.createBuffer({
   label: 'mouse',
   usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-  size: 4 * 2,
+  size: 4 * numpixels,
 })
 
-const mouseData = new Int32Array(2)
+const mouseData = new Int32Array(numpixels)
 
 device.queue.writeBuffer(mouseStorage, 0, mouseData)
 
