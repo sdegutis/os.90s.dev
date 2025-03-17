@@ -63,7 +63,6 @@ const module = device.createShaderModule({
     };
 
     @group(0) @binding(0) var<storage, read> rects: array<Rect>;
-    @group(0) @binding(1) var<uniform> mouse: vec2f;
 
     @vertex fn vs(input: Input) -> Output {
       let rect = rects[input.instanceIndex];
@@ -105,6 +104,54 @@ const module = device.createShaderModule({
   `,
 })
 
+const module2 = device.createShaderModule({
+  label: 'module2',
+  code: `
+    struct Output {
+      @builtin(position) pos: vec4f,
+      @location(0) @interpolate(flat) col: vec4f,
+    };
+
+    struct Input {
+      @builtin(vertex_index) vertexIndex: u32,
+    };
+
+    @group(0) @binding(0) var<uniform> mouse: vec2i;
+
+    @vertex fn vs(input: Input) -> Output {
+      let rect = mouse;
+
+      let cx1: f32 = f32(rect.x);
+      let cx2: f32 = f32(rect.x + 1);
+      let cy1: f32 = f32(rect.y);
+      let cy2: f32 = f32(rect.y + 1);
+      
+      let x1: f32 = (cx1 - 160) / 160f;
+      let x2: f32 = (cx2 - 160) / 160f;
+      let y1: f32 = (cy1 - 90) / -90f;
+      let y2: f32 = (cy2 - 90) / -90f;
+
+      let verts = array(
+        vec2f(x1,y1),
+        vec2f(x2,y1),
+        vec2f(x1,y2),
+        vec2f(x1,y2),
+        vec2f(x2,y2),
+        vec2f(x2,y1),
+      );
+
+      var out: Output;
+      out.pos = vec4f(verts[input.vertexIndex], 0.0, 1.0);
+      out.col = vec4f(1,1,1,.5);
+      return out;
+    }
+
+    @fragment fn fs(input: Output) -> @location(0) vec4f {
+      return input.col;
+    }
+  `,
+})
+
 const pipeline = device.createRenderPipeline({
   label: 'draw rects',
   layout: 'auto',
@@ -115,6 +162,36 @@ const pipeline = device.createRenderPipeline({
   fragment: {
     entryPoint: 'fs',
     module,
+    targets: [{
+      format: presentationFormat,
+
+      blend: {
+        color: {
+          operation: 'add',
+          srcFactor: 'src-alpha',
+          dstFactor: 'one-minus-src-alpha',
+        },
+        alpha: {
+          operation: 'add',
+          srcFactor: 'dst-alpha',
+          dstFactor: 'dst-alpha',
+        },
+      },
+
+    }],
+  },
+})
+
+const pipeline2 = device.createRenderPipeline({
+  label: 'draw rects',
+  layout: 'auto',
+  vertex: {
+    entryPoint: 'vs',
+    module: module2,
+  },
+  fragment: {
+    entryPoint: 'fs',
+    module: module2,
     targets: [{
       format: presentationFormat,
 
@@ -163,7 +240,7 @@ device.queue.writeBuffer(rectsStorage, 0, rectsData)
 const mouseStorage = device.createBuffer({
   label: 'mouse',
   usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-  size: 8,
+  size: 4 * 2,
 })
 
 const mouseData = new Int32Array(2)
@@ -178,50 +255,68 @@ let bindgroup = device.createBindGroup({
   layout: pipeline.getBindGroupLayout(0),
   entries: [
     { binding: 0, resource: { buffer: rectsStorage } },
-    // { binding: 1, resource: { buffer: mouseStorage } },
   ]
 })
 
-// let i = 0
-
-// setInterval(() => {
-
-
-//   const array = new Int32Array(10)
-
-//   array[0] = 94 + i++
-//   array[1] = 5
-//   array[2] = 42
-//   array[3] = 10
-//   array[4] = 0xff0000ff
-
-//   array[5 + 0] = 97
-//   array[5 + 1] = 15
-//   array[5 + 2] = 42
-//   array[5 + 3] = 20
-//   array[5 + 4] = 0x00ff0055
-
-//   const storage = device.createBuffer({
-//     label: 'rects',
-//     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-//     size: array.length * 4,
-//   })
-
-//   device.queue.writeBuffer(storage, 0, array)
+const bindgroup2 = device.createBindGroup({
+  label: 'bindgrup2',
+  layout: pipeline2.getBindGroupLayout(0),
+  entries: [
+    { binding: 0, resource: { buffer: mouseStorage } },
+  ]
+})
 
 
 
-//   bindgroup = device.createBindGroup({
-//     label: 'bindgrup1',
-//     layout: pipeline.getBindGroupLayout(0),
-//     entries: [
-//       { binding: 0, resource: { buffer: storage } },
-//     ]
-//   })
+canvas.onmousemove = (e) => {
+  // console.log(e.offsetX, e.offsetY)
 
-//   render()
+  mouseData[0] = Math.min(320 - 1, e.offsetX)
+  mouseData[1] = Math.min(180 - 1, e.offsetY)
+  device.queue.writeBuffer(mouseStorage, 0, mouseData)
+  render()
+}
 
-// }, 300)
+let i = 0
+
+setInterval(() => {
+
+
+  const array = new Int32Array(10)
+
+  array[0] = 94 + i++
+  array[1] = 5
+  array[2] = 42
+  array[3] = 10
+  array[4] = 0xff0000ff
+
+  array[5 + 0] = 97
+  array[5 + 1] = 15
+  array[5 + 2] = 42
+  array[5 + 3] = 20
+  array[5 + 4] = 0x00ff0055
+
+  const storage = device.createBuffer({
+    label: 'rects',
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+    size: array.length * 4,
+  })
+
+  device.queue.writeBuffer(storage, 0, array)
+
+
+
+  bindgroup = device.createBindGroup({
+    label: 'bindgrup1',
+    layout: pipeline.getBindGroupLayout(0),
+    entries: [
+      { binding: 0, resource: { buffer: storage } },
+    ]
+  })
+
+  render()
+
+}, 300)
 
 
 
@@ -242,6 +337,12 @@ function render() {
   pass.setPipeline(pipeline)
   pass.setBindGroup(0, bindgroup)
   pass.draw(6, 2)
+
+
+  pass.setPipeline(pipeline2)
+  pass.setBindGroup(0, bindgroup2)
+  pass.draw(6)
+
   pass.end()
 
   device.queue.submit([(encoder.finish())])
