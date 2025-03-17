@@ -207,13 +207,17 @@ const mousemodule = device.createShaderModule({
       @builtin(vertex_index) vertexIndex: u32,
     };
 
-    @group(0) @binding(0) var<storage, read> mouse: vec2f;
+    struct Mouse {
+      pos: vec2f,
+    };
+
+    @group(0) @binding(0) var<storage, read> mouse: Mouse;
 
     @vertex fn vs(input: Input) -> Output {
       let pos = mouse;
 
-      let x1: f32 = (pos.x+1 - 160) / 160f;
-      let y1: f32 = (pos.y+1 - 90) / -90f;
+      let x1: f32 = (pos.pos.x+1 - 160) / 160f;
+      let y1: f32 = (pos.pos.y+1 - 90) / -90f;
 
       var out: Output;
       out.pos = vec4f(x1,y1,0,1);
