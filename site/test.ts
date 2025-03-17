@@ -63,6 +63,7 @@ const module = device.createShaderModule({
     };
 
     @group(0) @binding(0) var<storage, read> rects: array<Rect>;
+    @group(0) @binding(1) var<uniform> mouse: vec2f;
 
     @vertex fn vs(input: Input) -> Output {
       let rect = rects[input.instanceIndex];
@@ -136,27 +137,39 @@ const pipeline = device.createRenderPipeline({
 
 
 
-const array = new Int32Array(10)
+const rectsData = new Int32Array(10)
 
-array[0] = 94
-array[1] = 5
-array[2] = 42
-array[3] = 10
-array[4] = 0xff0000ff
+rectsData[0] = 94
+rectsData[1] = 5
+rectsData[2] = 42
+rectsData[3] = 10
+rectsData[4] = 0xff0000ff
 
-array[5 + 0] = 97
-array[5 + 1] = 15
-array[5 + 2] = 42
-array[5 + 3] = 20
-array[5 + 4] = 0x00ff0055
+rectsData[5 + 0] = 97
+rectsData[5 + 1] = 15
+rectsData[5 + 2] = 42
+rectsData[5 + 3] = 20
+rectsData[5 + 4] = 0x00ff0055
 
-const storage = device.createBuffer({
+const rectsStorage = device.createBuffer({
   label: 'rects',
   usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-  size: array.length * 4,
+  size: rectsData.length * 4,
 })
 
-device.queue.writeBuffer(storage, 0, array)
+device.queue.writeBuffer(rectsStorage, 0, rectsData)
+
+
+const mouseStorage = device.createBuffer({
+  label: 'mouse',
+  usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+  size: 8,
+})
+
+const mouseData = new Int32Array(2)
+
+device.queue.writeBuffer(mouseStorage, 0, mouseData)
+
 
 
 
@@ -164,50 +177,51 @@ let bindgroup = device.createBindGroup({
   label: 'bindgrup1',
   layout: pipeline.getBindGroupLayout(0),
   entries: [
-    { binding: 0, resource: { buffer: storage } },
+    { binding: 0, resource: { buffer: rectsStorage } },
+    // { binding: 1, resource: { buffer: mouseStorage } },
   ]
 })
 
-let i = 0
+// let i = 0
 
-setInterval(() => {
-
-
-  const array = new Int32Array(10)
-
-  array[0] = 94 + i++
-  array[1] = 5
-  array[2] = 42
-  array[3] = 10
-  array[4] = 0xff0000ff
-
-  array[5 + 0] = 97
-  array[5 + 1] = 15
-  array[5 + 2] = 42
-  array[5 + 3] = 20
-  array[5 + 4] = 0x00ff0055
-
-  const storage = device.createBuffer({
-    label: 'rects',
-    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    size: array.length * 4,
-  })
-
-  device.queue.writeBuffer(storage, 0, array)
+// setInterval(() => {
 
 
+//   const array = new Int32Array(10)
 
-  bindgroup = device.createBindGroup({
-    label: 'bindgrup1',
-    layout: pipeline.getBindGroupLayout(0),
-    entries: [
-      { binding: 0, resource: { buffer: storage } },
-    ]
-  })
+//   array[0] = 94 + i++
+//   array[1] = 5
+//   array[2] = 42
+//   array[3] = 10
+//   array[4] = 0xff0000ff
 
-  render()
+//   array[5 + 0] = 97
+//   array[5 + 1] = 15
+//   array[5 + 2] = 42
+//   array[5 + 3] = 20
+//   array[5 + 4] = 0x00ff0055
 
-}, 300)
+//   const storage = device.createBuffer({
+//     label: 'rects',
+//     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+//     size: array.length * 4,
+//   })
+
+//   device.queue.writeBuffer(storage, 0, array)
+
+
+
+//   bindgroup = device.createBindGroup({
+//     label: 'bindgrup1',
+//     layout: pipeline.getBindGroupLayout(0),
+//     entries: [
+//       { binding: 0, resource: { buffer: storage } },
+//     ]
+//   })
+
+//   render()
+
+// }, 300)
 
 
 
