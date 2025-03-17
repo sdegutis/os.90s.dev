@@ -207,7 +207,7 @@ const mousemodule = device.createShaderModule({
       @builtin(vertex_index) vertexIndex: u32,
     };
 
-    @group(0) @binding(0) var<uniform> mouse: vec2i;
+    @group(0) @binding(0) var<storage, read> mouse: vec2i;
 
     @vertex fn vs(input: Input) -> Output {
       let pos = mouse;
@@ -259,7 +259,7 @@ const numpixels = 2
 
 const mouseStorage = device.createBuffer({
   label: 'mouse',
-  usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
   size: 4 * numpixels,
 })
 
