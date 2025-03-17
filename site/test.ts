@@ -42,11 +42,11 @@ const module = device.createShaderModule({
   label: 'test shaders',
   code: `
     struct Rect {
-      x1: i32,
-      x2: i32,
-      y1: i32,
-      y2: i32,
-      c: i32,
+      @location(0) x1: i32,
+      @location(1) x2: i32,
+      @location(2) y1: i32,
+      @location(3) y2: i32,
+      @location(4) c: u32,
     };
 
     struct Output {
@@ -54,20 +54,20 @@ const module = device.createShaderModule({
       @location(0) @interpolate(flat) col: vec4f,
     };
 
-    // struct Input {
-    //   @builtin(vertex_index) vertexIndex: u32,
+    struct Input {
+      @builtin(vertex_index) vertexIndex: u32,
+      @builtin(instance_index) instanceIndex: u32,
+    };
 
-    // };
+    @group(0) @binding(0) var<storage, read> rects: array<Rect>;
 
-    // @group(0) @binding(0) var<storage, read> r: Rect;
+    @vertex fn vs(input: Input) -> Output {
+      let rect = rects[input.instanceIndex];
 
-    @vertex fn vs(
-      @builtin(vertex_index) vertexIndex : u32
-    ) -> Output {
-      let cx1: f32 = 94;
-      let cx2: f32 = 99;
-      let cy1: f32 = 42;
-      let cy2: f32 = 49;
+      let cx1: f32 = f32(rect.x1);
+      let cx2: f32 = f32(rect.x2);
+      let cy1: f32 = f32(rect.y1);
+      let cy2: f32 = f32(rect.y2);
       
       let x1: f32 = (cx1 - 160) / 160f;
       let x2: f32 = (cx2 - 160) / 160f;
@@ -83,9 +83,15 @@ const module = device.createShaderModule({
         vec2f(x2,y1),
       );
 
+      let c = rect.c;
+      let r = f32((c >> 24) & 0xff) / 255f;
+      let g = f32((c >> 16) & 0xff) / 255f;
+      let b = f32((c >> 8) & 0xff) / 255f;
+      let a = f32(c & 0xff) / 255f;
+
       var out: Output;
-      out.pos = vec4f(verts[vertexIndex], 0.0, 1.0);
-      out.col = vec4f(0.0, 1.0, 0.0, 1.0);
+      out.pos = vec4f(verts[input.vertexIndex], 0.0, 1.0);
+      out.col = vec4f(r,g,b,a);
       return out;
     }
 
@@ -112,13 +118,19 @@ const pipeline = device.createRenderPipeline({
 
 
 
-const array = new Int32Array(5)
+const array = new Int32Array(10)
 
 array[0] = 94
 array[1] = 99
 array[2] = 42
 array[3] = 49
 array[4] = 0xff0000ff
+
+array[5 + 0] = 194
+array[5 + 1] = 199
+array[5 + 2] = 72
+array[5 + 3] = 79
+array[5 + 4] = 0xff0000ff
 
 const storage = device.createBuffer({
   label: 'rects',
@@ -130,13 +142,13 @@ device.queue.writeBuffer(storage, 0, array)
 
 
 
-// const bindgroup = device.createBindGroup({
-//   label: 'bindgrup1',
-//   layout: pipeline.getBindGroupLayout(0),
-//   entries: [
-//     { binding: 0, resource: { buffer: storage } },
-//   ]
-// })
+const bindgroup = device.createBindGroup({
+  label: 'bindgrup1',
+  layout: pipeline.getBindGroupLayout(0),
+  entries: [
+    { binding: 0, resource: { buffer: storage } },
+  ]
+})
 
 
 
@@ -155,8 +167,8 @@ function render() {
   })
 
   pass.setPipeline(pipeline)
-  // pass.setBindGroup(0, bindgroup)
-  pass.draw(6)
+  pass.setBindGroup(0, bindgroup)
+  pass.draw(6, 2)
   pass.end()
 
   device.queue.submit([(encoder.finish())])
