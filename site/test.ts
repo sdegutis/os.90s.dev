@@ -1,4 +1,3 @@
-import { ontick } from "./client/util/ontick.js"
 
 const GRID_W = 320
 const GRID_H = 180
@@ -186,7 +185,7 @@ const randint = (min: number, max: number) => Math.floor(Math.random() * (max - 
 
 const rectgroups = Array(1).keys().map(() => {
 
-  const numrects = 60000
+  const numrects = 10
 
   const rectsData = new Int32Array(numrects * 5)
 
@@ -311,12 +310,12 @@ canvas.onmousemove = (e) => {
 
 
 
-setTimeout(ontick((d) => {
+// setTimeout(ontick((d) => {
 
-  console.log(d)
-  render()
+//   console.log(d)
+//   render()
 
-}, 60), 5 * 1000)
+// }, 60), 5 * 1000)
 
 
 function render() {
