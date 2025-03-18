@@ -4,11 +4,6 @@ export interface IntrinsicView extends Omit<View, 'children'> {
   children?: JSX.Element[] | JSX.Element | undefined
 }
 
-const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, px, py) {
-  ctx.fillStyle = '#' + this.background.toString(16).padStart(8, '0')
-  ctx.fillRect(px, py, this.w, this.h)
-}
-
 export function view(): IntrinsicView {
   return {
 
@@ -28,4 +23,9 @@ export function view(): IntrinsicView {
     draw: drawBackground,
 
   }
+}
+
+const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, px, py) {
+  ctx.fillStyle = '#' + this.background.toString(16).padStart(8, '0')
+  ctx.fillRect(px, py, this.w, this.h)
 }
