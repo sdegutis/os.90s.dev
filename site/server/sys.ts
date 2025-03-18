@@ -1,4 +1,4 @@
-import { pointer } from "../client/util/bitmap.js"
+import { pointer } from "../shared/bitmap.js"
 import type { KeyMap } from "../shared/rpc.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
