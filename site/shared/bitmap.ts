@@ -39,7 +39,7 @@ export class Bitmap {
       }
     }
 
-    ctx.globalCompositeOperation = 'source-in'
+    ctx.globalCompositeOperation = 'source-atop'
   }
 
   colorize(col: string) {
