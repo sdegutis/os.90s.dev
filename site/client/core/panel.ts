@@ -164,9 +164,9 @@ export class Panel {
     }
 
     if (this.hovered !== activeHovered) {
-      // if (this.hovered) this.hovered.hovered = false
+      if (this.hovered) this.hovered.$update('hovered', false)
       this.hovered = activeHovered
-      // if (this.hovered) this.hovered.hovered = true
+      if (this.hovered) this.hovered.$update('hovered', true)
     }
   }
 
@@ -183,8 +183,7 @@ export class Panel {
 
     this.hoveredTree.add(node)
 
-    // node.mouse.x = x
-    // node.mouse.y = y
+    node.$update('mouse', { x, y })
 
     let i = node.children.length
     while (i--) {
