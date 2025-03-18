@@ -58,6 +58,8 @@ export class IntrinsicNode {
       children.push(child.rendered)
     }
 
+    view.children = children
+
     this.rendered = view
   }
 

@@ -4,7 +4,7 @@ interface IntrinsicView extends Omit<View, 'children'> {
   children?: JSX.Element[] | JSX.Element | undefined
 }
 
-const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, x, y, w, h) {
+export const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, x, y, w, h) {
   ctx.fillStyle = '#' + this.background.toString(16).padStart(8, '0')
   ctx.fillRect(x, y, w, h)
 }

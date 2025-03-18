@@ -1,6 +1,7 @@
 import { IntrinsicNode } from "../../@imlib/jsx-browser.js"
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
+import type { View } from "../views/interface.js"
 
 type MousePos = { x: number, y: number }
 
@@ -121,7 +122,26 @@ export class Panel {
   }
 
   redrawRoot() {
-    this.root.rendered.draw(this.ctx, 0, 0, this.w, this.h)
+    this.drawTree(this.root.rendered, 0, 0, this.w, this.h)
+  }
+
+  private drawTree(
+    node: View,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+  ) {
+    node.draw(this.ctx, x, y, w, h)
+    for (const child of node.children) {
+      this.drawTree(
+        child,
+        x + child.x,
+        y + child.y,
+        Math.min(child.w, this.w - child.x),
+        Math.min(child.h, this.h - child.y),
+      )
+    }
   }
 
   blit() {
