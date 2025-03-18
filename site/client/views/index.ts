@@ -6,7 +6,7 @@ interface IntrinsicView extends Omit<View, 'children'> {
 
 export const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, x, y, w, h) {
   ctx.fillStyle = '#' + this.background.toString(16).padStart(8, '0')
-  ctx.fillRect(x, y, w, h)
+  ctx.fillRect(x, y, this.w, this.h)
 }
 
 function view(): IntrinsicView {
@@ -20,10 +20,29 @@ function view(): IntrinsicView {
   }
 }
 
+export const drawBorderedView: IntrinsicView['draw'] = function (this: Border, ctx, x, y, w, h) {
+  ctx.fillStyle = '#' + this.background.toString(16).padStart(8, '0')
+  ctx.fillRect(
+    x + this.padding,
+    y + this.padding,
+    this.w - this.padding * 2,
+    this.h - this.padding * 2,
+  )
+
+  ctx.strokeStyle = '#' + this.borderColor.toString(16).padStart(8, '0')
+  for (let i = 0; i < this.padding; i++) {
+    ctx.strokeRect(x + i + .5, y + i + .5, this.w - i * 2 - 1, this.h - i * 2 - 1)
+  }
+}
+
+type Border = ReturnType<typeof border>
+
 function border() {
   return {
     ...view(),
+    borderColor: 0x00000000,
     padding: 0,
+    draw: drawBorderedView,
   }
 }
 
