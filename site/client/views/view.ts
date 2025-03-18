@@ -62,7 +62,7 @@ export class view {
     }
   }
 
-  protected redraw() {
+  private redraw() {
     let node: view = this
     while (node.parent) node = node.parent
     node.panel?.needsRedraw()
