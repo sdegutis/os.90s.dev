@@ -14,22 +14,26 @@ await prog.init()
 const panel = await prog.makePanel({
   size: [100, 100],
   view: (
-    <view background={'#77000033'}
-    >
-      <image
-        onWheel={(x, y) => console.log(y)}
-        background={'#00770033'} x={10} y={20} w={30} h={40}
-        canFocus={true}
-        onMouseDown={(b) => { if (b > 0) panel.close() }}
-        image={axeImage}
-        // text={'hello world'}
-        onKeyDown={key => console.log(key.toUpperCase())}
-      >
-        <Foo x={-10} />
-      </image>
-    </view>
+    <MyView w={0} h={0} />
   ),
 })
+
+function MyView(data: { w: number, h: number }) {
+  return <view background={'#77000033'} w={data.w} h={data.h}
+  >
+    <image
+      onWheel={(x, y) => console.log(y)}
+      background={'#00770033'} x={10} y={20} w={30} h={40}
+      canFocus={true}
+      onMouseDown={(b) => { if (b > 0) panel.close() }}
+      image={axeImage}
+      // text={'hello world'}
+      onKeyDown={key => console.log(key.toUpperCase())}
+    >
+      <Foo x={-10} />
+    </image>
+  </view>
+}
 
 let down: (() => void) | undefined
 

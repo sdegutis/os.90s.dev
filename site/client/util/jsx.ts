@@ -31,6 +31,7 @@ export class IntrinsicNode {
 
     for (const child of this.children) {
       child.render()
+
       child.view.parent = view
       children.push(child.view)
     }

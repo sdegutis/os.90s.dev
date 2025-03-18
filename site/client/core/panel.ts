@@ -1,6 +1,5 @@
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
-import { IntrinsicNode } from "../util/jsx.js"
 import type { MousePos, View } from "../views/interface.js"
 
 export class Panel {
@@ -30,7 +29,7 @@ export class Panel {
   private clicking: View | null = null
   private focused: View | null = null
 
-  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: IntrinsicNode) {
+  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: JSX.Element) {
     Panel.all.set(id, this)
 
     this.canvas.width = w
@@ -41,10 +40,6 @@ export class Panel {
     this._y = y
     this._w = w
     this._h = h
-
-    if (!(root instanceof IntrinsicNode)) {
-      throw new Error(`panel root view must be intrinsic node`)
-    }
 
     this.rpc = wRPC<ClientPanel, ServerPanel>(port)
 
