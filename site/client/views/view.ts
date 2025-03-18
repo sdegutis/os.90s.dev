@@ -1,6 +1,9 @@
+import type { Panel } from "../core/panel.js"
 import { Ref } from "../util/ref.js"
 
 export class view {
+
+  panel?: Panel
 
   readonly children: readonly view[] = []
   readonly parent: view | null = null
@@ -39,13 +42,24 @@ export class view {
   onKeyDown?(key: string): void
   onBlur?(): void
 
+  adjust?(): void
+  layout?(): void
+
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     ctx.fillStyle = this.background
     ctx.fillRect(px, py, this.w, this.h)
   }
 
-  $update(k: keyof this, v: this[keyof this]) {
+  $update<K extends keyof this & string>(k: K, v: this[K]) {
     this[k] = v
+    if (this.adjustKeys.includes(k)) {
+      this.adjust?.()
+    }
+    else if (this.redrawKeys.includes(k)) {
+      let node: view = this
+      while (node.parent) node = node.parent
+      node.panel?.blit()
+    }
   }
 
   $setup(data: Record<string, any>, children: view[]) {
@@ -59,7 +73,7 @@ export class view {
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
         view[k] = v.val
-        v.watch(val => this.$update(k as keyof this, val))
+        v.watch(val => this.$update<any>(k, val))
       }
       else {
         view[k] = v

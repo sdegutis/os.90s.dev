@@ -124,6 +124,7 @@ export class Panel {
     this.root = root
     this.root.$update("w", w)
     this.root.$update("h", h)
+    this.root.panel = this
 
     this.hovered = this.root
 
