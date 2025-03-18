@@ -70,7 +70,7 @@ export class FragmentNode {
 
   constructor(data: Record<string, any>, children: JSX.Element[] | undefined) {
     this.data = data
-    this.children = children === undefined ? [] : children instanceof Array ? children : [children]
+    this.children = children ?? []
   }
 
   render() {
