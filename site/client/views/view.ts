@@ -55,12 +55,17 @@ export class view {
 
     if (this.adjustKeys.includes(k)) {
       this.adjust?.()
+      this.redraw()
     }
     else if (this.redrawKeys.includes(k)) {
-      let node: view = this
-      while (node.parent) node = node.parent
-      node.panel?.needsRedraw()
+      this.redraw()
     }
+  }
+
+  protected redraw() {
+    let node: view = this
+    while (node.parent) node = node.parent
+    node.panel?.needsRedraw()
   }
 
   $setup(data: Record<string, any>, children: view[]) {
