@@ -30,6 +30,13 @@ export interface View {
   onMouseEnter?(): void
   onMouseExit?(): void
 
+  canFocus: boolean
+  onFocus?(): void
+  onBlur?(): void
+
+  onKeyDown(key: string): void
+  onKeyUp(key: string): void
+
   draw(
     ctx: OffscreenCanvasRenderingContext2D,
     px: number,

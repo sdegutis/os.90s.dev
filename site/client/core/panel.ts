@@ -84,7 +84,14 @@ export class Panel {
     })
 
     this.rpc.listen('wheel', (n) => {
-      this.hovered.onWheel?.(n)
+      let node: View | undefined = this.hovered
+      while (node) {
+        if (node.onWheel) {
+          node.onWheel(n)
+          return
+        }
+        node = node.parent
+      }
     })
 
     this.rpc.listen('keydown', (key) => {

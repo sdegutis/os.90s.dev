@@ -17,6 +17,7 @@ export function view(): IntrinsicView {
     w: 0,
     h: 0,
 
+    canFocus: false,
     visible: true,
     hovered: false,
     passthrough: false,
