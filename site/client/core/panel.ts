@@ -25,9 +25,10 @@ export class Panel {
   readonly canvas = new OffscreenCanvas(0, 0)
   readonly ctx = this.canvas.getContext('2d')!
 
-  private allHovered = new Set<View>()
+  private hoveredTree = new Set<View>()
   private hovered: View
   private clicking: View | null = null
+  private focused: View | null = null
 
   constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: IntrinsicNode) {
     Panel.all.set(id, this)
@@ -67,6 +68,22 @@ export class Panel {
     this.rpc.listen('mousedown', (b) => {
       this.clicking = this.hovered
       this.hovered.onMouseDown?.(b)
+
+      let node: View | undefined = this.hovered
+      while (node) {
+        if (node.passthrough) continue
+
+        if (node.canFocus) {
+          this.focused?.onBlur?.()
+          this.focused = node
+          this.focused?.onFocus?.()
+          return
+        }
+        node = node.parent
+      }
+
+      this.focused?.onBlur?.()
+      this.focused = null
     })
 
     this.rpc.listen('mousemoved', (x, y) => {
@@ -96,6 +113,7 @@ export class Panel {
 
     this.rpc.listen('keydown', (key) => {
       this.keymap[key] = true
+      this.focused?.onKeyDown?.(key)
     })
 
     this.rpc.listen('keyup', (key) => {
@@ -132,16 +150,16 @@ export class Panel {
   }
 
   private checkUnderMouse() {
-    const lastHovered = this.allHovered
-    this.allHovered = new Set()
+    const lastHovered = this.hoveredTree
+    this.hoveredTree = new Set()
 
     const activeHovered = this.hover(this.root.view, this.mouse.x, this.mouse.y)!
 
-    for (const view of this.allHovered.difference(lastHovered)) {
+    for (const view of this.hoveredTree.difference(lastHovered)) {
       view.onMouseEnter?.()
     }
 
-    for (const view of lastHovered.difference(this.allHovered)) {
+    for (const view of lastHovered.difference(this.hoveredTree)) {
       view.onMouseExit?.()
     }
 
@@ -163,7 +181,7 @@ export class Panel {
     const inThis = (x >= tx && y >= ty && x < tw && y < th)
     if (!inThis) return null
 
-    this.allHovered.add(node)
+    this.hoveredTree.add(node)
 
     node.mouse.x = x
     node.mouse.y = y

@@ -12,6 +12,8 @@ const panel = await prog.makePanel({
       <view
         onWheel={(x, y) => console.log(y)}
         background={0x00770033} x={10} y={20} w={30} h={40}
+        canFocus={true}
+        onKeyDown={key => console.log(key.toUpperCase())}
       >
         <Foo x={-10} />
       </view>
