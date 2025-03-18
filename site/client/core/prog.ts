@@ -1,3 +1,4 @@
+import type { IntrinsicNode } from "../../@imlib/jsx-browser.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type PanelPosition, type ServerProgram } from "../../shared/rpc.js"
 import { Panel } from "./panel.js"
 
@@ -28,7 +29,7 @@ export class Program {
     order?: PanelOrdering,
     pos?: PanelPosition,
     size: [number, number],
-    view: JSX.Element,
+    view: IntrinsicNode,
   }) {
     const order = config.order ?? 'normal'
     const { size: [w, h] } = config

@@ -1,3 +1,4 @@
+import { IntrinsicNode } from "../../@imlib/jsx-browser.js"
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
 import { Rect } from "../util/rect.js"
@@ -23,7 +24,7 @@ export class Panel extends Rect {
   readonly canvas = new OffscreenCanvas(0, 0)
   readonly ctx = this.canvas.getContext('2d')!
 
-  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: JSX.Element) {
+  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: IntrinsicNode) {
     super()
 
     Panel.all.set(id, this)
@@ -36,6 +37,11 @@ export class Panel extends Rect {
     this._y = y
     this._w = w
     this._h = h
+
+    if (!(root instanceof IntrinsicNode)) {
+      throw new Error(`panel root view must be intrinsic node`)
+    }
+
     this.root = root
 
     this.root.data["w"] = w

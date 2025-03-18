@@ -45,7 +45,7 @@ export function jsx(tag: any, { children, ...data }: any): JSX.Element {
 }
 
 
-class IntrinsicNode {
+export class IntrinsicNode {
 
   data: Record<string, any>
   children: JSX.Element[]
@@ -63,7 +63,7 @@ class IntrinsicNode {
 
 }
 
-class FragmentNode {
+export class FragmentNode {
 
   data: Record<string, any>
   children: JSX.Element[]
@@ -81,7 +81,7 @@ class FragmentNode {
 
 }
 
-class FunctionNode {
+export class FunctionNode {
 
   fn: FunctionElement
   data: Record<string, any>
