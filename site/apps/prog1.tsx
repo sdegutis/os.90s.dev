@@ -1,7 +1,5 @@
 import { Program } from "../client/core/prog.js"
 import type { MousePos } from "../client/views/interface.js"
-import { drawBackground } from "../client/views/view.js"
-import { crt2025 } from "../shared/font.js"
 
 
 const prog = new Program()
@@ -12,18 +10,15 @@ const panel = await prog.makePanel({
   view: (
     <view background={0x77000033}
     >
-      <view
+      <label
         onWheel={(x, y) => console.log(y)}
         background={0x00770033} x={10} y={20} w={30} h={40}
         canFocus={true}
-        draw={function (ctx, x, y) {
-          drawBackground.call(this, ctx, x, y)
-          crt2025.print(ctx, x + 0, y + 0, '', "hello world")
-        }}
+        text={'hello world'}
         onKeyDown={key => console.log(key.toUpperCase())}
       >
         <Foo x={-10} />
-      </view>
+      </label>
     </view>
   ),
 })
