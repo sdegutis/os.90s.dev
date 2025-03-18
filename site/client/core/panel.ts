@@ -49,10 +49,11 @@ export class Panel {
 
     this.rpc.listen('focus', (keymap) => {
       this.keymap = keymap
+      this.root.view.onPanelFocus?.()
     })
 
     this.rpc.listen('blur', () => {
-
+      this.root.view.onPanelBlur?.()
     })
 
     this.rpc.listen('mouseentered', () => {

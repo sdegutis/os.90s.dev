@@ -18,6 +18,9 @@ export interface View {
 
   mouse: MousePos
 
+  onPanelFocus?(): void
+  onPanelBlur?(): void
+
   onMouseDown?(button: number): void
   onMouseMove?(x: number, y: number): void
   onMouseUp?(): void
