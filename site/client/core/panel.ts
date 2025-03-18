@@ -118,6 +118,7 @@ export class Panel {
     this.canvas.height = h
     this.root.data["w"] = w
     this.root.data["h"] = h
+    this.root.render()
     this.blit()
   }
 
