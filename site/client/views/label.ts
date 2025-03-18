@@ -1,5 +1,5 @@
 import { crt2025 } from "../../shared/font.js"
-import { drawBackground, view, type IntrinsicView } from "./view.js"
+import { view } from "./view.js"
 
 export class label extends view {
 
@@ -10,11 +10,9 @@ export class label extends view {
   font = crt2025
   text = ''
 
-  override draw = drawLabelText
+  override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+    super.draw(ctx, px, py)
+    this.font.print(ctx, px, py, this.textColor, this.text)
+  }
 
-}
-
-export const drawLabelText: IntrinsicView['draw'] = function (this: label, ctx, px, py) {
-  drawBackground.call(this, ctx, px, py)
-  this.font.print(ctx, px, py, this.textColor, this.text)
 }

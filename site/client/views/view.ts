@@ -23,11 +23,10 @@ export class view implements IntrinsicView {
   mouse = { x: 0, y: 0 }
 
   background = '#000'
-  draw = drawBackground
 
-}
+  draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+    ctx.fillStyle = this.background
+    ctx.fillRect(px, py, this.w, this.h)
+  }
 
-export const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, px, py) {
-  ctx.fillStyle = this.background
-  ctx.fillRect(px, py, this.w, this.h)
 }

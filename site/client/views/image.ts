@@ -1,5 +1,5 @@
 import type { Bitmap } from "../../shared/bitmap.js"
-import { drawBackground, view, type IntrinsicView } from "./view.js"
+import { view } from "./view.js"
 
 export class image extends view {
 
@@ -7,13 +7,11 @@ export class image extends view {
 
   image: Bitmap | null = null
 
-  override draw = drawImage
+  override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+    super.draw(ctx, px, py)
 
-}
+    if (!this.image) return
+    ctx.drawImage(this.image.canvas, px, py)
+  }
 
-export const drawImage: IntrinsicView['draw'] = function (this: image, ctx, px, py) {
-  drawBackground.call(this, ctx, px, py)
-
-  if (!this.image) return
-  ctx.drawImage(this.image.canvas, px, py)
 }
