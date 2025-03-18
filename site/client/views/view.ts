@@ -52,6 +52,7 @@ export class view {
 
   $update<K extends keyof this & string>(k: K, v: this[K]) {
     this[k] = v
+
     if (this.adjustKeys.includes(k)) {
       this.adjust?.()
     }
