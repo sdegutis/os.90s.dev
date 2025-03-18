@@ -83,7 +83,7 @@ export class Panel {
     })
 
     this.rpc.listen('wheel', (n) => {
-
+      this.hovered.onWheel?.(n)
     })
 
     this.rpc.listen('keydown', (key) => {
