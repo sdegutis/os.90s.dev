@@ -1,5 +1,4 @@
 import { wRPC, type ClientProgram, type PanelOrdering, type PanelPosition, type ServerProgram } from "../../shared/rpc.js"
-import type { View } from "../views/view.js"
 import { Panel } from "./panel.js"
 
 export class Program {
@@ -29,7 +28,7 @@ export class Program {
     order?: PanelOrdering,
     pos?: PanelPosition,
     size: [number, number],
-    view: View,
+    view: JSX.Element,
   }) {
     const order = config.order ?? 'normal'
     const { size: [w, h] } = config
@@ -47,7 +46,6 @@ export class Program {
       }
     })
 
-    panel.draw()
     panel.blit()
 
     return panel

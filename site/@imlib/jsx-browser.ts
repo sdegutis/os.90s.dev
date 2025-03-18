@@ -1,111 +1,117 @@
 import { Ref } from '../client/util/ref.js'
-import { controls } from '../client/views/index.js'
-import { View } from '../client/views/view.js'
-import { Listener } from '../shared/listener.js'
+import { primitives } from '../client/views/index.js'
 
-type Controls = typeof controls
-type JsxChildren = (JSX.Element | JSX.Element[] | Ref<JSX.Element> | Ref<JSX.Element[]>)
 type FixIntrinsicMethods<T, K extends keyof T, U> = T[K] extends (...args: infer A) => infer R ? (this: T, ...args: A) => R : U
-type FixIntrinsicChildren<K, U> = K extends 'children' ? JsxChildren : U
-type JsxAttrs<T> = { [K in keyof T]?: FixIntrinsicChildren<K, FixIntrinsicMethods<T, K, T[K] | Ref<T[K]>>> }
+type JsxAttrs<T> = { [K in keyof T]?: FixIntrinsicMethods<T, K, T[K] | Ref<T[K]>> }
+type Primitives = typeof primitives
+type GivenData<T extends keyof Primitives> = JsxAttrs<ReturnType<Primitives[T]>>
+type FunctionElement = (data: any) => JSX.Element
 
 declare global {
 
   namespace JSX {
 
-    type IntrinsicElements = { [K in keyof Controls as K]: JsxAttrs<InstanceType<Controls[K]>> }
+    type IntrinsicElements = { [K in keyof Primitives as K]: GivenData<K> }
+
     type ElementChildrenAttribute = { children: any }
+
+    type Element = IntrinsicNode | FunctionNode | FragmentNode
 
     type ElementType =
       | keyof IntrinsicElements
-      | ((data: any) => Element)
-      | (new (...args: any) => View)
-
-    type Element = View
+      | FunctionElement
 
   }
 }
 
 export const Fragment = ''
-
-export const jsx = (tag: any, { children, ...data }: any) => {
-  children = children === undefined ? [] : children instanceof Array ? children : [children]
-
-  if (typeof tag === 'function') {
-    return new FunctionNode(tag, data, children).view
+export const jsxs = jsx
+export function jsx(tag: any, { children, ...data }: any): JSX.Element {
+  if (tag === '') {
+    if (children instanceof Array && children.length === 1) {
+      return children[0]
+    }
+    else {
+      return new FragmentNode(data, children)
+    }
+  }
+  else if (typeof tag === 'function') {
+    return new FunctionNode(data, children, tag)
   }
   else {
-    const ctor = controls[tag.toLowerCase() as keyof typeof controls]
-    return new IntrinsicNode(ctor, data, children).view
+    const base = primitives[tag as keyof typeof primitives]
+    return new IntrinsicNode({ ...base(), ...data }, children)
   }
 }
 
+
 class IntrinsicNode {
 
-  ctor: typeof View
   data: Record<string, any>
-  children: (View)[]
-  view: View
+  children: JSX.Element[]
+  rendered: View
 
-  private destroying = new Listener()
-
-  constructor(ctor: typeof View, data: Record<string, any>, children: any[]) {
-    this.ctor = ctor
+  constructor(data: Record<string, any>, children: JSX.Element[] | JSX.Element | undefined) {
     this.data = data
-    this.children = children ?? []
-    this.view = this.createView()
-
-    for (const [key, val] of Object.entries(data)) {
-      if (val instanceof Ref) {
-        const unwatch = val.watch(v => {
-          (this.view as any)[key] = v
-        })
-        this.destroying.watch(unwatch)
-      }
-    }
+    this.children = children === undefined ? [] : children instanceof Array ? children : [children]
+    this.rendered = this.render()
   }
 
-  private createView(): View {
-    const view = new this.ctor()
-
-    for (const [key, val] of Object.entries(this.data)) {
-      (view as any)[key] = val instanceof Ref ? val.val : val
-    }
-
-    view.children = this.children.map(c => {
-      const child = c
-      child.parent = view
-      return child
-    })
-
-    view.init?.()
-
-    return view
+  render(): View {
+    return null as any
   }
 
-  detach() {
-    this.destroying.dispatch()
-    this.destroying.clear()
+}
+
+class FragmentNode {
+
+  data: Record<string, any>
+  children: JSX.Element[]
+  rendered: View
+
+  constructor(data: Record<string, any>, children: JSX.Element[] | JSX.Element | undefined) {
+    this.data = data
+    this.children = children === undefined ? [] : children instanceof Array ? children : [children]
+    this.rendered = this.render()
+  }
+
+  render(): View {
+    return null as any
   }
 
 }
 
 class FunctionNode {
 
-  fn: (data: Record<string, any>) => JSX.Element
+  fn: FunctionElement
   data: Record<string, any>
-  children: (View)[]
-  view: View
+  children: any
+  rendered: View
 
-  constructor(fn: (data: any) => JSX.Element, data: Record<string, any>, children: any[]) {
+  constructor(data: Record<string, any>, children: any, fn: FunctionElement) {
     this.fn = fn
     this.data = data
-    this.children = children ?? []
-    this.view = this.createView()
+    this.children = children
+    this.rendered = this.render()
   }
 
-  private createView(): View {
-    return this.fn({ ...this.data, children: this.children.map(c => c) })
+  render(): View {
+    return null as any
   }
+
+}
+
+
+
+export interface View {
+
+  x: number
+  y: number
+  w: number
+  h: number
+
+  background: number
+
+  children: View[]
 
 }

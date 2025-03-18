@@ -1,23 +1,22 @@
-import { Border } from "./border.js"
-import { Label } from "./label.js"
-import { Paned, PanedXA, PanedXB, PanedYA, PanedYB } from "./paned.js"
-import { Split, SplitX, SplitY } from "./split.js"
-import { View } from "./view.js"
+function view() {
+  return {
+    x: 0,
+    y: 0,
+    w: 0,
+    h: 0,
+    background: 0x00000000,
+    children: undefined as JSX.Element[] | JSX.Element | undefined,
+  }
+}
 
-export const controls = {
+function border() {
+  return {
+    ...view(),
+    padding: 0,
+  }
+}
 
-  view: View,
-  border: Border,
-  label: Label,
-
-  paned: Paned,
-  panedxa: PanedXA,
-  panedxb: PanedXB,
-  panedya: PanedYA,
-  panedyb: PanedYB,
-
-  split: Split,
-  splitx: SplitX,
-  splity: SplitY,
-
+export const primitives = {
+  view,
+  border,
 }

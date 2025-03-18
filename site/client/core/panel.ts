@@ -1,7 +1,6 @@
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
 import { Rect } from "../util/rect.js"
-import type { View } from "../views/view.js"
 
 type MousePos = { x: number, y: number }
 
@@ -24,7 +23,7 @@ export class Panel extends Rect {
   readonly canvas = new OffscreenCanvas(0, 0)
   readonly ctx = this.canvas.getContext('2d')!
 
-  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: View) {
+  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: JSX.Element) {
     super()
 
     Panel.all.set(id, this)
@@ -39,7 +38,8 @@ export class Panel extends Rect {
     this._h = h
     this.root = root
 
-    this.root.resize(w, h)
+    this.root.data["w"] = w
+    this.root.data["h"] = h
 
     this.rpc = wRPC<ClientPanel, ServerPanel>(port)
 
@@ -91,7 +91,6 @@ export class Panel extends Rect {
       delete this.keymap[key]
     })
 
-    this.draw()
     this.blit()
   }
 
@@ -103,18 +102,18 @@ export class Panel extends Rect {
   }
 
   override resize(w: number, h: number) {
-    this.root.resize(w, h)
+    // this.root.resize(w, h)
     this.w = w
     this.h = h
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
     this.canvas.width = w
     this.canvas.height = h
-    this.draw()
+    // this.draw()
     this.blit()
   }
 
   draw() {
-    this.root.draw(this.ctx)
+    // this.root.draw(this.ctx)
   }
 
   blit() {
