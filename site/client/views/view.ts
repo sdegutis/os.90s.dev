@@ -54,15 +54,15 @@ export class view {
     this[k] = v
 
     if (this.adjustKeys.includes(k)) {
-      this.adjust?.()
-      this.redraw()
+      this.onResized()
+      this.needsRedraw()
     }
     else if (this.redrawKeys.includes(k)) {
-      this.redraw()
+      this.needsRedraw()
     }
   }
 
-  private redraw() {
+  private needsRedraw() {
     let node: view = this
     while (node.parent) node = node.parent
     node.panel?.needsRedraw()
@@ -83,6 +83,15 @@ export class view {
         (this as any)[k] = v
       }
     }
+  }
+
+  onResized() {
+    this.parent?.onChildResized?.()
+    this.needsRedraw()
+  }
+
+  onChildResized() {
+    this.adjust?.()
   }
 
 }
