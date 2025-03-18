@@ -24,7 +24,6 @@ export interface View {
   onMouseDown?(button: number): void
   onMouseMove?(x: number, y: number): void
   onMouseUp?(): void
-
   onWheel?(n: number): void
 
   onMouseEnter?(): void
@@ -32,10 +31,8 @@ export interface View {
 
   canFocus: boolean
   onFocus?(): void
+  onKeyDown?(key: string): void
   onBlur?(): void
-
-  onKeyDown(key: string): void
-  onKeyUp(key: string): void
 
   draw(
     ctx: OffscreenCanvasRenderingContext2D,
