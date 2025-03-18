@@ -3,21 +3,6 @@ import type { KeyMap } from "../shared/rpc.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 
-const cursor = bitmapFromString(`
-000000cc
-ffffffff
-fffffffe
-
-1 1 1 1
-1 3 2 1
-1 2 1 1
-1 1 1 0
-`.trimStart())
-
-// cursor.ctx.globalCompositeOperation = 'source-in'
-// cursor.ctx.fillStyle = '#ff0'
-// cursor.ctx.fillRect(0, 0, 5, 5)
-
 export class Sys {
 
   ctx
@@ -147,3 +132,14 @@ export class Sys {
   }
 
 }
+
+const cursor = bitmapFromString(`
+000000cc
+ffffffff
+fffffffe
+
+1 1 1 1
+1 3 2 1
+1 2 1 1
+1 1 1 0
+`.trimStart())

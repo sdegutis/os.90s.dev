@@ -2,6 +2,7 @@ export function bitmapFromString(s: string) {
   const [top, bottom] = s.split('\n\n')
   const colors = top.split('\n').map(s => '#' + s)
   const lines = bottom.trim().split('\n').map(s => s.split(' ').map(s => parseInt(s, 16)))
+
   const pixels: number[] = []
   for (const line of lines) {
     for (const c of line) {
@@ -26,5 +27,12 @@ export function bitmapFromString(s: string) {
     }
   }
 
-  return { canvas, ctx }
+  ctx.globalCompositeOperation = 'source-in'
+
+  function colorize(col: string) {
+    ctx.fillStyle = col
+    ctx.fillRect(0, 0, w, h)
+  }
+
+  return { canvas, colorize }
 }
