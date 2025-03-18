@@ -1,6 +1,7 @@
 export class view {
 
   readonly children: view[] = []
+  readonly parent: view | null = null
 
   readonly adjustKeys = ['w', 'h']
   readonly redrawKeys = ['background']
@@ -14,7 +15,6 @@ export class view {
   readonly visible: boolean = true
   readonly hovered: boolean = false
   readonly passthrough: boolean = false
-  readonly parent: view | null = null
   readonly mouse: {
     readonly x: number,
     readonly y: number,

@@ -19,7 +19,12 @@ export class border extends view {
 
     ctx.strokeStyle = this.borderColor
     for (let i = 0; i < this.padding; i++) {
-      ctx.strokeRect(px + i + .5, py + i + .5, this.w - i * 2 - 1, this.h - i * 2 - 1)
+      ctx.strokeRect(
+        px + i + .5,
+        py + i + .5,
+        this.w - i * 2 - 1,
+        this.h - i * 2 - 1,
+      )
     }
   }
 
