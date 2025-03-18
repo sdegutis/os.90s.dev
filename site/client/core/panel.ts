@@ -1,6 +1,6 @@
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
-import type { View } from "../views/interface.js"
+import type { view } from "../views/view.js"
 
 type Pos = {
   x: number,
@@ -29,10 +29,10 @@ export class Panel {
   readonly canvas = new OffscreenCanvas(0, 0)
   readonly ctx = this.canvas.getContext('2d')!
 
-  private hoveredTree = new Set<View>()
-  private hovered: View | null = null
-  private clicking: View | null = null
-  private focused: View | null = null
+  private hoveredTree = new Set<view>()
+  private hovered: view | null = null
+  private clicking: view | null = null
+  private focused: view | null = null
 
   constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: JSX.Element) {
     Panel.all.set(id, this)
@@ -50,11 +50,11 @@ export class Panel {
 
     this.rpc.listen('focus', (keymap) => {
       this.keymap = keymap
-      this.root.view.onPanelFocus?.()
+      this.root.onPanelFocus?.()
     })
 
     this.rpc.listen('blur', () => {
-      this.root.view.onPanelBlur?.()
+      this.root.onPanelBlur?.()
     })
 
     this.rpc.listen('mouseentered', () => {
@@ -69,7 +69,7 @@ export class Panel {
       this.clicking = this.hovered
       this.hovered?.onMouseDown?.(b)
 
-      let node: View | null = this.hovered
+      let node: view | null = this.hovered
       while (node) {
         if (node.passthrough) continue
 
@@ -102,7 +102,7 @@ export class Panel {
     })
 
     this.rpc.listen('wheel', (x, y) => {
-      let node: View | null = this.hovered
+      let node: view | null = this.hovered
       while (node) {
         if (node.onWheel) {
           node.onWheel(x, y)
@@ -124,9 +124,8 @@ export class Panel {
     this.root = root
     this.root.update("w", w)
     this.root.update("h", h)
-    this.root.render()
 
-    this.hovered = this.root.view
+    this.hovered = this.root
 
     this.blit()
   }
@@ -146,7 +145,6 @@ export class Panel {
     this.canvas.height = h
     this.root.update("w", w)
     this.root.update("h", h)
-    this.root.render()
     this.blit()
   }
 
@@ -154,7 +152,7 @@ export class Panel {
     const lastHovered = this.hoveredTree
     this.hoveredTree = new Set()
 
-    const activeHovered = this.hover(this.root.view, this.mouse.x, this.mouse.y)
+    const activeHovered = this.hover(this.root, this.mouse.x, this.mouse.y)
 
     for (const view of this.hoveredTree.difference(lastHovered)) {
       view.onMouseEnter?.()
@@ -171,7 +169,7 @@ export class Panel {
     }
   }
 
-  private hover(node: View, x: number, y: number): View | null {
+  private hover(node: view, x: number, y: number): view | null {
     if (!node.visible) return null
 
     let tx = 0
@@ -200,11 +198,11 @@ export class Panel {
   }
 
   redrawRoot() {
-    this.drawTree(this.root.view, 0, 0)
+    this.drawTree(this.root, 0, 0)
   }
 
   private drawTree(
-    node: View,
+    node: view,
     x: number,
     y: number,
   ) {

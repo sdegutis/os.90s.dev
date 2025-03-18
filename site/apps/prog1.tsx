@@ -1,8 +1,6 @@
 import { Program } from "../client/core/prog.js"
 import { $ } from "../client/util/ref.js"
-import type { Pos } from "../client/views/interface.js"
 import { Bitmap } from "../shared/bitmap.js"
-
 
 const minImage = new Bitmap(['333333ff'], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
 const maxImage = new Bitmap(['333333ff'], 4, [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1,])
@@ -64,6 +62,11 @@ interface Movable {
   readonly x: number
   readonly y: number
   move(x: number, y: number): void
+}
+
+type Pos = {
+  readonly x: number,
+  readonly y: number,
 }
 
 function dragMove(m: Pos, o: Movable) {
