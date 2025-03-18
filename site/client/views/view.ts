@@ -1,6 +1,8 @@
+import { Ref } from "../util/ref.js"
+
 export class view {
 
-  readonly children: view[] = []
+  readonly children: readonly view[] = []
   readonly parent: view | null = null
 
   readonly adjustKeys = ['w', 'h']
@@ -42,8 +44,31 @@ export class view {
     ctx.fillRect(px, py, this.w, this.h)
   }
 
-  update(k: keyof this, v: this[keyof this]) {
+  $update(k: keyof this, v: this[keyof this]) {
     this[k] = v
+  }
+
+  $setup(data: Record<string, any>) {
+    const children: view | view[] | undefined = data["children"]
+    delete data["children"]
+
+    const mutview = (this as any)
+
+    mutview.children = children === undefined ? [] : children instanceof Array ? children : [children]
+
+    for (const child of this.children) {
+      (child as any).parent = this
+    }
+
+    for (const [k, v] of Object.entries(data)) {
+      if (v instanceof Ref) {
+        mutview[k] = v.val
+        v.watch(val => mutview[k] = val)
+      }
+      else {
+        mutview[k] = v
+      }
+    }
   }
 
 }
