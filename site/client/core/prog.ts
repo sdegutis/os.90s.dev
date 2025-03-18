@@ -47,8 +47,6 @@ export class Program {
       }
     })
 
-    panel.blit()
-
     return panel
   }
 

@@ -117,7 +117,6 @@ export class Panel {
     this.canvas.height = h
     this.root.data["w"] = w
     this.root.data["h"] = h
-    this.redrawRoot()
     this.blit()
   }
 
@@ -126,6 +125,7 @@ export class Panel {
   }
 
   blit() {
+    this.redrawRoot()
     const bmp = this.canvas.transferToImageBitmap()
     this.rpc.send('blit', [bmp], [bmp])
   }
