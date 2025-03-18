@@ -47,3 +47,37 @@ export class Bitmap {
   }
 
 }
+
+console.log(parseMeta(`
+foo=1
+bar.a=2
+bar.b=this
+
+hello world
+this is cool
+`.trimStart()))
+
+function parseMeta(str: string) {
+  const split = str.indexOf('\n\n')
+  if (split === -1) return [null, str]
+
+  const head = str.slice(0, split)
+  const rest = str.slice(split + 2)
+  const meta = Object.create(null)
+
+  for (const line of head.split('\n')) {
+    const [k, v] = (line.split(/ *= */))
+
+    const parts = k.split('.')
+    const last = parts.pop()!
+
+    let node = meta
+    for (const p of parts) {
+      node = node[p] ??= Object.create(null)
+    }
+
+    node[last] = v
+  }
+
+  return [meta, rest]
+}
