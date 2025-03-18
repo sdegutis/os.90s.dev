@@ -25,7 +25,7 @@ export function view(): IntrinsicView {
   }
 }
 
-const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, px, py) {
+export const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, px, py) {
   ctx.fillStyle = '#' + this.background.toString(16).padStart(8, '0')
   ctx.fillRect(px, py, this.w, this.h)
 }

@@ -1,4 +1,4 @@
-import { bitmapFromString } from "../shared/bitmap.js"
+import { Bitmap } from "../shared/bitmap.js"
 import type { KeyMap } from "../shared/rpc.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
@@ -133,7 +133,7 @@ export class Sys {
 
 }
 
-const cursor = bitmapFromString(`
+const cursor = Bitmap.fromString(`
 000000cc
 ffffffff
 fffffffe

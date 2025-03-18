@@ -1,38 +1,62 @@
-export function bitmapFromString(s: string) {
-  const [top, bottom] = s.split('\n\n')
-  const colors = top.split('\n').map(s => '#' + s)
-  const lines = bottom.trim().split('\n').map(s => s.split(' ').map(s => parseInt(s, 16)))
+export class Bitmap {
 
-  const pixels: number[] = []
-  for (const line of lines) {
-    for (const c of line) {
-      pixels.push(c)
-    }
-  }
+  static fromString(s: string) {
+    const [top, bottom] = s.split('\n\n')
+    const colors = top.split('\n').map(s => '#' + s)
+    const lines = bottom.trim().split('\n').map(s => s.split(' ').map(s => parseInt(s, 16)))
 
-  const w = lines[0].length
-  const h = pixels.length / w
-
-  const canvas = new OffscreenCanvas(w, h)
-  const ctx = canvas.getContext('2d')!
-
-  let i = 0
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const ci = pixels[i++]
-      if (ci > 0) {
-        ctx.fillStyle = colors[ci - 1]
-        ctx.fillRect(x, y, 1, 1)
+    const pixels: number[] = []
+    for (const line of lines) {
+      for (const c of line) {
+        pixels.push(c)
       }
     }
+
+    return new Bitmap(colors, lines[0].length, pixels)
   }
 
-  ctx.globalCompositeOperation = 'source-in'
+  width: number
+  height: number
 
-  function colorize(col: string) {
-    ctx.fillStyle = col
-    ctx.fillRect(0, 0, w, h)
+  private ctx
+
+  canvas
+
+  constructor(colors: string[], w: number, pixels: number[]) {
+    const h = pixels.length / w
+
+    this.width = w
+    this.height = h
+
+    const canvas = new OffscreenCanvas(w, h)
+    const ctx = canvas.getContext('2d')!
+
+    this.canvas = canvas
+    this.ctx = ctx
+
+    let i = 0
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const ci = pixels[i++]
+        if (ci > 0) {
+          ctx.fillStyle = colors[ci - 1]
+          ctx.fillRect(x, y, 1, 1)
+        }
+      }
+    }
+
+    ctx.globalCompositeOperation = 'source-in'
   }
 
-  return { canvas, colorize }
+  colorize(col: string) {
+    this.ctx.fillStyle = col
+    this.ctx.fillRect(0, 0, this.width, this.height)
+  }
+
 }
+
+
+// const minImage = new Bitmap(['333333ff'], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
+// const maxImage = new Bitmap(['333333ff'], 4, [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1,])
+// const axeImage = new Bitmap(['333333ff'], 4, [1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1,])
+// const adjImage = new Bitmap(['ffffff77'], 3, [0, 0, 1, 0, 0, 1, 1, 1, 1,])
