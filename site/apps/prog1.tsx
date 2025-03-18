@@ -16,15 +16,16 @@ const panel = await prog.makePanel({
   view: (
     <view background={'#77000033'}
     >
-      <label
+      <image
         onWheel={(x, y) => console.log(y)}
         background={'#00770033'} x={10} y={20} w={30} h={40}
         canFocus={true}
-        text={'hello world'}
+        image={axeImage}
+        // text={'hello world'}
         onKeyDown={key => console.log(key.toUpperCase())}
       >
         <Foo x={-10} />
-      </label>
+      </image>
     </view>
   ),
 })
