@@ -142,15 +142,22 @@ export class Panel {
 
 }
 
-export function dragMove(m: MousePos, o: { x: number, y: number }) {
+interface Movable {
+  readonly x: number
+  readonly y: number
+  move(x: number, y: number): void
+}
+
+export function dragMove(m: MousePos, o: Movable) {
   const startPos = { x: o.x, y: o.y }
   const offx = m.x - startPos.x
   const offy = m.y - startPos.y
   return () => {
     const diffx = m.x - startPos.x
     const diffy = m.y - startPos.y
-    o.x = startPos.x + diffx - offx
-    o.y = startPos.y + diffy - offy
+    const x = startPos.x + diffx - offx
+    const y = startPos.y + diffy - offy
+    o.move(x, y)
     return { x: diffx - offx, y: diffy - offy }
   }
 }
