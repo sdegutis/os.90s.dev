@@ -11,3 +11,14 @@ const panel = await prog.makePanel({
     </view>
   ),
 })
+
+const foo = <view>
+  <border padding={3} />
+  <Foo hi={3} children={[]} />
+</view>
+
+function Foo(data: { hi: 3, children: string[] }) {
+  return <view />
+}
+
+console.log('tes', foo)

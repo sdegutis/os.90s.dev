@@ -49,12 +49,12 @@ export class IntrinsicNode {
 
   data: Record<string, any>
   children: JSX.Element[]
-  rendered: View
+  rendered: View | undefined
 
   constructor(data: Record<string, any>, children: JSX.Element[] | JSX.Element | undefined) {
     this.data = data
     this.children = children === undefined ? [] : children instanceof Array ? children : [children]
-    this.rendered = this.render()
+    // this.rendered = this.render()
   }
 
   render(): View {
@@ -67,12 +67,12 @@ export class FragmentNode {
 
   data: Record<string, any>
   children: JSX.Element[]
-  rendered: View
+  rendered: View | undefined
 
   constructor(data: Record<string, any>, children: JSX.Element[] | JSX.Element | undefined) {
     this.data = data
     this.children = children === undefined ? [] : children instanceof Array ? children : [children]
-    this.rendered = this.render()
+    // this.rendered = this.render()
   }
 
   render(): View {
@@ -86,13 +86,13 @@ export class FunctionNode {
   fn: FunctionElement
   data: Record<string, any>
   children: any
-  rendered: View
+  rendered: View | undefined
 
   constructor(data: Record<string, any>, children: any, fn: FunctionElement) {
     this.fn = fn
     this.data = data
     this.children = children
-    this.rendered = this.render()
+    // this.rendered = this.render()
   }
 
   render(): View {
