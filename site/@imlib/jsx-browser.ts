@@ -69,7 +69,7 @@ export class FragmentNode {
   children: JSX.Element[]
   rendered: View | undefined
 
-  constructor(data: Record<string, any>, children: JSX.Element[] | JSX.Element | undefined) {
+  constructor(data: Record<string, any>, children: JSX.Element[] | undefined) {
     this.data = data
     this.children = children === undefined ? [] : children instanceof Array ? children : [children]
     // this.rendered = this.render()
