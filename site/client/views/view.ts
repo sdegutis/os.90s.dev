@@ -63,20 +63,18 @@ export class view {
   }
 
   $setup(data: Record<string, any>, children: view[]) {
-    const view = (this as any)
-
-    view.children = children
+    (this as any).children = children
     for (const child of this.children) {
       (child as any).parent = this
     }
 
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
-        view[k] = v.val
+        (this as any)[k] = v.val
         v.watch(val => this.$update<any>(k, val))
       }
       else {
-        view[k] = v
+        (this as any)[k] = v
       }
     }
   }
