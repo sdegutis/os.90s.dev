@@ -1,18 +1,12 @@
+import { pointer } from "../client/util/bitmap.js"
 import type { KeyMap } from "../shared/rpc.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 
-const cursor = new OffscreenCanvas(1, 1)
-const cursorctx = cursor.getContext('2d')!
-
-cursorctx.fillStyle = '#fff'
-for (let i = 0; i < 1; i++) {
-  cursorctx.fillRect(i, i, 1, 1)
-}
-cursorctx.globalCompositeOperation = 'source-in'
-
-cursorctx.fillStyle = '#ff0'
-cursorctx.fillRect(0, 0, 5, 5)
+const cursor = pointer
+// cursor.ctx.globalCompositeOperation = 'source-in'
+// cursor.ctx.fillStyle = '#ff0'
+// cursor.ctx.fillRect(0, 0, 5, 5)
 
 export class Sys {
 
@@ -92,14 +86,6 @@ export class Sys {
       this.hovered?.rpc.send('wheel', [e.deltaX, e.deltaY])
       this.redrawAllPanels()
     }
-
-    // setInterval(() => {
-    //   op++
-    //   if (op === ops.length) op = 0
-    //   console.log(op, ops[op])
-    //   this.redrawAllPanels()
-    // }, 1000)
-
   }
 
   private findHovered() {
@@ -132,7 +118,7 @@ export class Sys {
   }
 
   private drawCursor() {
-    this.ctx.drawImage(cursor, this.mouse.x, this.mouse.y)
+    this.ctx.drawImage(cursor.canvas, this.mouse.x, this.mouse.y)
   }
 
   removePanel(panel: Panel) {
@@ -151,6 +137,3 @@ export class Sys {
   }
 
 }
-
-// const ops: GlobalCompositeOperation[] = ["color", "color-burn", "color-dodge", "copy", "darken", "destination-atop", "destination-in", "destination-out", "destination-over", "difference", "exclusion", "hard-light", "hue", "lighten", "lighter", "luminosity", "multiply", "overlay", "saturation", "screen", "soft-light", "source-atop", "source-in", "source-out", "source-over", "xor"]
-// let op = 0
