@@ -122,24 +122,23 @@ export class Panel {
   }
 
   redrawRoot() {
-    this.drawTree(this.root.rendered, 0, 0, this.w, this.h)
+    this.drawTree(this.root.rendered, 0, 0)
   }
 
   private drawTree(
     node: View,
     x: number,
     y: number,
-    w: number,
-    h: number,
   ) {
-    node.draw(this.ctx, x, y, w, h)
+    node.draw(this.ctx, x, y)
     for (const child of node.children) {
+      const cw = Math.min(child.w, this.w - child.x)
+      const ch = Math.min(child.h, this.h - child.y)
+
       this.drawTree(
         child,
         x + child.x,
         y + child.y,
-        Math.min(child.w, this.w - child.x),
-        Math.min(child.h, this.h - child.y),
       )
     }
   }

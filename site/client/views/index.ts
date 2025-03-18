@@ -4,9 +4,9 @@ interface IntrinsicView extends Omit<View, 'children'> {
   children?: JSX.Element[] | JSX.Element | undefined
 }
 
-export const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, x, y, w, h) {
+export const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, px, py) {
   ctx.fillStyle = '#' + this.background.toString(16).padStart(8, '0')
-  ctx.fillRect(x, y, this.w, this.h)
+  ctx.fillRect(px, py, this.w, this.h)
 }
 
 function view(): IntrinsicView {
@@ -20,18 +20,18 @@ function view(): IntrinsicView {
   }
 }
 
-export const drawBorderedView: IntrinsicView['draw'] = function (this: Border, ctx, x, y, w, h) {
+export const drawBorderedView: IntrinsicView['draw'] = function (this: Border, ctx, px, py) {
   ctx.fillStyle = '#' + this.background.toString(16).padStart(8, '0')
   ctx.fillRect(
-    x + this.padding,
-    y + this.padding,
+    px + this.padding,
+    py + this.padding,
     this.w - this.padding * 2,
     this.h - this.padding * 2,
   )
 
   ctx.strokeStyle = '#' + this.borderColor.toString(16).padStart(8, '0')
   for (let i = 0; i < this.padding; i++) {
-    ctx.strokeRect(x + i + .5, y + i + .5, this.w - i * 2 - 1, this.h - i * 2 - 1)
+    ctx.strokeRect(px + i + .5, py + i + .5, this.w - i * 2 - 1, this.h - i * 2 - 1)
   }
 }
 

@@ -14,10 +14,8 @@ export interface View {
 
   draw(
     ctx: OffscreenCanvasRenderingContext2D,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
+    px: number,
+    py: number,
   ): void
 
 }
