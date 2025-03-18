@@ -44,10 +44,6 @@ export class Panel {
       throw new Error(`panel root view must be intrinsic node`)
     }
 
-    this.root = root
-    this.root.data["w"] = w
-    this.root.data["h"] = h
-
     this.rpc = wRPC<ClientPanel, ServerPanel>(port)
 
     this.rpc.listen('focus', (keymap) => {
@@ -98,6 +94,11 @@ export class Panel {
       delete this.keymap[key]
     })
 
+    this.root = root
+    this.root.data["w"] = w
+    this.root.data["h"] = h
+    this.root.render()
+
     this.blit()
   }
 
@@ -109,18 +110,19 @@ export class Panel {
   }
 
   resize(w: number, h: number) {
-    // this.root.resize(w, h)
     this._w = w
     this._h = h
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
     this.canvas.width = w
     this.canvas.height = h
-    // this.draw()
+    this.root.data["w"] = w
+    this.root.data["h"] = h
+    this.redrawRoot()
     this.blit()
   }
 
-  draw() {
-    // this.root.draw(this.ctx)
+  redrawRoot() {
+    this.root.rendered.draw(this.ctx, 0, 0, this.w, this.h)
   }
 
   blit() {
