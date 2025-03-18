@@ -56,11 +56,11 @@ export class Panel {
     })
 
     this.rpc.listen('mouseentered', () => {
-
+      // unused for now
     })
 
     this.rpc.listen('mouseexited', () => {
-
+      // unused for now
     })
 
     this.rpc.listen('mousedown', (b) => {
