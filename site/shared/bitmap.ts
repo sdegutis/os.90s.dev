@@ -52,17 +52,17 @@ console.log(parseMeta(`
 foo=1
 bar.a=2
 bar.b=this
-
+===
 hello world
 this is cool
 `.trimStart()))
 
 function parseMeta(str: string) {
-  const split = str.indexOf('\n\n')
-  if (split === -1) return [null, str]
+  const split = str.match(/\n===+\n/)
+  if (!split || split.index === undefined) return [null, str]
 
-  const head = str.slice(0, split)
-  const rest = str.slice(split + 2)
+  const head = str.slice(0, split.index).trim()
+  const rest = str.slice(split.index + split[0].length)
   const meta = Object.create(null)
 
   for (const line of head.split('\n')) {
