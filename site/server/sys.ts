@@ -87,7 +87,7 @@ export class Sys {
     }
 
     canvas.onwheel = (e) => {
-      this.hovered?.rpc.send('wheel', [e.deltaY])
+      this.hovered?.rpc.send('wheel', [e.deltaX, e.deltaY])
       this.redrawAllPanels()
     }
 

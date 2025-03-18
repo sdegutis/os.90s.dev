@@ -10,7 +10,7 @@ const panel = await prog.makePanel({
     <view background={0x77000033}
     >
       <view
-        onWheel={n => console.log(n)}
+        onWheel={(x, y) => console.log(y)}
         background={0x00770033} x={10} y={20} w={30} h={40}
       >
         <Foo x={-10} />

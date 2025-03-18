@@ -31,7 +31,7 @@ export interface ClientPanel {
   mousemoved(x: number, y: number): void
   mousedown(b: number): void
   mouseup(): void
-  wheel(n: number): void
+  wheel(x: number, y: number): void
   keydown(key: string): void
   keyup(key: string): void
 }

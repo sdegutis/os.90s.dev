@@ -83,11 +83,11 @@ export class Panel {
       this.clicking?.onMouseUp?.()
     })
 
-    this.rpc.listen('wheel', (n) => {
+    this.rpc.listen('wheel', (x, y) => {
       let node: View | undefined = this.hovered
       while (node) {
         if (node.onWheel) {
-          node.onWheel(n)
+          node.onWheel(x, y)
           return
         }
         node = node.parent

@@ -24,7 +24,7 @@ export interface View {
   onMouseDown?(button: number): void
   onMouseMove?(x: number, y: number): void
   onMouseUp?(): void
-  onWheel?(n: number): void
+  onWheel?(x: number, y: number): void
 
   onMouseEnter?(): void
   onMouseExit?(): void
