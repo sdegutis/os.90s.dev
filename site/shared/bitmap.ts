@@ -48,16 +48,7 @@ export class Bitmap {
 
 }
 
-console.log(parseMeta(`
-foo=1
-bar.a=2
-bar.b=this
-===
-hello world
-this is cool
-`.trimStart()))
-
-function parseMeta(str: string) {
+function parseMeta<T>(str: string): [T | null, string] {
   const split = str.match(/\n===+\n/)
   if (!split || split.index === undefined) return [null, str]
 
