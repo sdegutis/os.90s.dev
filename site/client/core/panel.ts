@@ -1,13 +1,17 @@
 import { IntrinsicNode } from "../../@imlib/jsx-browser.js"
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
-import { Rect } from "../util/rect.js"
 
 type MousePos = { x: number, y: number }
 
-export class Panel extends Rect {
+export class Panel {
 
   static all = new Map<number, Panel>()
+
+  get x() { return this._x }; _x
+  get y() { return this._y }; _y
+  get w() { return this._w }; _w
+  get h() { return this._h }; _h
 
   id
   rpc
@@ -25,8 +29,6 @@ export class Panel extends Rect {
   readonly ctx = this.canvas.getContext('2d')!
 
   constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: IntrinsicNode) {
-    super()
-
     Panel.all.set(id, this)
 
     this.canvas.width = w
@@ -43,7 +45,6 @@ export class Panel extends Rect {
     }
 
     this.root = root
-
     this.root.data["w"] = w
     this.root.data["h"] = h
 
@@ -100,17 +101,17 @@ export class Panel extends Rect {
     this.blit()
   }
 
-  override move(x: number, y: number) {
-    this.x = x
-    this.y = y
+  move(x: number, y: number) {
+    this._x = x
+    this._y = y
     this.fixMouse()
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
   }
 
-  override resize(w: number, h: number) {
+  resize(w: number, h: number) {
     // this.root.resize(w, h)
-    this.w = w
-    this.h = h
+    this._w = w
+    this._h = h
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
     this.canvas.width = w
     this.canvas.height = h

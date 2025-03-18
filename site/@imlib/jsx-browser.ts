@@ -114,4 +114,12 @@ export interface View {
 
   children: View[]
 
+  draw(
+    ctx: OffscreenCanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+  ): void
+
 }
