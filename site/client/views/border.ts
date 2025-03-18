@@ -2,6 +2,9 @@ import { view, type IntrinsicView } from "./view.js"
 
 export class border extends view {
 
+  override adjustKeys = [...(this as view).adjustKeys, 'padding']
+  override redrawKeys = [...(this as view).redrawKeys, 'borderColor']
+
   borderColor = '#000'
   padding = 0
 

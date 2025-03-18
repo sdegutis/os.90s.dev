@@ -3,8 +3,8 @@ import { drawBackground, view, type IntrinsicView } from "./view.js"
 
 export class label extends view {
 
-  override relayoutAndRedrawKeys = [...(this as view).relayoutAndRedrawKeys, 'text', 'font']
-  override redrawOnlyKeys = [...(this as view).redrawOnlyKeys, 'textColor']
+  override adjustKeys = [...(this as view).adjustKeys, 'text', 'font']
+  override redrawKeys = [...(this as view).redrawKeys, 'textColor']
 
   textColor = '#fff'
   font = crt2025

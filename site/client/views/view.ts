@@ -7,8 +7,8 @@ export interface IntrinsicView extends Omit<View, 'children'> {
 export interface view extends IntrinsicView { }
 export class view implements IntrinsicView {
 
-  relayoutAndRedrawKeys = ['w', 'h']
-  redrawOnlyKeys = ['background']
+  adjustKeys = ['w', 'h']
+  redrawKeys = ['background']
 
   x = 0
   y = 0
