@@ -19,9 +19,9 @@ const panel = await prog.makePanel({
 })
 
 function MyView(data: { w: number, h: number }) {
-  return <view background={'#77000033'} w={data.w} h={data.h}
-  // text={'hi world'}
-  // textColor={'#ff0'}
+  return <label background={'#77000033'} w={data.w} h={data.h}
+    text={'hi world'}
+    textColor={'#ff0'}
   >
     <image
       onWheel={(x, y) => console.log(y)}
@@ -34,7 +34,7 @@ function MyView(data: { w: number, h: number }) {
     >
       <Foo x={-10} />
     </image>
-  </view>
+  </label>
 }
 
 
