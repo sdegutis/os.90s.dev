@@ -122,7 +122,7 @@ export class Panel {
   }
 
   redrawRoot() {
-    this.drawTree(this.root.rendered, 0, 0)
+    this.drawTree(this.root.view, 0, 0)
   }
 
   private drawTree(

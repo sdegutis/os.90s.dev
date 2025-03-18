@@ -42,7 +42,7 @@ export class IntrinsicNode {
 
   data: Record<string, any>
   children: JSX.Element[]
-  rendered!: View
+  view!: View
 
   constructor(data: Record<string, any>, children: JSX.Element[] | JSX.Element | undefined) {
     this.data = data
@@ -55,12 +55,12 @@ export class IntrinsicNode {
 
     for (const child of this.children) {
       child.render()
-      children.push(child.rendered)
+      children.push(child.view)
     }
 
     view.children = children
 
-    this.rendered = view
+    this.view = view
   }
 
 }
@@ -70,7 +70,7 @@ export class FunctionNode {
   fn: FunctionElement
   data: Record<string, any>
   children: any
-  rendered!: View
+  view!: View
 
   constructor(data: Record<string, any>, children: any, fn: FunctionElement) {
     this.fn = fn
@@ -79,7 +79,9 @@ export class FunctionNode {
   }
 
   render() {
-    // this.rendered = null as any
+    const got = this.fn({ children: this.children, ...this.data })
+    got.render()
+    this.view = got.view
   }
 
 }
