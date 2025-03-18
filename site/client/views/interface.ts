@@ -1,3 +1,5 @@
+export type MousePos = { x: number, y: number }
+
 export interface View {
 
   x: number
@@ -10,9 +12,18 @@ export interface View {
   parent?: View
   children: View[]
 
+  hovered: boolean
+  visible: boolean
+  passthrough: boolean
+
+  mouse: MousePos
+
   onMouseDown?(button: number): void
   onMouseMove?(x: number, y: number): void
-  onMouseUp?(x: number, y: number): void
+  onMouseUp?(): void
+
+  onMouseEnter?(): void
+  onMouseExit?(): void
 
   draw(
     ctx: OffscreenCanvasRenderingContext2D,

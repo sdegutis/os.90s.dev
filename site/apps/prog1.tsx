@@ -1,5 +1,5 @@
-import type { MousePos } from "../client/core/panel.js"
 import { Program } from "../client/core/prog.js"
+import type { MousePos } from "../client/views/interface.js"
 
 const prog = new Program()
 await prog.init()
@@ -11,13 +11,13 @@ const panel = await prog.makePanel({
       <view
         background={0x00770033} x={10} y={20} w={30} h={40}
       >
-        <Foo x={10} />
+        <Foo x={-10} />
       </view>
     </view>
   ),
 })
 
-let down: () => void
+let down: (() => void) | undefined
 
 function Foo(data: { x: number }) {
   return <border
@@ -29,6 +29,10 @@ function Foo(data: { x: number }) {
 
     onMouseMove={() => {
       down?.()
+    }}
+
+    onMouseUp={() => {
+      down = undefined
     }}
 
     borderColor={0x334455ff}

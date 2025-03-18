@@ -1,9 +1,7 @@
 import { IntrinsicNode } from "../../@imlib/jsx-browser.js"
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
-import type { View } from "../views/interface.js"
-
-export type MousePos = { x: number, y: number }
+import type { MousePos, View } from "../views/interface.js"
 
 export class Panel {
 
@@ -26,6 +24,10 @@ export class Panel {
 
   readonly canvas = new OffscreenCanvas(0, 0)
   readonly ctx = this.canvas.getContext('2d')!
+
+  private allHovered = new Set<View>()
+  private hovered: View
+  private clicking: View | null = null
 
   constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: IntrinsicNode) {
     Panel.all.set(id, this)
@@ -62,16 +64,22 @@ export class Panel {
     })
 
     this.rpc.listen('mousedown', (b) => {
+      this.clicking = this.hovered
+      this.hovered.onMouseDown?.(b)
     })
 
     this.rpc.listen('mousemoved', (x, y) => {
       this.absmouse.x = x
       this.absmouse.y = y
       this.fixMouse()
+      this.checkUnderMouse()
+
+      const sendto = this.clicking ?? this.hovered
+      sendto.onMouseMove?.(x, y)
     })
 
     this.rpc.listen('mouseup', () => {
-
+      this.clicking?.onMouseUp?.()
     })
 
     this.rpc.listen('wheel', (n) => {
@@ -90,6 +98,8 @@ export class Panel {
     this.root.data["w"] = w
     this.root.data["h"] = h
     this.root.render()
+
+    this.hovered = this.root.view
 
     this.blit()
   }
@@ -111,6 +121,55 @@ export class Panel {
     this.root.data["h"] = h
     this.root.render()
     this.blit()
+  }
+
+  private checkUnderMouse() {
+    const lastHovered = this.allHovered
+    this.allHovered = new Set()
+
+    const activeHovered = this.hover(this.root.view, this.mouse.x, this.mouse.y)!
+
+    for (const view of this.allHovered.difference(lastHovered)) {
+      view.onMouseEnter?.()
+    }
+
+    for (const view of lastHovered.difference(this.allHovered)) {
+      view.onMouseExit?.()
+    }
+
+    if (this.hovered !== activeHovered) {
+      this.hovered.hovered = false
+      this.hovered = activeHovered
+      this.hovered.hovered = true
+    }
+  }
+
+  private hover(node: View, x: number, y: number): View | null {
+    if (!node.visible) return null
+
+    let tx = 0
+    let ty = 0
+    let tw = node.w
+    let th = node.h
+
+    const inThis = (x >= tx && y >= ty && x < tw && y < th)
+    if (!inThis) return null
+
+    this.allHovered.add(node)
+
+    node.mouse.x = x
+    node.mouse.y = y
+
+    let i = node.children.length
+    while (i--) {
+      const child = node.children[i]
+      const found = this.hover(child, x - child.x, y - child.y)
+      if (found) return found
+    }
+
+    if (node.passthrough) return null
+
+    return node
   }
 
   redrawRoot() {

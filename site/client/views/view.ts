@@ -11,11 +11,19 @@ const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx
 
 export function view(): IntrinsicView {
   return {
+
     x: 0,
     y: 0,
     w: 0,
     h: 0,
+
+    visible: true,
+    hovered: false,
+    passthrough: false,
+    mouse: { x: 0, y: 0 },
+
     background: 0x00000000,
     draw: drawBackground,
+
   }
 }
