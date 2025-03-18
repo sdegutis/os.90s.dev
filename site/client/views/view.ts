@@ -4,28 +4,27 @@ export interface IntrinsicView extends Omit<View, 'children'> {
   children?: JSX.Element[] | JSX.Element | undefined
 }
 
-export function view(): IntrinsicView {
-  return {
+export interface view extends IntrinsicView { }
+export class view implements IntrinsicView {
 
-    relayoutAndRedrawKeys: ['w', 'h'],
-    redrawOnlyKeys: ['background'],
+  relayoutAndRedrawKeys = ['w', 'h']
+  redrawOnlyKeys = ['background']
 
-    x: 0,
-    y: 0,
-    w: 0,
-    h: 0,
+  x = 0
+  y = 0
+  w = 0
+  h = 0
 
-    canFocus: false,
-    visible: true,
-    hovered: false,
-    passthrough: false,
-    parent: null,
-    mouse: { x: 0, y: 0 },
+  canFocus = false
+  visible = true
+  hovered = false
+  passthrough = false
+  parent = null
+  mouse = { x: 0, y: 0 }
 
-    background: '#000',
-    draw: drawBackground,
+  background = '#000'
+  draw = drawBackground
 
-  }
 }
 
 export const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, px, py) {

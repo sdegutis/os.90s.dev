@@ -5,8 +5,8 @@ export type Pos = {
 
 export interface View {
 
-  relayoutAndRedrawKeys: string[]
-  redrawOnlyKeys: string[]
+  readonly relayoutAndRedrawKeys: string[]
+  readonly redrawOnlyKeys: string[]
 
   readonly x: number
   readonly y: number

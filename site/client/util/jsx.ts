@@ -10,7 +10,7 @@ export function createNode(tag: any, { children, ...data }: any): JSX.Element {
   }
   else {
     const base = primitives[tag as keyof typeof primitives]
-    return new IntrinsicNode({ ...base(), ...data }, children)
+    return new IntrinsicNode({ ...new base(), ...data }, children)
   }
 }
 

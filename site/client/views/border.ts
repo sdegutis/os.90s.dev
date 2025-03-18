@@ -1,17 +1,15 @@
 import { view, type IntrinsicView } from "./view.js"
 
-export type Border = ReturnType<typeof border>
+export class border extends view {
 
-export function border() {
-  return {
-    ...view(),
-    borderColor: '#000',
-    padding: 0,
-    draw: drawBorderedView,
-  }
+  borderColor = '#000'
+  padding = 0
+
+  override draw = drawBorderedView
+
 }
 
-export const drawBorderedView: IntrinsicView['draw'] = function (this: Border, ctx, px, py) {
+export const drawBorderedView: IntrinsicView['draw'] = function (this: border, ctx, px, py) {
   ctx.fillStyle = this.background
   ctx.fillRect(
     px + this.padding,

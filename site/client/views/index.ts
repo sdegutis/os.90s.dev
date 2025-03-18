@@ -4,8 +4,10 @@ import { label } from "./label.js"
 import { view, type IntrinsicView } from "./view.js"
 
 export const primitives = {
+
   view,
   border,
   label,
   image,
-} satisfies Record<string, () => IntrinsicView>
+
+} satisfies Record<string, new () => IntrinsicView>

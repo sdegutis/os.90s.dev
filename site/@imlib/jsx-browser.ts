@@ -1,17 +1,20 @@
 import { createNode, type FunctionElement, type FunctionNode, type IntrinsicNode } from "../client/util/jsx.js"
 import type { Ref } from "../client/util/ref.js"
-import type { primitives } from "../client/views/index.js"
+import { primitives } from "../client/views/index.js"
 
 type Primitives = typeof primitives
 type FixIntrinsicMethods<T, K extends keyof T, U> = T[K] extends (...args: infer A) => infer R ? (this: T, ...args: A) => R : U
 type JsxAttrs<T> = { [K in keyof T]?: FixIntrinsicMethods<T, K, T[K] | Ref<T[K]>> }
-type GivenData<T extends keyof Primitives> = JsxAttrs<ReturnType<Primitives[T]>>
+
+let a: JsxAttrs<InstanceType<Primitives['border']>>
+
+
 
 declare global {
 
   namespace JSX {
 
-    type IntrinsicElements = { [K in keyof Primitives as K]: GivenData<K> }
+    type IntrinsicElements = { [K in keyof Primitives as K]: JsxAttrs<InstanceType<Primitives[K]>> }
 
     type ElementChildrenAttribute = { children: any }
 
