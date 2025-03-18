@@ -2,16 +2,9 @@ export class Bitmap {
 
   static fromString(s: string) {
     const [top, bottom] = s.split('\n\n')
-    const colors = top.split('\n').map(s => '#' + s)
+    const colors = top.split('\n')
     const lines = bottom.trim().split('\n').map(s => s.split(' ').map(s => parseInt(s, 16)))
-
-    const pixels: number[] = []
-    for (const line of lines) {
-      for (const c of line) {
-        pixels.push(c)
-      }
-    }
-
+    const pixels = lines.flatMap(c => c)
     return new Bitmap(colors, lines[0].length, pixels)
   }
 
@@ -54,9 +47,3 @@ export class Bitmap {
   }
 
 }
-
-
-// const minImage = new Bitmap(['333333ff'], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
-// const maxImage = new Bitmap(['333333ff'], 4, [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1,])
-// const axeImage = new Bitmap(['333333ff'], 4, [1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1,])
-// const adjImage = new Bitmap(['ffffff77'], 3, [0, 0, 1, 0, 0, 1, 1, 1, 1,])

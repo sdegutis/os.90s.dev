@@ -1,6 +1,12 @@
 import { Program } from "../client/core/prog.js"
 import type { MousePos } from "../client/views/interface.js"
+import { Bitmap } from "../shared/bitmap.js"
 
+
+const minImage = new Bitmap(['333333ff'], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
+const maxImage = new Bitmap(['333333ff'], 4, [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1,])
+const axeImage = new Bitmap(['333333ff'], 4, [1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1,])
+const adjImage = new Bitmap(['ffffff77'], 3, [0, 0, 1, 0, 0, 1, 1, 1, 1,])
 
 const prog = new Program()
 await prog.init()

@@ -134,9 +134,9 @@ export class Sys {
 }
 
 const cursor = Bitmap.fromString(`
-000000cc
-ffffffff
-fffffffe
+#000000cc
+#ffffffff
+#fffffffe
 
 1 1 1 1
 1 3 2 1
