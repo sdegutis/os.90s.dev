@@ -13,7 +13,7 @@ const panel = await prog.makePanel({
         <border
           borderColor={0x334455ff}
           padding={3}
-          background={0x00770033} x={10} y={20} w={30} h={40}
+          background={0x00770033} x={-10} y={20} w={30} h={40}
         />
       </view>
     </view>
