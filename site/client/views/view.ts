@@ -84,6 +84,8 @@ export class view {
         (this as any)[k] = v
       }
     }
+
+    this.adjust?.()
   }
 
   onResized() {

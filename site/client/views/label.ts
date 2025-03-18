@@ -15,4 +15,14 @@ export class label extends view {
     this.font.print(ctx, px, py, this.textColor, this.text)
   }
 
+  override adjust(): void {
+    let w = 0
+    const lines = this.text.split('\n')
+    for (const line of lines) {
+      if (line.length > w) w = line.length
+    }
+    this.$update('w', w * this.font.cw + (w - 1) * this.font.xgap)
+    this.$update('h', (lines.length * this.font.ch) + ((lines.length - 1) * this.font.ygap))
+  }
+
 }
