@@ -1,22 +1,28 @@
-export type MousePos = { x: number, y: number }
+export type MousePos = {
+  x: number,
+  y: number,
+}
 
 export interface View {
 
-  x: number
-  y: number
-  w: number
-  h: number
+  readonly x: number
+  readonly y: number
+  readonly w: number
+  readonly h: number
 
-  background: string
+  readonly background: string
 
   parent: View | null
   children: View[]
 
-  hovered: boolean
-  visible: boolean
-  passthrough: boolean
+  readonly hovered: boolean
+  readonly visible: boolean
+  readonly passthrough: boolean
 
-  mouse: MousePos
+  readonly mouse: {
+    readonly x: number,
+    readonly y: number,
+  }
 
   onPanelFocus?(): void
   onPanelBlur?(): void
@@ -29,15 +35,11 @@ export interface View {
   onMouseEnter?(): void
   onMouseExit?(): void
 
-  canFocus: boolean
+  readonly canFocus: boolean
   onFocus?(): void
   onKeyDown?(key: string): void
   onBlur?(): void
 
-  draw(
-    ctx: OffscreenCanvasRenderingContext2D,
-    px: number,
-    py: number,
-  ): void
+  draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void
 
 }
