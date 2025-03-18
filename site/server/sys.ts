@@ -2,10 +2,14 @@ import type { KeyMap } from "../shared/rpc.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 
-const cursor = new OffscreenCanvas(1, 1)
+const cursor = new OffscreenCanvas(5, 5)
 const cursorctx = cursor.getContext('2d')!
-cursorctx.fillStyle = '#fff'
-cursorctx.fillRect(0, 0, 1, 1)
+
+for (let i = 0; i < 1; i++) {
+  cursorctx.fillStyle = '#fff'
+  // cursorctx.fillStyle = '#' + Math.floor(Math.random() * 0xffffffff).toString(16).padStart(8, '0')
+  cursorctx.fillRect(i, i, 1, 1)
+}
 
 
 export class Sys {
@@ -119,7 +123,16 @@ export class Sys {
   }
 
   private drawCursor() {
+    // this.ctx.save()
+
     this.ctx.drawImage(cursor, this.mouse.x, this.mouse.y)
+
+    // this.ctx.globalCompositeOperation = 'source-in'
+
+    // this.ctx.fillStyle = '#f00'
+    // this.ctx.fillRect(this.mouse.x, this.mouse.y, 5, 5)
+
+    // this.ctx.restore()
   }
 
   removePanel(panel: Panel) {
