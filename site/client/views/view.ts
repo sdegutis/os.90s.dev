@@ -7,6 +7,9 @@ export interface IntrinsicView extends Omit<View, 'children'> {
 export function view(): IntrinsicView {
   return {
 
+    relayoutAndRedrawKeys: ['w', 'h'],
+    redrawOnlyKeys: ['background'],
+
     x: 0,
     y: 0,
     w: 0,

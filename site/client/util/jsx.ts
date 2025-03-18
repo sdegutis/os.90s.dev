@@ -1,5 +1,6 @@
 import { primitives } from "../views/index.js"
 import type { View } from "../views/interface.js"
+import { Ref } from "./ref.js"
 
 export type FunctionElement = (data: any) => JSX.Element
 
@@ -26,7 +27,20 @@ export class IntrinsicNode {
   }
 
   render() {
-    const view = this.data as View
+    const view: View = Object.create(null)
+
+    for (const [k, v] of Object.entries(this.data)) {
+      const mutview = (view as any)
+
+      if (v instanceof Ref) {
+        mutview[k] = v.val
+        v.watch(val => mutview[k] = val)
+      }
+      else {
+        mutview[k] = v
+      }
+    }
+
     const children: View[] = []
 
     for (const child of this.children) {

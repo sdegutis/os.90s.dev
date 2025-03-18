@@ -1,4 +1,5 @@
 import { Program } from "../client/core/prog.js"
+import { $ } from "../client/util/ref.js"
 import type { Pos } from "../client/views/interface.js"
 import { Bitmap } from "../shared/bitmap.js"
 
@@ -19,6 +20,7 @@ const panel = await prog.makePanel({
 })
 
 function MyView(data: { w: number, h: number }) {
+  const ref = $('hey')
   return <label background={'#77000033'} w={data.w} h={data.h}
     text={'hi world'}
     textColor={'#ff0'}
@@ -33,6 +35,11 @@ function MyView(data: { w: number, h: number }) {
       onKeyDown={key => console.log(key.toUpperCase())}
     >
       <Foo x={-10} />
+      <label x={1} y={1} w={10} h={10} background={'#000'} text={ref}
+        onMouseDown={() => {
+          ref.val += ' hi;'
+        }}
+      />
     </image>
   </label>
 }
