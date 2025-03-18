@@ -1,5 +1,5 @@
 import { Program } from "../client/core/prog.js"
-import type { MousePos } from "../client/views/interface.js"
+import type { Pos } from "../client/views/interface.js"
 import { Bitmap } from "../shared/bitmap.js"
 
 
@@ -35,11 +35,11 @@ function MyView(data: { w: number, h: number }) {
   </view>
 }
 
-let down: (() => void) | undefined
 
 function Foo(data: { x: number }) {
-  return <border
+  let down: (() => void) | undefined
 
+  return <border
     onMouseDown={(b) => { down = dragMove(panel.absmouse, panel) }}
     onMouseMove={() => { down?.() }}
     onMouseUp={() => { down = undefined }}
@@ -56,7 +56,7 @@ interface Movable {
   move(x: number, y: number): void
 }
 
-function dragMove(m: MousePos, o: Movable) {
+function dragMove(m: Pos, o: Movable) {
   const startPos = { x: o.x, y: o.y }
   const offx = m.x - startPos.x
   const offy = m.y - startPos.y

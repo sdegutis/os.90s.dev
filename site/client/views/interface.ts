@@ -1,6 +1,6 @@
-export type MousePos = {
-  x: number,
-  y: number,
+export type Pos = {
+  readonly x: number,
+  readonly y: number,
 }
 
 export interface View {
@@ -18,6 +18,7 @@ export interface View {
   readonly hovered: boolean
   readonly visible: boolean
   readonly passthrough: boolean
+  readonly canFocus: boolean
 
   readonly mouse: {
     readonly x: number,
@@ -35,7 +36,6 @@ export interface View {
   onMouseEnter?(): void
   onMouseExit?(): void
 
-  readonly canFocus: boolean
   onFocus?(): void
   onKeyDown?(key: string): void
   onBlur?(): void

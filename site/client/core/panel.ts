@@ -1,6 +1,6 @@
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
-import type { MousePos, View } from "../views/interface.js"
+import type { Pos, View } from "../views/interface.js"
 
 export class Panel {
 
@@ -14,8 +14,8 @@ export class Panel {
   id
   rpc
 
-  absmouse: MousePos = { x: 0, y: 0 }
-  mouse: MousePos = { x: 0, y: 0 }
+  absmouse: Pos = { x: 0, y: 0 }
+  mouse: Pos = { x: 0, y: 0 }
   keymap: KeyMap = Object.create(null)
 
   didClose = new Listener()
@@ -82,9 +82,7 @@ export class Panel {
     })
 
     this.rpc.listen('mousemoved', (x, y) => {
-      this.absmouse.x = x
-      this.absmouse.y = y
-      this.fixMouse()
+      this.absmouse = { x, y }
       this.checkUnderMouse()
 
       const sendto = this.clicking ?? this.hovered
@@ -233,8 +231,10 @@ export class Panel {
   }
 
   private fixMouse() {
-    this.mouse.x = this.absmouse.x - this.x
-    this.mouse.y = this.absmouse.y - this.y
+    this.mouse = {
+      x: this.absmouse.x - this.x,
+      y: this.absmouse.y - this.y,
+    }
   }
 
 }
