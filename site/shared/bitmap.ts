@@ -12,6 +12,7 @@ export class Bitmap {
   height: number
 
   private ctx
+  private lastcol?: string
 
   canvas
 
@@ -42,6 +43,9 @@ export class Bitmap {
   }
 
   colorize(col: string) {
+    if (this.lastcol === col) return
+    this.lastcol = col
+
     this.ctx.fillStyle = col
     this.ctx.fillRect(0, 0, this.width, this.height)
   }

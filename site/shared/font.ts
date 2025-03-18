@@ -8,8 +8,6 @@ class Font {
   xgap = 1
   ygap = 2
 
-  private lastcol?: string
-
   constructor(data: string) {
     this.spr = Bitmap.fromString(data)
     this.cw = this.spr.width / 16
@@ -20,10 +18,7 @@ class Font {
     let posx = 0
     let posy = 0
 
-    if (c && this.lastcol !== c) {
-      this.lastcol = c
-      this.spr.colorize(c)
-    }
+    if (c) this.spr.colorize(c)
 
     for (let i = 0; i < text.length; i++) {
       const ch = text[i]
