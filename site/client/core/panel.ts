@@ -226,6 +226,16 @@ export class Panel {
     }
   }
 
+  redrawTimer: number | null = null
+
+  needsRedraw() {
+    if (this.redrawTimer !== null) return
+    this.redrawTimer = setTimeout(() => {
+      this.redrawTimer = null
+      this.blit()
+    })
+  }
+
   blit() {
     this.redrawRoot()
     const bmp = this.canvas.transferToImageBitmap()

@@ -36,8 +36,8 @@ function MyView(data: { w: number, h: number }) {
       <Foo x={-10} />
       <label x={1} y={1} w={100} h={10} background={'#000'} text={ref} textColor={r}
         onMouseDown={() => {
-          ref.val += ' hi;'
-          // r.val = '#00f'
+          // ref.val += ' hi;'
+          r.val = '#' + Math.floor(Math.random() * 0xffffffff).toString(16).padStart(8, '0')
         }}
       />
     </image>

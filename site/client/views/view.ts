@@ -58,7 +58,7 @@ export class view {
     else if (this.redrawKeys.includes(k)) {
       let node: view = this
       while (node.parent) node = node.parent
-      node.panel?.blit()
+      node.panel?.needsRedraw()
     }
   }
 
