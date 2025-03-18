@@ -1,15 +1,3 @@
-export const pointer = bitmapFromString(`
-000000cc
-ffffffff
-fffffffe
-
-1 1 1 1
-1 3 2 1
-1 2 1 1
-1 1 1 0
-`.trimStart())
-
-
 export function bitmapFromString(s: string) {
   const [top, bottom] = s.split('\n\n')
   const colors = top.split('\n').map(s => '#' + s)
