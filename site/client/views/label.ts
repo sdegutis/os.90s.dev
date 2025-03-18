@@ -6,7 +6,7 @@ export type Label = ReturnType<typeof label>
 export function label() {
   return {
     ...view(),
-    textColor: '#f00',
+    textColor: '#fff',
     font: crt2025,
     text: '',
     draw: drawLabelText,

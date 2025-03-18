@@ -1,6 +1,11 @@
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
-import type { Pos, View } from "../views/interface.js"
+import type { View } from "../views/interface.js"
+
+type Pos = {
+  x: number,
+  y: number,
+}
 
 export class Panel {
 
@@ -82,7 +87,9 @@ export class Panel {
     })
 
     this.rpc.listen('mousemoved', (x, y) => {
-      this.absmouse = { x, y }
+      this.absmouse.x = x
+      this.absmouse.y = y
+      this.fixMouse()
       this.checkUnderMouse()
 
       const sendto = this.clicking ?? this.hovered
@@ -231,10 +238,8 @@ export class Panel {
   }
 
   private fixMouse() {
-    this.mouse = {
-      x: this.absmouse.x - this.x,
-      y: this.absmouse.y - this.y,
-    }
+    this.mouse.x = this.absmouse.x - this.x
+    this.mouse.y = this.absmouse.y - this.y
   }
 
 }
