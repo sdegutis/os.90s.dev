@@ -1,6 +1,6 @@
-import { IntrinsicNode } from "../../@imlib/jsx-browser.js"
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
+import { IntrinsicNode } from "../util/jsx.js"
 import type { MousePos, View } from "../views/interface.js"
 
 export class Panel {

@@ -1,5 +1,5 @@
-import type { IntrinsicNode } from "../../@imlib/jsx-browser.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type PanelPosition, type ServerProgram } from "../../shared/rpc.js"
+import type { IntrinsicNode } from "../util/jsx.js"
 import { Panel } from "./panel.js"
 
 export class Program {
