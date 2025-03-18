@@ -2,15 +2,17 @@ import type { KeyMap } from "../shared/rpc.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 
-const cursor = new OffscreenCanvas(5, 5)
+const cursor = new OffscreenCanvas(1, 1)
 const cursorctx = cursor.getContext('2d')!
 
+cursorctx.fillStyle = '#fff'
 for (let i = 0; i < 1; i++) {
-  cursorctx.fillStyle = '#fff'
-  // cursorctx.fillStyle = '#' + Math.floor(Math.random() * 0xffffffff).toString(16).padStart(8, '0')
   cursorctx.fillRect(i, i, 1, 1)
 }
+cursorctx.globalCompositeOperation = 'source-in'
 
+cursorctx.fillStyle = '#ff0'
+cursorctx.fillRect(0, 0, 5, 5)
 
 export class Sys {
 
@@ -91,6 +93,13 @@ export class Sys {
       this.redrawAllPanels()
     }
 
+    // setInterval(() => {
+    //   op++
+    //   if (op === ops.length) op = 0
+    //   console.log(op, ops[op])
+    //   this.redrawAllPanels()
+    // }, 1000)
+
   }
 
   private findHovered() {
@@ -123,16 +132,7 @@ export class Sys {
   }
 
   private drawCursor() {
-    // this.ctx.save()
-
     this.ctx.drawImage(cursor, this.mouse.x, this.mouse.y)
-
-    // this.ctx.globalCompositeOperation = 'source-in'
-
-    // this.ctx.fillStyle = '#f00'
-    // this.ctx.fillRect(this.mouse.x, this.mouse.y, 5, 5)
-
-    // this.ctx.restore()
   }
 
   removePanel(panel: Panel) {
@@ -151,3 +151,6 @@ export class Sys {
   }
 
 }
+
+// const ops: GlobalCompositeOperation[] = ["color", "color-burn", "color-dodge", "copy", "darken", "destination-atop", "destination-in", "destination-out", "destination-over", "difference", "exclusion", "hard-light", "hue", "lighten", "lighter", "luminosity", "multiply", "overlay", "saturation", "screen", "soft-light", "source-atop", "source-in", "source-out", "source-over", "xor"]
+// let op = 0
