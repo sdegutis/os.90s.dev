@@ -3,7 +3,7 @@ import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
 import type { View } from "../views/interface.js"
 
-type MousePos = { x: number, y: number }
+export type MousePos = { x: number, y: number }
 
 export class Panel {
 
@@ -20,8 +20,6 @@ export class Panel {
   absmouse: MousePos = { x: 0, y: 0 }
   mouse: MousePos = { x: 0, y: 0 }
   keymap: KeyMap = Object.create(null)
-
-  down?: () => void
 
   didClose = new Listener()
   root
@@ -64,23 +62,16 @@ export class Panel {
     })
 
     this.rpc.listen('mousedown', (b) => {
-      if (b > 0) {
-        this.close()
-        return
-      }
-
-      this.down = dragMove(this.absmouse, this)
     })
 
     this.rpc.listen('mousemoved', (x, y) => {
       this.absmouse.x = x
       this.absmouse.y = y
       this.fixMouse()
-      this.down?.()
     })
 
     this.rpc.listen('mouseup', () => {
-      delete this.down
+
     })
 
     this.rpc.listen('wheel', (n) => {
@@ -165,24 +156,4 @@ export class Panel {
     this.mouse.y = this.absmouse.y - this.y
   }
 
-}
-
-interface Movable {
-  readonly x: number
-  readonly y: number
-  move(x: number, y: number): void
-}
-
-export function dragMove(m: MousePos, o: Movable) {
-  const startPos = { x: o.x, y: o.y }
-  const offx = m.x - startPos.x
-  const offy = m.y - startPos.y
-  return () => {
-    const diffx = m.x - startPos.x
-    const diffy = m.y - startPos.y
-    const x = startPos.x + diffx - offx
-    const y = startPos.y + diffy - offy
-    o.move(x, y)
-    return { x: diffx - offx, y: diffy - offy }
-  }
 }
