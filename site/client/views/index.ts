@@ -26,7 +26,7 @@ function border() {
   }
 }
 
-export const primitives = {
+export const primitives: Record<string, () => IntrinsicView> = {
   view,
   border,
-}
+}  
