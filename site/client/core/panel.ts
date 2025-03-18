@@ -26,7 +26,7 @@ export class Panel {
   readonly ctx = this.canvas.getContext('2d')!
 
   private hoveredTree = new Set<View>()
-  private hovered: View
+  private hovered: View | null = null
   private clicking: View | null = null
   private focused: View | null = null
 
@@ -67,9 +67,9 @@ export class Panel {
 
     this.rpc.listen('mousedown', (b) => {
       this.clicking = this.hovered
-      this.hovered.onMouseDown?.(b)
+      this.hovered?.onMouseDown?.(b)
 
-      let node: View | undefined = this.hovered
+      let node: View | null = this.hovered
       while (node) {
         if (node.passthrough) continue
 
@@ -93,7 +93,7 @@ export class Panel {
       this.checkUnderMouse()
 
       const sendto = this.clicking ?? this.hovered
-      sendto.onMouseMove?.(x, y)
+      sendto?.onMouseMove?.(x, y)
     })
 
     this.rpc.listen('mouseup', () => {
@@ -102,7 +102,7 @@ export class Panel {
     })
 
     this.rpc.listen('wheel', (x, y) => {
-      let node: View | undefined = this.hovered
+      let node: View | null = this.hovered
       while (node) {
         if (node.onWheel) {
           node.onWheel(x, y)
@@ -154,7 +154,7 @@ export class Panel {
     const lastHovered = this.hoveredTree
     this.hoveredTree = new Set()
 
-    const activeHovered = this.hover(this.root.view, this.mouse.x, this.mouse.y)!
+    const activeHovered = this.hover(this.root.view, this.mouse.x, this.mouse.y)
 
     for (const view of this.hoveredTree.difference(lastHovered)) {
       view.onMouseEnter?.()
@@ -165,9 +165,9 @@ export class Panel {
     }
 
     if (this.hovered !== activeHovered) {
-      this.hovered.hovered = false
+      if (this.hovered) this.hovered.hovered = false
       this.hovered = activeHovered
-      this.hovered.hovered = true
+      if (this.hovered) this.hovered.hovered = true
     }
   }
 

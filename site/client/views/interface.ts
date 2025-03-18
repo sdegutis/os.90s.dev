@@ -9,7 +9,7 @@ export interface View {
 
   background: number
 
-  parent?: View
+  parent: View | null
   children: View[]
 
   hovered: boolean

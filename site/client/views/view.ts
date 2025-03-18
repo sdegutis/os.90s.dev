@@ -21,6 +21,7 @@ export function view(): IntrinsicView {
     visible: true,
     hovered: false,
     passthrough: false,
+    parent: null,
     mouse: { x: 0, y: 0 },
 
     background: 0x00000000,
