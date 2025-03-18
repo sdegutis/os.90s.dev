@@ -38,10 +38,12 @@ function createNode(tag: any, data: any): JSX.Element {
   if (typeof tag === 'function') {
     return tag(data)
   }
-  else {
-    const ctor = primitives[tag as keyof typeof primitives]
-    const view = new ctor()
-    view.$setup(data)
-    return view
-  }
+
+  const children: view | view[] | undefined = data["children"]
+  delete data["children"]
+
+  const ctor = primitives[tag as keyof typeof primitives]
+  const view = new ctor()
+  view.$setup(data, children === undefined ? [] : children instanceof Array ? children : [children])
+  return view
 }

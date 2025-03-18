@@ -48,25 +48,21 @@ export class view {
     this[k] = v
   }
 
-  $setup(data: Record<string, any>) {
-    const children: view | view[] | undefined = data["children"]
-    delete data["children"]
+  $setup(data: Record<string, any>, children: view[]) {
+    const view = (this as any)
 
-    const mutview = (this as any)
-
-    mutview.children = children === undefined ? [] : children instanceof Array ? children : [children]
-
+    view.children = children
     for (const child of this.children) {
       (child as any).parent = this
     }
 
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
-        mutview[k] = v.val
-        v.watch(val => mutview[k] = val)
+        view[k] = v.val
+        v.watch(val => this.$update(k as keyof this, val))
       }
       else {
-        mutview[k] = v
+        view[k] = v
       }
     }
   }
