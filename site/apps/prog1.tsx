@@ -20,6 +20,7 @@ const panel = await prog.makePanel({
         onWheel={(x, y) => console.log(y)}
         background={'#00770033'} x={10} y={20} w={30} h={40}
         canFocus={true}
+        onMouseDown={(b) => { if (b > 0) panel.close() }}
         image={axeImage}
         // text={'hello world'}
         onKeyDown={key => console.log(key.toUpperCase())}
@@ -35,18 +36,9 @@ let down: (() => void) | undefined
 function Foo(data: { x: number }) {
   return <border
 
-    onMouseDown={(b) => {
-      if (b > 0) { panel.close(); return }
-      down = dragMove(panel.absmouse, panel)
-    }}
-
-    onMouseMove={() => {
-      down?.()
-    }}
-
-    onMouseUp={() => {
-      down = undefined
-    }}
+    onMouseDown={(b) => { down = dragMove(panel.absmouse, panel) }}
+    onMouseMove={() => { down?.() }}
+    onMouseUp={() => { down = undefined }}
 
     borderColor={'#334455ff'}
     padding={3}
