@@ -5,14 +5,14 @@ export type Border = ReturnType<typeof border>
 export function border() {
   return {
     ...view(),
-    borderColor: 0x00000000,
+    borderColor: '#000',
     padding: 0,
     draw: drawBorderedView,
   }
 }
 
 export const drawBorderedView: IntrinsicView['draw'] = function (this: Border, ctx, px, py) {
-  ctx.fillStyle = '#' + this.background.toString(16).padStart(8, '0')
+  ctx.fillStyle = this.background
   ctx.fillRect(
     px + this.padding,
     py + this.padding,
@@ -20,7 +20,7 @@ export const drawBorderedView: IntrinsicView['draw'] = function (this: Border, c
     this.h - this.padding * 2,
   )
 
-  ctx.strokeStyle = '#' + this.borderColor.toString(16).padStart(8, '0')
+  ctx.strokeStyle = this.borderColor
   for (let i = 0; i < this.padding; i++) {
     ctx.strokeRect(px + i + .5, py + i + .5, this.w - i * 2 - 1, this.h - i * 2 - 1)
   }

@@ -7,7 +7,7 @@ export interface View {
   w: number
   h: number
 
-  background: number
+  background: string
 
   parent: View | null
   children: View[]

@@ -19,13 +19,13 @@ export function view(): IntrinsicView {
     parent: null,
     mouse: { x: 0, y: 0 },
 
-    background: 0x00000000,
+    background: '#000',
     draw: drawBackground,
 
   }
 }
 
 export const drawBackground: IntrinsicView['draw'] = function (this: IntrinsicView, ctx, px, py) {
-  ctx.fillStyle = '#' + this.background.toString(16).padStart(8, '0')
+  ctx.fillStyle = this.background
   ctx.fillRect(px, py, this.w, this.h)
 }

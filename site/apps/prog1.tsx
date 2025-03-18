@@ -8,11 +8,11 @@ await prog.init()
 const panel = await prog.makePanel({
   size: [100, 100],
   view: (
-    <view background={0x77000033}
+    <view background={'#77000033'}
     >
       <label
         onWheel={(x, y) => console.log(y)}
-        background={0x00770033} x={10} y={20} w={30} h={40}
+        background={'#00770033'} x={10} y={20} w={30} h={40}
         canFocus={true}
         text={'hello world'}
         onKeyDown={key => console.log(key.toUpperCase())}
@@ -41,9 +41,9 @@ function Foo(data: { x: number }) {
       down = undefined
     }}
 
-    borderColor={0x334455ff}
+    borderColor={'#334455ff'}
     padding={3}
-    background={0x00770033} x={data.x} y={20} w={30} h={40}
+    background={'#00770033'} x={data.x} y={20} w={30} h={40}
   />
 }
 
