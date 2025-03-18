@@ -41,6 +41,10 @@ export class IntrinsicNode {
     this.view = view
   }
 
+  update(k: string, v: any) {
+    this.data[k] = v
+  }
+
 }
 
 export class FunctionNode {
@@ -60,6 +64,10 @@ export class FunctionNode {
     const got = this.fn({ children: this.children, ...this.data })
     got.render()
     this.view = got.view
+  }
+
+  update(k: string, v: any) {
+    this.data[k] = v
   }
 
 }

@@ -117,8 +117,8 @@ export class Panel {
     })
 
     this.root = root
-    this.root.data["w"] = w
-    this.root.data["h"] = h
+    this.root.update("w", w)
+    this.root.update("h", h)
     this.root.render()
 
     this.hovered = this.root.view
@@ -139,8 +139,8 @@ export class Panel {
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
     this.canvas.width = w
     this.canvas.height = h
-    this.root.data["w"] = w
-    this.root.data["h"] = h
+    this.root.update("w", w)
+    this.root.update("h", h)
     this.root.render()
     this.blit()
   }
