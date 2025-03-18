@@ -35,9 +35,10 @@ function MyView(data: { w: number, h: number }) {
       onKeyDown={key => console.log(key.toUpperCase())}
     >
       <Foo x={-10} />
-      <label x={1} y={1} w={10} h={10} background={'#000'} text={ref}
+      <label x={1} y={1} w={100} h={10} background={'#000'} text={ref}
         onMouseDown={() => {
           ref.val += ' hi;'
+          panel.blit()
         }}
       />
     </image>

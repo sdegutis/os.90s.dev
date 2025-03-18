@@ -217,6 +217,7 @@ export class Panel {
       const ch = Math.min(child.h, this.h - child.y)
 
       this.ctx.save()
+      this.ctx.beginPath()
       this.ctx.rect(cx, cy, cw, ch)
       this.ctx.clip()
 
