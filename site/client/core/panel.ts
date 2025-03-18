@@ -98,6 +98,7 @@ export class Panel {
 
     this.rpc.listen('mouseup', () => {
       this.clicking?.onMouseUp?.()
+      this.clicking = null
     })
 
     this.rpc.listen('wheel', (x, y) => {
