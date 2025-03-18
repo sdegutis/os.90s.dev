@@ -15,7 +15,7 @@ declare global {
 
     type ElementChildrenAttribute = { children: any }
 
-    type Element = IntrinsicNode | FunctionNode | FragmentNode
+    type Element = IntrinsicNode | FunctionNode
 
     type ElementType =
       | keyof IntrinsicElements
@@ -27,15 +27,7 @@ declare global {
 export const Fragment = ''
 export const jsxs = jsx
 export function jsx(tag: any, { children, ...data }: any): JSX.Element {
-  if (tag === '') {
-    if (children instanceof Array && children.length === 1) {
-      return children[0]
-    }
-    else {
-      return new FragmentNode(data, children)
-    }
-  }
-  else if (typeof tag === 'function') {
+  if (typeof tag === 'function') {
     return new FunctionNode(data, children, tag)
   }
   else {
@@ -57,23 +49,11 @@ export class IntrinsicNode {
   }
 
   render() {
-    // this.rendered = null as any
-  }
+    this.children.forEach(c => c.render())
 
-}
 
-export class FragmentNode {
+    // this.rendered = 
 
-  data: Record<string, any>
-  children: JSX.Element[]
-  rendered!: View
-
-  constructor(data: Record<string, any>, children: JSX.Element[] | undefined) {
-    this.data = data
-    this.children = children ?? []
-  }
-
-  render() {
     // this.rendered = null as any
   }
 
