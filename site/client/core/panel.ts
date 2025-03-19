@@ -175,9 +175,6 @@ export class Panel {
       if (this.hovered) this.hovered.mutate(v => v.hovered = false)
       this.hovered = activeHovered
       if (this.hovered) this.hovered.mutate(v => v.hovered = true)
-
-      const cursor = this.hovered?.cursor ?? undefined
-      this.setCursor(cursor)
     }
   }
 
@@ -254,10 +251,7 @@ export class Panel {
     })
   }
 
-  private lastCursor: Cursor | undefined = undefined
-  private setCursor(c: Cursor | undefined) {
-    if (c === this.lastCursor) return
-    this.lastCursor = c
+  setCursor(c: Cursor | null) {
     this.rpc.send('cursor', [c?.toString() ?? ''])
   }
 

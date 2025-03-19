@@ -1,4 +1,3 @@
-import type { Cursor } from "../../shared/cursor.js"
 import type { Panel } from "../core/panel.js"
 import { Ref } from "../util/ref.js"
 
@@ -39,7 +38,6 @@ export class view {
   readonly background: number = 0x00000000
 
   readonly mouse: Pos = { x: 0, y: 0 }
-  readonly cursor: Cursor | null = null
 
   onPanelFocus?(): void
   onPanelBlur?(): void
@@ -151,6 +149,12 @@ export class view {
     let node: view = this
     while (node.parent) node = node.parent
     node.panel?.needsMouseCheck()
+  }
+
+  get getPanel() {
+    let node: view = this
+    while (node.parent) node = node.parent
+    return node.panel
   }
 
   init?(): void
