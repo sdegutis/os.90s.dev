@@ -124,6 +124,8 @@ export class view {
   }
 
   private _commit(mut: any) {
+    let mode: 'size' | 'pos' | 'adjust' | 'layout' | 'redraw' | null = null
+
     for (const key in mut) {
       const k = key as keyof this & string
       const v = mut[k]
@@ -131,25 +133,31 @@ export class view {
       if (this[k] === v) continue
       this[k] = v
 
-      if (k === 'w' || k === 'h') {
-        this.onResized()
-        this.needsRedraw()
-      }
-      else if (k === 'x' || k === 'y') {
-        this.onMoved()
-        this.needsRedraw()
-      }
-      else if (this.adjustKeys.includes(k)) {
-        this.adjust?.()
-        this.needsRedraw()
-      }
-      else if (this.layoutKeys.includes(k)) {
-        this.onNeedsLayout?.()
-        this.needsRedraw()
-      }
-      else if (this.redrawKeys.includes(k)) {
-        this.needsRedraw()
-      }
+      if (k === 'w' || k === 'h') mode ??= 'size'
+      else if (k === 'x' || k === 'y') mode ??= 'pos'
+      else if (this.adjustKeys.includes(k)) mode ??= 'adjust'
+      else if (this.layoutKeys.includes(k)) mode ??= 'layout'
+      else if (this.redrawKeys.includes(k)) mode ??= 'redraw'
+    }
+
+    if (mode === 'size') {
+      this.onResized()
+      this.needsRedraw()
+    }
+    else if (mode === 'pos') {
+      this.onMoved()
+      this.needsRedraw()
+    }
+    else if (mode === 'adjust') {
+      this.adjust?.()
+      this.needsRedraw()
+    }
+    else if (mode === 'layout') {
+      this.onNeedsLayout?.()
+      this.needsRedraw()
+    }
+    else if (mode === 'redraw') {
+      this.needsRedraw()
     }
   }
 
