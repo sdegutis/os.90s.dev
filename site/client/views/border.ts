@@ -24,12 +24,11 @@ export class border extends view {
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)
-
-    ctx.strokeStyle = this.borderColor
-    this.drawBorder(ctx, px, py)
+    this.drawBorder(ctx, px, py, this.borderColor)
   }
 
-  protected drawBorder(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number) {
+  protected drawBorder(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, col: string) {
+    ctx.strokeStyle = col
     for (let i = 0; i < this.padding; i++) {
       ctx.strokeRect(
         px + i + .5,

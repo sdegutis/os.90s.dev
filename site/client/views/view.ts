@@ -112,7 +112,11 @@ export class view {
   }
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
-    ctx.fillStyle = this.background
+    this.drawBackground(ctx, px, py, this.background)
+  }
+
+  protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: string) {
+    ctx.fillStyle = bg
     ctx.fillRect(px, py, this.w, this.h)
   }
 

@@ -47,25 +47,16 @@ export class button extends border {
     super.draw(ctx, px, py)
 
     if (this.selected) {
-      ctx.fillStyle = this.selectedBackground
-      ctx.fillRect(px, py, this.w, this.h)
-
-      ctx.strokeStyle = this.selectedBorderColor
-      this.drawBorder(ctx, px, py)
+      this.drawBackground(ctx, px, py, this.selectedBackground)
+      this.drawBorder(ctx, px, py, this.selectedBorderColor)
     }
     else if (this.pressed) {
-      ctx.fillStyle = this.pressBackground
-      ctx.fillRect(px, py, this.w, this.h)
-
-      ctx.strokeStyle = this.pressBorderColor
-      this.drawBorder(ctx, px, py)
+      this.drawBackground(ctx, px, py, this.pressBackground)
+      this.drawBorder(ctx, px, py, this.pressBorderColor)
     }
     else if (this.hovered) {
-      ctx.fillStyle = this.hoverBackground
-      ctx.fillRect(px, py, this.w, this.h)
-
-      ctx.strokeStyle = this.hoverBorderColor
-      this.drawBorder(ctx, px, py)
+      this.drawBackground(ctx, px, py, this.hoverBackground)
+      this.drawBorder(ctx, px, py, this.hoverBorderColor)
     }
   }
 
