@@ -29,7 +29,7 @@ export class view {
     readonly y: number,
   } = { x: 0, y: 0 }
 
-  readonly background: string = '#0000'
+  readonly background: number = 0x00000000
 
   onPanelFocus?(): void
   onPanelBlur?(): void
@@ -116,7 +116,7 @@ export class view {
   }
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
-    this.drawBackground(ctx, px, py, this.background)
+    this.drawBackground(ctx, px, py, colorFor(this.background))
   }
 
   protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: string) {
@@ -173,4 +173,12 @@ export class view {
 
   commit() { }
 
+}
+
+const colors = new Map<number, string>()
+
+function colorFor(col: number): string {
+  let color = colors.get(col)
+  if (!color) colors.set(col, color = '#' + col.toString(16).padStart(8, '0'))
+  return color
 }

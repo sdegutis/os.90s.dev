@@ -24,10 +24,10 @@ const t = $('hey')
 const panel = await prog.makePanel({
   size: [100, 100],
   view: (
-    <paned background={'#77000033'} dir={d} gap={3}>
+    <paned background={0x77000033} dir={d} gap={3}>
       <Titlebar />
-      <view background={'#303'}>
-        <button padding={3} background={'#009'} onClick={(b) => console.log('hey', panel.root)}>
+      <view background={0x330033ff}>
+        <button padding={3} background={0x000099ff} onClick={(b) => console.log('hey', panel.root)}>
           <label text={'hey'} />
         </button>
       </view>
@@ -38,14 +38,14 @@ const panel = await prog.makePanel({
 function Titlebar() {
   let down: (() => void) | undefined
 
-  return <groupx gap={r} background={'#300'}
+  return <groupx gap={r} background={0x330000ff}
     onMouseDown={(b) => { down = dragMove(panel.absmouse, panel) }}
     onMouseMove={() => { down?.() }}
     onMouseUp={() => { down = undefined }}
   >
     <border padding={1} borderColor={'#070'}>
       <border padding={1} borderColor={'#700'}>
-        <label text={t} background='#00000033' />
+        <label text={t} background={0x00000033} />
       </border>
     </border>
     <image bitmap={axeImage} />
