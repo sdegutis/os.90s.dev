@@ -54,31 +54,6 @@ export class view {
     ctx.fillRect(px, py, this.w, this.h)
   }
 
-  $update<K extends keyof this & string>(k: K, v: this[K]) {
-    if (this[k] === v) return
-    this[k] = v
-
-    if (k === 'w' || k === 'h') {
-      this.onResized()
-      this.needsRedraw()
-    }
-    else if (k === 'x' || k === 'y') {
-      this.onMoved()
-      this.needsRedraw()
-    }
-    else if (this.adjustKeys.includes(k)) {
-      this.adjust?.()
-      this.needsRedraw()
-    }
-    else if (this.layoutKeys.includes(k)) {
-      this.onNeedsLayout?.()
-      this.needsRedraw()
-    }
-    else if (this.redrawKeys.includes(k)) {
-      this.needsRedraw()
-    }
-  }
-
   protected needsRedraw() {
     let node: view = this
     while (node.parent) node = node.parent
@@ -142,7 +117,31 @@ export class view {
 
     proxy.commit = () => {
       for (const key in map) {
-        this.$update(key as keyof this & string, map[key])
+        const k = key as keyof this & string
+        const v = map[k]
+
+        if (this[k] === v) continue
+        this[k] = v
+
+        if (k === 'w' || k === 'h') {
+          this.onResized()
+          this.needsRedraw()
+        }
+        else if (k === 'x' || k === 'y') {
+          this.onMoved()
+          this.needsRedraw()
+        }
+        else if (this.adjustKeys.includes(k)) {
+          this.adjust?.()
+          this.needsRedraw()
+        }
+        else if (this.layoutKeys.includes(k)) {
+          this.onNeedsLayout?.()
+          this.needsRedraw()
+        }
+        else if (this.redrawKeys.includes(k)) {
+          this.needsRedraw()
+        }
       }
     }
 
