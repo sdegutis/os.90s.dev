@@ -49,8 +49,12 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
   }
 
   function minw() { }
+
   function maxw() { }
-  function axew() { }
+
+  function axew() {
+    panel.close()
+  }
 
   function layoutContentView(this: border) {
     this.firstChild?.mutate(c => {
