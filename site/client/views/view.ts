@@ -71,7 +71,7 @@ export class view {
       this.needsRedraw()
     }
     else if (this.layoutKeys.includes(k)) {
-      this.layout?.()
+      this.onNeedsLayout?.()
       this.needsRedraw()
     }
     else if (this.redrawKeys.includes(k)) {
@@ -116,6 +116,8 @@ export class view {
       child.layoutTree()
     }
   }
+
+  onNeedsLayout?(): void
 
   onResized() {
     this.parent?.onChildResized?.()

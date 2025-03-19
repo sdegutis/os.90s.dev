@@ -13,9 +13,12 @@ export class paned extends view {
     this.layoutTree()
   }
 
-  override layout(): void {
-    // console.log('lauign oyut', this.dir, this.children.length)
+  override onNeedsLayout(): void {
+    this.firstChild?.adjust?.()
+    this.lastChild?.adjust?.()
+  }
 
+  override layout(): void {
     const a = { ...this.children[0] }
     const b = { ...this.children[1] }
 
