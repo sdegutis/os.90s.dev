@@ -113,7 +113,6 @@ export class view {
         this.needsRedraw()
       }
     }
-
   }
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
