@@ -36,6 +36,8 @@ class SplitDivider extends view {
   override onResized(): void { }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+    if (this.split.min === this.split.max) return
+
     const dividerColorHover = 0xffffff33
     const dividerColorPress = 0x1177ffcc
     const dividerWidth = 1
@@ -65,6 +67,7 @@ class SplitDivider extends view {
       this.getPanel?.setCursor(null)
     }
     else if (this.cursorClaims === n) {
+      if (this.split.min === this.split.max) return
       this.getPanel?.setCursor(this.cursor)
     }
   }
@@ -84,24 +87,25 @@ class SplitDivider extends view {
     const dw = dx === 'x' ? 'w' : 'h'
 
     const b = {
-      x: 0, y: 0, move(x: number, y: number) {
+      x: split.pos,
+      y: split.pos,
+      move(x: number, y: number) {
         b.x = x
         b.y = y
 
         let min = split.min
         let max = split.max
 
-        if (min < 0) min = split[dw] + min
-        if (max < 0) max = split[dw] + max
+        if (min < 0) min += split[dw]
+        if (max <= 0) max += split[dw] - 1
 
         const s = split.mutable()
         s.pos = b[dx]
-        if (min && s.pos < min) s.pos = min
-        if (max && s.pos > max) s.pos = max
+        if (s.pos < min) s.pos = min
+        if (s.pos > max) s.pos = max
         s.commit()
       }
     }
-    b[dx] = split.pos
 
     this.mutate(v => v.pressed = true)
 
@@ -123,7 +127,7 @@ export class split extends view {
   readonly max: number = 0
   readonly dir: 'x' | 'y' = 'y'
 
-  resizer!: SplitDivider
+  resizer?: SplitDivider
 
   override init(): void {
     this.addLayoutKeys('pos', 'dir')
@@ -158,7 +162,7 @@ export class split extends view {
     b[dx] = this.pos
     b[dw] = this[dw] - this.pos
 
-    this.resizer.mutate(r => {
+    this.resizer?.mutate(r => {
       r.x = 0
       r.y = 0
       r[dx] = this.pos - 1

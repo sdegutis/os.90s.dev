@@ -28,10 +28,10 @@ await prog.init()
 const panel = await prog.makePanel({
   size: [100, 100],
   view: <PanelView title={'test panel'}>
-    <view background={0x00330099}>
-
-      <label text={'cool'} />
-    </view>
+    <panedya background={0x00330099} gap={3}>
+      <label text={'yep'} background={0x33000099} />
+      <label text={'cool'} background={0x00003399} />
+    </panedya>
   </PanelView>,
 })
 
