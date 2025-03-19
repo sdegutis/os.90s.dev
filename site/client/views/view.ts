@@ -60,12 +60,9 @@ export class view {
 
   onResized() {
     this.parent?.onChildResized?.()
-    this.needsMouseCheck()
   }
 
-  onMoved() {
-    this.needsMouseCheck()
-  }
+  onMoved?(): void
 
   onChildResized() {
     this.adjust?.()
@@ -93,10 +90,12 @@ export class view {
     if (mode === 'size') {
       this.onResized()
       this.needsRedraw()
+      this.needsMouseCheck()
     }
     else if (mode === 'pos') {
-      this.onMoved()
+      this.onMoved?.()
       this.needsRedraw()
+      this.needsMouseCheck()
     }
     else if (mode === 'adjust') {
       this.adjust?.()

@@ -127,7 +127,7 @@ export class Panel {
     mutroot.commit()
 
     this.root = root
-    this.root.layoutTree()
+    this.root.layout?.()
     this.root.panel = this
 
     this.hovered = this.root
@@ -233,7 +233,6 @@ export class Panel {
   }
 
   redrawTimer: number | null = null
-
   needsRedraw() {
     if (this.redrawTimer !== null) return
     this.redrawTimer = setTimeout(() => {
@@ -242,8 +241,13 @@ export class Panel {
     })
   }
 
+  mouseCheckTimer: number | null = null
   needsMouseCheck() {
-    this.checkUnderMouse()
+    if (this.mouseCheckTimer !== null) return
+    this.mouseCheckTimer = setTimeout(() => {
+      this.mouseCheckTimer = null
+      this.checkUnderMouse()
+    })
   }
 
   blit() {
