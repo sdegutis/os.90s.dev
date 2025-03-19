@@ -72,6 +72,8 @@ export class view {
   }
 
   private _commit(mut: any) {
+    delete mut.commit
+
     let mode: 'size' | 'pos' | 'adjust' | 'layout' | 'redraw' | null = null
 
     for (const key in mut) {
