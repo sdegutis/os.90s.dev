@@ -51,6 +51,14 @@ function createNode(tag: any, data: any): JSX.Element {
 
   const ctor = primitives[tag as keyof typeof primitives]
   const view = new ctor()
-  view.init(data, children === undefined ? [] : children instanceof Array ? children : [children])
+
+  const normalChildren = children === undefined ? [] : children instanceof Array ? children : [children]
+  view.setup(data, normalChildren)
+
+  const protos = []
+  let proto: view | undefined = view
+  while (proto = Object.getPrototypeOf(proto)) if (Object.hasOwn(proto, 'init')) protos.push(proto)
+  while (proto = protos.pop()) proto.init!.call(view)
+
   return view
 }

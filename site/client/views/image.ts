@@ -3,9 +3,11 @@ import { view } from "./view.js"
 
 export class image extends view {
 
-  override adjustKeys = [...(this as view).adjustKeys, 'image']
-
   readonly bitmap: Bitmap | null = null
+
+  override init(): void {
+    this.addAdjustKeys('bitmap')
+  }
 
   override adjust(): void {
     const mutthis = this.mutable()

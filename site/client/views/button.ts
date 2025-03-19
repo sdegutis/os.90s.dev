@@ -21,11 +21,13 @@ export class ClickCounter {
 
 export class button extends border {
 
-  override redrawKeys = [...(this as border).redrawKeys,
-    'pressed', 'hovered', 'selected',
-    'hoverBackground', 'pressBackground', 'selectedBackground',
-    'hoverBorderColor', 'pressBorderColor', 'selectedBorderColor',
-  ]
+  override init(): void {
+    this.addRedrawKeys(
+      'pressed', 'hovered', 'selected',
+      'hoverBackground', 'pressBackground', 'selectedBackground',
+      'hoverBorderColor', 'pressBorderColor', 'selectedBorderColor',
+    )
+  }
 
   readonly pressed: boolean = false
   readonly selected: boolean = false

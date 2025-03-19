@@ -3,14 +3,16 @@ import { view } from "./view.js"
 
 export class label extends view {
 
-  override adjustKeys = [...(this as view).adjustKeys, 'text', 'font']
-  override redrawKeys = [...(this as view).redrawKeys, 'textColor']
-
   override passthrough: boolean = true
 
   readonly textColor: number = 0xffffffff
   readonly font: Font = crt2025
   readonly text: string = ''
+
+  override init(): void {
+    this.addAdjustKeys('text', 'font')
+    this.addRedrawKeys('textColor')
+  }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)

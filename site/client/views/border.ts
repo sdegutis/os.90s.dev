@@ -2,11 +2,13 @@ import { colorFor, view } from "./view.js"
 
 export class border extends view {
 
-  override adjustKeys = [...(this as view).adjustKeys, 'padding']
-  override redrawKeys = [...(this as view).redrawKeys, 'borderColor']
-
   readonly borderColor: number = 0x00000000
   readonly padding: number = 0
+
+  override init(): void {
+    this.addAdjustKeys('padding')
+    this.addRedrawKeys('borderColor')
+  }
 
   override adjust(): void {
     const mutthis = this.mutable()

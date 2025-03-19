@@ -11,9 +11,13 @@ export class view {
   get firstChild(): view | undefined { return this.children[0] }
   get lastChild(): view | undefined { return this.children[this.children.length - 1] }
 
-  readonly adjustKeys: string[] = ['w', 'h']
-  readonly layoutKeys: string[] = []
-  readonly redrawKeys: string[] = ['background']
+  readonly adjustKeys: readonly string[] = ['w', 'h']
+  readonly layoutKeys: readonly string[] = []
+  readonly redrawKeys: readonly string[] = ['background']
+
+  addAdjustKeys(...keys: (keyof this)[]) { (this.adjustKeys as (keyof this)[]).push(...keys) }
+  addLayoutKeys(...keys: (keyof this)[]) { (this.layoutKeys as (keyof this)[]).push(...keys) }
+  addRedrawKeys(...keys: (keyof this)[]) { (this.redrawKeys as (keyof this)[]).push(...keys) }
 
   readonly x: number = 0
   readonly y: number = 0
@@ -136,7 +140,9 @@ export class view {
     node.panel?.needsMouseCheck()
   }
 
-  init(data: Record<string, any>, children: view[]) {
+  init?(): void
+
+  setup(data: Record<string, any>, children: view[]) {
     (this as any).children = children
     for (const child of this.children) {
       (child as any).parent = this
