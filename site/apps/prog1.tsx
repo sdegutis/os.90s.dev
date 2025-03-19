@@ -10,19 +10,22 @@ const adjImage = new Bitmap(['ffffff77'], 3, [0, 0, 1, 0, 0, 1, 1, 1, 1,])
 const prog = new Program()
 await prog.init()
 
+const d = $('y' as 'x' | 'y')
 const r = $(1)
 const t = $('hey')
 // setInterval(() => {
-//   r.val += 1
+//   d.val = d.val === 'x' ? 'y' : 'x'
+
+//   // r.val += 1
 //   // t.val += ' .'
-//   console.log(r.val)
+//   console.log(d.val)
 // }, 1000)
 
 const panel = await prog.makePanel({
   size: [100, 100],
   view: (
-    <view background={'#77000033'}>
-      <groupx gap={r} background={'#f00'}>
+    <paned background={'#77000033'} dir={d} gap={3}>
+      <groupx gap={r} background={'#300'}>
         <border padding={1} borderColor={'#070'}>
           <border padding={1} borderColor={'#700'}>
             <label text={t} background='#00000033' />
@@ -30,7 +33,10 @@ const panel = await prog.makePanel({
         </border>
         <image bitmap={axeImage} background={'#333'} />
       </groupx>
-    </view>
+      <view background={'#303'}>
+
+      </view>
+    </paned>
   ),
 })
 

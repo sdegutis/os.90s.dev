@@ -11,8 +11,9 @@ export class view {
   get firstChild(): view | undefined { return this.children[0] }
   get lastChild(): view | undefined { return this.children[this.children.length - 1] }
 
-  readonly adjustKeys = ['w', 'h']
-  readonly redrawKeys = ['background']
+  readonly adjustKeys: string[] = ['w', 'h']
+  readonly layoutKeys: string[] = []
+  readonly redrawKeys: string[] = ['background']
 
   readonly x: number = 0
   readonly y: number = 0
@@ -67,6 +68,10 @@ export class view {
     }
     else if (this.adjustKeys.includes(k)) {
       this.adjust?.()
+      this.needsRedraw()
+    }
+    else if (this.layoutKeys.includes(k)) {
+      this.layout?.()
       this.needsRedraw()
     }
     else if (this.redrawKeys.includes(k)) {
