@@ -25,14 +25,7 @@ const panel = await prog.makePanel({
   size: [100, 100],
   view: (
     <paned background={'#77000033'} dir={d} gap={3}>
-      <groupx gap={r} background={'#300'}>
-        <border padding={1} borderColor={'#070'}>
-          <border padding={1} borderColor={'#700'}>
-            <label text={t} background='#00000033' />
-          </border>
-        </border>
-        <image bitmap={axeImage} />
-      </groupx>
+      <Titlebar />
       <view background={'#303'}>
         <button padding={3} background={'#009'} onClick={(b) => console.log('hey', panel.root)}>
           <label text={'hey'} />
@@ -41,6 +34,23 @@ const panel = await prog.makePanel({
     </paned>
   ),
 })
+
+function Titlebar() {
+  let down: (() => void) | undefined
+
+  return <groupx gap={r} background={'#300'}
+    onMouseDown={(b) => { down = dragMove(panel.absmouse, panel) }}
+    onMouseMove={() => { down?.() }}
+    onMouseUp={() => { down = undefined }}
+  >
+    <border padding={1} borderColor={'#070'}>
+      <border padding={1} borderColor={'#700'}>
+        <label text={t} background='#00000033' />
+      </border>
+    </border>
+    <image bitmap={axeImage} />
+  </groupx>
+}
 
 // function MyView(data: { w: number, h: number }) {
 //   const ref = $('hey')
@@ -84,27 +94,27 @@ const panel = await prog.makePanel({
 //   />
 // }
 
-// interface Movable {
-//   readonly x: number
-//   readonly y: number
-//   move(x: number, y: number): void
-// }
+interface Movable {
+  readonly x: number
+  readonly y: number
+  move(x: number, y: number): void
+}
 
-// type Pos = {
-//   readonly x: number,
-//   readonly y: number,
-// }
+type Pos = {
+  readonly x: number,
+  readonly y: number,
+}
 
-// function dragMove(m: Pos, o: Movable) {
-//   const startPos = { x: o.x, y: o.y }
-//   const offx = m.x - startPos.x
-//   const offy = m.y - startPos.y
-//   return () => {
-//     const diffx = m.x - startPos.x
-//     const diffy = m.y - startPos.y
-//     const x = startPos.x + diffx - offx
-//     const y = startPos.y + diffy - offy
-//     o.move(x, y)
-//     // return { x: diffx - offx, y: diffy - offy }
-//   }
-// }
+function dragMove(m: Pos, o: Movable) {
+  const startPos = { x: o.x, y: o.y }
+  const offx = m.x - startPos.x
+  const offy = m.y - startPos.y
+  return () => {
+    const diffx = m.x - startPos.x
+    const diffy = m.y - startPos.y
+    const x = startPos.x + diffx - offx
+    const y = startPos.y + diffy - offy
+    o.move(x, y)
+    // return { x: diffx - offx, y: diffy - offy }
+  }
+}
