@@ -23,8 +23,10 @@ export class label extends view {
     for (const line of lines) {
       if (line.length > w) w = line.length
     }
-    this.$update('w', w * this.font.cw + (w - 1) * this.font.xgap)
-    this.$update('h', (lines.length * this.font.ch) + ((lines.length - 1) * this.font.ygap))
+    const mutthis = this.mutable()
+    mutthis.w = w * this.font.cw + (w - 1) * this.font.xgap
+    mutthis.h = (lines.length * this.font.ch) + ((lines.length - 1) * this.font.ygap)
+    mutthis.commit()
   }
 
 }

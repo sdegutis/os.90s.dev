@@ -8,8 +8,10 @@ export class image extends view {
   bitmap: Bitmap | null = null
 
   override adjust(): void {
-    this.$update('w', (this.bitmap?.width ?? 0))
-    this.$update('h', (this.bitmap?.height ?? 0))
+    const mutthis = this.mutable()
+    mutthis.w = this.bitmap?.width ?? 0
+    mutthis.h = this.bitmap?.height ?? 0
+    mutthis.commit()
   }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {

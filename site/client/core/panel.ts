@@ -121,13 +121,13 @@ export class Panel {
       delete this.keymap[key]
     })
 
+    const mutroot = root.mutable()
+    mutroot.w = w
+    mutroot.h = h
+    mutroot.commit()
+
     this.root = root
-    this.root.$update("w", w)
-    this.root.$update("h", h)
     this.root.layoutTree()
-    this.root.$update('onChildResized', () => {
-      this.root.layoutTree()
-    })
     this.root.panel = this
 
     this.hovered = this.root
@@ -149,8 +149,10 @@ export class Panel {
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
     this.canvas.width = w
     this.canvas.height = h
-    this.root.$update("w", w)
-    this.root.$update("h", h)
+    const mutroot = this.root.mutable()
+    mutroot.w = w
+    mutroot.h = h
+    mutroot.commit()
     this.blit()
   }
 
@@ -169,9 +171,9 @@ export class Panel {
     }
 
     if (this.hovered !== activeHovered) {
-      if (this.hovered) this.hovered.$update('hovered', false)
+      if (this.hovered) this.hovered.mutate(v => v.hovered = false)
       this.hovered = activeHovered
-      if (this.hovered) this.hovered.$update('hovered', true)
+      if (this.hovered) this.hovered.mutate(v => v.hovered = true)
     }
   }
 
@@ -188,7 +190,7 @@ export class Panel {
 
     this.hoveredTree.add(node)
 
-    node.$update('mouse', { x, y })
+    node.mutate(v => v.mouse = { x, y })
 
     let i = node.children.length
     while (i--) {

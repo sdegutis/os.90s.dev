@@ -9,15 +9,19 @@ export class border extends view {
   readonly padding: number = 0
 
   override adjust(): void {
-    this.$update('w', this.padding + (this.firstChild?.w ?? 0) + this.padding)
-    this.$update('h', this.padding + (this.firstChild?.h ?? 0) + this.padding)
+    const mutthis = this.mutable()
+    mutthis.w = this.padding + (this.firstChild?.w ?? 0) + this.padding
+    mutthis.h = this.padding + (this.firstChild?.h ?? 0) + this.padding
+    mutthis.commit()
   }
 
   override layout(): void {
     const c = this.firstChild
     if (c) {
-      c.$update('x', this.padding)
-      c.$update('y', this.padding)
+      const mutc = c.mutable()
+      mutc.x = this.padding
+      mutc.y = this.padding
+      mutc.commit()
     }
   }
 

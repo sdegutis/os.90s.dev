@@ -1,4 +1,4 @@
-import { mutview, view } from "./view.js"
+import { view } from "./view.js"
 
 export class paned extends view {
 
@@ -19,8 +19,8 @@ export class paned extends view {
   }
 
   override layout(): void {
-    const [a, commita] = mutview(this.children[0])
-    const [b, commitb] = mutview(this.children[1])
+    const a = this.children[0].mutable()
+    const b = this.children[1].mutable()
 
     const favored = ({ a, b })[this.vacuum]
 
@@ -46,8 +46,8 @@ export class paned extends view {
       b[dw] = vv
     }
 
-    commita()
-    commitb()
+    a.commit()
+    b.commit()
   }
 
 }

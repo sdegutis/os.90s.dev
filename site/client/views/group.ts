@@ -1,4 +1,4 @@
-import { mutview, view } from "./view.js"
+import { view } from "./view.js"
 
 export class group extends view {
 
@@ -11,17 +11,17 @@ export class group extends view {
   override adjust(): void {
     const dw = this.dir === 'x' ? 'w' : 'h'
     const dh = this.dir === 'x' ? 'h' : 'w'
-    const [o, commit] = mutview(this)
+    const mutthis = this.mutable()
 
-    o[dw] = o[dh] = 0
+    mutthis[dw] = mutthis[dh] = 0
     for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i]
-      o[dw] += child[dw]
-      if (i > 0) o[dw] += this.gap
-      if (o[dh] < child[dh]) o[dh] = child[dh]
+      mutthis[dw] += child[dw]
+      if (i > 0) mutthis[dw] += this.gap
+      if (mutthis[dh] < child[dh]) mutthis[dh] = child[dh]
     }
 
-    commit()
+    mutthis.commit()
   }
 
   override layout(): void {
@@ -32,7 +32,7 @@ export class group extends view {
 
     let x = 0
     for (let i = 0; i < this.children.length; i++) {
-      const [child, commit] = mutview(this.children[i])
+      const child = this.children[i].mutable()
 
       child[dx] = x
       x += child[dw] + this.gap
@@ -40,7 +40,7 @@ export class group extends view {
         this.align === 'a' ? 0 :
           this[dh] - child[dh]
 
-      commit()
+      child.commit()
     }
   }
 

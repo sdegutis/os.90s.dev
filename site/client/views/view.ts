@@ -100,7 +100,7 @@ export class view {
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
         (this as any)[k] = v.val
-        v.watch(val => this.$update<any>(k, val))
+        v.watch(val => this.mutate(v => v[k as keyof this] = val))
       }
       else {
         (this as any)[k] = v
@@ -132,9 +132,21 @@ export class view {
     this.adjust?.()
   }
 
+  mutable() {
+    return mutview(this)
+  }
+
+  mutate(fn: (view: { -readonly [K in keyof this]: this[K] }) => void) {
+    const mut = this.mutable()
+    fn(mut)
+    mut.commit()
+  }
+
+  commit() { }
+
 }
 
-export function mutview<T extends view>(v: T) {
+function mutview<T extends view>(v: T) {
   const map = Object.create(null)
 
   const proxy = new Proxy<{ -readonly [K in keyof T]: T[K] }>(v, {
@@ -142,11 +154,11 @@ export function mutview<T extends view>(v: T) {
     get: (t, k) => { return map[k] ??= v[k as keyof T] }
   })
 
-  function commit() {
+  proxy.commit = () => {
     for (const key in map) {
       v.$update(key as keyof T & string, map[key])
     }
   }
 
-  return [proxy, commit] as const
+  return proxy
 }
