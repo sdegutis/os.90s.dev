@@ -109,7 +109,7 @@ export class view {
 
   mutable() {
     const mut = Object.create(null)
-    const proxy = new Proxy<{ -readonly [K in keyof this]: this[K] } & { commit(): void }>(this as any, {
+    const proxy = new Proxy<{ -readonly [K in keyof this]: this[K] }>(this, {
       set: (t, key, val) => { mut[key] = val; return true },
       get: (t, k) => { return mut[k] ??= this[k as keyof this] }
     })
@@ -122,6 +122,8 @@ export class view {
     fn(mut)
     mut.commit()
   }
+
+  commit() { }
 
   private _commit(mut: any) {
     let mode: 'size' | 'pos' | 'adjust' | 'layout' | 'redraw' | null = null
