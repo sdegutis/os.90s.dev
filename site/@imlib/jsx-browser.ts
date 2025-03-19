@@ -21,6 +21,8 @@ declare global {
 
   namespace JSX {
 
+    type DataFor<K extends keyof Primitives> = JsxAttrs<InstanceType<Primitives[K]>>
+
     type IntrinsicElements = {
       [K in keyof Primitives as K]: JsxAttrs<InstanceType<Primitives[K]>>
     }

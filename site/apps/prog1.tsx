@@ -141,7 +141,7 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
   </view>
 
 
-  function CloseB(data: any) {
-    return <button hoverBackground={0x99000055} pressBackground={0x44000099} {...data} />
+  function CloseB(data: JSX.DataFor<'button'>) {
+    return <button {...data} hoverBackground={0x99000055} pressBackground={0x44000099} />
   }
 }
