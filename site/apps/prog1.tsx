@@ -13,7 +13,8 @@ const panel = await prog.makePanel({
   size: [100, 100],
   view: (
     <view background={'#77000033'}>
-      <label text='hello world' background='#00000033' />
+      {/* <label text='hello world' background='#00000033' /> */}
+      <image bitmap={axeImage} background={'#333'} />
     </view>
   ),
 })

@@ -5,13 +5,18 @@ export class image extends view {
 
   override adjustKeys = [...(this as view).adjustKeys, 'image']
 
-  image: Bitmap | null = null
+  bitmap: Bitmap | null = null
+
+  override adjust(): void {
+    this.$update('w', (this.bitmap?.width ?? 0))
+    this.$update('h', (this.bitmap?.height ?? 0))
+  }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)
 
-    if (!this.image) return
-    ctx.drawImage(this.image.canvas, px, py)
+    if (!this.bitmap) return
+    ctx.drawImage(this.bitmap.canvas, px, py)
   }
 
 }
