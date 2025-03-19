@@ -87,27 +87,34 @@ export class view {
       else if (this.redrawKeys.includes(k)) mode ??= 'redraw'
     }
 
-    if (mode === 'size') {
-      this.onResized()
-      this.needsRedraw()
-      this.needsMouseCheck()
+    switch (mode) {
+      case 'size': {
+        this.onResized()
+        this.needsRedraw()
+        this.needsMouseCheck()
+        break
+      }
+      case 'pos': {
+        this.onMoved?.()
+        this.needsRedraw()
+        this.needsMouseCheck()
+        break
+      }
+      case 'adjust': {
+        this.adjust?.()
+        this.needsRedraw()
+        break
+      }
+      case 'layout': {
+        this.onNeedsLayout?.()
+        this.needsRedraw()
+        break
+      }
+      case 'redraw': {
+        this.needsRedraw()
+      }
     }
-    else if (mode === 'pos') {
-      this.onMoved?.()
-      this.needsRedraw()
-      this.needsMouseCheck()
-    }
-    else if (mode === 'adjust') {
-      this.adjust?.()
-      this.needsRedraw()
-    }
-    else if (mode === 'layout') {
-      this.onNeedsLayout?.()
-      this.needsRedraw()
-    }
-    else if (mode === 'redraw') {
-      this.needsRedraw()
-    }
+
   }
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
