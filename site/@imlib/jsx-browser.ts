@@ -4,9 +4,16 @@ import type { view } from "../client/views/view.js"
 
 type Primitives = typeof primitives
 
-type FixThis<T, K extends keyof T, Else> = T[K] extends (...args: infer A) => infer R ? (this: T, ...args: A) => R : Else
+type FixThis<T, K extends keyof T, Else> =
+  T[K] extends (...args: infer A) => infer R
+  ? (this: T, ...args: A) => R
+  : Else
+
 type JsxChildren = view | view[] | Ref<view[]>
-type JsxAttrs<T> = { [K in keyof T]?: K extends 'children' ? JsxChildren : FixThis<T, K, T[K] | Ref<T[K]>> }
+
+type JsxAttrs<T> = {
+  [K in keyof T]?: K extends 'children' ? JsxChildren : FixThis<T, K, T[K] | Ref<T[K]>>
+}
 
 type FunctionElement = (data: any) => JSX.Element
 
