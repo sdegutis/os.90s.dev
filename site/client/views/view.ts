@@ -1,6 +1,11 @@
 import type { Panel } from "../core/panel.js"
 import { Ref } from "../util/ref.js"
 
+export type Pos = {
+  readonly x: number,
+  readonly y: number,
+}
+
 export class view {
 
   panel?: Panel
@@ -28,18 +33,14 @@ export class view {
   readonly visible: boolean = true
   readonly hovered: boolean = false
   readonly passthrough: boolean = false
-  readonly mouse: {
-    readonly x: number,
-    readonly y: number,
-  } = { x: 0, y: 0 }
-
+  readonly mouse: Pos = { x: 0, y: 0 }
   readonly background: number = 0x00000000
 
   onPanelFocus?(): void
   onPanelBlur?(): void
 
-  onMouseDown?(button: number): void
-  onMouseMove?(x: number, y: number): void
+  onMouseDown?(button: number, pos: Pos): void
+  onMouseMove?(pos: Pos): void
   onMouseUp?(): void
   onWheel?(x: number, y: number): void
 
@@ -83,7 +84,14 @@ export class view {
       if (this[k] === v) continue
       this[k] = v
 
-      if (k === 'w' || k === 'h') mode ??= 'size'
+      if (k === 'children') {
+        mode ??= 'layout'
+        for (const c of v) {
+          const child = c as view
+          child.mutate(v => v.parent = this)
+        }
+      }
+      else if (k === 'w' || k === 'h') mode ??= 'size'
       else if (k === 'x' || k === 'y') mode ??= 'pos'
       else if (this.adjustKeys.includes(k)) mode ??= 'adjust'
       else if (this.layoutKeys.includes(k)) mode ??= 'layout'
@@ -187,4 +195,21 @@ export function colorFor(col: number): string {
   let color = colors.get(col)
   if (!color) colors.set(col, color = '#' + col.toString(16).padStart(8, '0'))
   return color
+}
+
+export function make<T extends view>(ctor: new () => T, data: { -readonly [K in keyof T]?: T[K] }): T {
+  const view = new ctor()
+
+  const children: view | view[] | undefined = data["children"] as any
+  delete data["children"]
+
+  const normalChildren = children === undefined ? [] : children instanceof Array ? children : [children]
+  view.setup(data, normalChildren)
+
+  const protos = []
+  let proto: view | undefined = view
+  while (proto = Object.getPrototypeOf(proto)) if (Object.hasOwn(proto, 'init')) protos.push(proto)
+  while (proto = protos.pop()) proto.init!.call(view)
+
+  return view
 }

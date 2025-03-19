@@ -1,6 +1,6 @@
 import { Ref } from "../client/util/ref.js"
 import { primitives } from "../client/views/index.js"
-import type { view } from "../client/views/view.js"
+import { make, type view } from "../client/views/view.js"
 
 type Primitives = typeof primitives
 
@@ -46,19 +46,6 @@ function createNode(tag: any, data: any): JSX.Element {
     return tag(data)
   }
 
-  const children: view | view[] | undefined = data["children"]
-  delete data["children"]
-
   const ctor = primitives[tag as keyof typeof primitives]
-  const view = new ctor()
-
-  const normalChildren = children === undefined ? [] : children instanceof Array ? children : [children]
-  view.setup(data, normalChildren)
-
-  const protos = []
-  let proto: view | undefined = view
-  while (proto = Object.getPrototypeOf(proto)) if (Object.hasOwn(proto, 'init')) protos.push(proto)
-  while (proto = protos.pop()) proto.init!.call(view)
-
-  return view
+  return make(ctor, data)
 }

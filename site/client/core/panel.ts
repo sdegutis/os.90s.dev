@@ -67,7 +67,7 @@ export class Panel {
 
     this.rpc.listen('mousedown', (b) => {
       this.clicking = this.hovered
-      this.hovered?.onMouseDown?.(b)
+      this.hovered?.onMouseDown?.(b, this.absmouse)
 
       let node: view | null = this.hovered
       while (node) {
@@ -93,7 +93,7 @@ export class Panel {
       this.checkUnderMouse()
 
       const sendto = this.clicking ?? this.hovered
-      sendto?.onMouseMove?.(x, y)
+      sendto?.onMouseMove?.(this.absmouse)
     })
 
     this.rpc.listen('mouseup', () => {

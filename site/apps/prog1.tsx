@@ -1,4 +1,5 @@
 import { Program } from "../client/core/prog.js"
+import { dragMove } from "../client/util/drag.js"
 import { $ } from "../client/util/ref.js"
 import { Bitmap } from "../shared/bitmap.js"
 
@@ -24,14 +25,14 @@ const t = $('hey')
 const panel = await prog.makePanel({
   size: [100, 100],
   view: (
-    <paned background={0x77000033} dir={d} gap={3}>
+    <splity background={0x77000033} pos={20} min={10} max={10}>
       <Titlebar />
       <view background={0x330033ff}>
         <button padding={3} background={0x000099ff} onClick={(b) => console.log('hey', panel.root)}>
           <label text={'hey'} />
         </button>
       </view>
-    </paned>
+    </splity>
   ),
 })
 
@@ -39,7 +40,7 @@ function Titlebar() {
   let down: (() => void) | undefined
 
   return <groupx gap={r} background={0x330000ff}
-    onMouseDown={(b) => { down = dragMove(panel.absmouse, panel) }}
+    onMouseDown={(b, pos) => { down = dragMove(pos, panel) }}
     onMouseMove={() => { down?.() }}
     onMouseUp={() => { down = undefined }}
   >
@@ -93,28 +94,3 @@ function Titlebar() {
 //     background={'#00770033'} x={data.x} y={20} w={30} h={40}
 //   />
 // }
-
-interface Movable {
-  readonly x: number
-  readonly y: number
-  move(x: number, y: number): void
-}
-
-type Pos = {
-  readonly x: number,
-  readonly y: number,
-}
-
-function dragMove(m: Pos, o: Movable) {
-  const startPos = { x: o.x, y: o.y }
-  const offx = m.x - startPos.x
-  const offy = m.y - startPos.y
-  return () => {
-    const diffx = m.x - startPos.x
-    const diffy = m.y - startPos.y
-    const x = startPos.x + diffx - offx
-    const y = startPos.y + diffy - offy
-    o.move(x, y)
-    // return { x: diffx - offx, y: diffy - offy }
-  }
-}

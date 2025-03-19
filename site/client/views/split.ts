@@ -1,6 +1,7 @@
 import { Bitmap } from "../../shared/bitmap.js"
 import { Cursor } from "../../shared/cursor.js"
-import { view } from "./view.js"
+import { dragMove } from "../util/drag.js"
+import { colorFor, make, view, type Pos } from "./view.js"
 
 const xresize = new Cursor(2, 1, new Bitmap([0x00000099, 0xffffffff], 5, [
   1, 1, 1, 1, 1,
@@ -16,65 +17,75 @@ const yresize = new Cursor(1, 2, new Bitmap([0x00000099, 0xffffffff], 3, [
   1, 1, 1,
 ]))
 
-// class SplitDivider extends View {
+class SplitDivider extends view {
 
-//   pressed = false
-//   split!: Split
+  readonly split!: split
+  override passthrough: boolean = false
 
-//   override init(): void {
-//     const dividerColor = 0x33333300
-//     this.background = dividerColor
-//     this.cursor = this.split.dir === 'x' ? xresize : yresize
-//   }
+  readonly pressed: boolean = false
+  readonly dividerColor: number = 0x33333300
 
-//   override onResized(): void { }
+  override init(): void {
+    this.addRedrawKeys('hovered', 'pressed')
+    this.mutate(v => v.background = this.dividerColor)
+    // this.cursor = this.split.dir === 'x' ? xresize : yresize
 
-//   override draw(): void {
-//     super.draw()
+  }
 
-//     const dividerColorHover = 0xffffff33
-//     const dividerColorPress = 0x1177ffcc
-//     const dividerWidth = 1
+  override onResized(): void { }
 
-//     const dx = this.split.dir
-//     const dw = dx === 'x' ? 'w' : 'h'
+  override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+    const dividerColorHover = 0xffffff33
+    const dividerColorPress = 0x1177ffcc
+    const dividerWidth = 1
 
-//     const x = dx === 'x' ? Math.round((this[dw] - dividerWidth) / 2) : 0
-//     const y = dx === 'y' ? Math.round((this[dw] - dividerWidth) / 2) : 0
-//     const w = dx === 'x' ? dividerWidth : this.w
-//     const h = dx === 'y' ? dividerWidth : this.h
+    const dx = this.split.dir
+    const dw = dx === 'x' ? 'w' : 'h'
 
-//     if (this.pressed) {
-//       crt.rectFill(x, y, w, h, dividerColorPress)
-//     }
-//     else if (this.hovered) {
-//       crt.rectFill(x, y, w, h, dividerColorHover)
-//     }
-//   }
+    const x = dx === 'x' ? Math.round((this[dw] - dividerWidth) / 2) : 0
+    const y = dx === 'y' ? Math.round((this[dw] - dividerWidth) / 2) : 0
+    const w = dx === 'x' ? dividerWidth : this.w
+    const h = dx === 'y' ? dividerWidth : this.h
 
-//   override onMouseDown(): void {
-//     const s = this.split
-//     const dx = s.dir
-//     const dw = dx === 'x' ? 'w' : 'h'
+    if (this.pressed) {
+      ctx.fillStyle = colorFor(dividerColorPress)
+      ctx.fillRect(px + x, py + y, w, h)
+    }
+    else if (this.hovered) {
+      ctx.fillStyle = colorFor(dividerColorHover)
+      ctx.fillRect(px + x, py + y, w, h)
+    }
+  }
 
-//     const b = { x: 0, y: 0 }
-//     b[dx] = s.pos
+  override onMouseDown(button: number, pos: Pos): void {
+    const split = this.split
+    const dx = split.dir
+    const dw = dx === 'x' ? 'w' : 'h'
 
-//     this.pressed = true
+    const b = {
+      x: 0, y: 0, move(x: number, y: number) {
+        b.x = x
+        b.y = y
 
-//     const drag = dragMove(b)
-//     sys.trackMouse({
-//       move: () => {
-//         drag()
-//         s.pos = b[dx]
-//         if (s.min && s.pos < s.min) s.pos = s.min
-//         if (s.max && s.pos > s[dw] - s.max) s.pos = s[dw] - s.max
-//       },
-//       up: () => this.pressed = false,
-//     })
-//   }
+        const s = split.mutable()
+        s.pos = b[dx]
+        if (s.min && s.pos < s.min) s.pos = s.min
+        if (s.max && s.pos > s[dw] - s.max) s.pos = s[dw] - s.max
+        s.commit()
+      }
+    }
+    b[dx] = split.pos
 
-// }
+    this.mutate(v => v.pressed = true)
+
+    const drag = dragMove(pos, b)
+    this.onMouseMove = drag
+    this.onMouseUp = () => {
+      this.mutate(v => v.pressed = false)
+    }
+  }
+
+}
 
 export class split extends view {
 
@@ -83,54 +94,54 @@ export class split extends view {
   readonly max: number = 0
   readonly dir: 'x' | 'y' = 'y'
 
-  // private resizer!: SplitDivider
+  resizer?: SplitDivider
 
-  // override init(): void {
-  //   this.resizer = $(SplitDivider, { split: this })
-  //   this.addChild(this.resizer)
-  //   this.$watch('pos', () => this.layoutTree())
-  // }
+  override init(): void {
+    this.addLayoutKeys('pos')
+    this.resizer = make(SplitDivider, { split: this })
+    const mthis = this.mutable()
+    mthis.children = [...this.children, this.resizer]
+    mthis.commit()
+  }
 
-  // override onChildResized(): void {
-  //   this.adjust?.()
-  //   this.layoutTree()
-  // }
+  override onNeedsLayout(): void {
+    this.layoutTree()
+  }
 
-  // override layout(): void {
-  //   const dx = this.dir
-  //   const dw = dx === 'x' ? 'w' : 'h'
-  //   const a = { ...this.children[0] }
-  //   const b = { ...this.children[1] }
+  override onChildResized(): void {
+    this.adjust?.()
+    this.layoutTree()
+  }
 
-  //   a.x = b.x = 0
-  //   a.y = b.y = 0
-  //   a.w = b.w = this.w
-  //   a.h = b.h = this.h
+  override layout(): void {
+    const dx = this.dir
+    const dw = dx === 'x' ? 'w' : 'h'
+    const a = this.children[0].mutable()
+    const b = this.children[1].mutable()
 
-  //   a[dw] = this.pos
+    a.x = b.x = 0
+    a.y = b.y = 0
+    a.w = b.w = this.w
+    a.h = b.h = this.h
 
-  //   b[dx] = this.pos
-  //   b[dw] = this[dw] - this.pos
+    a[dw] = this.pos
 
-  //   if (this.resizer) {
-  //     this.resizer.x = 0
-  //     this.resizer.y = 0
-  //     this.resizer[dx] = this.pos - 1
+    b[dx] = this.pos
+    b[dw] = this[dw] - this.pos
 
-  //     this.resizer.w = this.w
-  //     this.resizer.h = this.h
-  //     this.resizer[dw] = 2
-  //   }
+    this.resizer?.mutate(r => {
+      r.x = 0
+      r.y = 0
+      r[dx] = this.pos - 1
 
-  //   this.children[0].x = a.x
-  //   this.children[0].y = a.y
-  //   this.children[0].w = a.w
-  //   this.children[0].h = a.h
-  //   this.children[1].x = b.x
-  //   this.children[1].y = b.y
-  //   this.children[1].w = b.w
-  //   this.children[1].h = b.h
-  // }
+      r.w = this.w
+      r.h = this.h
+      r[dw] = 2
+    })
+
+    a.commit()
+    b.commit()
+  }
 
 }
 
