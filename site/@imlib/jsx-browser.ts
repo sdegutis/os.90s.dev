@@ -46,6 +46,11 @@ function createNode(tag: any, data: any): JSX.Element {
     return tag(data)
   }
 
+  data.children =
+    data.children === undefined ? [] :
+      data.children instanceof Array ? data.children :
+        [data.children]
+
   const ctor = primitives[tag as keyof typeof primitives]
   return make(ctor, data)
 }

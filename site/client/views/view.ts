@@ -155,7 +155,7 @@ export class view {
 
   init?(): void
 
-  setup(data: Record<string, any>, children: view[]) {
+  setup(data: Record<string, any>, children: readonly view[]) {
     (this as any).children = children
     for (const child of this.children) {
       (child as any).parent = this
@@ -202,19 +202,26 @@ export function colorFor(col: number): string {
   return color
 }
 
-export function make<T extends view>(ctor: new () => T, data: { -readonly [K in keyof T]?: T[K] }): T {
+export function make<T extends view>(
+  ctor: new () => T,
+  data: { -readonly [K in keyof T]?: T[K] },
+): T {
   const view = new ctor()
 
-  const children: view | view[] | undefined = data["children"] as any
-  delete data["children"]
+  const children: readonly view[] = data.children ?? []
+  delete data.children
 
-  const normalChildren = children === undefined ? [] : children instanceof Array ? children : [children]
-  view.setup(data, normalChildren)
+  view.setup(data, children)
 
   const protos = []
   let proto: view | undefined = view
-  while (proto = Object.getPrototypeOf(proto)) if (Object.hasOwn(proto, 'init')) protos.push(proto)
-  while (proto = protos.pop()) proto.init!.call(view)
+
+  while (proto = Object.getPrototypeOf(proto))
+    if (Object.hasOwn(proto, 'init'))
+      protos.push(proto)
+
+  while (proto = protos.pop())
+    proto.init!.call(view)
 
   return view
 }
