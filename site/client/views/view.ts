@@ -107,15 +107,13 @@ export class view {
     this.adjust?.()
   }
 
-  private mut: any
-
   mutable() {
-    this.mut = Object.create(null)
-    const proxy = new Proxy<{ -readonly [K in keyof this]: this[K] }>(this, {
-      set: (t, key, val) => { this.mut[key] = val; return true },
-      get: (t, k) => { return this.mut[k] ??= this[k as keyof this] }
+    const mut = Object.create(null)
+    const proxy = new Proxy<{ -readonly [K in keyof this]: this[K] } & { commit(): void }>(this as any, {
+      set: (t, key, val) => { mut[key] = val; return true },
+      get: (t, k) => { return mut[k] ??= this[k as keyof this] }
     })
-    proxy.commit = proxy.commit.bind(this)
+    proxy.commit = () => this._commit(mut)
     return proxy
   }
 
@@ -125,11 +123,10 @@ export class view {
     mut.commit()
   }
 
-  commit() {
-    delete this.mut.commit
-    for (const key in this.mut) {
+  private _commit(mut: any) {
+    for (const key in mut) {
       const k = key as keyof this & string
-      const v = this.mut[k]
+      const v = mut[k]
 
       if (this[k] === v) continue
       this[k] = v
