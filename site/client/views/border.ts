@@ -1,11 +1,11 @@
-import { view } from "./view.js"
+import { colorFor, view } from "./view.js"
 
 export class border extends view {
 
   override adjustKeys = [...(this as view).adjustKeys, 'padding']
   override redrawKeys = [...(this as view).redrawKeys, 'borderColor']
 
-  readonly borderColor: string = '#0000'
+  readonly borderColor: number = 0x00000000
   readonly padding: number = 0
 
   override adjust(): void {
@@ -24,7 +24,7 @@ export class border extends view {
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)
-    this.drawBorder(ctx, px, py, this.borderColor)
+    this.drawBorder(ctx, px, py, colorFor(this.borderColor))
   }
 
   protected drawBorder(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, col: string) {

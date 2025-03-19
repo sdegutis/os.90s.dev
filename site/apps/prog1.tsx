@@ -43,8 +43,8 @@ function Titlebar() {
     onMouseMove={() => { down?.() }}
     onMouseUp={() => { down = undefined }}
   >
-    <border padding={1} borderColor={'#070'}>
-      <border padding={1} borderColor={'#700'}>
+    <border padding={1} borderColor={0x007700ff}>
+      <border padding={1} borderColor={0x770000ff}>
         <label text={t} background={0x00000033} />
       </border>
     </border>
