@@ -1,18 +1,26 @@
 import { Program } from "../client/core/prog.js"
-import { dragMove } from "../client/util/drag.js"
+import { dragMove, dragResize } from "../client/util/drag.js"
 import { $, Ref } from "../client/util/ref.js"
 import type { border } from "../client/views/border.js"
-import { ClickCounter } from "../client/views/button.js"
 import { image } from "../client/views/image.js"
 import type { spacedx } from "../client/views/spaced.js"
 import type { Pos, view } from "../client/views/view.js"
 import { Bitmap } from "../shared/bitmap.js"
+import { Cursor } from "../shared/cursor.js"
 
 const minImage = new Bitmap([0x333333ff], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
 const maxImage = new Bitmap([0x333333ff], 4, [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1,])
 const axeImage = new Bitmap([0x333333ff], 4, [1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1,])
 const adjImage = new Bitmap([0xffffff77], 3, [0, 0, 1, 0, 0, 1, 1, 1, 1,])
 const menubuttonImage = new Bitmap([0x333333ff], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1])
+
+const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
+  0, 1, 1, 1, 0,
+  1, 1, 2, 1, 1,
+  1, 2, 2, 2, 1,
+  1, 1, 2, 1, 1,
+  0, 1, 1, 1, 0,
+]))
 
 const prog = new Program()
 await prog.init()
@@ -32,46 +40,12 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
   const focused = $(false)
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
 
-  const counter = new ClickCounter()
-
   function titleBarMouseDown(this: spacedx, button: number, pos: Pos) {
-    counter.increase()
-
     this.onMouseMove = dragMove(pos, panel)
     this.onMouseUp = () => {
       delete this.onMouseMove
       delete this.onMouseUp
     }
-
-    console.log('uh')
-
-    // const drag = dragMove(this)
-    // sys.trackMouse({
-    //   move: () => {
-    //     const moved = drag()
-    //     if (Math.hypot(moved.x, moved.y) > 1) {
-    //       counter.count = 0
-    //       this.lastPos = undefined
-    //     }
-    //   },
-    //   up: () => {
-    //     if (counter.count >= 2) {
-    //       this.maximize()
-    //     }
-    //   },
-    // })
-  }
-
-  function resizerMouseDown(this: image) {
-    // this.lastPos = undefined
-    // const resize = dragResize(this)
-    // sys.trackMouse({
-    //   move: () => {
-    //     resize()
-    //     if (this.w < this.minw) this.w = this.minw
-    //     if (this.h < this.minh) this.h = this.minh
-    //   }
-    // })
   }
 
   function minw() { }
@@ -98,6 +72,44 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
       })
       this.layoutTree()
     },
+  }
+
+  function PanelResizer() {
+
+    let claims = 0
+    function setClaims(n: number) {
+      claims += n
+      if (claims === 0) {
+        panel.setCursor(null)
+      }
+      else if (claims === n) {
+        panel.setCursor(adjCursor)
+      }
+    }
+
+    function resizerMouseDown(this: image, button: number, pos: Pos) {
+      setClaims(1)
+      this.onMouseMove = dragResize(pos, panel)
+      this.onMouseUp = () => {
+        setClaims(-1)
+        delete this.onMouseMove
+        delete this.onMouseUp
+      }
+    }
+
+    return <image
+      passthrough={false}
+      bitmap={adjImage}
+      onMouseEnter={() => setClaims(+1)}
+      onMouseExit={() => setClaims(-1)}
+      layout={function () {
+        const mthis = this.mutable()
+        mthis.x = this.parent!.w - this.w
+        mthis.y = this.parent!.h - this.h
+        mthis.commit()
+      }}
+      onMouseDown={resizerMouseDown}
+    />
   }
 
   return <view background={0x070707ee} {...toplevel}>
@@ -127,17 +139,7 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
 
       </panedya>
 
-      <image
-        passthrough={false}
-        bitmap={adjImage}
-        layout={function () {
-          const mthis = this.mutable()
-          mthis.x = this.parent!.w - this.w
-          mthis.y = this.parent!.h - this.h
-          mthis.commit()
-        }}
-        onMouseDown={resizerMouseDown}
-      />
+      <PanelResizer />
 
     </border>
   </view>

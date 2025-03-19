@@ -67,7 +67,11 @@ export class Panel {
     })
 
     this.rpc.listen('mouseexited', () => {
-      // unused for now
+      for (const view of this.hoveredTree) {
+        view.onMouseExit?.()
+        view.mutate(v => v.hovered = false)
+      }
+      this.hoveredTree.clear()
     })
 
     this.rpc.listen('mousedown', (b) => {
