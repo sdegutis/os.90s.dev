@@ -69,23 +69,20 @@ export class button extends border {
     }
   }
 
-  private b: number | undefined
+  override onMouseDown(button: number): void {
+    this.$update('pressed', true)
+    this.counter.increase()
 
-  override onMouseExit(): void {
-    this.$update('pressed', false)
-  }
-
-  override onMouseUp(): void {
-    if (this.pressed) {
-      this.onClick?.({ button: this.b!, count: this.counter.count })
-      this.$update('pressed', false)
+    this.onMouseUp = () => {
+      if (this.pressed) {
+        this.onClick?.({ button, count: this.counter.count })
+        this.$update('pressed', false)
+      }
     }
   }
 
-  override onMouseDown(button: number): void {
-    this.b = button
-    this.$update('pressed', true)
-    this.counter.increase()
+  override onMouseExit(): void {
+    this.$update('pressed', false)
   }
 
 }
