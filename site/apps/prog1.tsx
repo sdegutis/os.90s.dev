@@ -20,18 +20,20 @@ await prog.init()
 const panel = await prog.makePanel({
   size: [100, 100],
   view: <PanelView title={'test panel'}>
-    <label text={'cool'} />
+    <view background={0x00330099}>
+
+      <label text={'cool'} />
+    </view>
   </PanelView>,
 })
 
 function PanelView(data: { title: string | Ref<string>, children: view }) {
 
-  const pad = 2
-
   const focused = $(false)
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
 
   const counter = new ClickCounter()
+
   function titleBarMouseDown(this: spacedx, button: number, pos: Pos) {
     counter.increase()
 
@@ -76,12 +78,73 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
 
   function layoutContentView(this: border) {
     this.firstChild?.mutate(c => {
-      c.x = pad
+      c.x = 1
       c.y = 0
-      c.w = this.w - (pad * 2)
-      c.h = this.h - pad
+      c.w = this.w - 2
+      c.h = this.h - 1
     })
   }
+
+  const toplevel = {
+    onPanelFocus: () => focused.val = true,
+    onPanelBlur: () => focused.val = false,
+    onResized(this: view) {
+      const content = this.children[0].children[0]
+      content.mutate(c => {
+        c.w = this.w - 2
+        c.h = this.h - 2
+      })
+      this.layoutTree()
+    },
+  }
+
+  return <view background={0x070707ee} {...toplevel}>
+    <border borderColor={borderColor} padding={1}>
+
+      <panedya gap={0}>
+
+        <spacedx onMouseDown={titleBarMouseDown}>
+          <border>
+            <groupx gap={1}>
+              <button background={0x111111ff} padding={2}><image bitmap={menubuttonImage} /></button>
+              <label text={data.title} />
+            </groupx>
+          </border>
+          <border>
+            <groupx>
+              <button background={0x111111ff} padding={2} onClick={minw}><image bitmap={minImage} /></button>
+              <button background={0x111111ff} padding={2} onClick={maxw}><image bitmap={maxImage} /></button>
+              <CloseB background={0x111111ff} padding={2} onClick={axew}><image bitmap={axeImage} /></CloseB>
+            </groupx>
+          </border>
+        </spacedx>
+
+        <border layout={layoutContentView}>
+          {data.children}
+        </border>
+
+      </panedya>
+
+      <image
+        passthrough={false}
+        bitmap={adjImage}
+        layout={function () {
+          const mthis = this.mutable()
+          mthis.x = this.parent!.w - this.w
+          mthis.y = this.parent!.h - this.h
+          mthis.commit()
+        }}
+        onMouseDown={resizerMouseDown}
+      />
+
+    </border>
+  </view>
+
+
+  function CloseB(data: any) {
+    return <button hoverBackground={0x99000055} pressBackground={0x44000099} {...data} />
+  }
+
   return (
     <border padding={1} layout={vacuumFirstLayout} borderColor={borderColor}>
 
@@ -98,7 +161,7 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
             <groupx>
               <button background={0x111111ff} padding={2} onClick={minw}><image bitmap={minImage} /></button>
               <button background={0x111111ff} padding={2} onClick={maxw}><image bitmap={maxImage} /></button>
-              <button background={0x111111ff} padding={2} onClick={axew} hoverBackground={0x99000055} pressBackground={0x44000099}><image bitmap={axeImage} /></button>
+              <CloseB background={0x111111ff} padding={2} onClick={axew}><image bitmap={axeImage} /></CloseB>
             </groupx>
           </border>
         </spacedx>
