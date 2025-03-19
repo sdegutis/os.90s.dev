@@ -8,6 +8,9 @@ export class view {
   readonly children: readonly view[] = []
   readonly parent: view | null = null
 
+  get firstChild(): view | undefined { return this.children[0] }
+  get lastChild(): view | undefined { return this.children[this.children.length - 1] }
+
   readonly adjustKeys = ['w', 'h']
   readonly redrawKeys = ['background']
 
@@ -51,11 +54,19 @@ export class view {
   }
 
   $update<K extends keyof this & string>(k: K, v: this[K]) {
-    if (k === v) return
+    if (this[k] === v) return
     this[k] = v
 
-    if (this.adjustKeys.includes(k)) {
+    if (k === 'w' || k === 'h') {
       this.onResized()
+      this.needsRedraw()
+    }
+    else if (k === 'x' || k === 'y') {
+      this.onMoved()
+      this.needsRedraw()
+    }
+    else if (this.adjustKeys.includes(k)) {
+      this.adjust?.()
       this.needsRedraw()
     }
     else if (this.redrawKeys.includes(k)) {
@@ -67,6 +78,12 @@ export class view {
     let node: view = this
     while (node.parent) node = node.parent
     node.panel?.needsRedraw()
+  }
+
+  private needsMouseCheck() {
+    let node: view = this
+    while (node.parent) node = node.parent
+    node.panel?.needsMouseCheck()
   }
 
   $setup(data: Record<string, any>, children: view[]) {
@@ -88,9 +105,20 @@ export class view {
     this.adjust?.()
   }
 
+  layoutTree() {
+    this.layout?.()
+    for (const child of this.children) {
+      child.layoutTree()
+    }
+  }
+
   onResized() {
     this.parent?.onChildResized?.()
-    this.needsRedraw()
+    this.needsMouseCheck()
+  }
+
+  onMoved() {
+    this.needsMouseCheck()
   }
 
   onChildResized() {

@@ -124,6 +124,10 @@ export class Panel {
     this.root = root
     this.root.$update("w", w)
     this.root.$update("h", h)
+    this.root.layoutTree()
+    this.root.$update('onChildResized', () => {
+      this.root.layoutTree()
+    })
     this.root.panel = this
 
     this.hovered = this.root
@@ -135,6 +139,7 @@ export class Panel {
     this._x = x
     this._y = y
     this.fixMouse()
+    this.checkUnderMouse()
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
   }
 
@@ -233,6 +238,10 @@ export class Panel {
       this.redrawTimer = null
       this.blit()
     })
+  }
+
+  needsMouseCheck() {
+    this.checkUnderMouse()
   }
 
   blit() {

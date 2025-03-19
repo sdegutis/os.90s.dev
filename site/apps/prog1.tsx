@@ -1,4 +1,5 @@
 import { Program } from "../client/core/prog.js"
+import { $ } from "../client/util/ref.js"
 import { Bitmap } from "../shared/bitmap.js"
 
 const minImage = new Bitmap(['333333ff'], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
@@ -9,12 +10,24 @@ const adjImage = new Bitmap(['ffffff77'], 3, [0, 0, 1, 0, 0, 1, 1, 1, 1,])
 const prog = new Program()
 await prog.init()
 
+const r = $(1)
+const t = $('hey')
+// setInterval(() => {
+//   // r.val += 1
+//   t.val += ' .'
+//   console.log(r.val)
+// }, 1000)
+
 const panel = await prog.makePanel({
   size: [100, 100],
   view: (
     <view background={'#77000033'}>
-      {/* <label text='hello world' background='#00000033' /> */}
-      <image bitmap={axeImage} background={'#333'} />
+      <border padding={r} borderColor={'#070'}>
+        <border padding={1} borderColor={'#700'}>
+          <label text={t} background='#00000033' />
+        </border>
+      </border>
+      {/* <image bitmap={axeImage} background={'#333'} /> */}
     </view>
   ),
 })

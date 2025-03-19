@@ -8,6 +8,19 @@ export class border extends view {
   borderColor = '#000'
   padding = 0
 
+  override adjust(): void {
+    this.$update('w', this.padding + (this.firstChild?.w ?? 0) + this.padding)
+    this.$update('h', this.padding + (this.firstChild?.h ?? 0) + this.padding)
+  }
+
+  override layout(): void {
+    const c = this.firstChild
+    if (c) {
+      c.$update('x', this.padding)
+      c.$update('y', this.padding)
+    }
+  }
+
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     ctx.fillStyle = this.background
     ctx.fillRect(
