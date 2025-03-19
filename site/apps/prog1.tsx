@@ -13,8 +13,8 @@ await prog.init()
 const r = $(1)
 const t = $('hey')
 // setInterval(() => {
-//   // r.val += 1
-//   t.val += ' .'
+//   r.val += 1
+//   // t.val += ' .'
 //   console.log(r.val)
 // }, 1000)
 
@@ -22,12 +22,14 @@ const panel = await prog.makePanel({
   size: [100, 100],
   view: (
     <view background={'#77000033'}>
-      <border padding={r} borderColor={'#070'}>
-        <border padding={1} borderColor={'#700'}>
-          <label text={t} background='#00000033' />
+      <groupx gap={r} background={'#f00'}>
+        <border padding={1} borderColor={'#070'}>
+          <border padding={1} borderColor={'#700'}>
+            <label text={t} background='#00000033' />
+          </border>
         </border>
-      </border>
-      {/* <image bitmap={axeImage} background={'#333'} /> */}
+        <image bitmap={axeImage} background={'#333'} />
+      </groupx>
     </view>
   ),
 })
