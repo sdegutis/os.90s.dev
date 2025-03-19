@@ -105,7 +105,7 @@ export class split extends view {
   resizer?: SplitDivider
 
   override init(): void {
-    this.addLayoutKeys('pos')
+    this.addLayoutKeys('pos', 'dir')
     this.resizer = make(SplitDivider, { split: this })
     const mthis = this.mutable()
     mthis.children = [...this.children, this.resizer]
