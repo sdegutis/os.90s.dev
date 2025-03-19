@@ -44,32 +44,29 @@ export class button extends border {
   onClick?(click: { button: number, count: number }): void
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
-
-    const bg = this.background
-    const bd = this.borderColor
+    super.draw(ctx, px, py)
 
     if (this.selected) {
-      (this as any).background = this.selectedBackground;
-      (this as any).borderColor = this.selectedBorderColor
+      ctx.fillStyle = this.selectedBackground
+      ctx.fillRect(px, py, this.w, this.h)
+
+      ctx.strokeStyle = this.selectedBorderColor
+      this.drawBorder(ctx, px, py)
     }
     else if (this.pressed) {
-      (this as any).background = this.pressBackground;
-      (this as any).borderColor = this.pressBorderColor
+      ctx.fillStyle = this.pressBackground
+      ctx.fillRect(px, py, this.w, this.h)
+
+      ctx.strokeStyle = this.pressBorderColor
+      this.drawBorder(ctx, px, py)
     }
     else if (this.hovered) {
-      (this as any).background = this.hoverBackground;
-      (this as any).borderColor = this.hoverBorderColor
+      ctx.fillStyle = this.hoverBackground
+      ctx.fillRect(px, py, this.w, this.h)
+
+      ctx.strokeStyle = this.hoverBorderColor
+      this.drawBorder(ctx, px, py)
     }
-    else {
-      (this as any).background = '#00000000';
-      (this as any).borderColor = '#00000000'
-    }
-
-    super.draw(ctx, px, py);
-
-    (this as any).background = bg;
-    (this as any).borderColor = bd
-
   }
 
   private b: number | undefined
