@@ -1,4 +1,5 @@
 import { border } from "./border.js"
+import { colorFor } from "./view.js"
 
 export class ClickCounter {
 
@@ -29,13 +30,13 @@ export class button extends border {
   readonly pressed: boolean = false
   readonly selected: boolean = false
 
-  readonly hoverBackground: string = '#ffffff22'
-  readonly pressBackground: string = '#ffffff11'
-  readonly selectedBackground: string = '#ffffff33'
+  readonly hoverBackground: number = 0xffffff22
+  readonly pressBackground: number = 0xffffff11
+  readonly selectedBackground: number = 0xffffff33
 
-  readonly hoverBorderColor: string = '#00000000'
-  readonly pressBorderColor: string = '#00000000'
-  readonly selectedBorderColor: string = '#00000000'
+  readonly hoverBorderColor: number = 0x00000000
+  readonly pressBorderColor: number = 0x00000000
+  readonly selectedBorderColor: number = 0x00000000
 
   private counter = new ClickCounter()
 
@@ -47,16 +48,16 @@ export class button extends border {
     super.draw(ctx, px, py)
 
     if (this.selected) {
-      this.drawBackground(ctx, px, py, this.selectedBackground)
-      this.drawBorder(ctx, px, py, this.selectedBorderColor)
+      this.drawBackground(ctx, px, py, colorFor(this.selectedBackground))
+      this.drawBorder(ctx, px, py, colorFor(this.selectedBorderColor))
     }
     else if (this.pressed) {
-      this.drawBackground(ctx, px, py, this.pressBackground)
-      this.drawBorder(ctx, px, py, this.pressBorderColor)
+      this.drawBackground(ctx, px, py, colorFor(this.pressBackground))
+      this.drawBorder(ctx, px, py, colorFor(this.pressBorderColor))
     }
     else if (this.hovered) {
-      this.drawBackground(ctx, px, py, this.hoverBackground)
-      this.drawBorder(ctx, px, py, this.hoverBorderColor)
+      this.drawBackground(ctx, px, py, colorFor(this.hoverBackground))
+      this.drawBorder(ctx, px, py, colorFor(this.hoverBorderColor))
     }
   }
 
