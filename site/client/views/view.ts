@@ -69,10 +69,9 @@ export class view {
   }
 
   private _commit(mut: any) {
-    delete mut.commit
-
     let mode: 'size' | 'pos' | 'adjust' | 'layout' | 'redraw' | null = null
 
+    delete mut.commit
     for (const key in mut) {
       const k = key as keyof this & string
       const v = mut[k]
