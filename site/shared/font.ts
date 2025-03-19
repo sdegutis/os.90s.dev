@@ -42,6 +42,18 @@ export class Font {
     }
   }
 
+  calcSize(text: string) {
+    const lines = text.split('\n')
+    let w = 0
+    for (const line of lines) {
+      if (line.length > w) w = line.length
+    }
+    return {
+      w: w * this.cw + (w - 1) * this.xgap,
+      h: (lines.length * this.ch) + ((lines.length - 1) * this.ygap),
+    }
+  }
+
 }
 
 export const crt2025 = new Font(`

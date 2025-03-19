@@ -1,4 +1,5 @@
 import { Cursor } from "../shared/cursor.js"
+import { crt2025 } from "../shared/font.js"
 import { Listener } from "../shared/listener.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../shared/rpc.js"
 import type { Process } from "./process.js"
@@ -19,6 +20,7 @@ export class Panel {
 
   img?: ImageBitmap
 
+  proc
   port
   rpc
   pos
@@ -27,6 +29,7 @@ export class Panel {
   didRedraw = new Listener()
 
   constructor(rect: Rect, proc: Process, port: MessagePort, pos: PanelOrdering) {
+    this.proc = proc
     this.port = port
     this.rpc = wRPC<ServerPanel, ClientPanel>(port)
     this.pos = pos
@@ -84,6 +87,29 @@ export class Panel {
 
   closePort() {
     this.port.close()
+  }
+
+  showSpinner() {
+    const canvas = new OffscreenCanvas(this.w, this.h)
+    const ctx = canvas.getContext('2d')!
+    if (this.img) ctx.drawImage(this.img, 0, 0)
+
+    ctx.fillStyle = '#fff3'
+    ctx.fillRect(0, 0, this.w, this.h)
+
+    const font = crt2025
+    const str = 'app not responding\nfix the problem or\nrightclick to quit'
+    const size = font.calcSize(str)
+
+    const px = Math.floor(this.w / 2 - size.w / 2)
+    const py = Math.floor(this.h / 2 - size.h / 2)
+    font.print(ctx, px, py, 0x000000ff, str)
+
+    this.img = canvas.transferToImageBitmap()
+  }
+
+  hideSpinner() {
+    this.rpc.send('needblit', [])
   }
 
 }

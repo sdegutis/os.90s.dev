@@ -47,6 +47,8 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
     //   delete this.onMouseUp
     // }
 
+    console.log('uh')
+
     // const drag = dragMove(this)
     // sys.trackMouse({
     //   move: () => {

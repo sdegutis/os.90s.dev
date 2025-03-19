@@ -58,15 +58,19 @@ export class Sys {
     canvas.onmousedown = (e) => {
       if (!this.hovered) return
 
+      if (this.hovered.proc.dead && e.button === 2) {
+        this.hovered.proc.terminate()
+        return
+      }
+
       if (this.focused !== this.hovered) {
         this.focused?.rpc.send('blur', [])
         this.focused = this.hovered
         this.focused.rpc.send('focus', [this.keymap])
       }
 
-      this.hovered.moveToFront()
-
       this.clicking = this.hovered
+      this.clicking.moveToFront()
       this.clicking.rpc.send('mousedown', [e.button])
       this.redrawAllPanels()
     }

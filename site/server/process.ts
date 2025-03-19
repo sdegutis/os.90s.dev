@@ -15,6 +15,7 @@ export class Process {
   private panels = new Set<Panel>()
 
   heartbeat
+  dead = false
 
   constructor(sys: Sys, path: string) {
     Process.all.set(this.id = ++Process.id, this)
@@ -47,10 +48,20 @@ export class Process {
       ])
 
       if (got !== expected) {
-        this.terminate()
+        if (!this.dead) {
+          this.dead = true
+          this.panels.forEach(p => p.showSpinner())
+          sys.redrawAllPanels()
+        }
       }
-    }, 5000)
-    clearInterval(this.heartbeat)
+      else {
+        if (this.dead) {
+          this.dead = false
+          this.panels.forEach(p => p.hideSpinner())
+          sys.redrawAllPanels()
+        }
+      }
+    }, 300)
 
     rpc.listen('newpanel', (ord, x, y, w, h) => {
       const chan = new MessageChannel()

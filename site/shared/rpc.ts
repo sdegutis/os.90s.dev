@@ -35,6 +35,7 @@ export interface ClientPanel {
   wheel(x: number, y: number): void
   keydown(key: string): void
   keyup(key: string): void
+  needblit(): void
 }
 
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }

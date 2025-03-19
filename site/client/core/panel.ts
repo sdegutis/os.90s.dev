@@ -49,6 +49,10 @@ export class Panel {
 
     this.rpc = wRPC<ClientPanel, ServerPanel>(port)
 
+    this.rpc.listen('needblit', () => {
+      this.blit()
+    })
+
     this.rpc.listen('focus', (keymap) => {
       this.keymap = keymap
       this.root.onPanelFocus?.()
