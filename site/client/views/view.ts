@@ -107,44 +107,15 @@ export class view {
     this.adjust?.()
   }
 
+  private mut: any
+
   mutable() {
-    const map = Object.create(null)
-
+    this.mut = Object.create(null)
     const proxy = new Proxy<{ -readonly [K in keyof this]: this[K] }>(this, {
-      set: (t, key, val) => { map[key] = val; return true },
-      get: (t, k) => { return map[k] ??= this[k as keyof this] }
+      set: (t, key, val) => { this.mut[key] = val; return true },
+      get: (t, k) => { return this.mut[k] ??= this[k as keyof this] }
     })
-
-    proxy.commit = () => {
-      for (const key in map) {
-        const k = key as keyof this & string
-        const v = map[k]
-
-        if (this[k] === v) continue
-        this[k] = v
-
-        if (k === 'w' || k === 'h') {
-          this.onResized()
-          this.needsRedraw()
-        }
-        else if (k === 'x' || k === 'y') {
-          this.onMoved()
-          this.needsRedraw()
-        }
-        else if (this.adjustKeys.includes(k)) {
-          this.adjust?.()
-          this.needsRedraw()
-        }
-        else if (this.layoutKeys.includes(k)) {
-          this.onNeedsLayout?.()
-          this.needsRedraw()
-        }
-        else if (this.redrawKeys.includes(k)) {
-          this.needsRedraw()
-        }
-      }
-    }
-
+    proxy.commit = proxy.commit.bind(this)
     return proxy
   }
 
@@ -154,6 +125,35 @@ export class view {
     mut.commit()
   }
 
-  commit() { }
+  commit() {
+    delete this.mut.commit
+    for (const key in this.mut) {
+      const k = key as keyof this & string
+      const v = this.mut[k]
+
+      if (this[k] === v) continue
+      this[k] = v
+
+      if (k === 'w' || k === 'h') {
+        this.onResized()
+        this.needsRedraw()
+      }
+      else if (k === 'x' || k === 'y') {
+        this.onMoved()
+        this.needsRedraw()
+      }
+      else if (this.adjustKeys.includes(k)) {
+        this.adjust?.()
+        this.needsRedraw()
+      }
+      else if (this.layoutKeys.includes(k)) {
+        this.onNeedsLayout?.()
+        this.needsRedraw()
+      }
+      else if (this.redrawKeys.includes(k)) {
+        this.needsRedraw()
+      }
+    }
+  }
 
 }
