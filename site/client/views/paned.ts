@@ -4,9 +4,9 @@ export class paned extends view {
 
   override layoutKeys = [...(this as view).layoutKeys, 'gap', 'dir', 'vacuum']
 
-  gap = 0
-  dir: 'x' | 'y' = 'x'
-  vacuum: 'a' | 'b' = 'a'
+  readonly gap: number = 0
+  readonly dir: 'x' | 'y' = 'x'
+  readonly vacuum: 'a' | 'b' = 'a'
 
   override onChildResized(): void {
     this.adjust?.()

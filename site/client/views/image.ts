@@ -5,7 +5,7 @@ export class image extends view {
 
   override adjustKeys = [...(this as view).adjustKeys, 'image']
 
-  bitmap: Bitmap | null = null
+  readonly bitmap: Bitmap | null = null
 
   override adjust(): void {
     const mutthis = this.mutable()
