@@ -4,9 +4,9 @@ export class group extends view {
 
   override adjustKeys = [...(this as view).adjustKeys, 'gap', 'dir', 'align']
 
-  gap = 0
-  dir: 'x' | 'y' = 'x'
-  align: 'a' | 'm' | 'z' = 'm'
+  readonly gap: number = 0
+  readonly dir: 'x' | 'y' = 'x'
+  readonly align: 'a' | 'm' | 'z' = 'm'
 
   override adjust(): void {
     const dw = this.dir === 'x' ? 'w' : 'h'
