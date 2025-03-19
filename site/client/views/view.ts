@@ -133,7 +133,20 @@ export class view {
   }
 
   mutable() {
-    return mutview(this)
+    const map = Object.create(null)
+
+    const proxy = new Proxy<{ -readonly [K in keyof this]: this[K] }>(this, {
+      set: (t, key, val) => { map[key] = val; return true },
+      get: (t, k) => { return map[k] ??= this[k as keyof this] }
+    })
+
+    proxy.commit = () => {
+      for (const key in map) {
+        this.$update(key as keyof this & string, map[key])
+      }
+    }
+
+    return proxy
   }
 
   mutate(fn: (view: { -readonly [K in keyof this]: this[K] }) => void) {
@@ -144,21 +157,4 @@ export class view {
 
   commit() { }
 
-}
-
-function mutview<T extends view>(v: T) {
-  const map = Object.create(null)
-
-  const proxy = new Proxy<{ -readonly [K in keyof T]: T[K] }>(v, {
-    set: (t, key, val) => { map[key] = val; return true },
-    get: (t, k) => { return map[k] ??= v[k as keyof T] }
-  })
-
-  proxy.commit = () => {
-    for (const key in map) {
-      v.$update(key as keyof T & string, map[key])
-    }
-  }
-
-  return proxy
 }

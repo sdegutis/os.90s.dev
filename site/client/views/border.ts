@@ -16,13 +16,10 @@ export class border extends view {
   }
 
   override layout(): void {
-    const c = this.firstChild
-    if (c) {
-      const mutc = c.mutable()
-      mutc.x = this.padding
-      mutc.y = this.padding
-      mutc.commit()
-    }
+    this.firstChild?.mutate(c => {
+      c.x = this.padding
+      c.y = this.padding
+    })
   }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
