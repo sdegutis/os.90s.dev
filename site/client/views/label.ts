@@ -8,9 +8,9 @@ export class label extends view {
 
   override passthrough: boolean = true
 
-  textColor: number = 0xffffffff
-  font: Font = crt2025
-  text: string = ''
+  readonly textColor: number = 0xffffffff
+  readonly font: Font = crt2025
+  readonly text: string = ''
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)
