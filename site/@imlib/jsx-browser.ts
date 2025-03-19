@@ -5,7 +5,7 @@ import { make, type view } from "../client/views/view.js"
 type Primitives = typeof primitives
 
 type FixThis<T, K extends keyof T, Else> =
-  T[K] extends (...args: infer A) => infer R
+  T[K] extends ((...args: infer A) => infer R) | undefined
   ? (this: T, ...args: A) => R
   : Else
 
