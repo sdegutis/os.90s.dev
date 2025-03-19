@@ -29,7 +29,7 @@ export class view {
     readonly y: number,
   } = { x: 0, y: 0 }
 
-  readonly background: string = '#000'
+  readonly background: string = '#0000'
 
   onPanelFocus?(): void
   onPanelBlur?(): void

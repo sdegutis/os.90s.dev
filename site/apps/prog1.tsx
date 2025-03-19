@@ -31,7 +31,7 @@ const panel = await prog.makePanel({
             <label text={t} background='#00000033' />
           </border>
         </border>
-        <image bitmap={axeImage} background={'#333'} />
+        <image bitmap={axeImage} />
       </groupx>
       <view background={'#303'}>
 
