@@ -14,7 +14,7 @@ export class Font {
     this.ch = this.spr.height / 6
   }
 
-  print(ctx: OffscreenCanvasRenderingContext2D, x: number, y: number, c: string, text: string) {
+  print(ctx: OffscreenCanvasRenderingContext2D, x: number, y: number, c: number, text: string) {
     let posx = 0
     let posy = 0
 

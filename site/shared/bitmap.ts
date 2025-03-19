@@ -1,3 +1,5 @@
+import { colorFor } from "../client/views/view.js"
+
 export class Bitmap {
 
   static fromString(s: string) {
@@ -12,7 +14,7 @@ export class Bitmap {
   height: number
 
   private ctx
-  private lastcol?: string
+  private lastcol?: number
 
   canvas
 
@@ -42,11 +44,11 @@ export class Bitmap {
     ctx.globalCompositeOperation = 'source-atop'
   }
 
-  colorize(col: string) {
+  colorize(col: number) {
     if (this.lastcol === col) return
     this.lastcol = col
 
-    this.ctx.fillStyle = col
+    this.ctx.fillStyle = colorFor(col)
     this.ctx.fillRect(0, 0, this.width, this.height)
   }
 

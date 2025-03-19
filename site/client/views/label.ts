@@ -1,5 +1,5 @@
 import { crt2025, Font } from "../../shared/font.js"
-import { colorFor, view } from "./view.js"
+import { view } from "./view.js"
 
 export class label extends view {
 
@@ -14,7 +14,7 @@ export class label extends view {
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)
-    this.font.print(ctx, px, py, colorFor(this.textColor), this.text)
+    this.font.print(ctx, px, py, this.textColor, this.text)
   }
 
   override adjust(): void {
