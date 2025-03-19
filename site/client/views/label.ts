@@ -1,4 +1,4 @@
-import { crt2025 } from "../../shared/font.js"
+import { crt2025, Font } from "../../shared/font.js"
 import { colorFor, view } from "./view.js"
 
 export class label extends view {
@@ -8,9 +8,9 @@ export class label extends view {
 
   override passthrough: boolean = true
 
-  textColor = 0xffffffff
-  font = crt2025
-  text = ''
+  textColor: number = 0xffffffff
+  font: Font = crt2025
+  text: string = ''
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)

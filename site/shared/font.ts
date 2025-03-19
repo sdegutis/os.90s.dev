@@ -1,6 +1,6 @@
 import { Bitmap } from "./bitmap.js"
 
-class Font {
+export class Font {
 
   spr: Bitmap
   cw: number
