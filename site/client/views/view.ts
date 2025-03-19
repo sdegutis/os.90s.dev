@@ -79,13 +79,13 @@ export class view {
     }
   }
 
-  private needsRedraw() {
+  protected needsRedraw() {
     let node: view = this
     while (node.parent) node = node.parent
     node.panel?.needsRedraw()
   }
 
-  private needsMouseCheck() {
+  protected needsMouseCheck() {
     let node: view = this
     while (node.parent) node = node.parent
     node.panel?.needsMouseCheck()
