@@ -1,4 +1,5 @@
 import { Program } from "../client/core/prog.js"
+import { dragMove } from "../client/util/drag.js"
 import { $, Ref } from "../client/util/ref.js"
 import type { border } from "../client/views/border.js"
 import { ClickCounter } from "../client/views/button.js"
@@ -36,16 +37,11 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
   function titleBarMouseDown(this: spacedx, button: number, pos: Pos) {
     counter.increase()
 
-    // const drag = dragMove(pos, panel)
-    // this.onMouseMove = () => {
-    //   console.log('movin')
-    //   console.log(drag)
-    // }
-    // this.onMouseUp = () => {
-    //   console.log('uh2')
-    //   delete this.onMouseMove
-    //   delete this.onMouseUp
-    // }
+    this.onMouseMove = dragMove(pos, panel)
+    this.onMouseUp = () => {
+      delete this.onMouseMove
+      delete this.onMouseUp
+    }
 
     console.log('uh')
 
