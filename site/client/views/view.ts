@@ -66,7 +66,7 @@ export class view {
     node.panel?.needsMouseCheck()
   }
 
-  $init(data: Record<string, any>, children: view[]) {
+  init(data: Record<string, any>, children: view[]) {
     (this as any).children = children
     for (const child of this.children) {
       (child as any).parent = this

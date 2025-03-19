@@ -34,7 +34,7 @@ const panel = await prog.makePanel({
         <image bitmap={axeImage} />
       </groupx>
       <view background={'#303'}>
-        <button padding={3} background={'#009'} onClick={(b) => console.log('hey', b)}>
+        <button padding={3} background={'#009'} onClick={(b) => console.log('hey', panel.root)}>
           <label text={'hey'} />
         </button>
       </view>

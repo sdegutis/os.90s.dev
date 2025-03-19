@@ -44,6 +44,6 @@ function createNode(tag: any, data: any): JSX.Element {
 
   const ctor = primitives[tag as keyof typeof primitives]
   const view = new ctor()
-  view.$init(data, children === undefined ? [] : children instanceof Array ? children : [children])
+  view.init(data, children === undefined ? [] : children instanceof Array ? children : [children])
   return view
 }
