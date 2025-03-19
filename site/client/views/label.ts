@@ -6,6 +6,8 @@ export class label extends view {
   override adjustKeys = [...(this as view).adjustKeys, 'text', 'font']
   override redrawKeys = [...(this as view).redrawKeys, 'textColor']
 
+  override passthrough: boolean = true
+
   textColor = '#fff'
   font = crt2025
   text = ''

@@ -1,4 +1,5 @@
 import { border } from "./border.js"
+import { button } from "./button.js"
 import { group, groupx, groupy } from "./group.js"
 import { image } from "./image.js"
 import { label } from "./label.js"
@@ -11,6 +12,7 @@ export const primitives = {
   border,
   label,
   image,
+  button,
 
   group,
   groupx,

@@ -5,8 +5,8 @@ export class border extends view {
   override adjustKeys = [...(this as view).adjustKeys, 'padding']
   override redrawKeys = [...(this as view).redrawKeys, 'borderColor']
 
-  borderColor = '#000'
-  padding = 0
+  readonly borderColor: string = '#0000'
+  readonly padding: number = 0
 
   override adjust(): void {
     this.$update('w', this.padding + (this.firstChild?.w ?? 0) + this.padding)
@@ -22,13 +22,7 @@ export class border extends view {
   }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
-    ctx.fillStyle = this.background
-    ctx.fillRect(
-      px + this.padding,
-      py + this.padding,
-      this.w - this.padding * 2,
-      this.h - this.padding * 2,
-    )
+    super.draw(ctx, px, py)
 
     ctx.strokeStyle = this.borderColor
     for (let i = 0; i < this.padding; i++) {
