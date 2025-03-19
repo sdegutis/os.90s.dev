@@ -39,7 +39,7 @@ const panel = await prog.makePanel({
 function Titlebar() {
   let down: (() => void) | undefined
 
-  return <groupx gap={r} background={0x330000ff}
+  return <spacedx background={0x330000ff}
     onMouseDown={(b, pos) => { down = dragMove(pos, panel) }}
     onMouseMove={() => { down?.() }}
     onMouseUp={() => { down = undefined }}
@@ -50,7 +50,7 @@ function Titlebar() {
       </border>
     </border>
     <image bitmap={axeImage} />
-  </groupx>
+  </spacedx>
 }
 
 // function MyView(data: { w: number, h: number }) {
