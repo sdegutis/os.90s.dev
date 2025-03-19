@@ -1,5 +1,4 @@
 import { Program } from "../client/core/prog.js"
-import { dragMove } from "../client/util/drag.js"
 import { $, Ref } from "../client/util/ref.js"
 import type { border } from "../client/views/border.js"
 import { ClickCounter } from "../client/views/button.js"
@@ -37,11 +36,16 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
   function titleBarMouseDown(this: spacedx, button: number, pos: Pos) {
     counter.increase()
 
-    this.onMouseMove = dragMove(pos, panel)
-    this.onMouseUp = () => {
-      delete this.onMouseMove
-      delete this.onMouseUp
-    }
+    // const drag = dragMove(pos, panel)
+    // this.onMouseMove = () => {
+    //   console.log('movin')
+    //   console.log(drag)
+    // }
+    // this.onMouseUp = () => {
+    //   console.log('uh2')
+    //   delete this.onMouseMove
+    //   delete this.onMouseUp
+    // }
 
     // const drag = dragMove(this)
     // sys.trackMouse({
@@ -106,15 +110,15 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
         <spacedx onMouseDown={titleBarMouseDown}>
           <border>
             <groupx gap={1}>
-              <button background={0x111111ff} padding={2}><image bitmap={menubuttonImage} /></button>
+              <button padding={2}><image bitmap={menubuttonImage} /></button>
               <label text={data.title} />
             </groupx>
           </border>
           <border>
             <groupx>
-              <button background={0x111111ff} padding={2} onClick={minw}><image bitmap={minImage} /></button>
-              <button background={0x111111ff} padding={2} onClick={maxw}><image bitmap={maxImage} /></button>
-              <CloseB background={0x111111ff} padding={2} onClick={axew}><image bitmap={axeImage} /></CloseB>
+              <button padding={2} onClick={minw}><image bitmap={minImage} /></button>
+              <button padding={2} onClick={maxw}><image bitmap={maxImage} /></button>
+              <CloseB padding={2} onClick={axew}><image bitmap={axeImage} /></CloseB>
             </groupx>
           </border>
         </spacedx>
@@ -140,8 +144,8 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
     </border>
   </view>
 
-
   function CloseB(data: JSX.DataFor<'button'>) {
     return <button {...data} hoverBackground={0x99000055} pressBackground={0x44000099} />
   }
+
 }

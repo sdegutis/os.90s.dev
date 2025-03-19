@@ -6,6 +6,8 @@ export class group extends view {
   readonly dir: 'x' | 'y' = 'x'
   readonly align: 'a' | 'm' | 'z' = 'm'
 
+  override passthrough: boolean = true
+
   override init(): void {
     this.addAdjustKeys('gap', 'dir', 'align')
   }

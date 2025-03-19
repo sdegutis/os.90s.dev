@@ -72,9 +72,7 @@ export class Panel {
 
       let node: view | null = this.hovered
       while (node) {
-        if (node.passthrough) continue
-
-        if (node.canFocus) {
+        if (!node.passthrough && node.canFocus) {
           this.focused?.onBlur?.()
           this.focused = node
           this.focused?.onFocus?.()

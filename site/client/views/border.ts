@@ -5,6 +5,8 @@ export class border extends view {
   readonly borderColor: number = 0x00000000
   readonly padding: number = 0
 
+  override passthrough: boolean = true
+
   override init(): void {
     this.addAdjustKeys('padding')
     this.addRedrawKeys('borderColor')
