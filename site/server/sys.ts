@@ -1,4 +1,4 @@
-import { Bitmap } from "../shared/bitmap.js"
+import { Cursor } from "../shared/cursor.js"
 import type { KeyMap } from "../shared/rpc.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
@@ -113,7 +113,7 @@ export class Sys {
   }
 
   private drawCursor() {
-    this.ctx.drawImage(cursor.canvas, this.mouse.x, this.mouse.y)
+    cursor.draw(this.ctx, this.mouse.x, this.mouse.y)
   }
 
   removePanel(panel: Panel) {
@@ -133,7 +133,10 @@ export class Sys {
 
 }
 
-const cursor = Bitmap.fromString(`
+const cursor = Cursor.fromString(`
+offx=1
+offy=1
+===
 #000000cc
 #ffffffff
 
