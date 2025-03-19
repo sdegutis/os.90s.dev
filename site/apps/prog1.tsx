@@ -107,6 +107,7 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
       onMouseEnter={() => setClaims(+1)}
       onMouseExit={() => setClaims(-1)}
       layout={function () {
+        if (!this.parent) return
         const mthis = this.mutable()
         mthis.x = this.parent!.w - this.w
         mthis.y = this.parent!.h - this.h
@@ -116,7 +117,7 @@ function PanelView(data: { title: string | Ref<string>, children: view }) {
     />
   }
 
-  return <view background={0x070707ee} {...toplevel}>
+  return <view background={0x070707dd} {...toplevel}>
     <border borderColor={borderColor} padding={1}>
 
       <panedya gap={0}>

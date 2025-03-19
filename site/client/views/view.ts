@@ -176,6 +176,7 @@ export class view {
     }
 
     this.adjust?.()
+    this.layout?.()
   }
 
   mutable() {

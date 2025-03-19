@@ -7,7 +7,7 @@ await prog.init()
 const panel = await prog.makePanel({
   size: [320 / 2, 180 / 2],
   view: (
-    <view background={0x00770033}
+    <view background={0x77000033}
       onMouseDown={function (b, pos) {
         this.onMouseMove = dragMove(pos, panel)
         this.onMouseUp = () => {
