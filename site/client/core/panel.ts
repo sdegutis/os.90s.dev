@@ -1,3 +1,4 @@
+import type { Cursor } from "../../shared/cursor.js"
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
 import type { view } from "../views/view.js"
@@ -124,11 +125,11 @@ export class Panel {
     const mutroot = root.mutable()
     mutroot.w = w
     mutroot.h = h
+    mutroot.panel = this
     mutroot.commit()
 
     this.root = root
     this.root.layout?.()
-    this.root.panel = this
 
     this.hovered = this.root
 
@@ -174,6 +175,9 @@ export class Panel {
       if (this.hovered) this.hovered.mutate(v => v.hovered = false)
       this.hovered = activeHovered
       if (this.hovered) this.hovered.mutate(v => v.hovered = true)
+
+      const cursor = this.hovered?.cursor ?? undefined
+      this.setCursor(cursor)
     }
   }
 
@@ -248,6 +252,13 @@ export class Panel {
       this.mouseCheckTimer = null
       this.checkUnderMouse()
     })
+  }
+
+  private lastCursor: Cursor | undefined = undefined
+  private setCursor(c: Cursor | undefined) {
+    if (c === this.lastCursor) return
+    this.lastCursor = c
+    this.rpc.send('cursor', [c?.toString() ?? ''])
   }
 
   blit() {

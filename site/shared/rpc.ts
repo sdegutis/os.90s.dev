@@ -21,6 +21,7 @@ export interface ServerPanel {
   adjust(x: number, y: number, w: number, h: number): void
   blit(img: ImageBitmap): void
   close(): void
+  cursor(data: string): void
 }
 
 export interface ClientPanel {

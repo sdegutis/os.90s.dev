@@ -20,16 +20,17 @@ const yresize = new Cursor(1, 2, new Bitmap([0x00000099, 0xffffffff], 3, [
 class SplitDivider extends view {
 
   readonly split!: split
-  override passthrough: boolean = false
+  override readonly passthrough: boolean = false
 
   readonly pressed: boolean = false
   readonly dividerColor: number = 0x33333300
 
   override init(): void {
     this.addRedrawKeys('hovered', 'pressed')
-    this.mutate(v => v.background = this.dividerColor)
-    // this.cursor = this.split.dir === 'x' ? xresize : yresize
-
+    this.mutate(v => {
+      v.background = this.dividerColor
+      v.cursor = this.split.dir === 'x' ? xresize : yresize
+    })
   }
 
   override onResized(): void { }
@@ -84,8 +85,7 @@ class SplitDivider extends view {
 
     this.mutate(v => v.pressed = true)
 
-    const drag = dragMove(pos, b)
-    this.onMouseMove = drag
+    this.onMouseMove = dragMove(pos, b)
     this.onMouseUp = () => {
       this.mutate(v => v.pressed = false)
       delete this.onMouseMove
@@ -102,7 +102,7 @@ export class split extends view {
   readonly max: number = 0
   readonly dir: 'x' | 'y' = 'y'
 
-  resizer?: SplitDivider
+  resizer!: SplitDivider
 
   override init(): void {
     this.addLayoutKeys('pos', 'dir')
@@ -137,7 +137,7 @@ export class split extends view {
     b[dx] = this.pos
     b[dw] = this[dw] - this.pos
 
-    this.resizer?.mutate(r => {
+    this.resizer.mutate(r => {
       r.x = 0
       r.y = 0
       r[dx] = this.pos - 1

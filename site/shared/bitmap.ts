@@ -13,12 +13,18 @@ export class Bitmap {
   width: number
   height: number
 
+  canvas
   private ctx
+
+  private colors
+  private pixels
+
   private lastcol?: number
 
-  canvas
-
   constructor(colors: number[], w: number, pixels: number[]) {
+    this.colors = colors
+    this.pixels = pixels
+
     const h = pixels.length / w
 
     this.width = w
@@ -42,6 +48,20 @@ export class Bitmap {
     }
 
     ctx.globalCompositeOperation = 'source-atop'
+  }
+
+  toString() {
+    const colors = this.colors.map(c => '#' + c.toString(16).padStart(8, '0'))
+    let lines: string[] = []
+    let i = 0
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        const index = this.pixels[i++]
+        const space = x === this.width - 1 ? '\n' : ' '
+        lines.push(index.toString(16), space)
+      }
+    }
+    return colors.join('\n') + '\n\n' + lines.join('')
   }
 
   colorize(col: number) {

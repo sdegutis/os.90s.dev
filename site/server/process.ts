@@ -1,3 +1,4 @@
+import type { Cursor } from '../shared/cursor.js'
 import { wRPC, type ClientProgram, type ServerProgram } from '../shared/rpc.js'
 import { Panel } from './panel.js'
 import type { Sys } from './sys.js'
@@ -32,7 +33,6 @@ export class Process {
 
     rpc.once('init').then(() => {
       rpc.send('init', [this.id, this.sys.width, this.sys.height])
-
     })
 
     this.heartbeat = setInterval(async () => {
@@ -62,6 +62,10 @@ export class Process {
       p.didAdjust.watch(() => sys.redrawAllPanels())
       p.didRedraw.watch(() => sys.redrawAllPanels())
     })
+  }
+
+  useCursor(c: Cursor | null) {
+    this.sys.useCursor(c)
   }
 
   terminate() {

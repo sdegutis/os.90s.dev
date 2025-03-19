@@ -131,9 +131,14 @@ export class Sys {
     this.redrawAllPanels()
   }
 
+  useCursor(c: Cursor | null) {
+    cursor = c ?? defaultCursor
+    this.redrawAllPanels()
+  }
+
 }
 
-const cursor = Cursor.fromString(`
+const defaultCursor = Cursor.fromString(`
 offx=1
 offy=1
 ===
@@ -145,3 +150,5 @@ offy=1
 1 2 1 1
 1 1 1 0
 `.trimStart())
+
+let cursor = defaultCursor

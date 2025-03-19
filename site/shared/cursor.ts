@@ -22,6 +22,10 @@ export class Cursor {
     this.bitmap = bitmap
   }
 
+  toString() {
+    return `offx=${this.offx}\noffy=${this.offy}\n===\n${this.bitmap.toString()}`
+  }
+
   draw(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, px: number, py: number) {
     ctx.drawImage(this.bitmap.canvas, px - this.offx, py - this.offy)
   }

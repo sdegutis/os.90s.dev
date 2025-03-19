@@ -1,3 +1,4 @@
+import type { Cursor } from "../../shared/cursor.js"
 import type { Panel } from "../core/panel.js"
 import { Ref } from "../util/ref.js"
 
@@ -8,7 +9,7 @@ export type Pos = {
 
 export class view {
 
-  panel?: Panel
+  readonly panel?: Panel
 
   readonly children: readonly view[] = []
   readonly parent: view | null = null
@@ -30,11 +31,15 @@ export class view {
   readonly h: number = 0
 
   readonly canFocus: boolean = false
+  readonly passthrough: boolean = false
+
   readonly visible: boolean = true
   readonly hovered: boolean = false
-  readonly passthrough: boolean = false
-  readonly mouse: Pos = { x: 0, y: 0 }
+
   readonly background: number = 0x00000000
+
+  readonly mouse: Pos = { x: 0, y: 0 }
+  readonly cursor: Cursor | null = null
 
   onPanelFocus?(): void
   onPanelBlur?(): void

@@ -1,3 +1,4 @@
+import { Cursor } from "../shared/cursor.js"
 import { Listener } from "../shared/listener.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../shared/rpc.js"
 import type { Process } from "./process.js"
@@ -48,6 +49,10 @@ export class Panel {
 
     this.rpc.once('close').then(() => {
       proc.closePanel(this)
+    })
+
+    this.rpc.listen('cursor', (cstr) => {
+      proc.useCursor(cstr ? Cursor.fromString(cstr) : null)
     })
 
     this.rpc.listen('adjust', (x, y, w, h) => {
