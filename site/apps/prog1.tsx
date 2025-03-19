@@ -25,7 +25,7 @@ const t = $('hey')
 const panel = await prog.makePanel({
   size: [100, 100],
   view: (
-    <splity background={0x77000033} pos={20} min={10} max={10}>
+    <splity background={0x77000033} pos={20} min={10} max={-20}>
       <Titlebar />
       <view background={0x330033ff}>
         <button padding={3} background={0x000099ff} onClick={(b) => console.log('hey', panel.root)}>

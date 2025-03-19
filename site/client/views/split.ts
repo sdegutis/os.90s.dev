@@ -67,10 +67,16 @@ class SplitDivider extends view {
         b.x = x
         b.y = y
 
+        let min = split.min
+        let max = split.max
+
+        if (min < 0) min = split[dw] + min
+        if (max < 0) max = split[dw] + max
+
         const s = split.mutable()
         s.pos = b[dx]
-        if (s.min && s.pos < s.min) s.pos = s.min
-        if (s.max && s.pos > s[dw] - s.max) s.pos = s[dw] - s.max
+        if (min && s.pos < min) s.pos = min
+        if (max && s.pos > max) s.pos = max
         s.commit()
       }
     }
@@ -82,6 +88,8 @@ class SplitDivider extends view {
     this.onMouseMove = drag
     this.onMouseUp = () => {
       this.mutate(v => v.pressed = false)
+      delete this.onMouseMove
+      delete this.onMouseUp
     }
   }
 
