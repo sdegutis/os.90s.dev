@@ -49,42 +49,6 @@ export class view {
   adjust?(): void
   layout?(): void
 
-  draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
-    ctx.fillStyle = this.background
-    ctx.fillRect(px, py, this.w, this.h)
-  }
-
-  protected needsRedraw() {
-    let node: view = this
-    while (node.parent) node = node.parent
-    node.panel?.needsRedraw()
-  }
-
-  protected needsMouseCheck() {
-    let node: view = this
-    while (node.parent) node = node.parent
-    node.panel?.needsMouseCheck()
-  }
-
-  init(data: Record<string, any>, children: view[]) {
-    (this as any).children = children
-    for (const child of this.children) {
-      (child as any).parent = this
-    }
-
-    for (const [k, v] of Object.entries(data)) {
-      if (v instanceof Ref) {
-        (this as any)[k] = v.val
-        v.watch(val => this.mutate(v => v[k as keyof this] = val))
-      }
-      else {
-        (this as any)[k] = v
-      }
-    }
-
-    this.adjust?.()
-  }
-
   layoutTree() {
     this.layout?.()
     for (const child of this.children) {
@@ -106,24 +70,6 @@ export class view {
   onChildResized() {
     this.adjust?.()
   }
-
-  mutable() {
-    const mut = Object.create(null)
-    const proxy = new Proxy<{ -readonly [K in keyof this]: this[K] }>(this, {
-      set: (t, key, val) => { mut[key] = val; return true },
-      get: (t, k) => { return mut[k] ??= this[k as keyof this] }
-    })
-    proxy.commit = () => this._commit(mut)
-    return proxy
-  }
-
-  mutate(fn: (view: { -readonly [K in keyof this]: this[K] }) => void) {
-    const mut = this.mutable()
-    fn(mut)
-    mut.commit()
-  }
-
-  commit() { }
 
   private _commit(mut: any) {
     let mode: 'size' | 'pos' | 'adjust' | 'layout' | 'redraw' | null = null
@@ -162,5 +108,59 @@ export class view {
       this.needsRedraw()
     }
   }
+
+  draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+    ctx.fillStyle = this.background
+    ctx.fillRect(px, py, this.w, this.h)
+  }
+
+  protected needsRedraw() {
+    let node: view = this
+    while (node.parent) node = node.parent
+    node.panel?.needsRedraw()
+  }
+
+  protected needsMouseCheck() {
+    let node: view = this
+    while (node.parent) node = node.parent
+    node.panel?.needsMouseCheck()
+  }
+
+  init(data: Record<string, any>, children: view[]) {
+    (this as any).children = children
+    for (const child of this.children) {
+      (child as any).parent = this
+    }
+
+    for (const [k, v] of Object.entries(data)) {
+      if (v instanceof Ref) {
+        (this as any)[k] = v.val
+        v.watch(val => this.mutate(v => v[k as keyof this] = val))
+      }
+      else {
+        (this as any)[k] = v
+      }
+    }
+
+    this.adjust?.()
+  }
+
+  mutable() {
+    const mut = Object.create(null)
+    const proxy = new Proxy<{ -readonly [K in keyof this]: this[K] }>(this, {
+      set: (t, key, val) => { mut[key] = val; return true },
+      get: (t, k) => { return mut[k] ??= this[k as keyof this] }
+    })
+    proxy.commit = () => this._commit(mut)
+    return proxy
+  }
+
+  mutate(fn: (view: { -readonly [K in keyof this]: this[K] }) => void) {
+    const mut = this.mutable()
+    fn(mut)
+    mut.commit()
+  }
+
+  commit() { }
 
 }
