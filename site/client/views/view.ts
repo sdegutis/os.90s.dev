@@ -133,3 +133,25 @@ export class view {
   }
 
 }
+
+export function mutview<T extends view>(v: T) {
+  const map = Object.create(null)
+
+  const proxy = new Proxy<{ -readonly [K in keyof T]: T[K] }>(v, {
+    set: (t, key, val) => {
+      map[key] = val
+      return true
+    },
+    get: (t, k) => {
+      return map[k] ??= v[k as keyof T]
+    }
+  })
+
+  function commit() {
+    for (const key in map) {
+      v.$update(key as keyof T & string, map[key])
+    }
+  }
+
+  return [proxy, commit] as const
+}
