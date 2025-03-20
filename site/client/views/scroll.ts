@@ -8,6 +8,7 @@ export class scroll extends view {
   readonly amount: number = 6
 
   readonly content!: view
+  private readonly area!: view
 
   override init(): void {
 
@@ -25,6 +26,8 @@ export class scroll extends view {
     const corner = make(view, { h: 3, background: 0x333300ff })
     const area = make(view, { background: 0x000033ff, onChildResized: bubble, children: [this.content] })
 
+      ; (this as any).area = area
+
     this.set('children',
       [make(panedxb, {
         onChildResized: bubble,
@@ -38,7 +41,7 @@ export class scroll extends view {
   }
 
   override onChildResized(): void {
-    console.log('view res')
+    this.layout()
   }
 
   override layout(): void {
@@ -51,8 +54,8 @@ export class scroll extends view {
       v.h = this.h
     })
 
-    this.set('scrollx', Math.max(0, Math.min(this.content.w - this.w, this.scrollx)))
-    this.set('scrolly', Math.max(0, Math.min(this.content.h - this.h, this.scrolly)))
+    this.set('scrollx', Math.max(0, Math.min(this.content.w - this.area.w, this.scrollx)))
+    this.set('scrolly', Math.max(0, Math.min(this.content.h - this.area.h, this.scrolly)))
 
     this.content.set('x', -this.scrollx)
     this.content.set('y', -this.scrolly)

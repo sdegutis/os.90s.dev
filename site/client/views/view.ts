@@ -96,7 +96,8 @@ export class view {
         child.set('parent', this)
       }
     }
-    else if (k === 'w' || k === 'h') {
+
+    if (k === 'w' || k === 'h') {
       this.onResized()
       this.panel?.needsRedraw()
       this.panel?.needsMouseCheck()
