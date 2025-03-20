@@ -33,7 +33,7 @@ const children = $([
 ])
 
 setInterval(() => {
-  children.val = children.val.toSpliced(0, 1)
+  children.val = children.val.toSpliced(children.val.length - 1, 1)
 
   // ch.val = [...ch.val, <label text={Date.now().toString()} background={0x00003399} />]
 }, 1000)

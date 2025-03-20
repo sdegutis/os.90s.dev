@@ -60,6 +60,9 @@ export class scroll extends view {
     this.content.set('x', -this.scrollx)
     this.content.set('y', -this.scrolly)
 
+    console.log(this.content.x, this.content.y)
+    console.log()
+
 
   }
 
