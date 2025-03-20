@@ -84,42 +84,6 @@ export class view {
     this.adjust?.()
   }
 
-  set(k: keyof this, newv: any) {
-    const oldv = this[k]
-    if (oldv === newv) return
-
-    this[k] = newv
-
-    if (k === 'children') {
-      for (const c of newv) {
-        const child = c as view
-        child.set('parent', this)
-      }
-    }
-
-    if (k === 'w' || k === 'h') {
-      this.onResized()
-      this.panel?.needsRedraw()
-      this.panel?.needsMouseCheck()
-    }
-    else if (k === 'x' || k === 'y') {
-      this.onMoved?.()
-      this.panel?.needsRedraw()
-      this.panel?.needsMouseCheck()
-    }
-    else if (this.adjustKeys.has(k as string)) {
-      this.adjust?.()
-      this.panel?.needsRedraw()
-    }
-    else if (this.layoutKeys.has(k as string)) {
-      this.layout?.()
-      this.panel?.needsRedraw()
-    }
-    else if (this.redrawKeys.has(k as string)) {
-      this.panel?.needsRedraw()
-    }
-  }
-
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     this.drawBackground(ctx, px, py, colorFor(this.background))
   }
@@ -171,6 +135,42 @@ export class view {
     const mut = this.mutable()
     fn(mut)
     mut.commit()
+  }
+
+  set(k: keyof this, newv: any) {
+    const oldv = this[k]
+    if (oldv === newv) return
+
+    this[k] = newv
+
+    if (k === 'children') {
+      for (const c of newv) {
+        const child = c as view
+        child.set('parent', this)
+      }
+    }
+
+    if (k === 'w' || k === 'h') {
+      this.onResized()
+      this.panel?.needsRedraw()
+      this.panel?.needsMouseCheck()
+    }
+    else if (k === 'x' || k === 'y') {
+      this.onMoved?.()
+      this.panel?.needsRedraw()
+      this.panel?.needsMouseCheck()
+    }
+    else if (this.adjustKeys.has(k as string)) {
+      this.adjust?.()
+      this.panel?.needsRedraw()
+    }
+    else if (this.layoutKeys.has(k as string)) {
+      this.layout?.()
+      this.panel?.needsRedraw()
+    }
+    else if (this.redrawKeys.has(k as string)) {
+      this.panel?.needsRedraw()
+    }
   }
 
 }
