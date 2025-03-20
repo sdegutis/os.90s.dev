@@ -32,12 +32,6 @@ const children = $([
   ...Array(20).keys().map(i => <label text={`view ${i.toString()}`} />)
 ])
 
-// setInterval(() => {
-//   children.val = children.val.toSpliced(children.val.length - 1, 1)
-
-//   // ch.val = [...ch.val, <label text={Date.now().toString()} background={0x00003399} />]
-// }, 1000)
-
 const panel = await prog.makePanel({
   size: [100, 100],
   view: <PanelView title={'test panel'}>

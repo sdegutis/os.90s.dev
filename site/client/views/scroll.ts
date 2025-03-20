@@ -92,8 +92,8 @@ export class scroll extends view {
     }
 
     const fixScrollVals = () => {
-      scrollx.val = Math.max(0, Math.min(content.w - area.w, scrollx.val))
-      scrolly.val = Math.max(0, Math.min(content.h - area.h, scrolly.val))
+      scrollx.val = Math.floor(Math.max(0, Math.min(content.w - area.w, scrollx.val)))
+      scrolly.val = Math.floor(Math.max(0, Math.min(content.h - area.h, scrolly.val)))
     }
 
     this.onWheel = (px, py) => {
