@@ -55,41 +55,39 @@ export class textarea extends view {
   }
 
   override init(): void {
-    this.set('children', [
-      this.scroll = make(scroll, {
-        onMouseDown: (...args) => this.onMouseDown(),
-        children: [
-          this.label = make(view, {
-            adjust: () => this.adjustTextLabel(),
-            draw: (ctx, px, py) => {
-              ctx.fillStyle = colorFor(0x99000099)
-              ctx.fillRect(px, py, this.label.w, this.label.h)
-              this.drawTextLabel(ctx, px, py)
-            },
-            onMouseDown: () => this.onMouseDown(),
-            children: [
-              this._cursor = make(view, {
-                onMouseDown: () => this.onMouseDown(),
-                background: this.cursorColor,
-                visible: false,
-                w: this.font.cw + this.font.xgap,
-                h: this.font.ch + this.font.ygap,
-              })
-            ]
-          })
-        ]
-      })
-    ])
+    this._cursor = make(view, {
+      onMouseDown: () => this.onMouseDown(),
+      background: this.cursorColor,
+      visible: false,
+      w: this.font.cw + this.font.xgap,
+      h: this.font.ch + this.font.ygap,
+    })
+
+    this.label = make(view, {
+      adjust: () => this.adjustTextLabel(),
+      draw: (ctx, px, py) => {
+        ctx.fillStyle = colorFor(0x99000099)
+        ctx.fillRect(px, py, this.label.w, this.label.h)
+        this.drawTextLabel(ctx, px, py)
+      },
+      onMouseDown: () => this.onMouseDown(),
+      children: [this._cursor]
+    })
+
+    this.scroll = make(scroll, {
+      onMouseDown: (...args) => this.onMouseDown(),
+      children: [this.label]
+    })
+
+    this.set('children', [this.scroll])
 
     this.reflectCursorPos()
-
     this.adjustTextLabel()
   }
 
   override set(k: keyof this, v: any): void {
     super.set(k, v)
     if (k === 'cursorColor') {
-      console.log('oih')
       this._cursor.set('background', v)
     }
   }
