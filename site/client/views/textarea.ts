@@ -5,8 +5,8 @@ import { view } from "./view.js"
 
 export class textarea extends view {
 
-  font = crt2025
-  color = 0xffffffff
+  readonly font = crt2025
+  readonly color = 0xffffffff
   private lines: string[] = ['']
 
   private scroll!: scroll
@@ -68,7 +68,7 @@ export class textarea extends view {
     //   )
     // ]
 
-    // this.reflectCursorPos()
+    this.reflectCursorPos()
     // this.$watch('cursorColor', c => this._cursor.background = c)
 
     this.adjustTextLabel()
@@ -115,14 +115,16 @@ export class textarea extends view {
     for (const line of this.lines) {
       if (line.length > w) w = line.length
     }
-    this.label.w = w * this.font.cw + (w - 1) * this.font.xgap
-    this.label.h = (this.lines.length * this.font.ch) + ((this.lines.length - 1) * this.font.ygap)
-    this.label.w += this.font.cw + this.font.xgap
+    this.label.mutate(label => {
+      label.w = w * this.font.cw + (w - 1) * this.font.xgap
+      label.h = (this.lines.length * this.font.ch) + ((this.lines.length - 1) * this.font.ygap)
+      label.w += this.font.cw + this.font.xgap
+    })
   }
 
   private reflectCursorPos() {
-    this._cursor.x = (this.col * this.font.xgap + this.col * this.font.cw) - Math.floor(this.font.xgap / 2)
-    this._cursor.y = (this.row * this.font.ygap + this.row * this.font.ch) - Math.floor(this.font.ygap / 2)
+    this._cursor.set('x', (this.col * this.font.xgap + this.col * this.font.cw) - Math.floor(this.font.xgap / 2))
+    this._cursor.set('y', (this.row * this.font.ygap + this.row * this.font.ch) - Math.floor(this.font.ygap / 2))
   }
 
   private scrollCursorIntoView() {
@@ -137,24 +139,24 @@ export class textarea extends view {
     }
 
     if (y < 0) {
-      this.scroll.scrolly -= -y
+      this.scroll.mutate(v => v.scrolly -= -y)
       this._layoutTree()
     }
 
     if (x < 0) {
-      this.scroll.scrollx -= -x
+      this.scroll.mutate(v => v.scrollx -= -x)
       this._layoutTree()
     }
 
     const maxy = this.scroll.h - this._cursor.h
     if (y > maxy) {
-      this.scroll.scrolly -= maxy - y
+      this.scroll.mutate(v => v.scrolly -= maxy - y)
       this._layoutTree()
     }
 
     const maxx = this.scroll.w - this._cursor.w
     if (x > maxx) {
-      this.scroll.scrollx -= maxx - x
+      this.scroll.mutate(v => v.scrollx -= maxx - x)
       this._layoutTree()
     }
   }
@@ -292,15 +294,15 @@ export class textarea extends view {
 
   private restartBlinking() {
     this.stopBlinking()
-    this._cursor.visible = true
+    this._cursor.set('visible', true)
     this.blink = setInterval(() => {
-      this._cursor.visible = !this._cursor.visible
+      this._cursor.set('visible', !this._cursor.visible)
       this.panel?.needsRedraw()
     }, 500)
   }
 
   private stopBlinking() {
-    this._cursor.visible = false
+    this._cursor.set('visible', false)
     clearInterval(this.blink)
   }
 

@@ -1,6 +1,5 @@
 import { dragMove } from "../util/drag.js"
 import { vacuumFirstChild } from "../util/layout.js"
-import { $ } from "../util/ref.js"
 import { panedxb, panedyb } from "./paned.js"
 import { make, view } from "./view.js"
 
@@ -8,12 +7,12 @@ export class scroll extends view {
 
   readonly scrollBy: number = 6
 
-  override init(): void {
-    const scrollx = $(0)
-    const scrolly = $(0)
+  readonly scrollx: number = 0
+  readonly scrolly: number = 0
 
-    const perw = $(0)
-    const perh = $(0)
+  override init(): void {
+    let perw = 0
+    let perh = 0
 
     const content = this.children[0]
 
@@ -26,11 +25,11 @@ export class scroll extends view {
     const trackh = make(view, { h: 3, background: 0x00000033, children: [barh] })
     const corner = make(view, { h: 3, background: 0x00000033 })
 
-    function makeTrackDraggable(xy: 'x' | 'y') {
+    const makeTrackDraggable = (xy: 'x' | 'y') => {
       const wh = xy === 'x' ? 'w' : 'h'
       const bar = xy === 'x' ? barh : barv
       const track = xy === 'x' ? trackh : trackv
-      const scroll = xy === 'x' ? scrollx : scrolly
+      const scroll = xy === 'x' ? 'scrollx' : 'scrolly'
 
       bar.onMouseUp = () => delete bar.onMouseMove
       bar.onMouseDown = (b, pos) => {
@@ -38,9 +37,9 @@ export class scroll extends view {
         bar.onMouseMove = dragMove(pos, {
           x: bar.x,
           y: bar.y,
-          move(x, y) {
+          move: (x, y) => {
             const per = { x, y }[xy] / (track[wh] - bar[wh])
-            scroll.val = per * (content[wh] - area[wh])
+            this.set(scroll, per * (content[wh] - area[wh]))
             fixScrollVals()
             adjustTracks()
           }
@@ -52,24 +51,20 @@ export class scroll extends view {
     makeTrackDraggable('y')
 
     const adjustTracks = () => {
-      const ph = Math.min(1, perh.val)
-      const pw = Math.min(1, perw.val)
-
+      const ph = Math.min(1, perh)
       const h = Math.max(3, Math.floor(trackv.h * ph))
-      const y = Math.floor((trackv.h - h) * (scrolly.val / (content.h - area.h)))
+      const y = Math.floor((trackv.h - h) * (this.scrolly / (content.h - area.h)))
       barv.set('visible', ph < 1)
       barv.set('y', y)
       barv.set('h', h)
 
+      const pw = Math.min(1, perw)
       const w = Math.max(3, Math.floor(trackh.w * pw))
-      const x = Math.floor((trackh.w - w) * (scrollx.val / (content.w - area.w)))
+      const x = Math.floor((trackh.w - w) * (this.scrollx / (content.w - area.w)))
       barh.set('visible', pw < 1)
       barh.set('x', x)
       barh.set('w', w)
     }
-
-    perh.watch(adjustTracks)
-    perw.watch(adjustTracks)
 
     this.set('children',
       [make(panedxb, {
@@ -82,27 +77,30 @@ export class scroll extends view {
 
     const layout = this.layout = () => {
       vacuumFirstChild.apply(this)
-      content.set('x', -scrollx.val)
-      content.set('y', -scrolly.val)
+      content.set('x', -this.scrollx)
+      content.set('y', -this.scrolly)
     }
 
     const fixScrollVals = () => {
-      scrollx.val = Math.floor(Math.max(0, Math.min(content.w - area.w, scrollx.val)))
-      scrolly.val = Math.floor(Math.max(0, Math.min(content.h - area.h, scrolly.val)))
+      this.mutate(scroll => {
+        scroll.scrollx = Math.floor(Math.max(0, Math.min(content.w - area.w, scroll.scrollx)))
+        scroll.scrolly = Math.floor(Math.max(0, Math.min(content.h - area.h, scroll.scrolly)))
+      })
     }
 
     this.onWheel = (px, py) => {
       px = px / 100 * this.scrollBy
       py = py / 100 * this.scrollBy
       if (this.panel?.isKeyDown('Shift')) [px, py] = [py, px]
-      scrollx.val += px
-      scrolly.val += py
+
+      this.mutate(scroll => {
+        scroll.scrollx += px
+        scroll.scrolly += py
+      })
+
       fixScrollVals()
       adjustTracks()
     }
-
-    scrollx.watch((x) => { layout(); this.panel?.needsRedraw() })
-    scrolly.watch((y) => { layout(); this.panel?.needsRedraw() })
 
     this.onResized = fixAll
 
@@ -110,11 +108,20 @@ export class scroll extends view {
       fixScrollVals()
       layout()
       setTimeout(() => {
-        perw.val = area.w / content.w
-        perh.val = area.h / content.h
+        perw = area.w / content.w
+        perh = area.h / content.h
+        adjustTracks()
       })
     }
 
+  }
+
+  override set(k: keyof this, newv: any): void {
+    super.set(k, newv)
+    if (k === 'scrollx' || k === 'scrolly') {
+      this.layout?.()
+      this.panel?.needsRedraw()
+    }
   }
 
 }
