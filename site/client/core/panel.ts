@@ -131,11 +131,11 @@ export class Panel {
     const mutroot = root.mutable()
     mutroot.w = w
     mutroot.h = h
-    mutroot.panel = this
     mutroot.commit()
 
     this.root = root
     this.root.layout?.()
+    this.root.adopted(this)
 
     this.hovered = this.root
 

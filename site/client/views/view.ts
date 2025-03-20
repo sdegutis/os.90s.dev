@@ -57,6 +57,15 @@ export class view {
   adjust?(): void
   layout?(): void
 
+  adopted(panel: Panel) {
+    const mthis = this.mutable()
+    mthis.panel = panel
+    mthis.commit()
+    for (const child of this.children) {
+      child.adopted(panel)
+    }
+  }
+
   layoutTree() {
     this.layout?.()
     for (const child of this.children) {
@@ -101,24 +110,24 @@ export class view {
 
     if (mode === 'size') {
       this.onResized()
-      this.needsRedraw()
-      this.needsMouseCheck()
+      this.panel?.needsRedraw()
+      this.panel?.needsMouseCheck()
     }
     else if (mode === 'pos') {
       this.onMoved?.()
-      this.needsRedraw()
-      this.needsMouseCheck()
+      this.panel?.needsRedraw()
+      this.panel?.needsMouseCheck()
     }
     else if (mode === 'adjust') {
       this.adjust?.()
-      this.needsRedraw()
+      this.panel?.needsRedraw()
     }
     else if (mode === 'layout') {
       this.layout?.()
-      this.needsRedraw()
+      this.panel?.needsRedraw()
     }
     else if (mode === 'redraw') {
-      this.needsRedraw()
+      this.panel?.needsRedraw()
     }
   }
 
@@ -129,18 +138,6 @@ export class view {
   protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: string) {
     ctx.fillStyle = bg
     ctx.fillRect(px, py, this.w, this.h)
-  }
-
-  protected needsRedraw() {
-    let node: view = this
-    while (node.parent) node = node.parent
-    node.panel?.needsRedraw()
-  }
-
-  protected needsMouseCheck() {
-    let node: view = this
-    while (node.parent) node = node.parent
-    node.panel?.needsMouseCheck()
   }
 
   get getPanel() {
