@@ -236,7 +236,9 @@ export class Panel {
     x: number,
     y: number,
   ) {
-    node.draw(this.ctx, x, y)
+    if (node.visible) {
+      node.draw(this.ctx, x, y)
+    }
 
     for (const child of node.children) {
       this.ctx.save()

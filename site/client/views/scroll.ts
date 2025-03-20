@@ -28,6 +28,20 @@ export class scroll extends view {
     const trackh = make(view, { h: 3, background: 0x003300ff, children: [barh] })
     const corner = make(view, { h: 3, background: 0x333300ff })
 
+    perh.watch(ph => {
+      if (ph > 1) ph = 1
+      barv.set('visible', ph < 1)
+      barv.set('h', trackv.h * ph)
+      barv.set('y', 0)
+    })
+
+    perw.watch(pw => {
+      if (pw > 1) pw = 1
+      barh.set('visible', pw < 1)
+      barh.set('w', trackh.w * pw)
+      barh.set('x', 0)
+    })
+
     this.set('children',
       [make(panedxb, {
         onChildResized: bubble,
@@ -62,9 +76,10 @@ export class scroll extends view {
 
     this.onChildResized = () => {
       layout()
-
-      perw.val = this.content.w / area.w
-      perh.val = this.content.h / area.h
+      setTimeout(() => {
+        perw.val = area.w / this.content.w
+        perh.val = area.h / this.content.h
+      })
     }
 
   }
