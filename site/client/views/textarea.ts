@@ -1,7 +1,7 @@
 import { crt2025 } from "../../shared/font.js"
 import { vacuumFirstChild } from "../util/layout.js"
-import type { scroll } from "./scroll.js"
-import { view } from "./view.js"
+import { scroll } from "./scroll.js"
+import { make, view } from "./view.js"
 
 export class textarea extends view {
 
@@ -49,24 +49,26 @@ export class textarea extends view {
   }
 
   override init(): void {
-    // this.children = [
-    //   this.scroll = $(Scroll, {
-    //     onMouseDown: (key) => this.onMouseDown(key),
-    //   },
-    //     this.label = $(View, {
-    //       adjust: () => { this.adjustTextLabel() },
-    //       draw: () => { this.drawTextLabel() },
-    //       onMouseDown: (key) => this.onMouseDown(key),
-    //     },
-    //       this._cursor = $(View, {
-    //         onMouseDown: (key) => this.onMouseDown(key),
-    //         visible: false,
-    //         w: this.font.cw + this.font.xgap,
-    //         h: this.font.ch + this.font.ygap,
-    //       })
-    //     )
-    //   )
-    // ]
+    this.set('children', [
+      this.scroll = make(scroll, {
+        onMouseDown: (...args) => this.onMouseDown(),
+        children: [
+          this.label = make(view, {
+            adjust: () => this.adjustTextLabel(),
+            draw: () => this.drawTextLabel(),
+            onMouseDown: () => this.onMouseDown(),
+            children: [
+              this._cursor = make(view, {
+                onMouseDown: () => this.onMouseDown(),
+                visible: false,
+                w: this.font.cw + this.font.xgap,
+                h: this.font.ch + this.font.ygap,
+              })
+            ]
+          })
+        ]
+      })
+    ])
 
     this.reflectCursorPos()
     // this.$watch('cursorColor', c => this._cursor.background = c)
@@ -78,7 +80,7 @@ export class textarea extends view {
     this.adjustTextLabel()
   }
 
-  override onMouseDown(button: number): void {
+  override onMouseDown(): void {
     this.focus()
 
     let x = this.mouse.x - this.label.x
