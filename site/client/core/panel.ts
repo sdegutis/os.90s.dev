@@ -60,11 +60,13 @@ export class Panel {
     this.rpc.listen('focus', () => {
       this.isFocused = true
       this.root.onPanelFocus?.()
+      this.focused?.onFocus?.()
     })
 
     this.rpc.listen('blur', () => {
       this.isFocused = false
       this.root.onPanelBlur?.()
+      this.focused?.onBlur?.()
     })
 
     this.rpc.listen('mouseentered', () => {
