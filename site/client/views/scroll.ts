@@ -1,3 +1,4 @@
+import { dragMove } from "../util/drag.js"
 import { $ } from "../util/ref.js"
 import { panedxb, panedyb } from "./paned.js"
 import { make, view } from "./view.js"
@@ -24,18 +25,34 @@ export class scroll extends view {
     const trackh = make(view, { h: 3, background: 0x003300ff, children: [barh] })
     const corner = make(view, { h: 3, background: 0x333300ff })
 
+    barv.onMouseUp = () => delete barv.onMouseMove
+    barv.onMouseDown = (b, pos) => {
+      if (b !== 0) return
+      barv.onMouseMove = dragMove(pos, {
+        x: barh.x,
+        y: barv.y,
+        move(x, y) {
+          const pos = { x, y }
+          const per = pos.y / (trackv.h - barv.h)
+          scrolly.val = per * (content.h - area.h)
+          fixScrollVals()
+          adjustTracks()
+        }
+      })
+    }
+
     const adjustTracks = () => {
       const ph = Math.min(1, perh.val)
       const pw = Math.min(1, perw.val)
 
       const h = Math.max(3, Math.floor(trackv.h * ph))
-      const y = Math.floor(trackv.h - h) * (scrolly.val / (content.h - area.h))
+      const y = Math.floor((trackv.h - h) * (scrolly.val / (content.h - area.h)))
       barv.set('visible', ph < 1)
       barv.set('y', y)
       barv.set('h', h)
 
       const w = Math.max(3, Math.floor(trackh.w * pw))
-      const x = Math.floor(trackh.w - w) * (scrollx.val / (content.w - area.w))
+      const x = Math.floor((trackh.w - w) * (scrollx.val / (content.w - area.w)))
       barh.set('visible', pw < 1)
       barh.set('x', x)
       barh.set('w', w)

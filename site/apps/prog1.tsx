@@ -42,7 +42,7 @@ const panel = await prog.makePanel({
   size: [100, 100],
   view: <PanelView title={'test panel'}>
     <scroll background={0x00330099}>
-      <border background={0x00003399} padding={2}>
+      <border background={0x00009999} padding={2}>
         <groupy gap={2} align={'a'}>
           {children}
         </groupy>
