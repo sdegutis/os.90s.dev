@@ -90,8 +90,6 @@ export class textarea extends view {
   override onMouseDown(button: number, pos: Pos): void {
     this.focus()
 
-    console.log(pos)
-
     let x = this.mouse.x - this.label.x
     let y = this.mouse.y - this.label.y
 

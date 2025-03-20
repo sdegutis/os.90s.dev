@@ -6,6 +6,8 @@ export class paned extends view {
   readonly dir: 'x' | 'y' = 'x'
   readonly vacuum: 'a' | 'b' = 'a'
 
+  override passthrough: boolean = true
+
   override init(): void {
     this.addLayoutKeys('gap', 'dir', 'vacuum', 'children')
     this.addAdjustKeys('children')
