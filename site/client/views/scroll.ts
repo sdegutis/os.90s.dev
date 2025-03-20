@@ -25,21 +25,30 @@ export class scroll extends view {
     const trackh = make(view, { h: 3, background: 0x003300ff, children: [barh] })
     const corner = make(view, { h: 3, background: 0x333300ff })
 
-    barv.onMouseUp = () => delete barv.onMouseMove
-    barv.onMouseDown = (b, pos) => {
-      if (b !== 0) return
-      barv.onMouseMove = dragMove(pos, {
-        x: barh.x,
-        y: barv.y,
-        move(x, y) {
-          const pos = { x, y }
-          const per = pos.y / (trackv.h - barv.h)
-          scrolly.val = per * (content.h - area.h)
-          fixScrollVals()
-          adjustTracks()
-        }
-      })
+    function makeTrackDraggable(xy: 'x' | 'y') {
+      const wh = xy === 'x' ? 'w' : 'h'
+      const bar = xy === 'x' ? barh : barv
+      const track = xy === 'x' ? trackh : trackv
+      const scroll = xy === 'x' ? scrollx : scrolly
+
+      bar.onMouseUp = () => delete bar.onMouseMove
+      bar.onMouseDown = (b, pos) => {
+        if (b !== 0) return
+        bar.onMouseMove = dragMove(pos, {
+          x: bar.x,
+          y: bar.y,
+          move(x, y) {
+            const per = { x, y }[xy] / (track[wh] - bar[wh])
+            scroll.val = per * (content[wh] - area[wh])
+            fixScrollVals()
+            adjustTracks()
+          }
+        })
+      }
     }
+
+    makeTrackDraggable('x')
+    makeTrackDraggable('y')
 
     const adjustTracks = () => {
       const ph = Math.min(1, perh.val)
