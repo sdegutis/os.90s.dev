@@ -224,7 +224,7 @@ export class Panel {
 
     for (const child of node.children) {
       const cx = Math.max(x, x + child.x)
-      const cy = Math.max(x, y + child.y)
+      const cy = Math.max(y, y + child.y)
       const cw = Math.min(x + this.w, x + child.x + child.w)
       const ch = Math.min(y + this.h, y + child.y + child.h)
 
