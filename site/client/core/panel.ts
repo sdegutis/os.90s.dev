@@ -223,17 +223,17 @@ export class Panel {
     node.draw(this.ctx, x, y)
 
     for (const child of node.children) {
-      const cx = x + child.x
-      const cy = y + child.y
-      const cw = Math.min(child.w, this.w - child.x)
-      const ch = Math.min(child.h, this.h - child.y)
+      const cx = Math.max(x, x + child.x)
+      const cy = Math.max(x, y + child.y)
+      const cw = Math.min(child.x + child.w, this.w - child.x + child.x)
+      const ch = Math.min(child.y + child.h, this.h - child.y + child.y)
 
       this.ctx.save()
       this.ctx.beginPath()
       this.ctx.rect(cx, cy, cw, ch)
       this.ctx.clip()
 
-      this.drawTree(child, cx, cy)
+      this.drawTree(child, x + child.x, y + child.y)
 
       this.ctx.restore()
     }
