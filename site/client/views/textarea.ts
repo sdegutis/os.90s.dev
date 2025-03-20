@@ -22,7 +22,7 @@ export class textarea extends view {
     this.highlight()
     this.row = Math.min(this.row, this.lines.length - 1)
     this.fixCol()
-    this._layoutTree()
+    this.adjustTextLabel()
   }
 
   highlightings: Record<string, [number, RegExp]> = {}
@@ -91,10 +91,6 @@ export class textarea extends view {
     }
   }
 
-  _layoutTree() {
-    this.adjustTextLabel()
-  }
-
   override onMouseDown(): void {
     this.focus()
 
@@ -110,7 +106,7 @@ export class textarea extends view {
     this.restartBlinking()
     this.reflectCursorPos()
     this.scrollCursorIntoView()
-    this._layoutTree()
+    this.adjustTextLabel()
   }
 
   private drawTextLabel(ctx: OffscreenCanvasRenderingContext2D, panx: number, pany: number) {
@@ -156,24 +152,24 @@ export class textarea extends view {
 
     if (y < 0) {
       this.scroll.mutate(v => v.scrolly -= -y)
-      this._layoutTree()
+      this.adjustTextLabel()
     }
 
     if (x < 0) {
       this.scroll.mutate(v => v.scrollx -= -x)
-      this._layoutTree()
+      this.adjustTextLabel()
     }
 
     const maxy = this.scroll.h - this._cursor.h
     if (y > maxy) {
       this.scroll.mutate(v => v.scrolly -= maxy - y)
-      this._layoutTree()
+      this.adjustTextLabel()
     }
 
     const maxx = this.scroll.w - this._cursor.w
     if (x > maxx) {
       this.scroll.mutate(v => v.scrollx -= maxx - x)
-      this._layoutTree()
+      this.adjustTextLabel()
     }
   }
 
@@ -231,7 +227,7 @@ export class textarea extends view {
       this.lines[this.row] = a + '  ' + b
       this.col += 2
       this.end = this.col
-      this._layoutTree()
+      this.adjustTextLabel()
     }
     else if (key === 'Backspace') {
       if (this.col > 0) {
@@ -240,13 +236,13 @@ export class textarea extends view {
           this.lines[this.row] = a.slice(0, -2) + b
           this.col -= 2
           this.end = this.col
-          this._layoutTree()
+          this.adjustTextLabel()
         }
         else {
           this.lines[this.row] = a.slice(0, -1) + b
           this.col--
           this.end = this.col
-          this._layoutTree()
+          this.adjustTextLabel()
         }
       }
       else if (this.row > 0) {
@@ -255,19 +251,19 @@ export class textarea extends view {
         this.lines.splice(this.row, 1)
         this.row--
         this.col = this.end
-        this._layoutTree()
+        this.adjustTextLabel()
       }
     }
     else if (key === 'Delete') {
       if (this.col < this.lines[this.row].length) {
         const [a, b] = this.halves()
         this.lines[this.row] = a + b.slice(1)
-        this._layoutTree()
+        this.adjustTextLabel()
       }
       else if (this.row < this.lines.length - 1) {
         this.lines[this.row] += this.lines[this.row + 1]
         this.lines.splice(this.row + 1, 1)
-        this._layoutTree()
+        this.adjustTextLabel()
       }
     }
     else if (key === 'Enter') {
@@ -275,14 +271,14 @@ export class textarea extends view {
       this.lines[this.row] = a
       this.lines.splice(++this.row, 0, b)
       this.end = this.col = 0
-      this._layoutTree()
+      this.adjustTextLabel()
     }
     else if (key.length === 1 && !this.panel?.isKeyDown('Control') && !this.panel?.isKeyDown('Alt')) {
       const [a, b] = this.halves()
       this.lines[this.row] = a + key + b
       this.col++
       this.end = this.col
-      this._layoutTree()
+      this.adjustTextLabel()
     }
     else {
       return false
