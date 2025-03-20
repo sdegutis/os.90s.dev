@@ -23,12 +23,21 @@ export class Sys {
     this.width = w
     this.height = h
 
+    let allowRefreshTimer: number | null = null
+
     canvas.oncontextmenu = (e) => {
       e.preventDefault()
     }
 
     canvas.onkeydown = (e) => {
-      e.preventDefault()
+      if (e.key === 'F5') {
+        if (allowRefreshTimer) return
+        e.preventDefault()
+        allowRefreshTimer = setTimeout(() => allowRefreshTimer = null, 300)
+      }
+      else {
+        e.preventDefault()
+      }
 
       if (e.repeat) return
       this.keymap.add(e.key)
