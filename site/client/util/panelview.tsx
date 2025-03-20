@@ -11,8 +11,8 @@ import { $, Ref } from "./ref.js"
 const minImage = new Bitmap([0x333333ff], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
 const maxImage = new Bitmap([0x333333ff], 4, [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1,])
 const axeImage = new Bitmap([0x333333ff], 4, [1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1,])
+const mnuImage = new Bitmap([0x333333ff], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1])
 const adjImage = new Bitmap([0xffffff77], 3, [0, 0, 1, 0, 0, 1, 1, 1, 1,])
-const menubuttonImage = new Bitmap([0x333333ff], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1])
 
 const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
   0, 1, 1, 1, 0,
@@ -115,7 +115,7 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
         <spacedx onMouseDown={titleBarMouseDown}>
           <border>
             <groupx gap={1}>
-              <button padding={2}><image bitmap={menubuttonImage} /></button>
+              <button padding={2}><image bitmap={mnuImage} /></button>
               <label text={data.title} />
             </groupx>
           </border>
@@ -139,8 +139,8 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
     </border>
   </view>
 
-  function CloseB(data: JSX.DataFor<'button'>) {
-    return <button {...data} hoverBackground={0x99000055} pressBackground={0x44000099} />
-  }
+}
 
+function CloseB(data: JSX.DataFor<'button'>) {
+  return <button {...data} hoverBackground={0x99000055} pressBackground={0x44000099} />
 }
