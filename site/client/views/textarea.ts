@@ -13,6 +13,8 @@ export class textarea extends view {
   private label!: view
   private _cursor!: view
 
+  override canFocus: boolean = true
+
   get text() { return this.lines.join('\n') }
   set text(s: string) {
     this.lines = s.split('\n')
@@ -55,7 +57,7 @@ export class textarea extends view {
         children: [
           this.label = make(view, {
             adjust: () => this.adjustTextLabel(),
-            draw: () => this.drawTextLabel(),
+            draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),
             onMouseDown: () => this.onMouseDown(),
             children: [
               this._cursor = make(view, {
@@ -98,16 +100,15 @@ export class textarea extends view {
     this._layoutTree()
   }
 
-  private drawTextLabel() {
-    // for (let y = 0; y < this.lines.length; y++) {
-    //   const line = this.lines[y]
-    //   const py = y * this.font.ch + y * this.font.ygap
-    //   for (let x = 0; x < line.length; x++) {
-    //     const char = this.font.chars[line[x]]
-    //     const px = x * this.font.cw + x * this.font.xgap
-    //     char.draw(px, py, this.colors[y][x])
-    //   }
-    // }
+  private drawTextLabel(ctx: OffscreenCanvasRenderingContext2D, panx: number, pany: number) {
+    for (let y = 0; y < this.lines.length; y++) {
+      const line = this.lines[y]
+      const py = y * this.font.ch + y * this.font.ygap
+      for (let x = 0; x < line.length; x++) {
+        const px = x * this.font.cw + x * this.font.xgap
+        this.font.print(ctx, panx + px, pany + py, this.colors[y][x], line[x])
+      }
+    }
   }
 
   private adjustTextLabel() {
