@@ -159,20 +159,22 @@ export class view {
 
   init?(): void
 
-  setup(data: Record<string, any>, children: readonly view[]) {
-    (this as any).children = children
-    for (const child of this.children) {
-      (child as any).parent = this
-    }
-
+  setup(data: Record<string, any>) {
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
         (this as any)[k] = v.val
         v.watch(val => this.mutate(v => v[k as keyof this] = val))
       }
+      else if (k === 'children' && !(v instanceof Array)) {
+        (this as any).children = [v]
+      }
       else {
         (this as any)[k] = v
       }
+    }
+
+    for (const child of this.children) {
+      (child as any).parent = this
     }
 
     this.adjust?.()
@@ -212,11 +214,7 @@ export function make<T extends view>(
   data: { -readonly [K in keyof T]?: T[K] },
 ): T {
   const view = new ctor()
-
-  const children: readonly view[] = data.children ?? []
-  delete data.children
-
-  view.setup(data, children)
+  view.setup(data)
 
   const protos = []
   let proto: view | undefined = view

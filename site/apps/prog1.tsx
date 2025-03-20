@@ -25,12 +25,18 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
 const prog = new Program()
 await prog.init()
 
+const ch = $<view[]>([])
+
+setInterval(() => {
+  ch.val = [...ch.val, <label text={Date.now().toString()} background={0x00003399} />]
+}, 1000)
+
 const panel = await prog.makePanel({
   size: [100, 100],
   view: <PanelView title={'test panel'}>
     <panedya background={0x00330099} gap={3}>
       <label text={'yep'} background={0x33000099} />
-      <label text={'cool'} background={0x00003399} />
+      <groupy gap={2} background={0x00003399} children={ch} />
     </panedya>
   </PanelView>,
 })
