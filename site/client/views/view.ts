@@ -53,6 +53,7 @@ export class view {
 
   onFocus?(): void
   onKeyDown?(key: string): void
+  onKeyUp?(key: string): void
   onBlur?(): void
 
   adjust?(): void

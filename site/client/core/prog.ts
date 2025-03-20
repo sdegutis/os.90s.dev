@@ -25,17 +25,21 @@ export class Program {
 
     this.rpc.listen('keydown', (key) => {
       this.keymap.add(key)
-      const focused = [...this.panels].find(p => p.isFocused)
-      focused?.onKeyDown(key)
+      this.focusedPanel?.onKeyDown(key)
     })
 
     this.rpc.listen('keyup', (key) => {
       this.keymap.delete(key)
+      this.focusedPanel?.onKeyUp(key)
     })
 
     this.rpc.listen('ping', (n) => {
       this.rpc.send('pong', [n % 2 === 0 ? n + 2 : n + 1])
     })
+  }
+
+  get focusedPanel() {
+    return [...this.panels].find(p => p.isFocused)
   }
 
   async makePanel(config: {

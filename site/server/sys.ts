@@ -28,6 +28,7 @@ export class Sys {
     }
 
     canvas.onkeydown = (e) => {
+      if (e.repeat) return
       this.keymap.add(e.key)
       Process.all.forEach(p => p.rpc.send('keydown', [e.key]))
       this.redrawAllPanels()

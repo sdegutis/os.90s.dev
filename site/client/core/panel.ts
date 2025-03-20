@@ -140,6 +140,22 @@ export class Panel {
 
   onKeyDown(key: string) {
     this.focused?.onKeyDown?.(key)
+
+    this.clearRepeater?.()
+    let repeater = setTimeout(() => {
+      repeater = setInterval(() => {
+        this.focused?.onKeyDown?.(key)
+      }, 50)
+      this.clearRepeater = () => clearInterval(repeater)
+    }, 500)
+    this.clearRepeater = () => clearTimeout(repeater)
+  }
+
+  clearRepeater?: () => void
+
+  onKeyUp(key: string) {
+    this.clearRepeater?.()
+    this.focused?.onKeyUp?.(key)
   }
 
   move(x: number, y: number) {
