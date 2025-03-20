@@ -50,6 +50,10 @@ export class Panel {
       this.y = (cascadeFrom?.y ?? 0) + 10
     }
 
+    this.rpc.listen('focus', () => {
+      this.proc.focus(this)
+    })
+
     this.rpc.once('close').then(() => {
       proc.closePanel(this)
     })

@@ -77,6 +77,10 @@ export class Process {
     })
   }
 
+  focus(panel: Panel) {
+    this.sys.focusPanel(panel)
+  }
+
   useCursor(c: Cursor | null) {
     this.sys.useCursor(c)
   }

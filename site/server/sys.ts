@@ -64,11 +64,7 @@ export class Sys {
         return
       }
 
-      if (this.focused !== this.hovered) {
-        this.focused?.rpc.send('blur', [])
-        this.focused = this.hovered
-        this.focused.rpc.send('focus', [])
-      }
+      this.focusPanel(this.hovered)
 
       this.clicking = this.hovered
       this.clicking.moveToFront()
@@ -119,6 +115,14 @@ export class Sys {
 
   private drawCursor() {
     cursor.draw(this.ctx, this.mouse.x, this.mouse.y)
+  }
+
+  focusPanel(panel: Panel) {
+    if (this.focused !== panel) {
+      this.focused?.rpc.send('blur', [])
+      this.focused = panel
+      this.focused.rpc.send('focus', [])
+    }
   }
 
   removePanel(panel: Panel) {

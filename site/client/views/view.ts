@@ -88,12 +88,16 @@ export class view {
   }
 
   focus() {
-    this.panel?.focus(this)
+    this.panel?.focusView(this)
   }
 
   init?(): void
 
-  setup(data: Record<string, any>) {
+  setup(data: { -readonly [K in keyof this]?: this[K] }) {
+    if (data.children instanceof view) {
+      data.children = [data.children]
+    }
+
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
         this.set(k as keyof this, v.val)
@@ -172,11 +176,6 @@ export function make<T extends view>(
   data: { -readonly [K in keyof T]?: T[K] },
 ): T {
   const v = new ctor()
-
-  if (data.children instanceof view) {
-    data.children = [data.children]
-  }
-
   v.setup(data)
 
   const protos = []

@@ -87,7 +87,7 @@ export class Panel {
 
       let node: view | null = this.hovered
       while (node) {
-        if (!node.passthrough && this.focus(node)) {
+        if (!node.passthrough && this.focusView(node)) {
           return
         }
         node = node.parent
@@ -145,8 +145,17 @@ export class Panel {
     }
   }
 
-  focus(node: view) {
+  focus() {
+    this.rpc.send('focus', [])
+  }
+
+  focusView(node: view) {
     if (!node.canFocus) return false
+
+    if (!this.isFocused) {
+      this.focused = node
+      return true
+    }
 
     this.focused?.onBlur?.()
     this.focused = node
