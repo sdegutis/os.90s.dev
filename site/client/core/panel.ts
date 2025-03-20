@@ -85,10 +85,7 @@ export class Panel {
 
       let node: view | null = this.hovered
       while (node) {
-        if (!node.passthrough && node.canFocus) {
-          this.focused?.onBlur?.()
-          this.focused = node
-          this.focused?.onFocus?.()
+        if (!node.passthrough && this.focus(node)) {
           return
         }
         node = node.parent
@@ -144,6 +141,16 @@ export class Panel {
     for (const child of node.children) {
       this.adoptTree(child)
     }
+  }
+
+  focus(node: view) {
+    if (!node.canFocus) return false
+
+    this.focused?.onBlur?.()
+    this.focused = node
+    this.focused?.onFocus?.()
+
+    return true
   }
 
   onKeyDown(key: string) {
@@ -291,6 +298,10 @@ export class Panel {
   close() {
     this.rpc.send('close', [])
     this.didClose.dispatch()
+  }
+
+  isKeyDown(key: string) {
+    return this.keymap.has(key)
   }
 
   private fixMouse() {

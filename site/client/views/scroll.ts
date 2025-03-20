@@ -1,4 +1,5 @@
 import { dragMove } from "../util/drag.js"
+import { vacuumFirstChild } from "../util/layout.js"
 import { $ } from "../util/ref.js"
 import { panedxb, panedyb } from "./paned.js"
 import { make, view } from "./view.js"
@@ -80,13 +81,7 @@ export class scroll extends view {
     )
 
     const layout = this.layout = () => {
-      this.firstChild?.mutate(v => {
-        v.x = 0
-        v.y = 0
-        v.w = this.w
-        v.h = this.h
-      })
-
+      vacuumFirstChild.apply(this)
       content.set('x', -scrollx.val)
       content.set('y', -scrolly.val)
     }
@@ -99,7 +94,7 @@ export class scroll extends view {
     this.onWheel = (px, py) => {
       px = px / 100 * this.scrollBy
       py = py / 100 * this.scrollBy
-      if (this.panel?.keymap.has('Shift')) [px, py] = [py, px]
+      if (this.panel?.isKeyDown('Shift')) [px, py] = [py, px]
       scrollx.val += px
       scrolly.val += py
       fixScrollVals()

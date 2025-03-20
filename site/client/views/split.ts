@@ -65,11 +65,11 @@ class SplitDivider extends view {
   private cursorClaim(n: number) {
     this.cursorClaims += n
     if (this.cursorClaims === 0) {
-      this.getPanel?.setCursor(null)
+      this.panel?.setCursor(null)
     }
     else if (this.cursorClaims === n) {
       if (this.split.min === this.split.max) return
-      this.getPanel?.setCursor(this.cursor)
+      this.panel?.setCursor(this.cursor)
     }
   }
 

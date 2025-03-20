@@ -7,6 +7,7 @@ import { paned, panedxa, panedxb, panedya, panedyb } from "./paned.js"
 import { scroll } from "./scroll.js"
 import { spaced, spacedx, spacedy } from "./spaced.js"
 import { split, splitx, splity } from "./split.js"
+import { textarea } from "./textarea.js"
 import { view } from "./view.js"
 
 export const primitives = {
@@ -16,6 +17,7 @@ export const primitives = {
   label,
   image,
   button,
+  textarea,
 
   scroll,
 

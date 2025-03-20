@@ -87,10 +87,8 @@ export class view {
     ctx.fillRect(px, py, this.w, this.h)
   }
 
-  get getPanel() {
-    let node: view = this
-    while (node.parent) node = node.parent
-    return node.panel
+  focus() {
+    this.panel?.focus(this)
   }
 
   init?(): void
