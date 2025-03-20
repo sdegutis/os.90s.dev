@@ -103,7 +103,9 @@ export class Panel {
 
     const px = Math.floor(this.w / 2 - size.w / 2)
     const py = Math.floor(this.h / 2 - size.h / 2)
-    font.print(ctx, px, py, 0x000000ff, str)
+
+    font.print(ctx, px + 1, py + 1, 0x000000ff, str)
+    font.print(ctx, px, py, 0xffffffff, str)
 
     this.img = canvas.transferToImageBitmap()
   }
