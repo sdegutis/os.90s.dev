@@ -1,4 +1,5 @@
 import { crt2025, Font } from "../../shared/font.js"
+import { colorFor } from "../util/colors.js"
 import { vacuumFirstChild } from "../util/layout.js"
 import { scroll } from "./scroll.js"
 import { make, view } from "./view.js"
@@ -57,7 +58,11 @@ export class textarea extends view {
         children: [
           this.label = make(view, {
             adjust: () => this.adjustTextLabel(),
-            draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),
+            draw: (ctx, px, py) => {
+              ctx.fillStyle = colorFor(0x99000099)
+              ctx.fillRect(px, py, this.label.w, this.label.h)
+              this.drawTextLabel(ctx, px, py)
+            },
             onMouseDown: () => this.onMouseDown(),
             children: [
               this._cursor = make(view, {
