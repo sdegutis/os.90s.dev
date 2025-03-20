@@ -6,17 +6,24 @@ export class scroll extends view {
   readonly scrolly: number = 0
   readonly amount: number = 6
 
+  readonly area = make(view, {})
+
   readonly trackx = make(view, { w: 3, background: 0xffffff22, onMouseDown: () => this.dragTrack(this.trackx) })
   readonly tracky = make(view, { h: 3, background: 0xffffff22, onMouseDown: () => this.dragTrack(this.tracky) })
 
   readonly barx = make(view, { w: 3, background: 0x00000099, children: [this.trackx] })
   readonly bary = make(view, { h: 3, background: 0x00000099, children: [this.tracky] })
 
+  readonly content!: view
+
   override init(): void {
     this.addLayoutKeys('scrollx', 'scrolly')
 
+    this.set('content', this.children[0]!)
+    this.area.set('children', [this.content])
+
     const mthis = this.mutable()
-    mthis.children = [...this.children, this.barx, this.bary]
+    mthis.children = [this.area, this.barx, this.bary]
     mthis.commit()
   }
 
@@ -30,17 +37,15 @@ export class scroll extends view {
   }
 
   private adjustTracks() {
-    const contentView = this.firstChild!
-
     const trackx = this.trackx.mutable()
     const tracky = this.tracky.mutable()
 
-    const py = Math.min(1, this.h / contentView.h)
-    trackx.y = Math.round(this.scrolly / (contentView.h - this.h) * this.barx.h * (1 - py))
+    const py = Math.min(1, this.h / this.content.h)
+    trackx.y = Math.round(this.scrolly / (this.content.h - this.h) * this.barx.h * (1 - py))
     trackx.h = Math.round(this.barx.h * py)
 
-    const px = Math.min(1, this.w / contentView.w)
-    tracky.x = Math.round(this.scrollx / (contentView.w - this.w) * this.bary.w * (1 - px))
+    const px = Math.min(1, this.w / this.content.w)
+    tracky.x = Math.round(this.scrollx / (this.content.w - this.w) * this.bary.w * (1 - px))
     tracky.w = Math.round(this.bary.w * px)
 
     trackx.commit()
@@ -63,17 +68,21 @@ export class scroll extends view {
   }
 
   override layout(): void {
-    if (!this.firstChild) return
+    if (!this.content) return
 
-    const firstChild = this.firstChild.mutable()
+    const content = this.content.mutable()
+    const area = this.area.mutable()
     const barx = this.barx.mutable()
     const bary = this.bary.mutable()
     const trackx = this.trackx.mutable()
     const tracky = this.tracky.mutable()
 
+    area.w = this.w - barx.w
+    area.h = this.h - bary.h
+
     this.fixScrollPos()
-    firstChild.x = -this.scrollx
-    firstChild.y = -this.scrolly
+    content.x = -this.scrollx
+    content.y = -this.scrolly
 
     barx.x = this.w - barx.w
     barx.y = 0
@@ -89,7 +98,8 @@ export class scroll extends view {
     tracky.y = 0
     tracky.h = bary.h
 
-    firstChild.commit()
+    content.commit()
+    area.commit()
     barx.commit()
     bary.commit()
     trackx.commit()
@@ -108,60 +118,8 @@ export class scroll extends view {
   }
 
   private fixScrollPos() {
-    if (!this.firstChild) return
-
-    const mthis = this.mutable()
-
-    mthis.scrollx = Math.max(0, Math.min(this.firstChild.w - this.w, this.scrollx))
-    mthis.scrolly = Math.max(0, Math.min(this.firstChild.h - this.h, this.scrolly))
-
-    mthis.commit()
+    this.set('scrollx', Math.max(0, Math.min(this.content.w - this.w, this.scrollx)))
+    this.set('scrolly', Math.max(0, Math.min(this.content.h - this.h, this.scrolly)))
   }
-
-
-
-
-
-
-  // readonly borderColor: number = 0x00000000
-  // readonly padding: number = 0
-
-  // override passthrough: boolean = true
-
-  // override init(): void {
-  //   this.addAdjustKeys('padding')
-  //   this.addRedrawKeys('borderColor')
-  // }
-
-  // override adjust(): void {
-  //   const mutthis = this.mutable()
-  //   mutthis.w = this.padding + (this.firstChild?.w ?? 0) + this.padding
-  //   mutthis.h = this.padding + (this.firstChild?.h ?? 0) + this.padding
-  //   mutthis.commit()
-  // }
-
-  // override layout(): void {
-  //   this.firstChild?.mutate(c => {
-  //     c.x = this.padding
-  //     c.y = this.padding
-  //   })
-  // }
-
-  // override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
-  //   super.draw(ctx, px, py)
-  //   this.drawBorder(ctx, px, py, colorFor(this.borderColor))
-  // }
-
-  // protected drawBorder(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, col: string) {
-  //   ctx.strokeStyle = col
-  //   for (let i = 0; i < this.padding; i++) {
-  //     ctx.strokeRect(
-  //       px + i + .5,
-  //       py + i + .5,
-  //       this.w - i * 2 - 1,
-  //       this.h - i * 2 - 1,
-  //     )
-  //   }
-  // }
 
 }
