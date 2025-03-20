@@ -19,7 +19,7 @@ export class view {
 
   private readonly adjustKeys = new Set<string>(['w', 'h'])
   private readonly layoutKeys = new Set<string>([])
-  private readonly redrawKeys = new Set<string>(['background'])
+  private readonly redrawKeys = new Set<string>(['background', 'visible'])
 
   addAdjustKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.adjustKeys as Set<keyof this>).add(key)) }
   addLayoutKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.layoutKeys as Set<keyof this>).add(key)) }
