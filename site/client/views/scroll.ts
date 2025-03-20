@@ -1,4 +1,4 @@
-import { make, view } from "./view.js"
+import { make, view, type Pos } from "./view.js"
 
 export class scroll extends view {
 
@@ -83,15 +83,10 @@ export class scroll extends view {
     // sys.trackMouse({ move, up })
   }
 
-  override onMouseEnter(): void {
-    // this.cancelTracker = sys.trackMouse({
-    //   autostop: false,
-    //   move: () => {
-    //     if (this.cancelClaim) clearTimeout(this.cancelClaim)
-    //     else this.scrollVisibleClaims++
-    //     setTimeout(() => { this.scrollVisibleClaims-- }, 500)
-    //   }
-    // })
+  override onMouseMove(pos: Pos): void {
+    if (this.cancelClaim) clearTimeout(this.cancelClaim)
+    else this.mutate(v => v.scrollVisibleClaims++)
+    setTimeout(() => { this.mutate(v => v.scrollVisibleClaims--) }, 500)
   }
 
   override onMouseExit(): void {

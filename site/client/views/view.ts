@@ -16,13 +16,13 @@ export class view {
   get firstChild(): view | undefined { return this.children[0] }
   get lastChild(): view | undefined { return this.children[this.children.length - 1] }
 
-  readonly adjustKeys: readonly string[] = ['w', 'h']
-  readonly layoutKeys: readonly string[] = []
-  readonly redrawKeys: readonly string[] = ['background']
+  private readonly adjustKeys = new Set<string>(['w', 'h'])
+  private readonly layoutKeys = new Set<string>([])
+  private readonly redrawKeys = new Set<string>(['background'])
 
-  addAdjustKeys(...keys: (keyof this)[]) { (this.adjustKeys as (keyof this)[]).push(...keys) }
-  addLayoutKeys(...keys: (keyof this)[]) { (this.layoutKeys as (keyof this)[]).push(...keys) }
-  addRedrawKeys(...keys: (keyof this)[]) { (this.redrawKeys as (keyof this)[]).push(...keys) }
+  addAdjustKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.adjustKeys as Set<keyof this>).add(key)) }
+  addLayoutKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.layoutKeys as Set<keyof this>).add(key)) }
+  addRedrawKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.redrawKeys as Set<keyof this>).add(key)) }
 
   readonly x: number = 0
   readonly y: number = 0
@@ -103,9 +103,9 @@ export class view {
       }
       else if (k === 'w' || k === 'h') mode ??= 'size'
       else if (k === 'x' || k === 'y') mode ??= 'pos'
-      else if (this.adjustKeys.includes(k)) mode ??= 'adjust'
-      else if (this.layoutKeys.includes(k)) mode ??= 'layout'
-      else if (this.redrawKeys.includes(k)) mode ??= 'redraw'
+      else if (this.adjustKeys.has(k)) mode ??= 'adjust'
+      else if (this.layoutKeys.has(k)) mode ??= 'layout'
+      else if (this.redrawKeys.has(k)) mode ??= 'redraw'
     }
 
     if (mode === 'size') {

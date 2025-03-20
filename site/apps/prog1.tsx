@@ -36,8 +36,11 @@ const panel = await prog.makePanel({
   view: <PanelView title={'test panel'}>
     <scroll background={0x00330099}>
       <border background={0x00003399} padding={2}>
-        <groupy gap={2}>
-          {Array(20).keys().map(i => <label text={`view ${i.toString()}`} />).toArray()}
+        <groupy gap={2} align={'a'}>
+          {[
+            <button padding={2}><label text={'hey'} /></button>,
+            ...Array(20).keys().map(i => <label text={`view ${i.toString()}`} />)
+          ]}
         </groupy>
       </border>
     </scroll>
