@@ -83,17 +83,16 @@ export class view {
     this.adjust?.()
   }
 
-  protected set(k: string, newv: any) {
-    const key = k as keyof this
-    const oldv = this[key]
+  set(k: keyof this, newv: any) {
+    const oldv = this[k]
     if (oldv === newv) return
 
-    this[key] = newv
+    this[k] = newv
 
     if (k === 'children') {
       for (const c of newv) {
         const child = c as view
-        child.mutate(v => v.parent = this)
+        child.set('parent', this)
       }
     }
     else if (k === 'w' || k === 'h') {
@@ -106,15 +105,15 @@ export class view {
       this.panel?.needsRedraw()
       this.panel?.needsMouseCheck()
     }
-    else if (this.adjustKeys.has(k)) {
+    else if (this.adjustKeys.has(k as string)) {
       this.adjust?.()
       this.panel?.needsRedraw()
     }
-    else if (this.layoutKeys.has(k)) {
+    else if (this.layoutKeys.has(k as string)) {
       this.layout?.()
       this.panel?.needsRedraw()
     }
-    else if (this.redrawKeys.has(k)) {
+    else if (this.redrawKeys.has(k as string)) {
       this.panel?.needsRedraw()
     }
   }
@@ -142,7 +141,7 @@ export class view {
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
         (this as any)[k] = v.val
-        v.watch(val => this.mutate(v => v[k as keyof this] = val))
+        v.watch(val => this.set(k as keyof this, val))
       }
       else if (k === 'children' && !(v instanceof Array)) {
         (this as any).children = [v]
@@ -169,7 +168,7 @@ export class view {
     proxy.commit = () => {
       delete mut.commit
       for (const key in mut) {
-        this.set(key, mut[key])
+        this.set(key as keyof this, mut[key])
       }
     }
     return proxy

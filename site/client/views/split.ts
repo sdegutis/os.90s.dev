@@ -29,7 +29,7 @@ class SplitDivider extends view {
 
   override init(): void {
     this.addRedrawKeys('hovered', 'pressed')
-    this.mutate(v => v.background = this.dividerColor)
+    this.set('background', this.dividerColor)
     this.cursor = this.split.dir === 'x' ? xresize : yresize
   }
 
@@ -107,12 +107,12 @@ class SplitDivider extends view {
       }
     }
 
-    this.mutate(v => v.pressed = true)
+    this.set('pressed', true)
 
     this.onMouseMove = dragMove(pos, b)
     this.onMouseUp = () => {
       this.cursorClaim(-1)
-      this.mutate(v => v.pressed = false)
+      this.set('pressed', false)
       delete this.onMouseMove
       delete this.onMouseUp
     }
