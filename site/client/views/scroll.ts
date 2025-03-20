@@ -10,13 +10,17 @@ export class scroll extends view {
   readonly scrollx: number = 0
   readonly scrolly: number = 0
 
+  private _area!: view
+  get area() { return this._area }
+
   override init(): void {
     let perw = 0
     let perh = 0
 
     const content = this.children[0]
 
-    const area = make(view, { onChildResized: fixAll, children: [content] })
+    const area = make(view, { passthrough: true, onChildResized: fixAll, children: [content] })
+    this._area = area
 
     const barv = make(view, { w: 3, background: 0xffffff33 })
     const barh = make(view, { h: 3, background: 0xffffff33 })

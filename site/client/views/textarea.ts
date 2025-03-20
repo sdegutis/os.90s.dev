@@ -1,7 +1,7 @@
 import { crt2025, Font } from "../../shared/font.js"
 import { vacuumFirstChild } from "../util/layout.js"
 import { scroll } from "./scroll.js"
-import { make, view } from "./view.js"
+import { make, view, type Pos } from "./view.js"
 
 export class textarea extends view {
 
@@ -55,7 +55,7 @@ export class textarea extends view {
 
   override init(): void {
     this._cursor = make(view, {
-      onMouseDown: () => this.onMouseDown(),
+      onMouseDown: (...args) => this.onMouseDown(...args),
       background: this.cursorColor,
       visible: false,
       w: this.font.cw + this.font.xgap,
@@ -65,12 +65,12 @@ export class textarea extends view {
     this.label = make(view, {
       adjust: () => this.adjustTextLabel(),
       draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),
-      onMouseDown: () => this.onMouseDown(),
+      onMouseDown: (...args) => this.onMouseDown(...args),
       children: [this._cursor]
     })
 
     this.scroll = make(scroll, {
-      onMouseDown: (...args) => this.onMouseDown(),
+      onMouseDown: (...args) => this.onMouseDown(...args),
       children: [this.label]
     })
 
@@ -87,8 +87,10 @@ export class textarea extends view {
     }
   }
 
-  override onMouseDown(): void {
+  override onMouseDown(button: number, pos: Pos): void {
     this.focus()
+
+    console.log(pos)
 
     let x = this.mouse.x - this.label.x
     let y = this.mouse.y - this.label.y
@@ -157,13 +159,13 @@ export class textarea extends view {
       this.adjustTextLabel()
     }
 
-    const maxy = this.scroll.h - this._cursor.h
+    const maxy = this.scroll.area.h - this._cursor.h
     if (y > maxy) {
       this.scroll.mutate(v => v.scrolly -= maxy - y)
       this.adjustTextLabel()
     }
 
-    const maxx = this.scroll.w - this._cursor.w
+    const maxx = this.scroll.area.w - this._cursor.w
     if (x > maxx) {
       this.scroll.mutate(v => v.scrollx -= maxx - x)
       this.adjustTextLabel()

@@ -150,6 +150,7 @@ export class Panel {
   }
 
   focusView(node: view) {
+    if (node === this.focused) return true
     if (!node.canFocus) return false
 
     if (!this.isFocused) {
