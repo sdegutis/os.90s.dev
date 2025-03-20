@@ -8,7 +8,6 @@ export class textarea extends view {
 
   readonly font: Font = crt2025
   readonly color: number = 0xffffffff
-  private lines: string[] = ['']
 
   private scroll!: scroll
   private label!: view
@@ -16,8 +15,12 @@ export class textarea extends view {
 
   override canFocus: boolean = true
 
-  get text() { return this.lines.join('\n') }
+  _text = ''
+  private lines: string[] = [this._text]
+
+  get text() { return this._text }
   set text(s: string) {
+    this._text = s
     this.lines = s.split('\n')
     this.highlight()
     this.row = Math.min(this.row, this.lines.length - 1)
