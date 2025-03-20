@@ -1,4 +1,4 @@
-import { make, view, type Pos } from "./view.js"
+import { make, view } from "./view.js"
 
 export class scroll extends view {
 
@@ -12,31 +12,12 @@ export class scroll extends view {
   readonly barx = make(view, { w: 3, background: 0x00000099, children: [this.trackx] })
   readonly bary = make(view, { h: 3, background: 0x00000099, children: [this.tracky] })
 
-  readonly scrollVisibleClaims = 0
-  private cancelTracker?: () => void
-  private cancelClaim?: ReturnType<typeof setTimeout>
-
   override init(): void {
     this.addLayoutKeys('scrollx', 'scrolly')
 
     const mthis = this.mutable()
     mthis.children = [...this.children, this.barx, this.bary]
     mthis.commit()
-
-    this.barx.onMouseEnter = () => this.mutate(v => v.scrollVisibleClaims++)
-    this.bary.onMouseEnter = () => this.mutate(v => v.scrollVisibleClaims++)
-    this.barx.onMouseExit = () => this.mutate(v => v.scrollVisibleClaims--)
-    this.bary.onMouseExit = () => this.mutate(v => v.scrollVisibleClaims--)
-
-    // this.$watch('scrollVisibleClaims', (claims) => {
-    //   this.barx.visible = (claims > 0) && (this.firstChild!.h > this.h)
-    //   this.bary.visible = (claims > 0) && (this.firstChild!.w > this.w)
-    // })
-
-    // this.$watch('scrollx', () => this.adjustTracks())
-    // this.$watch('scrolly', () => this.adjustTracks())
-    // this.$watch('scrollx', () => this.layout())
-    // this.$watch('scrolly', () => this.layout())
   }
 
   override onResized(): void {
@@ -67,8 +48,6 @@ export class scroll extends view {
   }
 
   private dragTrack(track: view) {
-    this.mutate(v => v.scrollVisibleClaims++)
-
     // const o = { y: this.trackx.y, x: this.tracky.x }
     // const drag = dragMove(o)
     // const move = () => {
@@ -81,17 +60,6 @@ export class scroll extends view {
     //   setTimeout(() => { this.scrollVisibleClaims-- }, 500)
     // }
     // sys.trackMouse({ move, up })
-  }
-
-  override onMouseMove(pos: Pos): void {
-    if (this.cancelClaim) clearTimeout(this.cancelClaim)
-    else this.mutate(v => v.scrollVisibleClaims++)
-    setTimeout(() => { this.mutate(v => v.scrollVisibleClaims--) }, 500)
-  }
-
-  override onMouseExit(): void {
-    this.cancelTracker?.()
-    delete this.cancelTracker
   }
 
   override layout(): void {
@@ -132,9 +100,6 @@ export class scroll extends view {
 
   override onWheel(x: number, y: number): void {
     const mthis = this.mutable()
-
-    mthis.scrollVisibleClaims++
-    setTimeout(() => this.mutate(v => v.scrollVisibleClaims--), 500)
 
     const sy = this.panel!.keymap['Shift'] ? 'scrollx' : 'scrolly'
     mthis[sy] += y / 100 * this.amount
