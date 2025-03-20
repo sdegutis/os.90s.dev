@@ -16,14 +16,14 @@ export class scroll extends view {
 
     const content = this.children[0]
 
-    const area = make(view, { background: 0x000033ff, onChildResized: fixAll, children: [content] })
+    const area = make(view, { onChildResized: fixAll, children: [content] })
 
     const barv = make(view, { w: 3, background: 0xffffff33 })
     const barh = make(view, { h: 3, background: 0xffffff33 })
 
-    const trackv = make(view, { w: 3, background: 0x330000ff, children: [barv] })
-    const trackh = make(view, { h: 3, background: 0x003300ff, children: [barh] })
-    const corner = make(view, { h: 3, background: 0x333300ff })
+    const trackv = make(view, { w: 3, background: 0x00000033, children: [barv] })
+    const trackh = make(view, { h: 3, background: 0x00000033, children: [barh] })
+    const corner = make(view, { h: 3, background: 0x00000033 })
 
     function makeTrackDraggable(xy: 'x' | 'y') {
       const wh = xy === 'x' ? 'w' : 'h'
@@ -121,20 +121,5 @@ export class scroll extends view {
     }
 
   }
-
-  // private dragTrack(track: view) {
-  //   // const o = { y: this.trackx.y, x: this.tracky.x }
-  //   // const drag = dragMove(o)
-  //   // const move = () => {
-  //   //   drag()
-
-  //   //   if (track === this.trackx) this.scrolly = Math.round((o.y / (this.barx.h - this.trackx.h)) * this.firstChild!.h)
-  //   //   if (track === this.tracky) this.scrollx = Math.round((o.x / (this.bary.w - this.tracky.w)) * this.firstChild!.w)
-  //   // }
-  //   // const up = () => {
-  //   //   setTimeout(() => { this.scrollVisibleClaims-- }, 500)
-  //   // }
-  //   // sys.trackMouse({ move, up })
-  // }
 
 }
