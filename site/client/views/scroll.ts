@@ -90,6 +90,8 @@ export class scroll extends view {
       if (scrollx !== this.scrollx) this.set('scrollx', scrollx)
       if (scrolly !== this.scrolly) this.set('scrolly', scrolly)
       adjustTracks()
+      layout()
+      this.panel?.needsRedraw()
     }
 
     this.onWheel = (px, py) => {
@@ -124,8 +126,6 @@ export class scroll extends view {
     super.set(k, newv)
     if (k === 'scrollx' || k === 'scrolly') {
       this.didScroll()
-      this.layout?.()
-      this.panel?.needsRedraw()
     }
   }
 
