@@ -44,7 +44,6 @@ export class scroll extends view {
           move: (x, y) => {
             const per = { x, y }[xy] / (track[wh] - bar[wh])
             this.set(scroll, per * (content[wh] - area[wh]))
-            fixScrollVals()
             adjustTracks()
           }
         })
@@ -85,11 +84,12 @@ export class scroll extends view {
       content.set('y', -this.scrolly)
     }
 
-    const fixScrollVals = () => {
-      this.mutate(scroll => {
-        scroll.scrollx = Math.floor(Math.max(0, Math.min(content.w - area.w, scroll.scrollx)))
-        scroll.scrolly = Math.floor(Math.max(0, Math.min(content.h - area.h, scroll.scrolly)))
-      })
+    this.didScroll = () => {
+      const scrollx = Math.floor(Math.max(0, Math.min(content.w - area.w, this.scrollx)))
+      const scrolly = Math.floor(Math.max(0, Math.min(content.h - area.h, this.scrolly)))
+      if (scrollx !== this.scrollx) this.set('scrollx', scrollx)
+      if (scrolly !== this.scrolly) this.set('scrolly', scrolly)
+      adjustTracks()
     }
 
     this.onWheel = (px, py) => {
@@ -102,14 +102,12 @@ export class scroll extends view {
         scroll.scrolly += py
       })
 
-      fixScrollVals()
       adjustTracks()
     }
 
     this.onResized = fixAll
 
     function fixAll(this: view) {
-      fixScrollVals()
       layout()
       setTimeout(() => {
         perw = area.w / content.w
@@ -120,9 +118,12 @@ export class scroll extends view {
 
   }
 
+  private didScroll() { }
+
   override set(k: keyof this, newv: any): void {
     super.set(k, newv)
     if (k === 'scrollx' || k === 'scrolly') {
+      this.didScroll()
       this.layout?.()
       this.panel?.needsRedraw()
     }
