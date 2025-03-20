@@ -83,50 +83,38 @@ export class view {
     this.adjust?.()
   }
 
-  private _commit(mut: any) {
-    let mode: 'size' | 'pos' | 'adjust' | 'layout' | 'redraw' | null = null
+  protected set(k: string, newv: any) {
+    const key = k as keyof this
+    const oldv = this[key]
+    if (oldv === newv) return
 
-    delete mut.commit
-    for (const key in mut) {
-      const k = key as keyof this & string
-      const v = mut[k]
+    this[key] = newv
 
-      if (this[k] === v) continue
-      this[k] = v
-
-      if (k === 'children') {
-        mode ??= 'adjust'
-        for (const c of v) {
-          const child = c as view
-          child.mutate(v => v.parent = this)
-        }
+    if (k === 'children') {
+      for (const c of newv) {
+        const child = c as view
+        child.mutate(v => v.parent = this)
       }
-      else if (k === 'w' || k === 'h') mode ??= 'size'
-      else if (k === 'x' || k === 'y') mode ??= 'pos'
-      else if (this.adjustKeys.has(k)) mode ??= 'adjust'
-      else if (this.layoutKeys.has(k)) mode ??= 'layout'
-      else if (this.redrawKeys.has(k)) mode ??= 'redraw'
     }
-
-    if (mode === 'size') {
+    else if (k === 'w' || k === 'h') {
       this.onResized()
       this.panel?.needsRedraw()
       this.panel?.needsMouseCheck()
     }
-    else if (mode === 'pos') {
+    else if (k === 'x' || k === 'y') {
       this.onMoved?.()
       this.panel?.needsRedraw()
       this.panel?.needsMouseCheck()
     }
-    else if (mode === 'adjust') {
+    else if (this.adjustKeys.has(k)) {
       this.adjust?.()
       this.panel?.needsRedraw()
     }
-    else if (mode === 'layout') {
+    else if (this.layoutKeys.has(k)) {
       this.layout?.()
       this.panel?.needsRedraw()
     }
-    else if (mode === 'redraw') {
+    else if (this.redrawKeys.has(k)) {
       this.panel?.needsRedraw()
     }
   }
@@ -174,11 +162,16 @@ export class view {
 
   mutable() {
     const mut = Object.create(null)
-    const proxy = new Proxy<{ -readonly [K in keyof this]: this[K] }>(this, {
+    const proxy = new Proxy<{ -readonly [K in keyof this]: this[K] } & { commit(): void }>(this as any, {
       set: (t, key, val) => { mut[key] = val; return true },
       get: (t, k) => { return mut[k] ??= this[k as keyof this] }
     })
-    proxy.commit = () => this._commit(mut)
+    proxy.commit = () => {
+      delete mut.commit
+      for (const key in mut) {
+        this.set(key, mut[key])
+      }
+    }
     return proxy
   }
 
@@ -187,8 +180,6 @@ export class view {
     fn(mut)
     mut.commit()
   }
-
-  commit() { }
 
 }
 
