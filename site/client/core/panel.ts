@@ -131,11 +131,19 @@ export class Panel {
 
     this.root = root
     this.root.layout?.()
-    this.root.adopted(this)
+    this.adoptTree(this.root)
 
     this.hovered = this.root
 
     this.blit()
+  }
+
+  private adoptTree(node: view) {
+    node.set('panel', this)
+    node.adopted?.()
+    for (const child of node.children) {
+      this.adoptTree(child)
+    }
   }
 
   onKeyDown(key: string) {

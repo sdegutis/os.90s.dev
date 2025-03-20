@@ -59,14 +59,7 @@ export class view {
   adjust?(): void
   layout?(): void
 
-  adopted(panel: Panel) {
-    const mthis = this.mutable()
-    mthis.panel = panel
-    mthis.commit()
-    for (const child of this.children) {
-      child.adopted(panel)
-    }
-  }
+  adopted?(): void
 
   layoutTree() {
     this.layout?.()
