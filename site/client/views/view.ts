@@ -150,9 +150,9 @@ export class view {
     this.layout?.()
   }
 
-  mutable() {
+  mutable(): { -readonly [K in keyof this]: this[K] } & { commit(): void } {
     const mut = Object.create(null)
-    const proxy = new Proxy<{ -readonly [K in keyof this]: this[K] } & { commit(): void }>(this as any, {
+    const proxy = new Proxy<any>(this, {
       set: (t, key, val) => { mut[key] = val; return true },
       get: (t, k) => { return mut[k] ??= this[k as keyof this] }
     })
