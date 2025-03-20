@@ -15,6 +15,8 @@ export class label extends view {
   }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+    if (this.text.includes('view')) console.log('drawing', this.text)
+
     super.draw(ctx, px, py)
     this.font.print(ctx, px, py, this.textColor, this.text)
   }
