@@ -136,23 +136,14 @@ export class view {
   init?(): void
 
   setup(data: Record<string, any>) {
-    // if (data["children"] && data["children"])
-
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
-        (this as any)[k] = v.val
+        this.set(k as keyof this, v.val)
         v.watch(val => this.set(k as keyof this, val))
       }
-      else if (k === 'children' && !(v instanceof Array)) {
-        (this as any).children = [v]
-      }
       else {
-        (this as any)[k] = v
+        this.set(k as keyof this, v)
       }
-    }
-
-    for (const child of this.children) {
-      (child as any).parent = this
     }
 
     this.adjust?.()
@@ -194,18 +185,23 @@ export function make<T extends view>(
   ctor: new () => T,
   data: { -readonly [K in keyof T]?: T[K] },
 ): T {
-  const view = new ctor()
-  view.setup(data)
+  const v = new ctor()
+
+  if (data.children && data.children instanceof view) {
+    data.children = [data.children]
+  }
+
+  v.setup(data)
 
   const protos = []
-  let proto: view | undefined = view
+  let proto: view | undefined = v
 
   while (proto = Object.getPrototypeOf(proto))
     if (Object.hasOwn(proto, 'init'))
       protos.push(proto)
 
   while (proto = protos.pop())
-    proto.init!.call(view)
+    proto.init!.call(v)
 
-  return view
+  return v
 }
