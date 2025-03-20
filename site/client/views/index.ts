@@ -4,6 +4,7 @@ import { group, groupx, groupy } from "./group.js"
 import { image } from "./image.js"
 import { label } from "./label.js"
 import { paned, panedxa, panedxb, panedya, panedyb } from "./paned.js"
+import { scroll } from "./scroll.js"
 import { spaced, spacedx, spacedy } from "./spaced.js"
 import { split, splitx, splity } from "./split.js"
 import { view } from "./view.js"
@@ -15,6 +16,8 @@ export const primitives = {
   label,
   image,
   button,
+
+  scroll,
 
   group,
   groupx,

@@ -27,21 +27,35 @@ await prog.init()
 
 const ch = $<view[]>([])
 
-setInterval(() => {
-  ch.val = [...ch.val, <label text={Date.now().toString()} background={0x00003399} />]
-}, 1000)
+// setInterval(() => {
+//   ch.val = [...ch.val, <label text={Date.now().toString()} background={0x00003399} />]
+// }, 1000)
 
 const panel = await prog.makePanel({
   size: [100, 100],
   view: <PanelView title={'test panel'}>
-    <panedya background={0x00330099}>
+    <view background={0x00330099}>
+
+      <scroll>
+        <border background={0x00003399} padding={2}>
+          <groupy gap={2}>
+            {Array(20).keys().map(i => <label text={`view ${i.toString()}`} />).toArray()}
+          </groupy>
+        </border>
+      </scroll>
+
+    </view>
+
+
+
+    {/* <panedya background={0x00330099}>
       <border padding={3} background={0x99000099}>
         <border padding={3} background={0x00009999}>
           <groupy gap={2} background={0x00003399} children={ch} />
         </border>
       </border>
       <label text={'yep'} background={0x33000099} />
-    </panedya>
+    </panedya> */}
   </PanelView>,
 })
 
