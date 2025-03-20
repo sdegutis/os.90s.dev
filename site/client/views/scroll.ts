@@ -4,8 +4,6 @@ import { make, view } from "./view.js"
 
 export class scroll extends view {
 
-  readonly content!: view
-
   readonly scrollBy: number = 6
 
   override init(): void {
@@ -15,11 +13,9 @@ export class scroll extends view {
     const perw = $(0)
     const perh = $(0)
 
-    this.set('content', this.children[0])
+    const content = this.children[0]
 
-    function bubble(this: view) { this.parent?.onChildResized() }
-
-    const area = make(view, { background: 0x000033ff, onChildResized: bubble, children: [this.content] })
+    const area = make(view, { background: 0x000033ff, onChildResized: fixAll, children: [content] })
 
     const barv = make(view, { w: 3, background: 0xffffff33 })
     const barh = make(view, { h: 3, background: 0xffffff33 })
@@ -28,32 +24,36 @@ export class scroll extends view {
     const trackh = make(view, { h: 3, background: 0x003300ff, children: [barh] })
     const corner = make(view, { h: 3, background: 0x333300ff })
 
-    perh.watch(ph => {
-      if (ph > 1) ph = 1
-      barv.set('visible', ph < 1)
-      barv.set('h', trackv.h * ph)
-      barv.set('y', 0)
-    })
+    const adjustTracks = () => {
+      const ph = Math.min(1, perh.val)
+      const pw = Math.min(1, perw.val)
 
-    perw.watch(pw => {
-      if (pw > 1) pw = 1
+      const h = Math.max(3, Math.floor(trackv.h * ph))
+      const y = Math.floor(trackv.h - h) * (scrolly.val / (content.h - area.h))
+      barv.set('visible', ph < 1)
+      barv.set('y', y)
+      barv.set('h', h)
+
+      const w = Math.max(3, Math.floor(trackh.w * pw))
+      const x = Math.floor(trackh.w - w) * (scrollx.val / (content.w - area.w))
       barh.set('visible', pw < 1)
-      barh.set('w', trackh.w * pw)
-      barh.set('x', 0)
-    })
+      barh.set('x', x)
+      barh.set('w', w)
+    }
+
+    perh.watch(adjustTracks)
+    perw.watch(adjustTracks)
 
     this.set('children',
       [make(panedxb, {
-        onChildResized: bubble,
         children: [
-          make(panedyb, { children: [area, trackh], onChildResized: bubble }),
+          make(panedyb, { children: [area, trackh] }),
           make(panedyb, { children: [trackv, corner], w: trackv.w })
         ],
       })]
     )
 
     const layout = this.layout = () => {
-
       this.firstChild?.mutate(v => {
         v.x = 0
         v.y = 0
@@ -61,42 +61,40 @@ export class scroll extends view {
         v.h = this.h
       })
 
+      content.set('x', -scrollx.val)
+      content.set('y', -scrolly.val)
+    }
+
+    const fixScrollVals = () => {
+      scrollx.val = Math.max(0, Math.min(content.w - area.w, scrollx.val))
+      scrolly.val = Math.max(0, Math.min(content.h - area.h, scrolly.val))
     }
 
     this.onWheel = (px, py) => {
       px = px / 100 * this.scrollBy
       py = py / 100 * this.scrollBy
       if (this.panel?.keymap.has('Shift')) [px, py] = [py, px]
-
-      console.log(px, py)
+      scrollx.val += px
+      scrolly.val += py
+      fixScrollVals()
+      adjustTracks()
     }
 
     scrollx.watch((x) => { layout(); this.panel?.needsRedraw() })
     scrolly.watch((y) => { layout(); this.panel?.needsRedraw() })
 
-    this.onChildResized = () => {
+    this.onResized = fixAll
+
+    function fixAll(this: view) {
+      fixScrollVals()
       layout()
       setTimeout(() => {
-        perw.val = area.w / this.content.w
-        perh.val = area.h / this.content.h
+        perw.val = area.w / content.w
+        perh.val = area.h / content.h
       })
     }
 
   }
-
-  // override layout(): void {
-  //   if (!this.content) return
-
-  //   // this.scrollx.val = Math.max(0, Math.min(this.content.w - this.w, this.scrollx.val))
-  //   // this.scrolly.val = Math.max(0, Math.min(this.content.h - this.h, this.scrolly.val))
-
-  //   // console.log(this.content.x, this.content.y)
-  //   // console.log(this.scrollx.val, this.scrolly.val)
-
-  //   // this.content.set('x', -this.scrollx.val)
-  //   // this.content.set('y', -this.scrolly.val)
-
-  // }
 
   // readonly area = make(view, {})
 
