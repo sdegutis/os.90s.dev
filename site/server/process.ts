@@ -16,6 +16,7 @@ export class Process {
 
   heartbeat
   dead = false
+  rpc
 
   constructor(sys: Sys, path: string) {
     Process.all.set(this.id = ++Process.id, this)
@@ -26,6 +27,7 @@ export class Process {
     this.worker = new Worker(absurl, { type: 'module' })
 
     const rpc = wRPC<ServerProgram, ClientProgram>(this.worker)
+    this.rpc = rpc
 
     rpc.once('terminate').then(() => {
       console.log('terminating in server', this.id)
@@ -33,7 +35,7 @@ export class Process {
     })
 
     rpc.once('init').then(() => {
-      rpc.send('init', [this.id, this.sys.width, this.sys.height])
+      rpc.send('init', [this.id, this.sys.width, this.sys.height, [...this.sys.keymap]])
     })
 
     this.heartbeat = setInterval(async () => {

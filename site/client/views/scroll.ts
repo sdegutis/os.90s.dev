@@ -1,32 +1,39 @@
+import { $ } from "../util/ref.js"
 import { panedxb, panedyb } from "./paned.js"
 import { make, view } from "./view.js"
 
 export class scroll extends view {
 
-  readonly scrollx: number = 0
-  readonly scrolly: number = 0
+  readonly content!: view
+
   readonly amount: number = 6
 
-  readonly content!: view
-  private readonly area!: view
-
   override init(): void {
+    const scrollx = $(0)
+    const scrolly = $(0)
 
-    this.addLayoutKeys('scrollx', 'scrolly')
+    scrollx.watch((x) => { this.layout(); this.panel?.needsRedraw() })
+    scrolly.watch((y) => { this.layout(); this.panel?.needsRedraw() })
+
+    this.onWheel = (px, py) => {
+      px = px / 100 * this.amount
+      py = py / 100 * this.amount
+      if (this.panel?.keymap.has('Shift')) [px, py] = [py, px]
+
+      console.log(px, py)
+    }
+
+    // const sy = this.panel!.keymap['Shift'] ? 'scrollx' : 'scrolly'
+    // this[sy].val += y / 100 * this.amount
 
     this.set('content', this.children[0])
 
-    function bubble(this: view) {
-      this.adjust?.()
-      this.parent?.onChildResized()
-    }
+    function bubble(this: view) { this.parent?.onChildResized() }
 
     const trackv = make(view, { w: 3, background: 0x330000ff })
     const trackh = make(view, { h: 3, background: 0x003300ff })
     const corner = make(view, { h: 3, background: 0x333300ff })
     const area = make(view, { background: 0x000033ff, onChildResized: bubble, children: [this.content] })
-
-      ; (this as any).area = area
 
     this.set('children',
       [make(panedxb, {
@@ -54,15 +61,14 @@ export class scroll extends view {
       v.h = this.h
     })
 
-    this.set('scrollx', Math.max(0, Math.min(this.content.w - this.area.w, this.scrollx)))
-    this.set('scrolly', Math.max(0, Math.min(this.content.h - this.area.h, this.scrolly)))
+    // this.scrollx.val = Math.max(0, Math.min(this.content.w - this.w, this.scrollx.val))
+    // this.scrolly.val = Math.max(0, Math.min(this.content.h - this.h, this.scrolly.val))
 
-    this.content.set('x', -this.scrollx)
-    this.content.set('y', -this.scrolly)
+    // console.log(this.content.x, this.content.y)
+    // console.log(this.scrollx.val, this.scrolly.val)
 
-    console.log(this.content.x, this.content.y)
-    console.log()
-
+    // this.content.set('x', -this.scrollx.val)
+    // this.content.set('y', -this.scrolly.val)
 
   }
 
@@ -167,10 +173,5 @@ export class scroll extends view {
 
   //   this.adjustTracks()
   // }
-
-  override onWheel(x: number, y: number): void {
-    const sy = this.panel!.keymap['Shift'] ? 'scrollx' : 'scrolly'
-    this.set(sy, this[sy] + y / 100 * this.amount)
-  }
 
 }

@@ -1,6 +1,6 @@
 import type { Cursor } from "../../shared/cursor.js"
 import { Listener } from "../../shared/listener.js"
-import { wRPC, type ClientPanel, type KeyMap, type ServerPanel } from "../../shared/rpc.js"
+import { wRPC, type ClientPanel, type ServerPanel } from "../../shared/rpc.js"
 import type { view } from "../views/view.js"
 
 type Pos = {
@@ -22,10 +22,12 @@ export class Panel {
 
   absmouse: Pos = { x: 0, y: 0 }
   mouse: Pos = { x: 0, y: 0 }
-  keymap: KeyMap = Object.create(null)
+  keymap = new Set<string>()
 
   didClose = new Listener()
   root
+
+  isFocused = false
 
   readonly canvas = new OffscreenCanvas(0, 0)
   readonly ctx = this.canvas.getContext('2d')!
@@ -35,8 +37,10 @@ export class Panel {
   private clicking: view | null = null
   private focused: view | null = null
 
-  constructor(port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: JSX.Element) {
+  constructor(keymap: Set<string>, port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: JSX.Element) {
     Panel.all.set(id, this)
+
+    this.keymap = keymap
 
     this.canvas.width = w
     this.canvas.height = h
@@ -53,12 +57,13 @@ export class Panel {
       this.blit()
     })
 
-    this.rpc.listen('focus', (keymap) => {
-      this.keymap = keymap
+    this.rpc.listen('focus', () => {
+      this.isFocused = true
       this.root.onPanelFocus?.()
     })
 
     this.rpc.listen('blur', () => {
+      this.isFocused = false
       this.root.onPanelBlur?.()
     })
 
@@ -119,15 +124,6 @@ export class Panel {
       }
     })
 
-    this.rpc.listen('keydown', (key) => {
-      this.keymap[key] = true
-      this.focused?.onKeyDown?.(key)
-    })
-
-    this.rpc.listen('keyup', (key) => {
-      delete this.keymap[key]
-    })
-
     const mutroot = root.mutable()
     mutroot.w = w
     mutroot.h = h
@@ -140,6 +136,10 @@ export class Panel {
     this.hovered = this.root
 
     this.blit()
+  }
+
+  onKeyDown(key: string) {
+    this.focused?.onKeyDown?.(key)
   }
 
   move(x: number, y: number) {

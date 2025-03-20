@@ -12,12 +12,26 @@ export class Program {
   width = 0
   height = 0
 
+  keymap = new Set<string>()
+
   async init() {
     this.rpc.send('init', [])
-    const [id, w, h] = await this.rpc.once('init')
+    const [id, w, h, keymap] = await this.rpc.once('init')
     this.pid = id
     this.width = w
     this.height = h
+
+    keymap.forEach(k => this.keymap.add(k))
+
+    this.rpc.listen('keydown', (key) => {
+      this.keymap.add(key)
+      const focused = [...this.panels].find(p => p.isFocused)
+      focused?.onKeyDown(key)
+    })
+
+    this.rpc.listen('keyup', (key) => {
+      this.keymap.delete(key)
+    })
 
     this.rpc.listen('ping', (n) => {
       this.rpc.send('pong', [n % 2 === 0 ? n + 2 : n + 1])
@@ -36,7 +50,7 @@ export class Program {
     this.rpc.send('newpanel', [order, mx, my, w, h])
     const [id, x, y, port] = await this.rpc.once('newpanel')
 
-    const panel = new Panel(port, id, x, y, w, h, config.view)
+    const panel = new Panel(this.keymap, port, id, x, y, w, h, config.view)
 
     this.panels.add(panel)
     panel.didClose.watch(() => {

@@ -1,13 +1,13 @@
 import { Cursor } from "../shared/cursor.js"
-import type { KeyMap } from "../shared/rpc.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
+import { Process } from "./process.js"
 
 export class Sys {
 
   ctx
   mouse = { x: 0, y: 0 }
-  keymap: KeyMap = Object.create(null)
+  keymap = new Set<string>()
 
   hovered: Panel | null = null
   focused: Panel | null = null
@@ -28,14 +28,14 @@ export class Sys {
     }
 
     canvas.onkeydown = (e) => {
-      this.keymap[e.key] = true
-      this.focused?.rpc.send('keydown', [e.key])
+      this.keymap.add(e.key)
+      Process.all.forEach(p => p.rpc.send('keydown', [e.key]))
       this.redrawAllPanels()
     }
 
     canvas.onkeyup = (e) => {
-      delete this.keymap[e.key]
-      this.focused?.rpc.send('keyup', [e.key])
+      this.keymap.delete(e.key)
+      Process.all.forEach(p => p.rpc.send('keyup', [e.key]))
       this.redrawAllPanels()
     }
 
@@ -66,7 +66,7 @@ export class Sys {
       if (this.focused !== this.hovered) {
         this.focused?.rpc.send('blur', [])
         this.focused = this.hovered
-        this.focused.rpc.send('focus', [this.keymap])
+        this.focused.rpc.send('focus', [])
       }
 
       this.clicking = this.hovered

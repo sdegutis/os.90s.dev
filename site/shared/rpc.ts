@@ -2,7 +2,6 @@ import { Listener } from "./listener.js"
 
 export type PanelOrdering = 'normal' | 'bottom' | 'top'
 export type PanelPosition = [number, number]
-export type KeyMap = Record<string, true>
 
 export interface ServerProgram {
   init(): void
@@ -12,8 +11,10 @@ export interface ServerProgram {
 }
 
 export interface ClientProgram {
-  init(id: number, w: number, h: number): void
+  init(id: number, w: number, h: number, keymap: string[]): void
   ping(n: number): void
+  keydown(key: string): void
+  keyup(key: string): void
   newpanel(id: number, x: number, y: number, port: MessagePort): void
 }
 
@@ -25,7 +26,7 @@ export interface ServerPanel {
 }
 
 export interface ClientPanel {
-  focus(keys: KeyMap): void
+  focus(): void
   blur(): void
   mouseentered(): void
   mouseexited(): void
@@ -33,8 +34,6 @@ export interface ClientPanel {
   mousedown(b: number): void
   mouseup(): void
   wheel(x: number, y: number): void
-  keydown(key: string): void
-  keyup(key: string): void
   needblit(): void
 }
 
