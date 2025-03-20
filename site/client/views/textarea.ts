@@ -1,5 +1,4 @@
 import { crt2025, Font } from "../../shared/font.js"
-import { colorFor } from "../util/colors.js"
 import { vacuumFirstChild } from "../util/layout.js"
 import { scroll } from "./scroll.js"
 import { make, view } from "./view.js"
@@ -65,11 +64,7 @@ export class textarea extends view {
 
     this.label = make(view, {
       adjust: () => this.adjustTextLabel(),
-      draw: (ctx, px, py) => {
-        ctx.fillStyle = colorFor(0x99000099)
-        ctx.fillRect(px, py, this.label.w, this.label.h)
-        this.drawTextLabel(ctx, px, py)
-      },
+      draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),
       onMouseDown: () => this.onMouseDown(),
       children: [this._cursor]
     })
@@ -113,7 +108,7 @@ export class textarea extends view {
   private drawTextLabel(ctx: OffscreenCanvasRenderingContext2D, panx: number, pany: number) {
     for (let y = 0; y < this.lines.length; y++) {
       const line = this.lines[y]
-      const py = y * this.font.ch + y * this.font.ygap
+      const py = y * this.font.ch + y * this.font.ygap + this.font.ygap / 2
       for (let x = 0; x < line.length; x++) {
         const px = x * this.font.cw + x * this.font.xgap
         this.font.print(ctx, panx + px, pany + py, this.colors[y][x], line[x])
@@ -124,20 +119,21 @@ export class textarea extends view {
   private adjustTextLabel() {
     if (!this.label) { return }
 
-    let w = 0
+    let cols = 0
+    const rows = this.lines.length
     for (const line of this.lines) {
-      if (line.length > w) w = line.length
+      if (line.length > cols) cols = line.length
     }
     this.label.mutate(label => {
-      label.w = w * this.font.cw + (w - 1) * this.font.xgap
-      label.h = (this.lines.length * this.font.ch) + ((this.lines.length - 1) * this.font.ygap)
+      label.w = (cols * this.font.cw) + (cols * this.font.xgap)
+      label.h = (rows * this.font.ch) + (rows * this.font.ygap)
       label.w += this.font.cw + this.font.xgap
     })
   }
 
   private reflectCursorPos() {
-    this._cursor.set('x', (this.col * this.font.xgap + this.col * this.font.cw) - Math.floor(this.font.xgap / 2))
-    this._cursor.set('y', (this.row * this.font.ygap + this.row * this.font.ch) - Math.floor(this.font.ygap / 2))
+    this._cursor.set('x', this.col * (this.font.cw + this.font.xgap))
+    this._cursor.set('y', this.row * (this.font.ch + this.font.ygap))
   }
 
   private scrollCursorIntoView() {
