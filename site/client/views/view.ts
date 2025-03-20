@@ -187,7 +187,7 @@ export function make<T extends view>(
 ): T {
   const v = new ctor()
 
-  if (data.children && data.children instanceof view) {
+  if (data.children instanceof view) {
     data.children = [data.children]
   }
 
