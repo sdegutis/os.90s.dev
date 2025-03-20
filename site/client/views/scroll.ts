@@ -6,34 +6,27 @@ export class scroll extends view {
 
   readonly content!: view
 
-  readonly amount: number = 6
+  readonly scrollBy: number = 6
 
   override init(): void {
     const scrollx = $(0)
     const scrolly = $(0)
 
-    scrollx.watch((x) => { this.layout(); this.panel?.needsRedraw() })
-    scrolly.watch((y) => { this.layout(); this.panel?.needsRedraw() })
-
-    this.onWheel = (px, py) => {
-      px = px / 100 * this.amount
-      py = py / 100 * this.amount
-      if (this.panel?.keymap.has('Shift')) [px, py] = [py, px]
-
-      console.log(px, py)
-    }
-
-    // const sy = this.panel!.keymap['Shift'] ? 'scrollx' : 'scrolly'
-    // this[sy].val += y / 100 * this.amount
+    const perw = $(0)
+    const perh = $(0)
 
     this.set('content', this.children[0])
 
     function bubble(this: view) { this.parent?.onChildResized() }
 
-    const trackv = make(view, { w: 3, background: 0x330000ff })
-    const trackh = make(view, { h: 3, background: 0x003300ff })
-    const corner = make(view, { h: 3, background: 0x333300ff })
     const area = make(view, { background: 0x000033ff, onChildResized: bubble, children: [this.content] })
+
+    const barv = make(view, { w: 3, background: 0xffffff33 })
+    const barh = make(view, { h: 3, background: 0xffffff33 })
+
+    const trackv = make(view, { w: 3, background: 0x330000ff, children: [barv] })
+    const trackh = make(view, { h: 3, background: 0x003300ff, children: [barh] })
+    const corner = make(view, { h: 3, background: 0x333300ff })
 
     this.set('children',
       [make(panedxb, {
@@ -45,32 +38,50 @@ export class scroll extends view {
       })]
     )
 
+    const layout = this.layout = () => {
+
+      this.firstChild?.mutate(v => {
+        v.x = 0
+        v.y = 0
+        v.w = this.w
+        v.h = this.h
+      })
+
+    }
+
+    this.onWheel = (px, py) => {
+      px = px / 100 * this.scrollBy
+      py = py / 100 * this.scrollBy
+      if (this.panel?.keymap.has('Shift')) [px, py] = [py, px]
+
+      console.log(px, py)
+    }
+
+    scrollx.watch((x) => { layout(); this.panel?.needsRedraw() })
+    scrolly.watch((y) => { layout(); this.panel?.needsRedraw() })
+
+    this.onChildResized = () => {
+      layout()
+
+      perw.val = this.content.w / area.w
+      perh.val = this.content.h / area.h
+    }
+
   }
 
-  override onChildResized(): void {
-    this.layout()
-  }
+  // override layout(): void {
+  //   if (!this.content) return
 
-  override layout(): void {
-    if (!this.content) return
+  //   // this.scrollx.val = Math.max(0, Math.min(this.content.w - this.w, this.scrollx.val))
+  //   // this.scrolly.val = Math.max(0, Math.min(this.content.h - this.h, this.scrolly.val))
 
-    this.firstChild?.mutate(v => {
-      v.x = 0
-      v.y = 0
-      v.w = this.w
-      v.h = this.h
-    })
+  //   // console.log(this.content.x, this.content.y)
+  //   // console.log(this.scrollx.val, this.scrolly.val)
 
-    // this.scrollx.val = Math.max(0, Math.min(this.content.w - this.w, this.scrollx.val))
-    // this.scrolly.val = Math.max(0, Math.min(this.content.h - this.h, this.scrolly.val))
+  //   // this.content.set('x', -this.scrollx.val)
+  //   // this.content.set('y', -this.scrolly.val)
 
-    // console.log(this.content.x, this.content.y)
-    // console.log(this.scrollx.val, this.scrolly.val)
-
-    // this.content.set('x', -this.scrollx.val)
-    // this.content.set('y', -this.scrolly.val)
-
-  }
+  // }
 
   // readonly area = make(view, {})
 
