@@ -1,12 +1,12 @@
-import { crt2025 } from "../../shared/font.js"
+import { crt2025, Font } from "../../shared/font.js"
 import { vacuumFirstChild } from "../util/layout.js"
 import { scroll } from "./scroll.js"
 import { make, view } from "./view.js"
 
 export class textarea extends view {
 
-  readonly font = crt2025
-  readonly color = 0xffffffff
+  readonly font: Font = crt2025
+  readonly color: number = 0xffffffff
   private lines: string[] = ['']
 
   private scroll!: scroll
@@ -26,11 +26,11 @@ export class textarea extends view {
 
   highlightings: Record<string, [number, RegExp]> = {}
 
-  cursorColor = 0x0000FF99
+  readonly cursorColor = 0x0000FF99
 
-  row = 0
-  col = 0
-  end = 0
+  private row = 0
+  private col = 0
+  private end = 0
 
   override layout = vacuumFirstChild
 
@@ -62,6 +62,7 @@ export class textarea extends view {
             children: [
               this._cursor = make(view, {
                 onMouseDown: () => this.onMouseDown(),
+                background: this.cursorColor,
                 visible: false,
                 w: this.font.cw + this.font.xgap,
                 h: this.font.ch + this.font.ygap,
@@ -73,9 +74,16 @@ export class textarea extends view {
     ])
 
     this.reflectCursorPos()
-    // this.$watch('cursorColor', c => this._cursor.background = c)
 
     this.adjustTextLabel()
+  }
+
+  override set(k: keyof this, v: any): void {
+    super.set(k, v)
+    if (k === 'cursorColor') {
+      console.log('oih')
+      this._cursor.set('background', v)
+    }
   }
 
   _layoutTree() {

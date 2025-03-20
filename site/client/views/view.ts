@@ -129,14 +129,14 @@ export class view {
     mut.commit()
   }
 
-  set(k: keyof this, newv: any) {
+  set(k: keyof this, v: any) {
     const oldv = this[k]
-    if (oldv === newv) return
+    if (oldv === v) return
 
-    this[k] = newv
+    this[k] = v
 
     if (k === 'children') {
-      for (const c of newv) {
+      for (const c of v) {
         const child = c as view
         child.set('parent', this)
       }
