@@ -137,10 +137,6 @@ export class split extends view {
     mthis.commit()
   }
 
-  override onNeedsLayout(): void {
-    this.layoutTree()
-  }
-
   override onChildResized(): void {
     this.adjust?.()
     this.layoutTree()

@@ -34,10 +34,10 @@ setInterval(() => {
 const panel = await prog.makePanel({
   size: [100, 100],
   view: <PanelView title={'test panel'}>
-    <panedya background={0x00330099} gap={3}>
-      <label text={'yep'} background={0x33000099} />
+    <splitx background={0x00330099} min={10} max={-10}>
       <groupy gap={2} background={0x00003399} children={ch} />
-    </panedya>
+      <label text={'yep'} background={0x33000099} />
+    </splitx>
   </PanelView>,
 })
 

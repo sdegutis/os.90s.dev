@@ -64,8 +64,6 @@ export class view {
     }
   }
 
-  onNeedsLayout?(): void
-
   onResized() {
     this.parent?.onChildResized?.()
   }
@@ -88,7 +86,7 @@ export class view {
       this[k] = v
 
       if (k === 'children') {
-        mode ??= 'layout'
+        mode ??= 'adjust'
         for (const c of v) {
           const child = c as view
           child.mutate(v => v.parent = this)
@@ -120,7 +118,7 @@ export class view {
         break
       }
       case 'layout': {
-        this.onNeedsLayout?.()
+        this.layout?.()
         this.needsRedraw()
         break
       }
@@ -160,6 +158,8 @@ export class view {
   init?(): void
 
   setup(data: Record<string, any>) {
+    // if (data["children"] && data["children"])
+
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
         (this as any)[k] = v.val

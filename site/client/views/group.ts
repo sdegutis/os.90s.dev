@@ -10,11 +10,7 @@ export class group extends view {
 
   override init(): void {
     this.addAdjustKeys('gap', 'dir', 'align', 'children')
-    this.addLayoutKeys('children')
-  }
-
-  override onNeedsLayout(): void {
-    this.layout()
+    this.addLayoutKeys()
   }
 
   override adjust(): void {

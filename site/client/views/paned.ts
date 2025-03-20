@@ -7,17 +7,13 @@ export class paned extends view {
   readonly vacuum: 'a' | 'b' = 'a'
 
   override init(): void {
-    this.addLayoutKeys('gap', 'dir', 'vacuum')
+    this.addLayoutKeys('gap', 'dir', 'vacuum', 'children')
+    this.addAdjustKeys('children')
   }
 
   override onChildResized(): void {
     this.adjust?.()
     this.layoutTree()
-  }
-
-  override onNeedsLayout(): void {
-    this.firstChild?.adjust?.()
-    this.lastChild?.adjust?.()
   }
 
   override layout(): void {
