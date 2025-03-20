@@ -1,4 +1,5 @@
-import { colorFor, view } from "./view.js"
+import { colorFor } from "../util/colors.js"
+import { view } from "./view.js"
 
 export class border extends view {
 

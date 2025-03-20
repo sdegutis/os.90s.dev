@@ -27,9 +27,16 @@ await prog.init()
 
 const ch = $<view[]>([])
 
-// setInterval(() => {
-//   ch.val = [...ch.val, <label text={Date.now().toString()} background={0x00003399} />]
-// }, 1000)
+const children = $([
+  <button padding={2}><label text={'hey'} /></button>,
+  ...Array(20).keys().map(i => <label text={`view ${i.toString()}`} />)
+])
+
+setInterval(() => {
+  children.val = children.val.toSpliced(0, 1)
+
+  // ch.val = [...ch.val, <label text={Date.now().toString()} background={0x00003399} />]
+}, 1000)
 
 const panel = await prog.makePanel({
   size: [100, 100],
@@ -37,10 +44,7 @@ const panel = await prog.makePanel({
     <scroll background={0x00330099}>
       <border background={0x00003399} padding={2}>
         <groupy gap={2} align={'a'}>
-          {[
-            <button padding={2}><label text={'hey'} /></button>,
-            ...Array(20).keys().map(i => <label text={`view ${i.toString()}`} />)
-          ]}
+          {children}
         </groupy>
       </border>
     </scroll>

@@ -1,4 +1,5 @@
 import type { Panel } from "../core/panel.js"
+import { colorFor } from "../util/colors.js"
 import { Ref } from "../util/ref.js"
 
 export type Pos = {
@@ -171,14 +172,6 @@ export class view {
     mut.commit()
   }
 
-}
-
-const colors = new Map<number, string>()
-
-export function colorFor(col: number): string {
-  let color = colors.get(col)
-  if (!color) colors.set(col, color = '#' + col.toString(16).padStart(8, '0'))
-  return color
 }
 
 export function make<T extends view>(

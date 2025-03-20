@@ -1,7 +1,8 @@
 import { Bitmap } from "../../shared/bitmap.js"
 import { Cursor } from "../../shared/cursor.js"
+import { colorFor } from "../util/colors.js"
 import { dragMove } from "../util/drag.js"
-import { colorFor, make, view, type Pos } from "./view.js"
+import { make, view, type Pos } from "./view.js"
 
 const xresize = new Cursor(2, 1, new Bitmap([0x00000099, 0xffffffff], 5, [
   1, 1, 1, 1, 1,

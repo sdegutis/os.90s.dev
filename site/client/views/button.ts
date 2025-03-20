@@ -1,5 +1,5 @@
+import { colorFor } from "../util/colors.js"
 import { border } from "./border.js"
-import { colorFor } from "./view.js"
 
 export class ClickCounter {
 

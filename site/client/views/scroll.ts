@@ -11,22 +11,34 @@ export class scroll extends view {
 
   override init(): void {
 
+    this.addLayoutKeys('scrollx', 'scrolly')
+
     this.set('content', this.children[0])
+
+    function bubble(this: view) {
+      this.adjust?.()
+      this.parent?.onChildResized()
+    }
 
     const trackv = make(view, { w: 3, background: 0x330000ff })
     const trackh = make(view, { h: 3, background: 0x003300ff })
     const corner = make(view, { h: 3, background: 0x333300ff })
-    const area = make(view, { background: 0x000033ff, children: [this.content] })
+    const area = make(view, { background: 0x000033ff, onChildResized: bubble, children: [this.content] })
 
     this.set('children',
       [make(panedxb, {
+        onChildResized: bubble,
         children: [
-          make(panedyb, { children: [area, trackh] }),
+          make(panedyb, { children: [area, trackh], onChildResized: bubble }),
           make(panedyb, { children: [trackv, corner], w: trackv.w })
         ],
       })]
     )
 
+  }
+
+  override onChildResized(): void {
+    console.log('view res')
   }
 
   override layout(): void {
@@ -38,6 +50,13 @@ export class scroll extends view {
       v.w = this.w
       v.h = this.h
     })
+
+    this.set('scrollx', Math.max(0, Math.min(this.content.w - this.w, this.scrollx)))
+    this.set('scrolly', Math.max(0, Math.min(this.content.h - this.h, this.scrolly)))
+
+    this.content.set('x', -this.scrollx)
+    this.content.set('y', -this.scrolly)
+
 
   }
 
@@ -143,18 +162,9 @@ export class scroll extends view {
   //   this.adjustTracks()
   // }
 
-  // override onWheel(x: number, y: number): void {
-  //   const mthis = this.mutable()
-
-  //   const sy = this.panel!.keymap['Shift'] ? 'scrollx' : 'scrolly'
-  //   mthis[sy] += y / 100 * this.amount
-
-  //   mthis.commit()
-  // }
-
-  // private fixScrollPos() {
-  //   this.set('scrollx', Math.max(0, Math.min(this.content.w - this.w, this.scrollx)))
-  //   this.set('scrolly', Math.max(0, Math.min(this.content.h - this.h, this.scrolly)))
-  // }
+  override onWheel(x: number, y: number): void {
+    const sy = this.panel!.keymap['Shift'] ? 'scrollx' : 'scrolly'
+    this.set(sy, this[sy] + y / 100 * this.amount)
+  }
 
 }
