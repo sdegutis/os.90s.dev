@@ -43,7 +43,7 @@ export class scroll extends view {
           y: bar.y,
           move: (x, y) => {
             const per = { x, y }[xy] / (track[wh] - bar[wh])
-            this.set(scroll, per * (content[wh] - area[wh]))
+            this[scroll] = per * (content[wh] - area[wh])
             adjustTracks()
           }
         })
@@ -57,38 +57,36 @@ export class scroll extends view {
       const ph = Math.min(1, perh)
       const h = Math.max(3, Math.floor(trackv.h * ph))
       const y = Math.floor((trackv.h - h) * (this.scrolly / (content.h - area.h)))
-      barv.set('visible', ph < 1)
-      barv.set('y', y)
-      barv.set('h', h)
+      barv.visible = ph < 1
+      barv.y = y
+      barv.h = h
 
       const pw = Math.min(1, perw)
       const w = Math.max(3, Math.floor(trackh.w * pw))
       const x = Math.floor((trackh.w - w) * (this.scrollx / (content.w - area.w)))
-      barh.set('visible', pw < 1)
-      barh.set('x', x)
-      barh.set('w', w)
+      barh.visible = pw < 1
+      barh.x = x
+      barh.w = w
     }
 
-    this.set('children',
-      [make(panedxb, {
-        children: [
-          make(panedyb, { children: [area, trackh] }),
-          make(panedyb, { children: [trackv, corner], w: trackv.w })
-        ],
-      })]
-    )
+    this.children = [make(panedxb, {
+      children: [
+        make(panedyb, { children: [area, trackh] }),
+        make(panedyb, { children: [trackv, corner], w: trackv.w })
+      ],
+    })]
 
     const layout = this.layout = () => {
       vacuumFirstChild.apply(this)
-      content.set('x', -this.scrollx)
-      content.set('y', -this.scrolly)
+      content.x = -this.scrollx
+      content.y = -this.scrolly
     }
 
     const didScroll = this.didScroll = () => {
       const scrollx = Math.floor(Math.max(0, Math.min(content.w - area.w, this.scrollx)))
       const scrolly = Math.floor(Math.max(0, Math.min(content.h - area.h, this.scrolly)))
-      if (scrollx !== this.scrollx) this.set('scrollx', scrollx)
-      if (scrolly !== this.scrolly) this.set('scrolly', scrolly)
+      if (scrollx !== this.scrollx) this.scrollx = scrollx
+      if (scrolly !== this.scrolly) this.scrolly = scrolly
       adjustTracks()
       layout()
       this.panel?.needsRedraw()
@@ -123,11 +121,11 @@ export class scroll extends view {
 
   private didScroll() { }
 
-  override set(k: keyof this, newv: any): void {
-    super.set(k, newv)
-    if (k === 'scrollx' || k === 'scrolly') {
-      this.didScroll()
-    }
-  }
+  // override set(k: keyof this, newv: any): void {
+  //   super.set(k, newv)
+  //   if (k === 'scrollx' || k === 'scrolly') {
+  //     this.didScroll()
+  //   }
+  // }
 
 }

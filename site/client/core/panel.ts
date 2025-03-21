@@ -76,7 +76,7 @@ export class Panel {
     this.rpc.listen('mouseexited', () => {
       for (const view of this.hoveredTree) {
         view.onMouseExit?.()
-        view.set('hovered', false)
+        view.hovered = false
       }
       this.hoveredTree.clear()
     })
@@ -138,7 +138,7 @@ export class Panel {
   }
 
   private adoptTree(node: view) {
-    node.set('panel', this)
+    node.panel = this
     node.adopted?.()
     for (const child of node.children) {
       this.adoptTree(child)
@@ -221,9 +221,9 @@ export class Panel {
     }
 
     if (this.hovered !== activeHovered) {
-      if (this.hovered) this.hovered.set('hovered', false)
+      if (this.hovered) this.hovered.hovered = false
       this.hovered = activeHovered
-      if (this.hovered) this.hovered.set('hovered', true)
+      if (this.hovered) this.hovered.hovered = true
     }
   }
 
@@ -240,7 +240,7 @@ export class Panel {
 
     this.hoveredTree.add(node)
 
-    node.set('mouse', { x, y })
+    node.mouse = { x, y }
 
     let i = node.children.length
     while (i--) {

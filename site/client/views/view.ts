@@ -203,7 +203,7 @@ export class view {
     proxy.commit = () => {
       delete mut.commit
       for (const key in mut) {
-        this.set(key as keyof this, mut[key])
+        this[key as keyof this] = mut[key]
       }
     }
     return proxy
@@ -213,12 +213,6 @@ export class view {
     const mut = this.mutable()
     fn(mut)
     mut.commit()
-  }
-
-  set(k: keyof this, v: any) {
-    const oldv = this[k]
-    if (oldv === v) return
-    this[k] = v
   }
 
 }

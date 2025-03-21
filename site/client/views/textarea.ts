@@ -72,18 +72,18 @@ export class textarea extends view {
       children: [this.label]
     })
 
-    this.set('children', [this.scroll])
+    this.children = [this.scroll]
 
     this.reflectCursorPos()
     this.adjustTextLabel()
   }
 
-  override set(k: keyof this, v: any): void {
-    super.set(k, v)
-    if (k === 'cursorColor') {
-      this._cursor.set('background', v)
-    }
-  }
+  // override set(k: keyof this, v: any): void {
+  //   super.set(k, v)
+  //   if (k === 'cursorColor') {
+  //     this._cursor.set('background', v)
+  //   }
+  // }
 
   override onMouseDown(button: number, pos: Pos): void {
     this.focus()
@@ -130,8 +130,8 @@ export class textarea extends view {
   }
 
   private reflectCursorPos() {
-    this._cursor.set('x', this.col * (this.font.cw + this.font.xgap))
-    this._cursor.set('y', this.row * (this.font.ch + this.font.ygap))
+    this._cursor.x = this.col * (this.font.cw + this.font.xgap)
+    this._cursor.y = this.row * (this.font.ch + this.font.ygap)
   }
 
   private scrollCursorIntoView() {
@@ -301,15 +301,15 @@ export class textarea extends view {
 
   private restartBlinking() {
     this.stopBlinking()
-    this._cursor.set('visible', true)
+    this._cursor.visible = true
     this.blink = setInterval(() => {
-      this._cursor.set('visible', !this._cursor.visible)
+      this._cursor.visible = !this._cursor.visible
       this.panel?.needsRedraw()
     }, 500)
   }
 
   private stopBlinking() {
-    this._cursor.set('visible', false)
+    this._cursor.visible = false
     clearInterval(this.blink)
   }
 
