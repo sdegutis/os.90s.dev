@@ -1,12 +1,16 @@
 import { Program } from "../client/core/prog.js"
 import { PanelView } from "../client/util/panelview.js"
 import { $ } from "../client/util/ref.js"
+import { Bitmap } from "../shared/bitmap.js"
 
 const prog = new Program()
 await prog.init()
 
+const mnuImage = new Bitmap([0x333333ff], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1])
+
 const children = $([
   <button padding={2}><label text={'hey'} /></button>,
+  <image bitmap={mnuImage} />,
   <textarea w={20} h={20} />,
   ...Array(20).keys().map(i => <label text={`view ${i.toString()}`} />)
 ])
