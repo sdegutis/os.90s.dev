@@ -18,19 +18,18 @@ export class view {
 
   panel?: Panel | undefined
 
-  children: readonly view[] = []
   parent: view | null = null
+  children: readonly view[] = []
+  protected children$equals: Equals<typeof this.children> = arrayEquals
 
   get firstChild(): view | undefined { return this.children[0] }
   get lastChild(): view | undefined { return this.children[this.children.length - 1] }
 
   point: Point = { x: 0, y: 0 }
-  size: Size = { w: 0, h: 0 }
+  protected point$equals: Equals<typeof this.point> = pointEquals
 
-  protected pointEquals: Equals<typeof this.point> = pointEquals
-  protected sizeEquals: Equals<typeof this.size> = sizeEquals
-  protected childrenEquals: Equals<typeof this.children> = arrayEquals
-  protected mouseEquals: Equals<typeof this.mouse> = pointEquals
+  size: Size = { w: 0, h: 0 }
+  protected size$equals: Equals<typeof this.size> = sizeEquals
 
   canFocus: boolean = false
   passthrough: boolean = false
@@ -41,6 +40,7 @@ export class view {
   background: number = 0x00000000
 
   mouse: Point = { x: 0, y: 0 }
+  protected mouse$equals: Equals<typeof this.mouse> = pointEquals
 
   onPanelFocus?(): void
   onPanelBlur?(): void
@@ -74,27 +74,27 @@ export class view {
   }
 
   init() {
-
-    this.$watch('size', debounce(() => {
+    this.$watch('size', () => {
+      this.layout?.()
+      this.parent?.onChildResized()
       this.panel?.needsMouseCheck()
-      this.parent?.onChildResized?.()
-      this.panel?.needsRedraw()
-    }))
+      this.needsRedraw()
+    })
 
-    this.$watch('point', debounce(() => {
+    this.$watch('point', () => {
       this.panel?.needsMouseCheck()
-      this.panel?.needsRedraw()
-    }))
+      this.needsRedraw()
+    })
 
-    this.$watch('children', debounce(() => {
+    this.$watch('children', () => {
       for (const child of this.children) {
         child.parent = this
         child.adoptTree(this.panel)
       }
+      this.adjust?.()
       this.layout?.()
       this.needsRedraw()
-    }))
-
+    })
   }
 
   adoptTree(panel: Panel | undefined) {
@@ -130,13 +130,7 @@ export class view {
     return val.watch(([data, old]) => fn(data, old))
   }
 
-  $ref<K extends keyof this>(key: K) {
-    const $$refs = (this as unknown as { $$refs: Map<string, Listener<any>> }).$$refs
-    return $$refs.get(key as string)
-  }
-
   $setup() {
-
     const $$listeners = new Map<string, Listener<any>>()
     Object.defineProperty(this, '$$listeners', {
       enumerable: false,
@@ -144,44 +138,34 @@ export class view {
       value: $$listeners,
     })
 
-    const $$refs: Record<string, Ref<any>> = Object.create(null)
-    Object.defineProperty(this, '$$refs', {
-      enumerable: false,
-      writable: false,
-      value: $$refs,
-    })
-
     for (const key in this) {
       let val = this[key] as any
       if (val instanceof Function) continue
 
-      if (!(val instanceof Ref)) val = $(val)
-      $$refs[key] = val
-
-      $$refs[key].equals = (this as any)[`${key as string}Equals`]
-      $$refs[key].watch(([val, old]) => {
+      const ref = val instanceof Ref ? val : $(val)
+      ref.equals = (this as any)[`${key as string}$equals`]
+      ref.watch(([val, old]) => {
         $$listeners.get(key)?.dispatch([val, old])
       })
 
       Object.defineProperty(this, key, {
-        get: () => $$refs[key].val,
-        set: (v) => $$refs[key].val = v,
+        get: () => ref.val,
+        set: (v) => ref.val = v,
         enumerable: true,
       })
     }
-
   }
 
 }
 
-const pointEquals = (a: Point, b: Point) => {
+export const pointEquals = (a: Point, b: Point) => {
   return a.x === b.x && a.y === b.y
 }
 
-const sizeEquals = (a: Size, b: Size) => {
+export const sizeEquals = (a: Size, b: Size) => {
   return a.w === b.w && a.h === b.h
 }
-const arrayEquals = <T extends ArrayLike<any>>(a: T, b: T) => {
+export const arrayEquals = <T extends ArrayLike<any>>(a: T, b: T) => {
   if (a.length !== b.length) return false
   for (let i = 0; i < a.length; i++) {
     if (a[i] !== b[i]) return false
