@@ -9,24 +9,29 @@ export class border extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    // this.addAdjustKeys('padding')
-    // this.addRedrawKeys('borderColor')
+    this.$multiplex('padding').watch(() => {
+      this.adjust()
+      this.layout()
+    })
+    this.$multiplex('borderColor').watch(() => this.needsRedraw())
   }
 
-  // override adjust(): void {
-  //   // this.size.w = this.padding + (this.firstChild?.size.w ?? 0) + this.padding
-  //   // this.size.h = this.padding + (this.firstChild?.size.h ?? 0) + this.padding
-  // }
+  override adjust(): void {
+    this.size = {
+      w: this.padding + (this.firstChild?.size.w ?? 0) + this.padding,
+      h: this.padding + (this.firstChild?.size.h ?? 0) + this.padding,
+    }
+  }
 
-  // override layout(): void {
-  //   const c = this.firstChild
-  //   if (c) {
-  //     c.point = {
-  //       x: this.padding,
-  //       y: this.padding,
-  //     }
-  //   }
-  // }
+  override layout(): void {
+    const c = this.firstChild
+    if (c) {
+      c.point = {
+        x: this.padding,
+        y: this.padding,
+      }
+    }
+  }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)
