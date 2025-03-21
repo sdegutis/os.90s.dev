@@ -94,10 +94,6 @@ export class view {
   init?(): void
 
   setup(data: { -readonly [K in keyof this]?: this[K] }) {
-    if (data.children instanceof view) {
-      data.children = [data.children]
-    }
-
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
         this.set(k as keyof this, v.val)

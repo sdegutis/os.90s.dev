@@ -1,6 +1,6 @@
 import { Ref } from "../client/util/ref.js"
 import { primitives } from "../client/views/index.js"
-import { make, type view } from "../client/views/view.js"
+import { make, view } from "../client/views/view.js"
 
 type Primitives = typeof primitives
 
@@ -46,6 +46,10 @@ export const jsx = createNode
 function createNode(tag: any, data: any): JSX.Element {
   if (typeof tag === 'function') {
     return tag(data)
+  }
+
+  if (data.children instanceof view) {
+    data.children = [data.children]
   }
 
   const ctor = primitives[tag as keyof typeof primitives]
