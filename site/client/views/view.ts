@@ -93,7 +93,7 @@ export class view {
 
   init?(): void
 
-  setup(data: { [K in keyof this]?: this[K] }) {
+  setup(data: Partial<this>) {
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
         this.set(k as keyof this, v.val)
@@ -108,7 +108,7 @@ export class view {
     this.layout?.()
   }
 
-  mutable(): { [K in keyof this]: this[K] } & { commit(): void } {
+  mutable(): this & { commit(): void } {
     const mut = Object.create(null)
     const proxy = new Proxy<any>(this, {
       set: (t, key, val) => { mut[key] = val; return true },
@@ -123,7 +123,7 @@ export class view {
     return proxy
   }
 
-  mutate(fn: (view: { [K in keyof this]: this[K] }) => void) {
+  mutate(fn: (view: this) => void) {
     const mut = this.mutable()
     fn(mut)
     mut.commit()
