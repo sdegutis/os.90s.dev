@@ -155,7 +155,7 @@ export class view {
     return $$refs.get(key as string)
   }
 
-  setup() {
+  $setup() {
 
     this.adjust?.()
     this.layout?.()
@@ -202,7 +202,7 @@ export function make<T extends view>(
 ): T {
   const v = new ctor()
   Object.assign(v, data)
-  v.setup()
+  v.$setup()
 
   const protos = []
   let proto: view | undefined = v
