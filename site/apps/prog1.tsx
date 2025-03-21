@@ -23,7 +23,7 @@ const size = $({ w: 100, h: 100 })
 
 const panel = await prog.makePanel({
   size,
-  view: <PanelView title={'test panel'}>
+  view: <PanelView size={size} title={'test panel'}>
     <panedya background={0x00330099}>
       <label text={'yep'} background={0x33000099} />
       <splitx pos={50} min={10} max={-10}>

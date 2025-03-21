@@ -4,7 +4,7 @@ import type { Panel } from "../core/panel.js"
 import type { border } from "../views/border.js"
 import type { image } from "../views/image.js"
 import type { spacedx } from "../views/spaced.js"
-import type { Point, view } from "../views/view.js"
+import type { Point, Size, view } from "../views/view.js"
 import { dragMove, dragResize } from "./drag.js"
 import { $, Ref } from "./ref.js"
 
@@ -22,7 +22,7 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
   0, 1, 1, 1, 0,
 ]))
 
-export function PanelView(data: { title: string | Ref<string>, children: view }) {
+export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, children: view }) {
 
   let panel: Panel
   const adopted = function (this: view) { panel = this.panel! }
@@ -108,7 +108,7 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
     />
   }
 
-  return <view adopted={adopted} background={0x070707dd} {...toplevel}>
+  return <view size={data.size} adopted={adopted} background={0x070707dd} {...toplevel}>
     <border borderColor={borderColor} padding={1}>
 
       <panedya gap={0}>
