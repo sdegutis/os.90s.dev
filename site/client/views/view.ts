@@ -124,18 +124,20 @@ export class view {
   }
 
   $watch<K extends keyof this>(key: K, fn: (val: this[K], old: this[K]) => void) {
-    const $$listeners = (this as unknown as { $$listeners: Map<string, Listener<any>> }).$$listeners
-    let val = $$listeners.get(key as string)
-    if (!val) $$listeners.set(key as string, val = new Listener())
-    return val.watch(([data, old]) => fn(data, old))
+    return this.$ref(key).watch(([val, old]) => fn(val, old))
+  }
+
+  $ref<K extends keyof this>(key: K) {
+    const { $$refs } = (this as unknown as { $$refs: Map<string, Ref<any>> })
+    return $$refs.get(key as string) as Ref<this[K]>
   }
 
   $setup() {
-    const $$listeners = new Map<string, Listener<any>>()
-    Object.defineProperty(this, '$$listeners', {
+    const $$refs = new Map<string, Ref<any>>()
+    Object.defineProperty(this, '$$refs', {
       enumerable: false,
       writable: false,
-      value: $$listeners,
+      value: $$refs,
     })
 
     for (const key in this) {
@@ -144,9 +146,7 @@ export class view {
 
       const ref = val instanceof Ref ? val : $(val)
       ref.equals = (this as any)[`${key as string}$equals`]
-      ref.watch(([val, old]) => {
-        $$listeners.get(key)?.dispatch([val, old])
-      })
+      $$refs.set(key, ref)
 
       Object.defineProperty(this, key, {
         get: () => ref.val,

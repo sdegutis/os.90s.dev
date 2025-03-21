@@ -17,7 +17,8 @@ export class Ref<T> extends Listener<[T, T], void> {
   set val(val: T) {
     if (this.equals?.(this._val, val) ?? this._val === val) return
     const old = this._val
-    this.dispatch([this._val = val, old])
+    this._val = val
+    this.dispatch([val, old])
   }
 
   adapt<U>(fn: (data: T, old: T) => U) {
