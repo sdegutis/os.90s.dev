@@ -62,7 +62,7 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
       const content = this.children[0].children[0]
       // content.size.w = this.size.w - 2
       // content.size.h = this.size.h - 2
-      this.layoutTree()
+      // this.layoutTree()
     },
   }
 
@@ -94,13 +94,13 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
       bitmap={adjImage}
       onMouseEnter={() => setClaims(+1)}
       onMouseExit={() => setClaims(-1)}
-      layout={function () {
-        if (!this.parent) return
-        this.point = {
-          x: this.parent!.size.w - this.size.w,
-          y: this.parent!.size.h - this.size.h,
-        }
-      }}
+      // layout={function () {
+      //   if (!this.parent) return
+      //   this.point = {
+      //     x: this.parent!.size.w - this.size.w,
+      //     y: this.parent!.size.h - this.size.h,
+      //   }
+      // }}
       onMouseDown={resizerMouseDown}
     />
   }
@@ -126,9 +126,9 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
           </border>
         </spacedx>
 
-        <border layout={layoutContentView}>
+        {/* <border layout={layoutContentView}>
           {data.children}
-        </border>
+        </border> */}
 
       </panedya>
 

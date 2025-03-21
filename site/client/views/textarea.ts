@@ -1,5 +1,4 @@
 import { crt2025, Font } from "../../shared/font.js"
-import { vacuumFirstChild } from "../util/layout.js"
 import { scroll } from "./scroll.js"
 import { make, view, type Point } from "./view.js"
 
@@ -33,7 +32,7 @@ export class textarea extends view {
   private col = 0
   private end = 0
 
-  override layout = vacuumFirstChild
+  // override layout = vacuumFirstChild
 
   private colors: number[][] = []
 
@@ -61,7 +60,7 @@ export class textarea extends view {
     })
 
     this.label = make(view, {
-      adjust: () => this.adjustTextLabel(),
+      // adjust: () => this.adjustTextLabel(),
       draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),
       onMouseDown: (...args) => this.onMouseDown(...args),
       children: [this._cursor]

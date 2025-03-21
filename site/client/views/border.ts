@@ -13,20 +13,20 @@ export class border extends view {
     // this.addRedrawKeys('borderColor')
   }
 
-  override adjust(): void {
-    // this.size.w = this.padding + (this.firstChild?.size.w ?? 0) + this.padding
-    // this.size.h = this.padding + (this.firstChild?.size.h ?? 0) + this.padding
-  }
+  // override adjust(): void {
+  //   // this.size.w = this.padding + (this.firstChild?.size.w ?? 0) + this.padding
+  //   // this.size.h = this.padding + (this.firstChild?.size.h ?? 0) + this.padding
+  // }
 
-  override layout(): void {
-    const c = this.firstChild
-    if (c) {
-      c.point = {
-        x: this.padding,
-        y: this.padding,
-      }
-    }
-  }
+  // override layout(): void {
+  //   const c = this.firstChild
+  //   if (c) {
+  //     c.point = {
+  //       x: this.padding,
+  //       y: this.padding,
+  //     }
+  //   }
+  // }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)

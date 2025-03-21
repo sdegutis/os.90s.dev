@@ -33,7 +33,7 @@ class SplitDivider extends view {
     this.cursor = this.split.dir === 'x' ? xresize : yresize
   }
 
-  override onResized(): void { }
+  // override onResized(): void { }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     if (this.split.min === this.split.max) return
@@ -133,37 +133,37 @@ export class split extends view {
     this.children = [...this.children, this.resizer]
   }
 
-  override onChildResized(): void {
-    this.adjust?.()
-    this.layoutTree()
-  }
+  // override onChildResized(): void {
+  //   this.adjust?.()
+  //   this.layoutTree()
+  // }
 
-  override layout(): void {
-    // const dx = this.dir
-    // const dw = dx === 'x' ? 'w' : 'h'
-    // const a = this.children[0]
-    // const b = this.children[1]
+  // override layout(): void {
+  //   // const dx = this.dir
+  //   // const dw = dx === 'x' ? 'w' : 'h'
+  //   // const a = this.children[0]
+  //   // const b = this.children[1]
 
-    // a.point.x = b.point.x = 0
-    // a.point.y = b.point.y = 0
-    // a.w = b.w = this.w
-    // a.h = b.h = this.h
+  //   // a.point.x = b.point.x = 0
+  //   // a.point.y = b.point.y = 0
+  //   // a.w = b.w = this.w
+  //   // a.h = b.h = this.h
 
-    // a[dw] = this.pos
+  //   // a[dw] = this.pos
 
-    // b[dx] = this.pos
-    // b[dw] = this[dw] - this.pos
+  //   // b[dx] = this.pos
+  //   // b[dw] = this[dw] - this.pos
 
-    // if (this.resizer) {
-    //   this.resizer.point.x = 0
-    //   this.resizer.point.y = 0
-    //   this.resizer[dx] = this.pos - 1
+  //   // if (this.resizer) {
+  //   //   this.resizer.point.x = 0
+  //   //   this.resizer.point.y = 0
+  //   //   this.resizer[dx] = this.pos - 1
 
-    //   this.resizer.w = this.w
-    //   this.resizer.h = this.h
-    //   this.resizer[dw] = 2
-    // }
-  }
+  //   //   this.resizer.w = this.w
+  //   //   this.resizer.h = this.h
+  //   //   this.resizer[dw] = 2
+  //   // }
+  // }
 
 }
 

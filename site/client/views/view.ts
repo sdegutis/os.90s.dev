@@ -52,27 +52,7 @@ export class view {
   onKeyUp?(key: string): void
   onBlur?(): void
 
-  adjust?(): void
-  layout?(): void
-
   adopted?(): void
-
-  layoutTree() {
-    this.layout?.()
-    for (const child of this.children) {
-      child.layoutTree()
-    }
-  }
-
-  onResized() {
-    this.parent?.onChildResized?.()
-  }
-
-  onMoved?(): void
-
-  onChildResized() {
-    this.adjust?.()
-  }
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     this.drawBackground(ctx, px, py, colorFor(this.background))
@@ -89,17 +69,14 @@ export class view {
 
   init() {
 
-    const debounce = (fn: () => void) => {
-      let t: number | undefined = undefined
-      return () => {
-        clearTimeout(t)
-        t = setTimeout(fn)
-      }
-    }
+    // const debounce = (fn: () => void) => {
+    //   let t: number | undefined = undefined
+    //   return () => {
+    //     clearTimeout(t)
+    //     t = setTimeout(fn)
+    //   }
+    // }
 
-    const adopt = debounce(() => {
-      this.children.forEach(c => c.parent = this)
-    })
 
     // const moved = debounce(() => {
     //   this.onMoved?.()
@@ -127,7 +104,10 @@ export class view {
     //   this.panel?.needsRedraw()
     // })
 
-    this.$watch('children', adopt)
+    this.$watch('children', () => {
+      this.children.forEach(c => c.parent = this)
+    })
+
     // this.$watch('x', moved)
     // this.$watch('y', moved)
     // this.$watch('x', resized)
@@ -151,9 +131,6 @@ export class view {
   }
 
   $setup() {
-
-    this.adjust?.()
-    this.layout?.()
 
     const $$listeners = new Map<string, Listener<any>>()
     Object.defineProperty(this, '$$listeners', {

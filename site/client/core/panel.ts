@@ -126,7 +126,7 @@ export class Panel {
     this.root = root
     // this.root.size.w = w
     // this.root.size.h = h
-    this.root.layout?.()
+    // this.root.layout?.()
     this.adoptTree(this.root)
 
     this.hovered = this.root
