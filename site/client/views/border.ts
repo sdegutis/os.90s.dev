@@ -14,10 +14,8 @@ export class border extends view {
   }
 
   override adjust(): void {
-    const mutthis = this.mutable()
-    mutthis.w = this.padding + (this.firstChild?.w ?? 0) + this.padding
-    mutthis.h = this.padding + (this.firstChild?.h ?? 0) + this.padding
-    mutthis.commit()
+    this.w = this.padding + (this.firstChild?.w ?? 0) + this.padding
+    this.h = this.padding + (this.firstChild?.h ?? 0) + this.padding
   }
 
   override layout(): void {

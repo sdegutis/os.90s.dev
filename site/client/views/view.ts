@@ -194,21 +194,6 @@ export class view {
 
   }
 
-  mutable(): this & { commit(): void } {
-    const mut = Object.create(null)
-    const proxy = new Proxy<any>(this, {
-      set: (t, key, val) => { mut[key] = val; return true },
-      get: (t, k) => { return mut[k] ??= this[k as keyof this] }
-    })
-    proxy.commit = () => {
-      delete mut.commit
-      for (const key in mut) {
-        this[key as keyof this] = mut[key]
-      }
-    }
-    return proxy
-  }
-
 }
 
 export function make<T extends view>(

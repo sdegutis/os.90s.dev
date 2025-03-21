@@ -100,11 +100,9 @@ class SplitDivider extends view {
         if (min < 0) min += split[dw]
         if (max <= 0) max += split[dw] - 1
 
-        const s = split.mutable()
-        s.pos = b[dx]
-        if (s.pos < min) s.pos = min
-        if (s.pos > max) s.pos = max
-        s.commit()
+        split.pos = b[dx]
+        if (split.pos < min) split.pos = min
+        if (split.pos > max) split.pos = max
       }
     }
 
@@ -133,9 +131,7 @@ export class split extends view {
   override init(): void {
     this.addLayoutKeys('pos', 'dir')
     this.resizer = make(SplitDivider, { split: this })
-    const mthis = this.mutable()
-    mthis.children = [...this.children, this.resizer]
-    mthis.commit()
+    this.children = [...this.children, this.resizer]
   }
 
   override onChildResized(): void {
@@ -146,8 +142,8 @@ export class split extends view {
   override layout(): void {
     const dx = this.dir
     const dw = dx === 'x' ? 'w' : 'h'
-    const a = this.children[0].mutable()
-    const b = this.children[1].mutable()
+    const a = this.children[0]
+    const b = this.children[1]
 
     a.x = b.x = 0
     a.y = b.y = 0
@@ -168,9 +164,6 @@ export class split extends view {
       this.resizer.h = this.h
       this.resizer[dw] = 2
     }
-
-    a.commit()
-    b.commit()
   }
 
 }

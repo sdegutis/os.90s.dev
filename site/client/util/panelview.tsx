@@ -97,10 +97,8 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
       onMouseExit={() => setClaims(-1)}
       layout={function () {
         if (!this.parent) return
-        const mthis = this.mutable()
-        mthis.x = this.parent!.w - this.w
-        mthis.y = this.parent!.h - this.h
-        mthis.commit()
+        this.x = this.parent!.w - this.w
+        this.y = this.parent!.h - this.h
       }}
       onMouseDown={resizerMouseDown}
     />

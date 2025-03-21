@@ -19,8 +19,8 @@ export class paned extends view {
   }
 
   override layout(): void {
-    const a = this.children[0].mutable()
-    const b = this.children[1].mutable()
+    const a = this.children[0]
+    const b = this.children[1]
 
     const favored = ({ a, b })[this.vacuum]
 
@@ -45,9 +45,6 @@ export class paned extends view {
       b[dx] = pos + this.gap
       b[dw] = vv
     }
-
-    a.commit()
-    b.commit()
   }
 
 }

@@ -123,12 +123,9 @@ export class Panel {
       }
     })
 
-    const mutroot = root.mutable()
-    mutroot.w = w
-    mutroot.h = h
-    mutroot.commit()
-
     this.root = root
+    this.root.w = w
+    this.root.h = h
     this.root.layout?.()
     this.adoptTree(this.root)
 
@@ -199,10 +196,8 @@ export class Panel {
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
     this.canvas.width = w
     this.canvas.height = h
-    const mutroot = this.root.mutable()
-    mutroot.w = w
-    mutroot.h = h
-    mutroot.commit()
+    this.root.w = w
+    this.root.h = h
     this.blit()
   }
 

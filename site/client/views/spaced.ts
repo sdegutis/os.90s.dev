@@ -9,16 +9,12 @@ export class spaced extends view {
   }
 
   override adjust(): void {
-    const mthis = this.mutable()
-
     const dh = this.dir === 'x' ? 'h' : 'w'
-    mthis[dh] = 0
+    this[dh] = 0
     for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i]
-      if (this[dh] < child[dh]) mthis[dh] = child[dh]
+      if (this[dh] < child[dh]) this[dh] = child[dh]
     }
-
-    mthis.commit()
   }
 
   override layout(): void {
@@ -36,11 +32,10 @@ export class spaced extends view {
 
     let x = 0
     for (let i = 0; i < this.children.length; i++) {
-      const child = this.children[i].mutable()
+      const child = this.children[i]
       child[dx] = x
       x += child[dw] + gap
       child[dy] = Math.round((this[dh] - child[dh]) / 2)
-      child.commit()
     }
   }
 
