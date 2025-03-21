@@ -28,21 +28,21 @@ const vac = dir.adapt<AB>(dir => dir === 'x' ? 'a' : 'b')
 const two = vac.adapt(vac => vac === 'a' ? [child1, child2] : [child2, child1])
 
 
-// setInterval(() => {
+setInterval(() => {
 
-//   dir.val = dir.val === 'x' ? 'y' : 'x'
+  dir.val = dir.val === 'x' ? 'y' : 'x'
 
-//   // i.val++
-//   children.val = [...children.val,
-//   <border padding={i} borderColor={0x990000ff}>
-//     <button padding={i.adapt(i => i + 1)} onClick={function () {
-//       console.log(this.padding)
-//     }}>
-//       <label text={'yep ' + Date.now()} />
-//     </button>
-//   </border>
-//   ]
-// }, 1000)
+  // i.val++
+  children.val = [...children.val,
+  <border padding={i} borderColor={0x990000ff}>
+    <button padding={i.adapt(i => i + 1)} onClick={function () {
+      console.log(this.padding)
+    }}>
+      <label text={'yep ' + Date.now()} />
+    </button>
+  </border>
+  ]
+}, 1000)
 
 // const children = $([
 //   <button padding={2}><label text={'hey'} /></button>,

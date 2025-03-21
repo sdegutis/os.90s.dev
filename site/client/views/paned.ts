@@ -29,7 +29,8 @@ export class paned extends view {
     const dw = dx === 'x' ? 'w' : 'h'
     const vv = favored[dw]
 
-    a.point = b.point = { x: 0, y: 0 }
+    ap.x = bp.x = 0
+    ap.y = bp.y = 0
     as.w = bs.w = this.size.w
     as.h = bs.h = this.size.h
 
