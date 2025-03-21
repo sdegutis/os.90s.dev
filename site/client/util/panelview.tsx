@@ -60,14 +60,12 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
   const toplevel = {
     onPanelFocus: () => focused.val = true,
     onPanelBlur: () => focused.val = false,
-    onResized(this: view) {
-      const content = this.children[0].children[0]
-      content.size = {
-        w: this.size.w - 2,
-        h: this.size.h - 2,
-      }
-    },
   }
+
+  const sizeMinus2 = data.size.adapt(s => ({
+    w: s.w - 2,
+    h: s.h - 2,
+  }))
 
   function PanelResizer() {
 
@@ -111,7 +109,7 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
   return <view size={data.size} adopted={adopted} background={0x070707dd} {...toplevel}>
     <border borderColor={borderColor} padding={1}>
 
-      <panedya gap={0}>
+      <panedya size={sizeMinus2} gap={0}>
 
         <spacedx onMouseDown={titleBarMouseDown}>
           <border>
