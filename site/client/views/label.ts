@@ -25,8 +25,8 @@ export class label extends view {
     for (const line of lines) {
       if (line.length > w) w = line.length
     }
-    this.w = w * this.font.cw + (w - 1) * this.font.xgap
-    this.h = (lines.length * this.font.ch) + ((lines.length - 1) * this.font.ygap)
+    // this.size.w = w * this.font.cw + (w - 1) * this.font.xgap
+    // this.size.h = (lines.length * this.font.ch) + ((lines.length - 1) * this.font.ygap)
   }
 
 }

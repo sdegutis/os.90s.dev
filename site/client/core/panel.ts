@@ -124,8 +124,8 @@ export class Panel {
     })
 
     this.root = root
-    this.root.w = w
-    this.root.h = h
+    // this.root.size.w = w
+    // this.root.size.h = h
     this.root.layout?.()
     this.adoptTree(this.root)
 
@@ -196,8 +196,8 @@ export class Panel {
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
     this.canvas.width = w
     this.canvas.height = h
-    this.root.w = w
-    this.root.h = h
+    // this.root.size.w = w
+    // this.root.size.h = h
     this.blit()
   }
 
@@ -227,8 +227,8 @@ export class Panel {
 
     let tx = 0
     let ty = 0
-    let tw = node.w
-    let th = node.h
+    let tw = node.size.w
+    let th = node.size.h
 
     const inThis = (x >= tx && y >= ty && x < tw && y < th)
     if (!inThis) return null
@@ -240,7 +240,7 @@ export class Panel {
     let i = node.children.length
     while (i--) {
       const child = node.children[i]
-      const found = this.hover(child, x - child.x, y - child.y)
+      const found = this.hover(child, x - child.point.x, y - child.point.y)
       if (found) return found
     }
 
@@ -265,10 +265,10 @@ export class Panel {
     for (const child of node.children) {
       this.ctx.save()
       this.ctx.beginPath()
-      this.ctx.rect(x + child.x, y + child.y, child.w, child.h)
+      this.ctx.rect(x + child.point.x, y + child.point.y, child.size.w, child.size.h)
       this.ctx.clip()
 
-      this.drawTree(child, x + child.x, y + child.y)
+      this.drawTree(child, x + child.point.x, y + child.point.y)
 
       this.ctx.restore()
     }

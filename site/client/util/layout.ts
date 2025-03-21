@@ -3,9 +3,8 @@ import type { view } from "../views/view.js"
 export function vacuumFirstChild(this: view) {
   const c = this.firstChild
   if (c) {
-    c.x = 0
-    c.y = 0
-    c.w = this.w
-    c.h = this.h
+    c.point = { x: 0, y: 0 }
+    // c.size.w = this.size.w
+    // c.size.h = this.size.h
   }
 }

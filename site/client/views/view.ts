@@ -3,9 +3,14 @@ import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
 import { $, Ref } from "../util/ref.js"
 
-export type Pos = {
+export type Point = {
   readonly x: number,
   readonly y: number,
+}
+
+export type Size = {
+  readonly w: number,
+  readonly h: number,
 }
 
 export class view {
@@ -26,10 +31,8 @@ export class view {
   addLayoutKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.layoutKeys as Set<keyof this>).add(key)) }
   addRedrawKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.redrawKeys as Set<keyof this>).add(key)) }
 
-  x: number = 0
-  y: number = 0
-  w: number = 0
-  h: number = 0
+  point: Point = { x: 0, y: 0 }
+  size: Size = { w: 0, h: 0 }
 
   canFocus: boolean = false
   passthrough: boolean = false
@@ -39,13 +42,13 @@ export class view {
 
   background: number = 0x00000000
 
-  mouse: Pos = { x: 0, y: 0 }
+  mouse: Point = { x: 0, y: 0 }
 
   onPanelFocus?(): void
   onPanelBlur?(): void
 
-  onMouseDown?(button: number, pos: Pos): void
-  onMouseMove?(pos: Pos): void
+  onMouseDown?(button: number, pos: Point): void
+  onMouseMove?(pos: Point): void
   onMouseUp?(): void
   onWheel?(x: number, y: number): void
 
@@ -85,7 +88,7 @@ export class view {
 
   protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: string) {
     ctx.fillStyle = bg
-    ctx.fillRect(px, py, this.w, this.h)
+    ctx.fillRect(px, py, this.size.w, this.size.h)
   }
 
   focus() {
@@ -133,10 +136,10 @@ export class view {
     })
 
     this.$watch('children', adopt)
-    this.$watch('x', moved)
-    this.$watch('y', moved)
-    this.$watch('x', resized)
-    this.$watch('y', resized)
+    // this.$watch('x', moved)
+    // this.$watch('y', moved)
+    // this.$watch('x', resized)
+    // this.$watch('y', resized)
     this.adjustKeys.forEach(key => this.$watch(key as keyof this, adjust))
     this.layoutKeys.forEach(key => this.$watch(key as keyof this, layout))
     this.redrawKeys.forEach(key => this.$watch(key as keyof this, redraw))

@@ -1,8 +1,7 @@
 import { Bitmap } from "../../shared/bitmap.js"
 import { Cursor } from "../../shared/cursor.js"
-import { colorFor } from "../util/colors.js"
 import { dragMove } from "../util/drag.js"
-import { make, view, type Pos } from "./view.js"
+import { make, view, type Point } from "./view.js"
 
 const xresize = new Cursor(2, 1, new Bitmap([0x00000099, 0xffffffff], 5, [
   1, 1, 1, 1, 1,
@@ -46,19 +45,19 @@ class SplitDivider extends view {
     const dx = this.split.dir
     const dw = dx === 'x' ? 'w' : 'h'
 
-    const x = dx === 'x' ? Math.round((this[dw] - dividerWidth) / 2) : 0
-    const y = dx === 'y' ? Math.round((this[dw] - dividerWidth) / 2) : 0
-    const w = dx === 'x' ? dividerWidth : this.w
-    const h = dx === 'y' ? dividerWidth : this.h
+    // const x = dx === 'x' ? Math.round((this[dw] - dividerWidth) / 2) : 0
+    // const y = dx === 'y' ? Math.round((this[dw] - dividerWidth) / 2) : 0
+    // const w = dx === 'x' ? dividerWidth : this.size.w
+    // const h = dx === 'y' ? dividerWidth : this.size.h
 
-    if (this.pressed) {
-      ctx.fillStyle = colorFor(dividerColorPress)
-      ctx.fillRect(px + x, py + y, w, h)
-    }
-    else if (this.hovered) {
-      ctx.fillStyle = colorFor(dividerColorHover)
-      ctx.fillRect(px + x, py + y, w, h)
-    }
+    // if (this.pressed) {
+    //   ctx.fillStyle = colorFor(dividerColorPress)
+    //   ctx.fillRect(px + x, py + y, w, h)
+    // }
+    // else if (this.hovered) {
+    //   ctx.fillStyle = colorFor(dividerColorHover)
+    //   ctx.fillRect(px + x, py + y, w, h)
+    // }
   }
 
   private cursorClaims = 0
@@ -81,7 +80,7 @@ class SplitDivider extends view {
     this.cursorClaim(-1)
   }
 
-  override onMouseDown(button: number, pos: Pos): void {
+  override onMouseDown(button: number, pos: Point): void {
     this.cursorClaim(1)
     const split = this.split
     const dx = split.dir
@@ -97,8 +96,8 @@ class SplitDivider extends view {
         let min = split.min
         let max = split.max
 
-        if (min < 0) min += split[dw]
-        if (max <= 0) max += split[dw] - 1
+        // if (min < 0) min += split[dw]
+        // if (max <= 0) max += split[dw] - 1
 
         split.pos = b[dx]
         if (split.pos < min) split.pos = min
@@ -140,30 +139,30 @@ export class split extends view {
   }
 
   override layout(): void {
-    const dx = this.dir
-    const dw = dx === 'x' ? 'w' : 'h'
-    const a = this.children[0]
-    const b = this.children[1]
+    // const dx = this.dir
+    // const dw = dx === 'x' ? 'w' : 'h'
+    // const a = this.children[0]
+    // const b = this.children[1]
 
-    a.x = b.x = 0
-    a.y = b.y = 0
-    a.w = b.w = this.w
-    a.h = b.h = this.h
+    // a.point.x = b.point.x = 0
+    // a.point.y = b.point.y = 0
+    // a.w = b.w = this.w
+    // a.h = b.h = this.h
 
-    a[dw] = this.pos
+    // a[dw] = this.pos
 
-    b[dx] = this.pos
-    b[dw] = this[dw] - this.pos
+    // b[dx] = this.pos
+    // b[dw] = this[dw] - this.pos
 
-    if (this.resizer) {
-      this.resizer.x = 0
-      this.resizer.y = 0
-      this.resizer[dx] = this.pos - 1
+    // if (this.resizer) {
+    //   this.resizer.point.x = 0
+    //   this.resizer.point.y = 0
+    //   this.resizer[dx] = this.pos - 1
 
-      this.resizer.w = this.w
-      this.resizer.h = this.h
-      this.resizer[dw] = 2
-    }
+    //   this.resizer.w = this.w
+    //   this.resizer.h = this.h
+    //   this.resizer[dw] = 2
+    // }
   }
 
 }

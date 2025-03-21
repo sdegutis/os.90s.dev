@@ -4,7 +4,7 @@ import type { Panel } from "../core/panel.js"
 import type { border } from "../views/border.js"
 import type { image } from "../views/image.js"
 import type { spacedx } from "../views/spaced.js"
-import type { Pos, view } from "../views/view.js"
+import type { Point, view } from "../views/view.js"
 import { dragMove, dragResize } from "./drag.js"
 import { $, Ref } from "./ref.js"
 
@@ -30,7 +30,7 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
   const focused = $(false)
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
 
-  function titleBarMouseDown(this: spacedx, button: number, pos: Pos) {
+  function titleBarMouseDown(this: spacedx, button: number, pos: Point) {
     this.onMouseMove = dragMove(pos, panel)
     this.onMouseUp = () => {
       delete this.onMouseMove
@@ -49,10 +49,9 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
   function layoutContentView(this: border) {
     const c = this.firstChild
     if (c) {
-      c.x = 1
-      c.y = 0
-      c.w = this.w - 2
-      c.h = this.h - 1
+      c.point = { x: 1, y: 0 }
+      // c.size.w = this.size.w - 2
+      // c.size.h = this.size.h - 1
     }
   }
 
@@ -61,8 +60,8 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
     onPanelBlur: () => focused.val = false,
     onResized(this: view) {
       const content = this.children[0].children[0]
-      content.w = this.w - 2
-      content.h = this.h - 2
+      // content.size.w = this.size.w - 2
+      // content.size.h = this.size.h - 2
       this.layoutTree()
     },
   }
@@ -80,7 +79,7 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
       }
     }
 
-    function resizerMouseDown(this: image, button: number, pos: Pos) {
+    function resizerMouseDown(this: image, button: number, pos: Point) {
       setClaims(1)
       this.onMouseMove = dragResize(pos, panel)
       this.onMouseUp = () => {
@@ -97,8 +96,10 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
       onMouseExit={() => setClaims(-1)}
       layout={function () {
         if (!this.parent) return
-        this.x = this.parent!.w - this.w
-        this.y = this.parent!.h - this.h
+        this.point = {
+          x: this.parent!.size.w - this.size.w,
+          y: this.parent!.size.h - this.size.h,
+        }
       }}
       onMouseDown={resizerMouseDown}
     />

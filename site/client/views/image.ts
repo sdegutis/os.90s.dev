@@ -12,8 +12,8 @@ export class image extends view {
   }
 
   override adjust(): void {
-    this.w = this.bitmap?.width ?? 0
-    this.h = this.bitmap?.height ?? 0
+    // this.size.w = this.bitmap?.width ?? 0
+    // this.size.h = this.bitmap?.height ?? 0
   }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {

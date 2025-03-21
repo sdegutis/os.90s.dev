@@ -19,32 +19,31 @@ export class paned extends view {
   }
 
   override layout(): void {
-    const a = this.children[0]
-    const b = this.children[1]
+    // const a = this.children[0]
+    // const b = this.children[1]
 
-    const favored = ({ a, b })[this.vacuum]
+    // const favored = ({ a, b })[this.vacuum]
 
-    const dx = this.dir
-    const dw = dx === 'x' ? 'w' : 'h'
-    const vv = favored[dw]
+    // const dx = this.dir
+    // const dw = dx === 'x' ? 'w' : 'h'
+    // const vv = favored[dw]
 
-    a.x = b.x = 0
-    a.y = b.y = 0
-    a.w = b.w = this.w
-    a.h = b.h = this.h
+    // a.point = b.point = { x: 0, y: 0 }
+    // a.w = b.w = this.w
+    // a.h = b.h = this.h
 
-    if (this.vacuum === 'a') {
-      const pos = vv
-      a[dw] = pos
-      b[dx] = pos + this.gap
-      b[dw] = this[dw] - a[dw] - this.gap
-    }
-    else {
-      const pos = this[dw] - vv - this.gap
-      a[dw] = pos
-      b[dx] = pos + this.gap
-      b[dw] = vv
-    }
+    // if (this.vacuum === 'a') {
+    //   const pos = vv
+    //   a[dw] = pos
+    //   b[dx] = pos + this.gap
+    //   b[dw] = this[dw] - a[dw] - this.gap
+    // }
+    // else {
+    //   const pos = this[dw] - vv - this.gap
+    //   a[dw] = pos
+    //   b[dx] = pos + this.gap
+    //   b[dw] = vv
+    // }
   }
 
 }

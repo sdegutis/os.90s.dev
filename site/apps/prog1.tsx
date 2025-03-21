@@ -10,7 +10,7 @@ const mnuImage = new Bitmap([0x333333ff], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0
 const children = $([
   <button padding={2}><label text={'hey'} /></button>,
   <image bitmap={mnuImage} />,
-  <textarea w={20} h={20} />,
+  <textarea size={{ w: 20, h: 20 }} />,
   ...Array(20).keys().map(i => <label text={`view ${i.toString()}`} />)
 ])
 

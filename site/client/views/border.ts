@@ -14,15 +14,17 @@ export class border extends view {
   }
 
   override adjust(): void {
-    this.w = this.padding + (this.firstChild?.w ?? 0) + this.padding
-    this.h = this.padding + (this.firstChild?.h ?? 0) + this.padding
+    // this.size.w = this.padding + (this.firstChild?.size.w ?? 0) + this.padding
+    // this.size.h = this.padding + (this.firstChild?.size.h ?? 0) + this.padding
   }
 
   override layout(): void {
     const c = this.firstChild
     if (c) {
-      c.x = this.padding
-      c.y = this.padding
+      c.point = {
+        x: this.padding,
+        y: this.padding,
+      }
     }
   }
 
@@ -37,8 +39,8 @@ export class border extends view {
       ctx.strokeRect(
         px + i + .5,
         py + i + .5,
-        this.w - i * 2 - 1,
-        this.h - i * 2 - 1,
+        this.size.w - i * 2 - 1,
+        this.size.h - i * 2 - 1,
       )
     }
   }

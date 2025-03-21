@@ -1,7 +1,7 @@
 import { crt2025, Font } from "../../shared/font.js"
 import { vacuumFirstChild } from "../util/layout.js"
 import { scroll } from "./scroll.js"
-import { make, view, type Pos } from "./view.js"
+import { make, view, type Point } from "./view.js"
 
 export class textarea extends view {
 
@@ -56,8 +56,8 @@ export class textarea extends view {
       onMouseDown: (...args) => this.onMouseDown(...args),
       background: this.cursorColor,
       visible: false,
-      w: this.font.cw + this.font.xgap,
-      h: this.font.ch + this.font.ygap,
+      // size.w: this.font.cw + this.font.xgap,
+      // size.h: this.font.ch + this.font.ygap,
     })
 
     this.label = make(view, {
@@ -85,11 +85,11 @@ export class textarea extends view {
   //   }
   // }
 
-  override onMouseDown(button: number, pos: Pos): void {
+  override onMouseDown(button: number, pos: Point): void {
     this.focus()
 
-    let x = this.mouse.x - this.label.x
-    let y = this.mouse.y - this.label.y
+    let x = this.mouse.x - this.label.point.x
+    let y = this.mouse.y - this.label.point.y
 
     const row = Math.floor(y / (this.font.ch + this.font.ygap))
     const col = Math.floor(x / (this.font.cw + this.font.xgap))
@@ -123,24 +123,24 @@ export class textarea extends view {
       if (line.length > cols) cols = line.length
     }
     cols++
-    this.label.w = (cols * this.font.cw) + (cols * this.font.xgap)
-    this.label.h = (rows * this.font.ch) + (rows * this.font.ygap)
+    // this.label.size.w = (cols * this.font.cw) + (cols * this.font.xgap)
+    // this.label.size.h = (rows * this.font.ch) + (rows * this.font.ygap)
   }
 
   private reflectCursorPos() {
-    this._cursor.x = this.col * (this.font.cw + this.font.xgap)
-    this._cursor.y = this.row * (this.font.ch + this.font.ygap)
+    // this._cursor.point.x = this.col * (this.font.cw + this.font.xgap)
+    // this._cursor.point.y = this.row * (this.font.ch + this.font.ygap)
   }
 
   private scrollCursorIntoView() {
-    let x = this._cursor.x
-    let y = this._cursor.y
+    let x = this._cursor.point.x
+    let y = this._cursor.point.y
 
     let node = this._cursor
     while (node !== this.scroll) {
       node = node.parent!
-      x += node.x
-      y += node.y
+      x += node.point.x
+      y += node.point.y
     }
 
     if (y < 0) {
@@ -153,13 +153,13 @@ export class textarea extends view {
       this.adjustTextLabel()
     }
 
-    const maxy = this.scroll.area.h - this._cursor.h
+    const maxy = this.scroll.area.size.h - this._cursor.size.h
     if (y > maxy) {
       this.scroll.scrolly -= maxy - y
       this.adjustTextLabel()
     }
 
-    const maxx = this.scroll.area.w - this._cursor.w
+    const maxx = this.scroll.area.size.w - this._cursor.size.w
     if (x > maxx) {
       this.scroll.scrollx -= maxx - x
       this.adjustTextLabel()
