@@ -35,8 +35,6 @@ class SplitDivider extends view {
     this.cursor = this.split.dir === 'x' ? xresize : yresize
   }
 
-  // override onResized(): void { }
-
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     if (this.split.min === this.split.max) return
 
@@ -122,15 +120,15 @@ class SplitDivider extends view {
 
 export class split extends view {
 
-  pos: number = 10
-  min: number = 0
-  max: number = 0
+  pos: number = 20
+  min: number = 10
+  max: number = -10
   dir: 'x' | 'y' = 'y'
 
   resizer?: SplitDivider
 
   override init(): void {
-    this.$multiplex('dir', 'pos').watch(debounce(() => {
+    this.$multiplex('dir', 'pos', 'size').watch(debounce(() => {
       this.layout()
       this.needsRedraw()
     }))

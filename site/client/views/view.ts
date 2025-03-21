@@ -27,10 +27,10 @@ export class view {
   point: Point = { x: 0, y: 0 }
   size: Size = { w: 0, h: 0 }
 
-  private pointEquals: Equals<typeof this.point> = pointEquals
-  private sizeEquals: Equals<typeof this.size> = sizeEquals
-  private childrenEquals: Equals<typeof this.children> = arrayEquals
-  private mouseEquals: Equals<typeof this.mouse> = pointEquals
+  protected pointEquals: Equals<typeof this.point> = pointEquals
+  protected sizeEquals: Equals<typeof this.size> = sizeEquals
+  protected childrenEquals: Equals<typeof this.children> = arrayEquals
+  protected mouseEquals: Equals<typeof this.mouse> = pointEquals
 
   canFocus: boolean = false
   passthrough: boolean = false
@@ -165,18 +165,10 @@ export class view {
 
       Object.defineProperty(this, key, {
         get: () => $$refs[key].val,
-        set: (v) => {
-
-
-
-          $$refs[key].val = v
-        },
+        set: (v) => $$refs[key].val = v,
         enumerable: true,
       })
     }
-
-    this.adjust?.()
-    this.layout?.()
 
   }
 
@@ -214,6 +206,9 @@ export function make<T extends view>(
 
   while (proto = protos.pop())
     proto.init!.call(v)
+
+  v.adjust?.()
+  v.layout?.()
 
   return v
 }

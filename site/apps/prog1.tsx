@@ -20,7 +20,14 @@ const panel = await prog.makePanel({
   size,
   view:
     <split size={size} background={0x00330099} max={-10} min={10}>
-      <label text={'hi'} />
+      <split dir={'x'}>
+        <view />
+        <spacedx>
+          <label text={'hi'} />
+          <label text={'he'} />
+          <label text={'ho'} />
+        </spacedx>
+      </split>
       <view background={0x33000099}>
         <image bitmap={mnuImage} />
       </view>
