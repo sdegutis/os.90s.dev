@@ -7,12 +7,12 @@ await prog.init()
 
 const mnuImage = new Bitmap([0x333333ff], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1])
 
-// const children = $([
-//   <button padding={2}><label text={'hey'} /></button>,
-//   <image bitmap={mnuImage} />,
-//   <textarea size={{ w: 20, h: 20 }} />,
-//   ...Array(20).keys().map(i => <label text={`view ${i.toString()}`} />)
-// ])
+const children = $([
+  <button padding={2}><label text={'hey'} /></button>,
+  <image bitmap={mnuImage} />,
+  <textarea size={{ w: 20, h: 20 }} />,
+  ...Array(20).keys().map(i => <label text={`view ${i.toString()}`} />)
+])
 
 const size = $({ w: 100, h: 100 })
 
@@ -21,7 +21,9 @@ const panel = await prog.makePanel({
   view:
     <split size={size} background={0x00330099} max={-10} min={10}>
       <split dir={'x'}>
-        <view />
+        <scroll background={0x000099dd}>
+          <view children={children} />
+        </scroll>
         <spacedx>
           <label text={'hi'} />
           <label text={'he'} />

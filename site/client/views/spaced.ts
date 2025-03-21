@@ -10,7 +10,6 @@ export class spaced extends view {
   }
 
   override adjust(): void {
-    console.log('adj')
     const dh = this.dir === 'x' ? 'h' : 'w'
     const size = { ...this.size }
     size[dh] = 0
@@ -22,7 +21,6 @@ export class spaced extends view {
   }
 
   override layout(): void {
-    console.log('lay')
     const max = this.size[this.dir === 'x' ? 'w' : 'h']
     let combinedWidths = 0
     for (let i = 0; i < this.children.length; i++) {
