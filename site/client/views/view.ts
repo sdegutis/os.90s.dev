@@ -1,7 +1,7 @@
 import { Listener } from "../../shared/listener.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
-import { $, Ref, type Equals } from "../util/ref.js"
+import { $, Ref } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
 
 export type Point = {
@@ -26,6 +26,10 @@ export class view {
 
   point: Point = { x: 0, y: 0 }
   size: Size = { w: 0, h: 0 }
+
+  pointEquals = pointEquals
+  sizeEquals = sizeEquals
+  childrenEquals = arrayEquals
 
   canFocus: boolean = false
   passthrough: boolean = false
@@ -153,7 +157,7 @@ export class view {
       if (!(val instanceof Ref)) val = $(val)
       $$refs[key] = val
 
-      $$refs[key].equals = equals[key as string]
+      $$refs[key].equals = (this as any)[`${key as string}Equals`]
       $$refs[key].watch(([val, old]) => {
         $$listeners.get(key)?.dispatch([val, old])
       })
@@ -177,20 +181,19 @@ export class view {
 
 }
 
-const equals: Record<string, Equals<any>> = {
-  point: (a: Point, b: Point) => {
-    return a.x === b.x && a.y === b.y
-  },
-  size: (a: Size, b: Size) => {
-    return a.w === b.w && a.h === b.h
-  },
-  children: (a: view[], b: view[]) => {
-    if (a.length !== b.length) return false
-    for (let i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) return false
-    }
-    return true
-  },
+const pointEquals = (a: Point, b: Point) => {
+  return a.x === b.x && a.y === b.y
+}
+
+const sizeEquals = (a: Size, b: Size) => {
+  return a.w === b.w && a.h === b.h
+}
+const arrayEquals = (a: view[], b: view[]) => {
+  if (a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false
+  }
+  return true
 }
 
 export function make<T extends view>(
