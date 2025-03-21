@@ -86,6 +86,10 @@ export class view {
       this.needsRedraw()
     })
 
+    this.$watch('visible', () => {
+      this.needsRedraw()
+    })
+
     this.$watch('children', () => {
       for (const child of this.children) {
         child.parent = this
