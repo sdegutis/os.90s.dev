@@ -10,14 +10,7 @@ export class group extends view {
 
   override init(): void {
     this.$multiplex('gap', 'dir', 'align', 'children').watch(() => this.adjust())
-
-    this.$watch('children', (children, prevChildren) => {
-      console.log(prevChildren)
-      console.log(children)
-      console.log(' ')
-    })
-
-    // this.addLayoutKeys()
+    this.$watch('children', () => this.layout())
   }
 
   override adjust(): void {
@@ -37,26 +30,26 @@ export class group extends view {
     this.size = size
   }
 
-  // override layout(): void {
-  //   const dw = this.dir === 'x' ? 'w' : 'h'
-  //   const dh = this.dir === 'x' ? 'h' : 'w'
-  //   const dx = this.dir === 'x' ? 'x' : 'y'
-  //   const dy = this.dir === 'x' ? 'y' : 'x'
+  override layout(): void {
+    const dw = this.dir === 'x' ? 'w' : 'h'
+    const dh = this.dir === 'x' ? 'h' : 'w'
+    const dx = this.dir === 'x' ? 'x' : 'y'
+    const dy = this.dir === 'x' ? 'y' : 'x'
 
-  //   let x = 0
-  //   for (let i = 0; i < this.children.length; i++) {
-  //     const child = this.children[i]
-  //     const point = { ...child.point }
+    let x = 0
+    for (let i = 0; i < this.children.length; i++) {
+      const child = this.children[i]
+      const point = { ...child.point }
 
-  //     // point[dx] = x
-  //     // x += child[dw] + this.gap
-  //     // point[dy] = this.align === 'm' ? Math.round((this[dh] - child[dh]) / 2) :
-  //     //   this.align === 'a' ? 0 :
-  //     //     this[dh] - child[dh]
+      point[dx] = x
+      x += child.size[dw] + this.gap
+      point[dy] = this.align === 'm' ? Math.round((this.size[dh] - child.size[dh]) / 2) :
+        this.align === 'a' ? 0 :
+          this.size[dh] - child.size[dh]
 
-  //     child.point = point
-  //   }
-  // }
+      child.point = point
+    }
+  }
 
 }
 

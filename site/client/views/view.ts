@@ -69,15 +69,21 @@ export class view {
 
   init() {
 
-    // this.$watch('size', () => {
-    //   this.panel?.needsMouseCheck()
-    //   this.panel?.needsRedraw()
-    // })
+    this.$watch('size', () => {
+      // this.panel?.needsMouseCheck()
+      this.parent?.onChildResized?.()
+      this.panel?.needsRedraw()
+    })
 
     this.$watch('children', () => {
       this.children.forEach(c => c.parent = this)
+      this.layout?.()
     })
 
+  }
+
+  onChildResized() {
+    this.layout?.()
   }
 
   needsRedraw() {

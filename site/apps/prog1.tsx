@@ -10,9 +10,9 @@ const mnuImage = new Bitmap([0x333333ff], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0
 
 const children = $<view[]>([])
 
-// setInterval(() => {
-//   children.val = [...children.val, <label text={'yep ' + Date.now()} />]
-// }, 1000)
+setInterval(() => {
+  children.val = [...children.val, <label text={'yep ' + Date.now()} />]
+}, 1000)
 
 // const children = $([
 //   <button padding={2}><label text={'hey'} /></button>,
