@@ -1,6 +1,7 @@
+import { Listener } from "../../shared/listener.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
-import { Ref } from "../util/ref.js"
+import { $, Ref } from "../util/ref.js"
 
 export type Pos = {
   readonly x: number,
@@ -91,21 +92,106 @@ export class view {
     this.panel?.focusView(this)
   }
 
-  init?(): void
+  init() {
 
-  setup(data: Partial<this>) {
-    for (const [k, v] of Object.entries(data)) {
-      if (v instanceof Ref) {
-        this.set(k as keyof this, v.val)
-        v.watch(val => this.set(k as keyof this, val))
-      }
-      else {
-        this.set(k as keyof this, v)
+    const debounce = (fn: () => void) => {
+      let t: number | undefined = undefined
+      return () => {
+        clearTimeout(t)
+        t = setTimeout(fn)
       }
     }
 
+    const adopt = debounce(() => {
+      this.children.forEach(c => c.parent = this)
+    })
+
+    const moved = debounce(() => {
+      this.onMoved?.()
+      this.panel?.needsRedraw()
+      this.panel?.needsMouseCheck()
+    })
+
+    const resized = debounce(() => {
+      this.onResized()
+      this.panel?.needsRedraw()
+      this.panel?.needsMouseCheck()
+    })
+
+    const adjust = debounce(() => {
+      this.adjust?.()
+      this.panel?.needsRedraw()
+    })
+
+    const layout = debounce(() => {
+      this.layout?.()
+      this.panel?.needsRedraw()
+    })
+
+    const redraw = debounce(() => {
+      this.panel?.needsRedraw()
+    })
+
+    this.$watch('children', adopt)
+    this.$watch('x', moved)
+    this.$watch('y', moved)
+    this.$watch('x', resized)
+    this.$watch('y', resized)
+    this.adjustKeys.forEach(key => this.$watch(key as keyof this, adjust))
+    this.layoutKeys.forEach(key => this.$watch(key as keyof this, layout))
+    this.redrawKeys.forEach(key => this.$watch(key as keyof this, redraw))
+
+  }
+
+  $watch<K extends keyof this>(key: K, fn: (val: this[K]) => void) {
+    const $$listeners = (this as unknown as { $$listeners: Map<string, Listener<any>> }).$$listeners
+    let val = $$listeners.get(key as string)
+    if (!val) $$listeners.set(key as string, val = new Listener())
+    return val.watch(fn)
+  }
+
+  $ref<K extends keyof this>(key: K) {
+    const $$refs = (this as unknown as { $$refs: Map<string, Listener<any>> }).$$refs
+    return $$refs.get(key as string)
+  }
+
+  setup() {
+
     this.adjust?.()
     this.layout?.()
+
+    const $$listeners = new Map<string, Listener<any>>()
+    Object.defineProperty(this, '$$listeners', {
+      enumerable: false,
+      writable: false,
+      value: $$listeners,
+    })
+
+    const $$refs: Record<string, Ref<any>> = Object.create(null)
+    Object.defineProperty(this, '$$refs', {
+      enumerable: false,
+      writable: false,
+      value: $$refs,
+    })
+
+    for (const key in this) {
+      let val = this[key] as any
+      if (val instanceof Function) continue
+
+      if (!(val instanceof Ref)) val = $(val)
+      $$refs[key] = val
+
+      $$refs[key].watch(val => {
+        $$listeners.get(key)?.dispatch(val)
+      })
+
+      Object.defineProperty(this, key, {
+        get: () => $$refs[key].val,
+        set: (v) => $$refs[key].val = v,
+        enumerable: true,
+      })
+    }
+
   }
 
   mutable(): this & { commit(): void } {
@@ -132,47 +218,18 @@ export class view {
   set(k: keyof this, v: any) {
     const oldv = this[k]
     if (oldv === v) return
-
     this[k] = v
-
-    if (k === 'children') {
-      for (const c of v) {
-        const child = c as view
-        child.set('parent', this)
-      }
-    }
-
-    if (k === 'w' || k === 'h') {
-      this.onResized()
-      this.panel?.needsRedraw()
-      this.panel?.needsMouseCheck()
-    }
-    else if (k === 'x' || k === 'y') {
-      this.onMoved?.()
-      this.panel?.needsRedraw()
-      this.panel?.needsMouseCheck()
-    }
-    else if (this.adjustKeys.has(k as string)) {
-      this.adjust?.()
-      this.panel?.needsRedraw()
-    }
-    else if (this.layoutKeys.has(k as string)) {
-      this.layout?.()
-      this.panel?.needsRedraw()
-    }
-    else if (this.redrawKeys.has(k as string)) {
-      this.panel?.needsRedraw()
-    }
   }
 
 }
 
 export function make<T extends view>(
   ctor: new () => T,
-  data: { [K in keyof T]?: T[K] },
+  data: { [K in keyof T]?: T[K] | Ref<T[K]> },
 ): T {
   const v = new ctor()
-  v.setup(data)
+  Object.assign(v, data)
+  v.setup()
 
   const protos = []
   let proto: view | undefined = v
