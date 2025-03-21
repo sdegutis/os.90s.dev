@@ -21,7 +21,9 @@ const panel = await prog.makePanel({
   view:
     <split size={size} background={0x00330099} max={-10} min={10}>
       <label text={'hi'} />
-      <view background={0x33000099} />
+      <view background={0x33000099}>
+        <image bitmap={mnuImage} />
+      </view>
     </split>
   // <panedya size={size} background={0x00330099}>
   //   <label text={'yep'} background={0x33000099} />

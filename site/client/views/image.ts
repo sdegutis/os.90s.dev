@@ -8,13 +8,15 @@ export class image extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    // this.addAdjustKeys('bitmap')
+    this.$multiplex('bitmap').watch(() => this.adjust())
   }
 
-  // override adjust(): void {
-  //   // this.size.w = this.bitmap?.width ?? 0
-  //   // this.size.h = this.bitmap?.height ?? 0
-  // }
+  override adjust(): void {
+    this.size = {
+      w: this.bitmap?.width ?? 0,
+      h: this.bitmap?.height ?? 0,
+    }
+  }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)
