@@ -14,12 +14,10 @@ export class textarea extends view {
 
   override canFocus: boolean = true
 
-  _text = ''
-  private lines: string[] = [this._text]
+  private lines: string[] = ['']
 
-  get text() { return this._text }
+  get text() { return this.lines.join('\n') }
   set text(s: string) {
-    this._text = s
     this.lines = s.split('\n')
     this.highlight()
     this.row = Math.min(this.row, this.lines.length - 1)
