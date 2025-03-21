@@ -1,4 +1,5 @@
 import { crt2025, Font } from "../../shared/font.js"
+import { vacuumFirstChild } from "../util/layout.js"
 import { scroll } from "./scroll.js"
 import { make, view, type Point } from "./view.js"
 
@@ -32,7 +33,7 @@ export class textarea extends view {
   private col = 0
   private end = 0
 
-  // override layout = vacuumFirstChild
+  override layout = vacuumFirstChild
 
   private colors: number[][] = []
 
@@ -55,12 +56,14 @@ export class textarea extends view {
       onMouseDown: (...args) => this.onMouseDown(...args),
       background: this.cursorColor,
       visible: false,
-      // size.w: this.font.cw + this.font.xgap,
-      // size.h: this.font.ch + this.font.ygap,
+      size: {
+        w: this.font.cw + this.font.xgap,
+        h: this.font.ch + this.font.ygap,
+      }
     })
 
     this.label = make(view, {
-      // adjust: () => this.adjustTextLabel(),
+      adjust: () => this.adjustTextLabel(),
       draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),
       onMouseDown: (...args) => this.onMouseDown(...args),
       children: [this._cursor]
@@ -75,14 +78,9 @@ export class textarea extends view {
 
     this.reflectCursorPos()
     this.adjustTextLabel()
-  }
 
-  // override set(k: keyof this, v: any): void {
-  //   super.set(k, v)
-  //   if (k === 'cursorColor') {
-  //     this._cursor.set('background', v)
-  //   }
-  // }
+    this.$watch('cursorColor', c => this._cursor.background = c)
+  }
 
   override onMouseDown(button: number, pos: Point): void {
     this.focus()
@@ -122,13 +120,17 @@ export class textarea extends view {
       if (line.length > cols) cols = line.length
     }
     cols++
-    // this.label.size.w = (cols * this.font.cw) + (cols * this.font.xgap)
-    // this.label.size.h = (rows * this.font.ch) + (rows * this.font.ygap)
+    this.label.size = {
+      w: (cols * this.font.cw) + (cols * this.font.xgap),
+      h: (rows * this.font.ch) + (rows * this.font.ygap),
+    }
   }
 
   private reflectCursorPos() {
-    // this._cursor.point.x = this.col * (this.font.cw + this.font.xgap)
-    // this._cursor.point.y = this.row * (this.font.ch + this.font.ygap)
+    this._cursor.point = {
+      x: this.col * (this.font.cw + this.font.xgap),
+      y: this.row * (this.font.ch + this.font.ygap),
+    }
   }
 
   private scrollCursorIntoView() {

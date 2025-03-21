@@ -95,6 +95,11 @@ export class view {
       this.layout?.()
       this.needsRedraw()
     })
+
+    for (const child of this.children) {
+      child.parent = this
+      child.adoptTree(this.panel)
+    }
   }
 
   adoptTree(panel: Panel | undefined) {
@@ -165,6 +170,7 @@ export const pointEquals = (a: Point, b: Point) => {
 export const sizeEquals = (a: Size, b: Size) => {
   return a.w === b.w && a.h === b.h
 }
+
 export const arrayEquals = <T extends ArrayLike<any>>(a: T, b: T) => {
   if (a.length !== b.length) return false
   for (let i = 0; i < a.length; i++) {
