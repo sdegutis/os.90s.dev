@@ -84,7 +84,7 @@ export class scroll extends view {
       content.set('y', -this.scrolly)
     }
 
-    this.didScroll = () => {
+    const didScroll = this.didScroll = () => {
       const scrollx = Math.floor(Math.max(0, Math.min(content.w - area.w, this.scrollx)))
       const scrolly = Math.floor(Math.max(0, Math.min(content.h - area.h, this.scrolly)))
       if (scrollx !== this.scrollx) this.set('scrollx', scrollx)
@@ -109,8 +109,9 @@ export class scroll extends view {
 
     this.onResized = fixAll
 
-    function fixAll(this: view) {
+    function fixAll() {
       layout()
+      didScroll()
       setTimeout(() => {
         perw = area.w / content.w
         perh = area.h / content.h

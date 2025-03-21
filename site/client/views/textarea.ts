@@ -122,10 +122,10 @@ export class textarea extends view {
     for (const line of this.lines) {
       if (line.length > cols) cols = line.length
     }
+    cols++
     this.label.mutate(label => {
       label.w = (cols * this.font.cw) + (cols * this.font.xgap)
       label.h = (rows * this.font.ch) + (rows * this.font.ygap)
-      label.w += this.font.cw + this.font.xgap
     })
   }
 
