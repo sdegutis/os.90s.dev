@@ -1,3 +1,4 @@
+import { debounce } from "../util/throttle.js"
 import { view } from "./view.js"
 
 export class paned extends view {
@@ -9,14 +10,19 @@ export class paned extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    this.$multiplex('children', 'gap', 'dir', 'vacuum').watch(() => {
-      this.layout()
+    this.$multiplex('gap', 'dir', 'vacuum').watch(debounce(() => {
+      // this.layout()
+      this.children.forEach(c => c.adjust?.())
       this.needsRedraw()
-    })
+    }))
   }
 
   override layout(): void {
+    console.log('here', this.dir, this.vacuum, this.children.map(c => c.constructor.name))
+
     const [a, b] = this.children
+    // a.adjust?.()
+    // b.adjust?.()
 
     const as = { ...a.size }
     const bs = { ...b.size }
@@ -46,6 +52,11 @@ export class paned extends view {
       bp[dx] = pos + this.gap
       bs[dw] = vv
     }
+
+    console.log(a.size, as)
+    console.log(b.size, bs)
+    console.log(a.point, ap)
+    console.log(b.point, bp)
 
     a.size = as
     b.size = bs

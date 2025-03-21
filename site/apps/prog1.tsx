@@ -25,10 +25,11 @@ const child2 = <view background={0x33000099}>
 
 const vac = dir.adapt<AB>(dir => dir === 'x' ? 'a' : 'b')
 
-const two = vac.adapt(vac => vac === 'a' ? [child1, child2] : [child2, child1])
+const two = vac.adapt((vac => vac === 'a' ? [child1, child2] : [child2, child1]))
 
 
-setInterval(() => {
+let t = setInterval(() => {
+  console.log(' ')
 
   dir.val = dir.val === 'x' ? 'y' : 'x'
 
@@ -43,6 +44,8 @@ setInterval(() => {
   </border>
   ]
 }, 1000)
+
+// setTimeout(() => clearInterval(t), 1000)
 
 // const children = $([
 //   <button padding={2}><label text={'hey'} /></button>,

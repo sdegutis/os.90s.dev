@@ -1,6 +1,7 @@
 import type { Cursor } from "../../shared/cursor.js"
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type ServerPanel } from "../../shared/rpc.js"
+import { debounce } from "../util/throttle.js"
 import type { view } from "../views/view.js"
 
 type Pos = {
@@ -263,23 +264,13 @@ export class Panel {
     }
   }
 
-  redrawTimer: number | null = null
-  needsRedraw() {
-    if (this.redrawTimer !== null) return
-    this.redrawTimer = setTimeout(() => {
-      this.redrawTimer = null
-      this.blit()
-    })
-  }
+  needsRedraw = debounce(() => {
+    this.blit()
+  })
 
-  mouseCheckTimer: number | null = null
-  needsMouseCheck() {
-    if (this.mouseCheckTimer !== null) return
-    this.mouseCheckTimer = setTimeout(() => {
-      this.mouseCheckTimer = null
-      this.checkUnderMouse()
-    })
-  }
+  needsMouseCheck = debounce(() => {
+    this.checkUnderMouse()
+  })
 
   setCursor(c: Cursor | null) {
     this.rpc.send('cursor', [c?.toString() ?? ''])

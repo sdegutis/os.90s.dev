@@ -2,6 +2,7 @@ import { Listener } from "../../shared/listener.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
 import { $, Ref, type Equals } from "../util/ref.js"
+import { debounce } from "../util/throttle.js"
 
 export type Point = {
   readonly x: number,
@@ -69,24 +70,25 @@ export class view {
 
   init() {
 
-    this.$watch('size', () => {
+    this.$watch('size', debounce(() => {
       this.panel?.needsMouseCheck()
       this.parent?.onChildResized?.()
       this.panel?.needsRedraw()
-    })
+    }))
 
-    this.$watch('point', () => {
+    this.$watch('point', debounce(() => {
       this.panel?.needsMouseCheck()
       this.panel?.needsRedraw()
-    })
+    }))
 
-    this.$watch('children', () => {
+    this.$watch('children', debounce(() => {
       for (const child of this.children) {
         child.parent = this
         child.adoptTree(this.panel)
       }
       this.layout?.()
-    })
+      this.needsRedraw()
+    }))
 
   }
 
@@ -98,10 +100,11 @@ export class view {
     }
   }
 
-  onChildResized() {
+  onChildResized = debounce(() => {
+    console.log('childrenwreis')
     this.adjust?.()
     this.layout?.()
-  }
+  })
 
   needsRedraw() {
     this.panel?.needsRedraw()
@@ -112,7 +115,10 @@ export class view {
 
   $multiplex(...keys: (keyof this)[]) {
     const listener = new Listener()
-    keys.forEach(key => this.$watch(key, () => listener.dispatch()))
+    keys.forEach(key => this.$watch(key, () => {
+      console.log('multiplex', key)
+      listener.dispatch()
+    }))
     return listener
   }
 
@@ -183,7 +189,11 @@ const equals: Record<string, Equals<any>> = {
     return a.w === b.w && a.h === b.h
   },
   children: (a: view[], b: view[]) => {
-    return a.length === b.length && new Set([...a, ...b]).size === a.length
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false
+    }
+    return true
   },
 }
 
