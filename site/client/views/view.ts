@@ -101,7 +101,6 @@ export class view {
   }
 
   onChildResized = debounce(() => {
-    console.log('childrenwreis')
     this.adjust?.()
     this.layout?.()
   })
@@ -115,10 +114,7 @@ export class view {
 
   $multiplex(...keys: (keyof this)[]) {
     const listener = new Listener()
-    keys.forEach(key => this.$watch(key, () => {
-      console.log('multiplex', key)
-      listener.dispatch()
-    }))
+    keys.forEach(key => this.$watch(key, () => listener.dispatch()))
     return listener
   }
 
