@@ -20,11 +20,11 @@ const yresize = new Cursor(1, 2, new Bitmap([0x00000099, 0xffffffff], 3, [
 
 class SplitDivider extends view {
 
-  readonly split!: split
-  override readonly passthrough: boolean = false
+  split!: split
+  override  passthrough: boolean = false
 
-  readonly pressed: boolean = false
-  readonly dividerColor: number = 0x33333300
+  pressed: boolean = false
+  dividerColor: number = 0x33333300
 
   private cursor!: Cursor
 
@@ -123,10 +123,10 @@ class SplitDivider extends view {
 
 export class split extends view {
 
-  readonly pos: number = 10
-  readonly min: number = 0
-  readonly max: number = 0
-  readonly dir: 'x' | 'y' = 'y'
+  pos: number = 10
+  min: number = 0
+  max: number = 0
+  dir: 'x' | 'y' = 'y'
 
   resizer?: SplitDivider
 

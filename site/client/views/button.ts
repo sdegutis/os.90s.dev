@@ -29,16 +29,16 @@ export class button extends border {
     )
   }
 
-  readonly pressed: boolean = false
-  readonly selected: boolean = false
+  pressed: boolean = false
+  selected: boolean = false
 
-  readonly hoverBackground: number = 0xffffff22
-  readonly pressBackground: number = 0xffffff11
-  readonly selectedBackground: number = 0xffffff33
+  hoverBackground: number = 0xffffff22
+  pressBackground: number = 0xffffff11
+  selectedBackground: number = 0xffffff33
 
-  readonly hoverBorderColor: number = 0x00000000
-  readonly pressBorderColor: number = 0x00000000
-  readonly selectedBorderColor: number = 0x00000000
+  hoverBorderColor: number = 0x00000000
+  pressBorderColor: number = 0x00000000
+  selectedBorderColor: number = 0x00000000
 
   private counter = new ClickCounter()
 

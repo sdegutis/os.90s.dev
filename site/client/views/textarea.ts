@@ -5,8 +5,8 @@ import { make, view, type Pos } from "./view.js"
 
 export class textarea extends view {
 
-  readonly font: Font = crt2025
-  readonly color: number = 0xffffffff
+  font: Font = crt2025
+  color: number = 0xffffffff
 
   private scroll!: scroll
   private label!: view
@@ -27,7 +27,7 @@ export class textarea extends view {
 
   highlightings: Record<string, [number, RegExp]> = {}
 
-  readonly cursorColor = 0x0000FF99
+  cursorColor = 0x0000FF99
 
   private row = 0
   private col = 0

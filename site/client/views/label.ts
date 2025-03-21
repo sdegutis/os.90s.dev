@@ -5,9 +5,9 @@ export class label extends view {
 
   override passthrough: boolean = true
 
-  readonly textColor: number = 0xffffffff
-  readonly font: Font = crt2025
-  readonly text: string = ''
+  textColor: number = 0xffffffff
+  font: Font = crt2025
+  text: string = ''
 
   override init(): void {
     this.addAdjustKeys('text', 'font')

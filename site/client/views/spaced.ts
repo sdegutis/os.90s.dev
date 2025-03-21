@@ -2,7 +2,7 @@ import { view } from "./view.js"
 
 export class spaced extends view {
 
-  readonly dir: 'x' | 'y' = 'x'
+  dir: 'x' | 'y' = 'x'
 
   override init(): void {
     this.addAdjustKeys('dir')

@@ -2,9 +2,9 @@ import { view } from "./view.js"
 
 export class paned extends view {
 
-  readonly gap: number = 0
-  readonly dir: 'x' | 'y' = 'x'
-  readonly vacuum: 'a' | 'b' = 'a'
+  gap: number = 0
+  dir: 'x' | 'y' = 'x'
+  vacuum: 'a' | 'b' = 'a'
 
   override passthrough: boolean = true
 

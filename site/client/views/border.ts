@@ -3,8 +3,8 @@ import { view } from "./view.js"
 
 export class border extends view {
 
-  readonly borderColor: number = 0x00000000
-  readonly padding: number = 0
+  borderColor: number = 0x00000000
+  padding: number = 0
 
   override passthrough: boolean = true
 

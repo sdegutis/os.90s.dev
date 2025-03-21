@@ -2,9 +2,9 @@ import { view } from "./view.js"
 
 export class group extends view {
 
-  readonly gap: number = 0
-  readonly dir: 'x' | 'y' = 'x'
-  readonly align: 'a' | 'm' | 'z' = 'm'
+  gap: number = 0
+  dir: 'x' | 'y' = 'x'
+  align: 'a' | 'm' | 'z' = 'm'
 
   override passthrough: boolean = true
 

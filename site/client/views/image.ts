@@ -3,7 +3,7 @@ import { view } from "./view.js"
 
 export class image extends view {
 
-  readonly bitmap: Bitmap | null = null
+  bitmap: Bitmap | null = null
 
   override passthrough: boolean = true
 

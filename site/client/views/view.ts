@@ -9,10 +9,10 @@ export type Pos = {
 
 export class view {
 
-  readonly panel?: Panel
+  panel?: Panel
 
-  readonly children: readonly view[] = []
-  readonly parent: view | null = null
+  children: readonly view[] = []
+  parent: view | null = null
 
   get firstChild(): view | undefined { return this.children[0] }
   get lastChild(): view | undefined { return this.children[this.children.length - 1] }
@@ -25,20 +25,20 @@ export class view {
   addLayoutKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.layoutKeys as Set<keyof this>).add(key)) }
   addRedrawKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.redrawKeys as Set<keyof this>).add(key)) }
 
-  readonly x: number = 0
-  readonly y: number = 0
-  readonly w: number = 0
-  readonly h: number = 0
+  x: number = 0
+  y: number = 0
+  w: number = 0
+  h: number = 0
 
-  readonly canFocus: boolean = false
-  readonly passthrough: boolean = false
+  canFocus: boolean = false
+  passthrough: boolean = false
 
-  readonly visible: boolean = true
-  readonly hovered: boolean = false
+  visible: boolean = true
+  hovered: boolean = false
 
-  readonly background: number = 0x00000000
+  background: number = 0x00000000
 
-  readonly mouse: Pos = { x: 0, y: 0 }
+  mouse: Pos = { x: 0, y: 0 }
 
   onPanelFocus?(): void
   onPanelBlur?(): void
@@ -93,7 +93,7 @@ export class view {
 
   init?(): void
 
-  setup(data: { -readonly [K in keyof this]?: this[K] }) {
+  setup(data: { [K in keyof this]?: this[K] }) {
     for (const [k, v] of Object.entries(data)) {
       if (v instanceof Ref) {
         this.set(k as keyof this, v.val)
@@ -108,7 +108,7 @@ export class view {
     this.layout?.()
   }
 
-  mutable(): { -readonly [K in keyof this]: this[K] } & { commit(): void } {
+  mutable(): { [K in keyof this]: this[K] } & { commit(): void } {
     const mut = Object.create(null)
     const proxy = new Proxy<any>(this, {
       set: (t, key, val) => { mut[key] = val; return true },
@@ -123,7 +123,7 @@ export class view {
     return proxy
   }
 
-  mutate(fn: (view: { -readonly [K in keyof this]: this[K] }) => void) {
+  mutate(fn: (view: { [K in keyof this]: this[K] }) => void) {
     const mut = this.mutable()
     fn(mut)
     mut.commit()
@@ -169,7 +169,7 @@ export class view {
 
 export function make<T extends view>(
   ctor: new () => T,
-  data: { -readonly [K in keyof T]?: T[K] },
+  data: { [K in keyof T]?: T[K] },
 ): T {
   const v = new ctor()
   v.setup(data)

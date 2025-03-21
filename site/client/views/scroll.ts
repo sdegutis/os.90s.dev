@@ -5,10 +5,10 @@ import { make, view } from "./view.js"
 
 export class scroll extends view {
 
-  readonly scrollBy: number = 6
+  scrollBy: number = 6
 
-  readonly scrollx: number = 0
-  readonly scrolly: number = 0
+  scrollx: number = 0
+  scrolly: number = 0
 
   private _area!: view
   get area() { return this._area }
