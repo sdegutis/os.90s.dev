@@ -21,8 +21,8 @@ const panel = await prog.makePanel({
   view:
     <split size={size} background={0x00330099} max={-10} min={10}>
       <split dir={'x'}>
-        <scroll background={0x000099dd}>
-          <groupy align={'a'} gap={2} background={0xffffff33} children={children} />
+        <scroll background={0x222222ff}>
+          <groupy align={'a'} gap={2} background={0x99000033} children={children} />
         </scroll>
         <spacedx>
           <label text={'hi'} />

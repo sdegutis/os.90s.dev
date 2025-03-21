@@ -1,6 +1,16 @@
+import { dragMove } from "../util/drag.js"
 import { vacuumFirstChild } from "../util/layout.js"
+import { $, type Ref } from "../util/ref.js"
 import { panedxb, panedyb } from "./paned.js"
 import { make, view } from "./view.js"
+
+function multiplex<T>(refs: Ref<any>[], fn: () => T) {
+  const ref = $(fn())
+  for (const r of refs) {
+    r.watch(() => ref.val = fn())
+  }
+  return ref
+}
 
 export class scroll extends view {
 
@@ -10,120 +20,96 @@ export class scroll extends view {
   scrolly: number = 0
 
   content!: view
-  area!: view
+  area = make(view, { passthrough: true })
+
+  barv = make(view, { size: { w: 3, h: 0 }, background: 0xffffff33 })
+  barh = make(view, { size: { w: 0, h: 3 }, background: 0xffffff33 })
+
+  trackv = make(view, { size: { w: 3, h: 0 }, background: 0x00000033, children: [this.barv] })
+  trackh = make(view, { size: { w: 0, h: 3 }, background: 0x00000033, children: [this.barh] })
+  corner = make(view, { size: { w: 0, h: 3 }, background: 0x00000033 })
 
   override init(): void {
-    let perw = 0
-    let perh = 0
-
-
     this.content = this.children[0]
-    this.area = make(view, { passthrough: true, children: [this.content] })
-
-
-
-    // multiplex({
-    //   areaSize: this.area.$ref('size'),
-    // })
-
-    // function multiplex<T extends Record<string, Ref<any>>>(data: T) {
-    //   Object.entries(data).map(([key, val]) => {
-
-    //   })
-    // }
-
-    // const perw = area.size.w / content.size.w
-    // const perh = area.size.h / content.size.h
-
-    const barv = make(view, { size: { w: 3, h: 0 }, background: 0xffffff33 })
-    const barh = make(view, { size: { w: 0, h: 3 }, background: 0xffffff33 })
-
-    const trackv = make(view, { size: { w: 3, h: 0 }, background: 0x00000033, children: [barv] })
-    const trackh = make(view, { size: { w: 0, h: 3 }, background: 0x00000033, children: [barh] })
-    const corner = make(view, { size: { w: 0, h: 3 }, background: 0x00000033 })
+    this.area.children = [this.content]
 
     this.children = [make(panedxb, {
       children: [
-        make(panedyb, { children: [this.area, trackh] }),
-        make(panedyb, { children: [trackv, corner], size: { h: 0, w: trackv.size.w } })
+        make(panedyb, { children: [this.area, this.trackh] }),
+        make(panedyb, { children: [this.trackv, this.corner], size: { h: 0, w: this.trackv.size.w } })
       ],
     })]
 
-    // const makeTrackDraggable = (xy: 'x' | 'y') => {
-    //   const wh = xy === 'x' ? 'w' : 'h'
-    //   const bar = xy === 'x' ? barh : barv
-    //   const track = xy === 'x' ? trackh : trackv
-    //   const scroll = xy === 'x' ? 'scrollx' : 'scrolly'
+    const percent = multiplex([
+      this.area.$ref('size'),
+      this.content.$ref('size'),
+    ], () => ({
+      w: this.area.size.w / this.content.size.w,
+      h: this.area.size.h / this.content.size.h,
+    }))
 
-    //   bar.onMouseUp = () => delete bar.onMouseMove
-    //   bar.onMouseDown = (b, pos) => {
-    //     if (b !== 0) return
-    //     bar.onMouseMove = dragMove(pos, {
-    //       x: bar.point.x,
-    //       y: bar.point.y,
-    //       move: (x, y) => {
-    //         const per = { x, y }[xy] / (track.size[wh] - bar.size[wh])
-    //         this[scroll] = per * (content.size[wh] - area.size[wh])
-    //         adjustTracks()
-    //       }
-    //     })
-    //   }
-    // }
+    multiplex([
+      percent,
+      this.$ref('scrollx'),
+      this.$ref('scrolly'),
+    ], () => {
+      const ph = Math.min(1, percent.val.h)
+      const h = Math.max(3, Math.floor(this.trackv.size.h * ph))
+      const y = Math.floor((this.trackv.size.h - h) * (this.scrolly / (this.content.size.h - this.area.size.h)))
+      this.barv.visible = ph < 1
+      this.barv.point = { x: this.barv.point.x, y }
+      this.barv.size = { w: this.barv.size.w, h }
 
-    // makeTrackDraggable('x')
-    // makeTrackDraggable('y')
+      const pw = Math.min(1, percent.val.w)
+      const w = Math.max(3, Math.floor(this.trackh.size.w * pw))
+      const x = Math.floor((this.trackh.size.w - w) * (this.scrollx / (this.content.size.w - this.area.size.w)))
+      this.barh.visible = pw < 1
+      this.barh.point = { x, y: this.barh.point.y }
+      this.barh.size = { w, h: this.barh.size.h }
+    })
 
-    // const adjustTracks = () => {
-    //   const ph = Math.min(1, perh)
-    //   const h = Math.max(3, Math.floor(trackv.size.h * ph))
-    //   const y = Math.floor((trackv.size.h - h) * (this.scrolly / (content.size.h - area.size.h)))
-    //   barv.visible = ph < 1
-    //   barv.point = { x: barv.point.x, y }
-    //   barv.size = { w: barv.size.w, h }
+    const makeTrackDraggable = (xy: 'x' | 'y') => {
+      const wh = xy === 'x' ? 'w' : 'h'
+      const bar = xy === 'x' ? this.barh : this.barv
+      const track = xy === 'x' ? this.trackh : this.trackv
+      const scroll = xy === 'x' ? 'scrollx' : 'scrolly'
 
-    //   const pw = Math.min(1, perw)
-    //   const w = Math.max(3, Math.floor(trackh.size.w * pw))
-    //   const x = Math.floor((trackh.size.w - w) * (this.scrollx / (content.size.w - area.size.w)))
-    //   barh.visible = pw < 1
-    //   barh.point = { x, y: barh.point.y }
-    //   barh.size = { w, h: barh.size.h }
-    // }
+      bar.onMouseUp = () => delete bar.onMouseMove
+      bar.onMouseDown = (b, pos) => {
+        if (b !== 0) return
+        bar.onMouseMove = dragMove(pos, {
+          x: bar.point.x,
+          y: bar.point.y,
+          move: (x, y) => {
+            const per = { x, y }[xy] / (track.size[wh] - bar.size[wh])
+            this[scroll] = per * (this.content.size[wh] - this.area.size[wh])
+          }
+        })
+      }
+    }
 
-    // const didScroll = () => {
-    //   const scrollx = Math.floor(Math.max(0, Math.min(content.size.w - area.size.w, this.scrollx)))
-    //   const scrolly = Math.floor(Math.max(0, Math.min(content.size.h - area.size.h, this.scrolly)))
-    //   if (scrollx !== this.scrollx) this.scrollx = scrollx
-    //   if (scrolly !== this.scrolly) this.scrolly = scrolly
-    //   adjustTracks()
-    //   layout()
-    //   this.panel?.needsRedraw()
-    // }
+    makeTrackDraggable('x')
+    makeTrackDraggable('y')
 
-    // this.onWheel = (px, py) => {
-    //   px = px / 100 * this.scrollBy
-    //   py = py / 100 * this.scrollBy
-    //   if (this.panel?.isKeyDown('Shift')) [px, py] = [py, px]
+    this.$watch('size', () => this.constrainContent())
+    this.$watch('scrollx', () => this.constrainContent())
+    this.$watch('scrolly', () => this.constrainContent())
+  }
 
-    //   this.scrollx += px
-    //   this.scrolly += py
+  private constrainContent() {
+    const scrollx = Math.floor(Math.max(0, Math.min(this.content.size.w - this.area.size.w, this.scrollx)))
+    const scrolly = Math.floor(Math.max(0, Math.min(this.content.size.h - this.area.size.h, this.scrolly)))
+    if (scrollx !== this.scrollx) this.scrollx = scrollx
+    if (scrolly !== this.scrolly) this.scrolly = scrolly
+    this.layout()
+  }
 
-    //   adjustTracks()
-    // }
-
-    // this.$watch('size', fixAll)
-    // this.$watch('scrollx', didScroll)
-    // this.$watch('scrolly', didScroll)
-
-    // function fixAll() {
-    //   layout()
-    //   didScroll()
-    //   setTimeout(() => {
-    //     perw = area.size.w / content.size.w
-    //     perh = area.size.h / content.size.h
-    //     adjustTracks()
-    //   })
-    // }
-
+  override onWheel(px: number, py: number): void {
+    px = px / 100 * this.scrollBy
+    py = py / 100 * this.scrollBy
+    if (this.panel?.isKeyDown('Shift')) [px, py] = [py, px]
+    this.scrollx += px
+    this.scrolly += py
   }
 
   override layout(): void {
