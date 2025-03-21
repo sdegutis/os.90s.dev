@@ -4,21 +4,23 @@ import { $ } from "../client/util/ref.js"
 const prog = new Program()
 await prog.init()
 
+const desktopSize = $({ w: prog.width, h: prog.height - 8 })
 const desktop = await prog.makePanel({
   order: 'bottom',
   pos: [0, 0],
-  size: [prog.width, prog.height - 8],
+  size: desktopSize,
   view: (
-    <view background={0x333333ff} />
+    <view size={desktopSize} background={0x333333ff} />
   )
 })
 
+const taskbarSize = $({ w: prog.width, h: 8 })
 const taskbar = await prog.makePanel({
   order: 'top',
-  size: [prog.width, 8],
+  size: taskbarSize,
   pos: [0, prog.height - 8],
   view: (
-    <spacedx background={0x444444ff}>
+    <spacedx size={taskbarSize} background={0x444444ff}>
       <groupx></groupx>
       <Clock />
     </spacedx>

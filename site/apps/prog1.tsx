@@ -14,10 +14,12 @@ const children = $([
   ...Array(20).keys().map(i => <label text={`view ${i.toString()}`} />)
 ])
 
+const size = $({ w: 100, h: 100 })
+
 const panel = await prog.makePanel({
-  size: [100, 100],
+  size,
   view:
-    <panedya background={0x00330099}>
+    <panedya size={size} background={0x00330099}>
       <label text={'yep'} background={0x33000099} />
       <splitx pos={50} min={10} max={-10} background={0x000033dd}>
         <scroll background={0x00770099}>
