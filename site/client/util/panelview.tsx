@@ -1,7 +1,6 @@
 import { Bitmap } from "../../shared/bitmap.js"
 import { Cursor } from "../../shared/cursor.js"
 import type { Panel } from "../core/panel.js"
-import type { border } from "../views/border.js"
 import type { image } from "../views/image.js"
 import type { spacedx } from "../views/spaced.js"
 import type { Point, Size, view } from "../views/view.js"
@@ -46,17 +45,6 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
     panel.close()
   }
 
-  function layoutContentView(this: border) {
-    const c = this.firstChild
-    if (c) {
-      c.point = { x: 1, y: 0 }
-      c.size = {
-        w: this.size.w - 2,
-        h: this.size.h - 1,
-      }
-    }
-  }
-
   const toplevel = {
     onPanelFocus: () => focused.val = true,
     onPanelBlur: () => focused.val = false,
@@ -67,47 +55,8 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
     h: s.h - 2,
   }))
 
-  function PanelResizer() {
-
-    let claims = 0
-    function setClaims(n: number) {
-      claims += n
-      if (claims === 0) {
-        panel.setCursor(null)
-      }
-      else if (claims === n) {
-        panel.setCursor(adjCursor)
-      }
-    }
-
-    function resizerMouseDown(this: image, button: number, pos: Point) {
-      setClaims(1)
-      this.onMouseMove = dragResize(pos, panel)
-      this.onMouseUp = () => {
-        setClaims(-1)
-        delete this.onMouseMove
-        delete this.onMouseUp
-      }
-    }
-
-    return <image
-      passthrough={false}
-      bitmap={adjImage}
-      onMouseEnter={() => setClaims(+1)}
-      onMouseExit={() => setClaims(-1)}
-      layout={function () {
-        if (!this.parent) return
-        this.point = {
-          x: this.parent!.size.w - this.size.w,
-          y: this.parent!.size.h - this.size.h,
-        }
-      }}
-      onMouseDown={resizerMouseDown}
-    />
-  }
-
-  return <view size={data.size} adopted={adopted} background={0x070707dd} {...toplevel}>
-    <border borderColor={borderColor} padding={1}>
+  return (
+    <border borderColor={borderColor} padding={1} size={data.size} adopted={adopted} background={0x070707dd} {...toplevel}>
 
       <panedya size={sizeMinus2} gap={0}>
 
@@ -127,19 +76,59 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
           </border>
         </spacedx>
 
-        <border layout={layoutContentView}>
+        <border background={0x99000099}>
           {data.children}
         </border>
 
       </panedya>
 
-      <PanelResizer />
+      <PanelResizer size={data.size} />
 
     </border>
-  </view>
+  )
 
 }
 
 function CloseB(data: JSX.DataFor<'button'>) {
   return <button {...data} hoverBackground={0x99000055} pressBackground={0x44000099} />
+}
+
+function PanelResizer(data: { size: Ref<Size> }) {
+
+  let panel: Panel
+
+  let claims = 0
+  function setClaims(n: number) {
+    claims += n
+    if (claims === 0) {
+      panel.setCursor(null)
+    }
+    else if (claims === n) {
+      panel.setCursor(adjCursor)
+    }
+  }
+
+  function resizerMouseDown(this: image, button: number, pos: Point) {
+    setClaims(1)
+    this.onMouseMove = dragResize(pos, panel)
+    this.onMouseUp = () => {
+      setClaims(-1)
+      delete this.onMouseMove
+      delete this.onMouseUp
+    }
+  }
+
+  return <image
+    passthrough={false}
+    bitmap={adjImage}
+    adopted={function (this: view) { panel = this.panel! }}
+    onMouseEnter={function (this: view) { setClaims(+1) }}
+    onMouseExit={function (this: view) { setClaims(-1) }}
+    point={data.size.adapt(s => ({
+      x: s.w - adjImage.width,
+      y: s.h - adjImage.height,
+    }))}
+    onMouseDown={resizerMouseDown}
+  />
+
 }

@@ -186,8 +186,7 @@ export class Panel {
     this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
     this.canvas.width = w
     this.canvas.height = h
-    // this.root.size.w = w
-    // this.root.size.h = h
+    this.root.size = { w, h }
     this.blit()
   }
 
