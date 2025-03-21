@@ -1,7 +1,7 @@
 import { Listener } from "../../shared/listener.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
-import { $, Ref } from "../util/ref.js"
+import { $, Ref, type Equals } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
 
 export type Point = {
@@ -27,9 +27,10 @@ export class view {
   point: Point = { x: 0, y: 0 }
   size: Size = { w: 0, h: 0 }
 
-  pointEquals = pointEquals
-  sizeEquals = sizeEquals
-  childrenEquals = arrayEquals
+  private pointEquals: Equals<typeof this.point> = pointEquals
+  private sizeEquals: Equals<typeof this.size> = sizeEquals
+  private childrenEquals: Equals<typeof this.children> = arrayEquals
+  private mouseEquals: Equals<typeof this.mouse> = pointEquals
 
   canFocus: boolean = false
   passthrough: boolean = false
@@ -188,7 +189,7 @@ const pointEquals = (a: Point, b: Point) => {
 const sizeEquals = (a: Size, b: Size) => {
   return a.w === b.w && a.h === b.h
 }
-const arrayEquals = (a: view[], b: view[]) => {
+const arrayEquals = <T extends ArrayLike<any>>(a: T, b: T) => {
   if (a.length !== b.length) return false
   for (let i = 0; i < a.length; i++) {
     if (a[i] !== b[i]) return false
