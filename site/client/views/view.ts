@@ -15,7 +15,7 @@ export type Size = {
 
 export class view {
 
-  panel?: Panel
+  panel?: Panel | undefined
 
   children: readonly view[] = []
   parent: view | null = null
@@ -70,19 +70,36 @@ export class view {
   init() {
 
     this.$watch('size', () => {
-      // this.panel?.needsMouseCheck()
+      this.panel?.needsMouseCheck()
       this.parent?.onChildResized?.()
       this.panel?.needsRedraw()
     })
 
+    this.$watch('point', () => {
+      this.panel?.needsMouseCheck()
+      this.panel?.needsRedraw()
+    })
+
     this.$watch('children', () => {
-      this.children.forEach(c => c.parent = this)
+      for (const child of this.children) {
+        child.parent = this
+        child.adoptTree(this.panel)
+      }
       this.layout?.()
     })
 
   }
 
+  adoptTree(panel: Panel | undefined) {
+    this.panel = panel
+    this.adopted?.()
+    for (const child of this.children) {
+      child.adoptTree(panel)
+    }
+  }
+
   onChildResized() {
+    this.adjust?.()
     this.layout?.()
   }
 

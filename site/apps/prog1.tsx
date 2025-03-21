@@ -16,7 +16,11 @@ setInterval(() => {
   i.val++
   children.val = [...children.val,
   <border padding={i} borderColor={0x990000ff}>
-    <label text={'yep ' + Date.now()} />
+    <button padding={i.adapt(i => i + 1)} onClick={function () {
+      console.log(this.padding)
+    }}>
+      <label text={'yep ' + Date.now()} />
+    </button>
   </border>
   ]
 }, 1000)
