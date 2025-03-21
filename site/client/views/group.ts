@@ -9,22 +9,33 @@ export class group extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    // this.addAdjustKeys('gap', 'dir', 'align', 'children')
+    this.$multiplex('gap', 'dir', 'align', 'children').watch(() => this.adjust())
+
+    this.$watch('children', (children, prevChildren) => {
+      console.log(prevChildren)
+      console.log(children)
+      console.log(' ')
+    })
+
     // this.addLayoutKeys()
   }
 
-  // override adjust(): void {
-  //   const dw = this.dir === 'x' ? 'w' : 'h'
-  //   const dh = this.dir === 'x' ? 'h' : 'w'
+  override adjust(): void {
+    const dw = this.dir === 'x' ? 'w' : 'h'
+    const dh = this.dir === 'x' ? 'h' : 'w'
 
-  //   // this[dw] = this[dh] = 0
-  //   // for (let i = 0; i < this.children.length; i++) {
-  //   //   const child = this.children[i]
-  //   //   this[dw] += child[dw]
-  //   //   if (i > 0) this[dw] += this.gap
-  //   //   if (this[dh] < child[dh]) this[dh] = child[dh]
-  //   // }
-  // }
+    const size = { ...this.size }
+
+    size[dw] = size[dh] = 0
+    for (let i = 0; i < this.children.length; i++) {
+      const child = this.children[i].size
+      size[dw] += child[dw]
+      if (i > 0) size[dw] += this.gap
+      if (size[dh] < child[dh]) size[dh] = child[dh]
+    }
+
+    this.size = size
+  }
 
   // override layout(): void {
   //   const dw = this.dir === 'x' ? 'w' : 'h'

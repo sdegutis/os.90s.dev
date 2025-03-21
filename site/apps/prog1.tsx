@@ -1,11 +1,18 @@
 import { Program } from "../client/core/prog.js"
 import { $ } from "../client/util/ref.js"
+import type { view } from "../client/views/view.js"
 import { Bitmap } from "../shared/bitmap.js"
 
 const prog = new Program()
 await prog.init()
 
 const mnuImage = new Bitmap([0x333333ff], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1])
+
+const children = $<view[]>([])
+
+// setInterval(() => {
+//   children.val = [...children.val, <label text={'yep ' + Date.now()} />]
+// }, 1000)
 
 // const children = $([
 //   <button padding={2}><label text={'hey'} /></button>,
@@ -20,7 +27,8 @@ const panel = await prog.makePanel({
   size,
   view:
     <view size={size} background={0x00330099}>
-      <label text={'yep'} background={0x33000099} />
+      <groupy gap={2} background={0x33000099} children={children}>
+      </groupy>
     </view>
   // <panedya size={size} background={0x00330099}>
   //   <label text={'yep'} background={0x33000099} />

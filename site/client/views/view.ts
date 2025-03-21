@@ -69,57 +69,14 @@ export class view {
 
   init() {
 
-    // const debounce = (fn: () => void) => {
-    //   let t: number | undefined = undefined
-    //   return () => {
-    //     clearTimeout(t)
-    //     t = setTimeout(fn)
-    //   }
-    // }
-
-
-    // const moved = debounce(() => {
-    //   this.onMoved?.()
-    //   this.panel?.needsRedraw()
+    // this.$watch('size', () => {
     //   this.panel?.needsMouseCheck()
-    // })
-
-    // const resized = debounce(() => {
-    //   this.onResized()
-    //   this.panel?.needsRedraw()
-    //   this.panel?.needsMouseCheck()
-    // })
-
-    // const adjust = debounce(() => {
-    //   this.adjust?.()
     //   this.panel?.needsRedraw()
     // })
-
-    // const layout = debounce(() => {
-    //   this.layout?.()
-    //   this.panel?.needsRedraw()
-    // })
-
-    // const redraw = debounce(() => {
-    //   this.panel?.needsRedraw()
-    // })
-
-    this.$watch('size', () => {
-      // this.panel?.needsMouseCheck()
-      // this.panel?.needsRedraw()
-    })
 
     this.$watch('children', () => {
       this.children.forEach(c => c.parent = this)
     })
-
-    // this.$watch('x', moved)
-    // this.$watch('y', moved)
-    // this.$watch('x', resized)
-    // this.$watch('y', resized)
-    // this.adjustKeys.forEach(key => this.$watch(key as keyof this, adjust))
-    // this.layoutKeys.forEach(key => this.$watch(key as keyof this, layout))
-    // this.redrawKeys.forEach(key => this.$watch(key as keyof this, redraw))
 
   }
 
@@ -128,6 +85,7 @@ export class view {
   }
 
   adjust?(): void
+  layout?(): void
 
   $multiplex(...keys: (keyof this)[]) {
     const listener = new Listener()
@@ -135,11 +93,11 @@ export class view {
     return listener
   }
 
-  $watch<K extends keyof this>(key: K, fn: (val: this[K]) => void) {
+  $watch<K extends keyof this>(key: K, fn: (val: this[K], old: this[K]) => void) {
     const $$listeners = (this as unknown as { $$listeners: Map<string, Listener<any>> }).$$listeners
     let val = $$listeners.get(key as string)
     if (!val) $$listeners.set(key as string, val = new Listener())
-    return val.watch(fn)
+    return val.watch(([data, old]) => fn(data, old))
   }
 
   $ref<K extends keyof this>(key: K) {
@@ -170,8 +128,8 @@ export class view {
       if (!(val instanceof Ref)) val = $(val)
       $$refs[key] = val
 
-      $$refs[key].watch(val => {
-        $$listeners.get(key)?.dispatch(val)
+      $$refs[key].watch(([val, old]) => {
+        $$listeners.get(key)?.dispatch([val, old])
       })
 
       Object.defineProperty(this, key, {
@@ -182,6 +140,7 @@ export class view {
     }
 
     this.adjust?.()
+    this.layout?.()
 
   }
 
