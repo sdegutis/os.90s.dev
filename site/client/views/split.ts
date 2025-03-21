@@ -159,15 +159,15 @@ export class split extends view {
     b[dx] = this.pos
     b[dw] = this[dw] - this.pos
 
-    this.resizer?.mutate(r => {
-      r.x = 0
-      r.y = 0
-      r[dx] = this.pos - 1
+    if (this.resizer) {
+      this.resizer.x = 0
+      this.resizer.y = 0
+      this.resizer[dx] = this.pos - 1
 
-      r.w = this.w
-      r.h = this.h
-      r[dw] = 2
-    })
+      this.resizer.w = this.w
+      this.resizer.h = this.h
+      this.resizer[dw] = 2
+    }
 
     a.commit()
     b.commit()

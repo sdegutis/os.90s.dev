@@ -97,10 +97,8 @@ export class scroll extends view {
       py = py / 100 * this.scrollBy
       if (this.panel?.isKeyDown('Shift')) [px, py] = [py, px]
 
-      this.mutate(scroll => {
-        scroll.scrollx += px
-        scroll.scrolly += py
-      })
+      this.scrollx += px
+      this.scrolly += py
 
       adjustTracks()
     }

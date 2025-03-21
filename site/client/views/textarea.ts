@@ -123,10 +123,8 @@ export class textarea extends view {
       if (line.length > cols) cols = line.length
     }
     cols++
-    this.label.mutate(label => {
-      label.w = (cols * this.font.cw) + (cols * this.font.xgap)
-      label.h = (rows * this.font.ch) + (rows * this.font.ygap)
-    })
+    this.label.w = (cols * this.font.cw) + (cols * this.font.xgap)
+    this.label.h = (rows * this.font.ch) + (rows * this.font.ygap)
   }
 
   private reflectCursorPos() {
@@ -146,24 +144,24 @@ export class textarea extends view {
     }
 
     if (y < 0) {
-      this.scroll.mutate(v => v.scrolly -= -y)
+      this.scroll.scrolly -= -y
       this.adjustTextLabel()
     }
 
     if (x < 0) {
-      this.scroll.mutate(v => v.scrollx -= -x)
+      this.scroll.scrollx -= -x
       this.adjustTextLabel()
     }
 
     const maxy = this.scroll.area.h - this._cursor.h
     if (y > maxy) {
-      this.scroll.mutate(v => v.scrolly -= maxy - y)
+      this.scroll.scrolly -= maxy - y
       this.adjustTextLabel()
     }
 
     const maxx = this.scroll.area.w - this._cursor.w
     if (x > maxx) {
-      this.scroll.mutate(v => v.scrollx -= maxx - x)
+      this.scroll.scrollx -= maxx - x
       this.adjustTextLabel()
     }
   }

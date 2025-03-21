@@ -209,12 +209,6 @@ export class view {
     return proxy
   }
 
-  mutate(fn: (view: this) => void) {
-    const mut = this.mutable()
-    fn(mut)
-    mut.commit()
-  }
-
 }
 
 export function make<T extends view>(

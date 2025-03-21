@@ -47,12 +47,13 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
   }
 
   function layoutContentView(this: border) {
-    this.firstChild?.mutate(c => {
+    const c = this.firstChild
+    if (c) {
       c.x = 1
       c.y = 0
       c.w = this.w - 2
       c.h = this.h - 1
-    })
+    }
   }
 
   const toplevel = {
@@ -60,10 +61,8 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
     onPanelBlur: () => focused.val = false,
     onResized(this: view) {
       const content = this.children[0].children[0]
-      content.mutate(c => {
-        c.w = this.w - 2
-        c.h = this.h - 2
-      })
+      content.w = this.w - 2
+      content.h = this.h - 2
       this.layoutTree()
     },
   }
