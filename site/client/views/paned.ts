@@ -9,42 +9,48 @@ export class paned extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    // this.addLayoutKeys('gap', 'dir', 'vacuum', 'children')
-    // this.addAdjustKeys('children')
+    this.$multiplex('children', 'gap', 'dir', 'vacuum').watch(() => {
+      this.layout()
+      this.needsRedraw()
+    })
   }
 
-  // override onChildResized(): void {
-  //   this.adjust?.()
-  //   this.layoutTree()
-  // }
+  override layout(): void {
+    const [a, b] = this.children
 
-  // override layout(): void {
-  //   // const a = this.children[0]
-  //   // const b = this.children[1]
+    const as = { ...a.size }
+    const bs = { ...b.size }
+    const ap = { ...a.point }
+    const bp = { ...b.point }
 
-  //   // const favored = ({ a, b })[this.vacuum]
+    const favored = ({ a: as, b: bs })[this.vacuum]
 
-  //   // const dx = this.dir
-  //   // const dw = dx === 'x' ? 'w' : 'h'
-  //   // const vv = favored[dw]
+    const dx = this.dir
+    const dw = dx === 'x' ? 'w' : 'h'
+    const vv = favored[dw]
 
-  //   // a.point = b.point = { x: 0, y: 0 }
-  //   // a.w = b.w = this.w
-  //   // a.h = b.h = this.h
+    a.point = b.point = { x: 0, y: 0 }
+    as.w = bs.w = this.size.w
+    as.h = bs.h = this.size.h
 
-  //   // if (this.vacuum === 'a') {
-  //   //   const pos = vv
-  //   //   a[dw] = pos
-  //   //   b[dx] = pos + this.gap
-  //   //   b[dw] = this[dw] - a[dw] - this.gap
-  //   // }
-  //   // else {
-  //   //   const pos = this[dw] - vv - this.gap
-  //   //   a[dw] = pos
-  //   //   b[dx] = pos + this.gap
-  //   //   b[dw] = vv
-  //   // }
-  // }
+    if (this.vacuum === 'a') {
+      const pos = vv
+      as[dw] = pos
+      bp[dx] = pos + this.gap
+      bs[dw] = this.size[dw] - as[dw] - this.gap
+    }
+    else {
+      const pos = this.size[dw] - vv - this.gap
+      as[dw] = pos
+      bp[dx] = pos + this.gap
+      bs[dw] = vv
+    }
+
+    a.size = as
+    b.size = bs
+    a.point = ap
+    b.point = bp
+  }
 
 }
 

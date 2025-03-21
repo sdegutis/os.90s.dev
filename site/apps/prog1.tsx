@@ -12,18 +12,37 @@ const children = $<view[]>([])
 
 let i = $(0)
 
-setInterval(() => {
-  i.val++
-  children.val = [...children.val,
-  <border padding={i} borderColor={0x990000ff}>
-    <button padding={i.adapt(i => i + 1)} onClick={function () {
-      console.log(this.padding)
-    }}>
-      <label text={'yep ' + Date.now()} />
-    </button>
-  </border>
-  ]
-}, 1000)
+type XY = 'x' | 'y'
+type AB = 'a' | 'b'
+
+let dir = $<XY>('x')
+
+const child1 = <label text={'sup'} />
+const child2 = <view background={0x33000099}>
+  <groupy background={0x000099dd} gap={2} children={children}>
+  </groupy>
+</view>
+
+const vac = dir.adapt<AB>(dir => dir === 'x' ? 'a' : 'b')
+
+const two = vac.adapt(vac => vac === 'a' ? [child1, child2] : [child2, child1])
+
+
+// setInterval(() => {
+
+//   dir.val = dir.val === 'x' ? 'y' : 'x'
+
+//   // i.val++
+//   children.val = [...children.val,
+//   <border padding={i} borderColor={0x990000ff}>
+//     <button padding={i.adapt(i => i + 1)} onClick={function () {
+//       console.log(this.padding)
+//     }}>
+//       <label text={'yep ' + Date.now()} />
+//     </button>
+//   </border>
+//   ]
+// }, 1000)
 
 // const children = $([
 //   <button padding={2}><label text={'hey'} /></button>,
@@ -37,10 +56,9 @@ const size = $({ w: 100, h: 100 })
 const panel = await prog.makePanel({
   size,
   view:
-    <view size={size} background={0x00330099}>
-      <groupy gap={2} background={0x33000099} children={children}>
-      </groupy>
-    </view>
+    <paned size={size} background={0x00330099} dir={dir} children={two} vacuum={vac}>
+
+    </paned>
   // <panedya size={size} background={0x00330099}>
   //   <label text={'yep'} background={0x33000099} />
   //   <splitx pos={50} min={10} max={-10} background={0x000033dd}>

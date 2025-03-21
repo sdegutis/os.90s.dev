@@ -1,7 +1,7 @@
 import { Listener } from "../../shared/listener.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
-import { $, Ref } from "../util/ref.js"
+import { $, Ref, type Equals } from "../util/ref.js"
 
 export type Point = {
   readonly x: number,
@@ -151,13 +151,19 @@ export class view {
       if (!(val instanceof Ref)) val = $(val)
       $$refs[key] = val
 
+      $$refs[key].equals = equals[key as string]
       $$refs[key].watch(([val, old]) => {
         $$listeners.get(key)?.dispatch([val, old])
       })
 
       Object.defineProperty(this, key, {
         get: () => $$refs[key].val,
-        set: (v) => $$refs[key].val = v,
+        set: (v) => {
+
+
+
+          $$refs[key].val = v
+        },
         enumerable: true,
       })
     }
@@ -167,6 +173,18 @@ export class view {
 
   }
 
+}
+
+const equals: Record<string, Equals<any>> = {
+  point: (a: Point, b: Point) => {
+    return a.x === b.x && a.y === b.y
+  },
+  size: (a: Size, b: Size) => {
+    return a.w === b.w && a.h === b.h
+  },
+  children: (a: view[], b: view[]) => {
+    return a.length === b.length && new Set([...a, ...b]).size === a.length
+  },
 }
 
 export function make<T extends view>(
