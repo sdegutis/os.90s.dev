@@ -9,8 +9,8 @@ export class border extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    this.addAdjustKeys('padding')
-    this.addRedrawKeys('borderColor')
+    // this.addAdjustKeys('padding')
+    // this.addRedrawKeys('borderColor')
   }
 
   override adjust(): void {

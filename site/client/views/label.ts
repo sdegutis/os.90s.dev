@@ -10,8 +10,8 @@ export class label extends view {
   text: string = ''
 
   override init(): void {
-    this.addAdjustKeys('text', 'font')
-    this.addRedrawKeys('textColor')
+    // this.addAdjustKeys('text', 'font')
+    // this.addRedrawKeys('textColor')
   }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {

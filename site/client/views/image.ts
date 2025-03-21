@@ -8,7 +8,7 @@ export class image extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    this.addAdjustKeys('bitmap')
+    // this.addAdjustKeys('bitmap')
   }
 
   override adjust(): void {

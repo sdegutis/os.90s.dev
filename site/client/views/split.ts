@@ -28,7 +28,7 @@ class SplitDivider extends view {
   private cursor!: Cursor
 
   override init(): void {
-    this.addRedrawKeys('hovered', 'pressed')
+    // this.addRedrawKeys('hovered', 'pressed')
     this.background = this.dividerColor
     this.cursor = this.split.dir === 'x' ? xresize : yresize
   }
@@ -128,7 +128,7 @@ export class split extends view {
   resizer?: SplitDivider
 
   override init(): void {
-    this.addLayoutKeys('pos', 'dir')
+    // this.addLayoutKeys('pos', 'dir')
     this.resizer = make(SplitDivider, { split: this })
     this.children = [...this.children, this.resizer]
   }

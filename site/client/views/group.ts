@@ -9,8 +9,8 @@ export class group extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    this.addAdjustKeys('gap', 'dir', 'align', 'children')
-    this.addLayoutKeys()
+    // this.addAdjustKeys('gap', 'dir', 'align', 'children')
+    // this.addLayoutKeys()
   }
 
   override adjust(): void {

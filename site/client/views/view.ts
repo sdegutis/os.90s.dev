@@ -23,14 +23,6 @@ export class view {
   get firstChild(): view | undefined { return this.children[0] }
   get lastChild(): view | undefined { return this.children[this.children.length - 1] }
 
-  private readonly adjustKeys = new Set<string>(['w', 'h'])
-  private readonly layoutKeys = new Set<string>([])
-  private readonly redrawKeys = new Set<string>(['background', 'visible'])
-
-  addAdjustKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.adjustKeys as Set<keyof this>).add(key)) }
-  addLayoutKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.layoutKeys as Set<keyof this>).add(key)) }
-  addRedrawKeys(...keys: (keyof this)[]) { keys.forEach(key => (this.redrawKeys as Set<keyof this>).add(key)) }
-
   point: Point = { x: 0, y: 0 }
   size: Size = { w: 0, h: 0 }
 
@@ -109,40 +101,40 @@ export class view {
       this.children.forEach(c => c.parent = this)
     })
 
-    const moved = debounce(() => {
-      this.onMoved?.()
-      this.panel?.needsRedraw()
-      this.panel?.needsMouseCheck()
-    })
+    // const moved = debounce(() => {
+    //   this.onMoved?.()
+    //   this.panel?.needsRedraw()
+    //   this.panel?.needsMouseCheck()
+    // })
 
-    const resized = debounce(() => {
-      this.onResized()
-      this.panel?.needsRedraw()
-      this.panel?.needsMouseCheck()
-    })
+    // const resized = debounce(() => {
+    //   this.onResized()
+    //   this.panel?.needsRedraw()
+    //   this.panel?.needsMouseCheck()
+    // })
 
-    const adjust = debounce(() => {
-      this.adjust?.()
-      this.panel?.needsRedraw()
-    })
+    // const adjust = debounce(() => {
+    //   this.adjust?.()
+    //   this.panel?.needsRedraw()
+    // })
 
-    const layout = debounce(() => {
-      this.layout?.()
-      this.panel?.needsRedraw()
-    })
+    // const layout = debounce(() => {
+    //   this.layout?.()
+    //   this.panel?.needsRedraw()
+    // })
 
-    const redraw = debounce(() => {
-      this.panel?.needsRedraw()
-    })
+    // const redraw = debounce(() => {
+    //   this.panel?.needsRedraw()
+    // })
 
     this.$watch('children', adopt)
     // this.$watch('x', moved)
     // this.$watch('y', moved)
     // this.$watch('x', resized)
     // this.$watch('y', resized)
-    this.adjustKeys.forEach(key => this.$watch(key as keyof this, adjust))
-    this.layoutKeys.forEach(key => this.$watch(key as keyof this, layout))
-    this.redrawKeys.forEach(key => this.$watch(key as keyof this, redraw))
+    // this.adjustKeys.forEach(key => this.$watch(key as keyof this, adjust))
+    // this.layoutKeys.forEach(key => this.$watch(key as keyof this, layout))
+    // this.redrawKeys.forEach(key => this.$watch(key as keyof this, redraw))
 
   }
 

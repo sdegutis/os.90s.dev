@@ -5,7 +5,7 @@ export class spaced extends view {
   dir: 'x' | 'y' = 'x'
 
   override init(): void {
-    this.addAdjustKeys('dir')
+    // this.addAdjustKeys('dir')
   }
 
   override adjust(): void {

@@ -9,8 +9,8 @@ export class paned extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    this.addLayoutKeys('gap', 'dir', 'vacuum', 'children')
-    this.addAdjustKeys('children')
+    // this.addLayoutKeys('gap', 'dir', 'vacuum', 'children')
+    // this.addAdjustKeys('children')
   }
 
   override onChildResized(): void {
