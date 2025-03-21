@@ -50,8 +50,10 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
     const c = this.firstChild
     if (c) {
       c.point = { x: 1, y: 0 }
-      // c.size.w = this.size.w - 2
-      // c.size.h = this.size.h - 1
+      c.size = {
+        w: this.size.w - 2,
+        h: this.size.h - 1,
+      }
     }
   }
 
@@ -60,9 +62,10 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
     onPanelBlur: () => focused.val = false,
     onResized(this: view) {
       const content = this.children[0].children[0]
-      // content.size.w = this.size.w - 2
-      // content.size.h = this.size.h - 2
-      // this.layoutTree()
+      content.size = {
+        w: this.size.w - 2,
+        h: this.size.h - 2,
+      }
     },
   }
 
@@ -94,13 +97,13 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
       bitmap={adjImage}
       onMouseEnter={() => setClaims(+1)}
       onMouseExit={() => setClaims(-1)}
-      // layout={function () {
-      //   if (!this.parent) return
-      //   this.point = {
-      //     x: this.parent!.size.w - this.size.w,
-      //     y: this.parent!.size.h - this.size.h,
-      //   }
-      // }}
+      layout={function () {
+        if (!this.parent) return
+        this.point = {
+          x: this.parent!.size.w - this.size.w,
+          y: this.parent!.size.h - this.size.h,
+        }
+      }}
       onMouseDown={resizerMouseDown}
     />
   }
@@ -126,9 +129,9 @@ export function PanelView(data: { title: string | Ref<string>, children: view })
           </border>
         </spacedx>
 
-        {/* <border layout={layoutContentView}>
+        <border layout={layoutContentView}>
           {data.children}
-        </border> */}
+        </border>
 
       </panedya>
 
