@@ -10,23 +10,17 @@ export class label extends view {
   text: string = ''
 
   override init(): void {
-    // this.addAdjustKeys('text', 'font')
-    // this.addRedrawKeys('textColor')
+    this.$multiplex('text', 'font').watch(() => this.adjust())
+    this.$multiplex('text', 'font', 'textColor').watch(() => this.needsRedraw())
+  }
+
+  override adjust() {
+    this.size = this.font.calcSize(this.text)
   }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)
     this.font.print(ctx, px, py, this.textColor, this.text)
   }
-
-  // override adjust(): void {
-  //   let w = 0
-  //   const lines = this.text.split('\n')
-  //   for (const line of lines) {
-  //     if (line.length > w) w = line.length
-  //   }
-  //   // this.size.w = w * this.font.cw + (w - 1) * this.font.xgap
-  //   // this.size.h = (lines.length * this.font.ch) + ((lines.length - 1) * this.font.ygap)
-  // }
 
 }

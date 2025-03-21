@@ -104,6 +104,11 @@ export class view {
     //   this.panel?.needsRedraw()
     // })
 
+    this.$watch('size', () => {
+      // this.panel?.needsMouseCheck()
+      // this.panel?.needsRedraw()
+    })
+
     this.$watch('children', () => {
       this.children.forEach(c => c.parent = this)
     })
@@ -116,6 +121,18 @@ export class view {
     // this.layoutKeys.forEach(key => this.$watch(key as keyof this, layout))
     // this.redrawKeys.forEach(key => this.$watch(key as keyof this, redraw))
 
+  }
+
+  needsRedraw() {
+    this.panel?.needsRedraw()
+  }
+
+  adjust?(): void
+
+  $multiplex(...keys: (keyof this)[]) {
+    const listener = new Listener()
+    keys.forEach(key => this.$watch(key, () => listener.dispatch()))
+    return listener
   }
 
   $watch<K extends keyof this>(key: K, fn: (val: this[K]) => void) {
@@ -163,6 +180,8 @@ export class view {
         enumerable: true,
       })
     }
+
+    this.adjust?.()
 
   }
 

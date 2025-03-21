@@ -44,13 +44,14 @@ export class Font {
 
   calcSize(text: string) {
     const lines = text.split('\n')
-    let w = 0
+    const rows = lines.length
+    let cols = 0
     for (const line of lines) {
-      if (line.length > w) w = line.length
+      if (line.length > cols) cols = line.length
     }
     return {
-      w: w * this.cw + (w - 1) * this.xgap,
-      h: (lines.length * this.ch) + ((lines.length - 1) * this.ygap),
+      w: (cols * this.cw) + ((cols - 1) * this.xgap),
+      h: (rows * this.ch) + ((rows - 1) * this.ygap),
     }
   }
 
