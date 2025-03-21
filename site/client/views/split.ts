@@ -1,6 +1,8 @@
 import { Bitmap } from "../../shared/bitmap.js"
 import { Cursor } from "../../shared/cursor.js"
+import { colorFor } from "../util/colors.js"
 import { dragMove } from "../util/drag.js"
+import { debounce } from "../util/throttle.js"
 import { make, view, type Point } from "./view.js"
 
 const xresize = new Cursor(2, 1, new Bitmap([0x00000099, 0xffffffff], 5, [
@@ -28,7 +30,7 @@ class SplitDivider extends view {
   private cursor!: Cursor
 
   override init(): void {
-    // this.addRedrawKeys('hovered', 'pressed')
+    this.$multiplex('hovered', 'pressed').watch(() => this.needsRedraw())
     this.background = this.dividerColor
     this.cursor = this.split.dir === 'x' ? xresize : yresize
   }
@@ -45,19 +47,19 @@ class SplitDivider extends view {
     const dx = this.split.dir
     const dw = dx === 'x' ? 'w' : 'h'
 
-    // const x = dx === 'x' ? Math.round((this[dw] - dividerWidth) / 2) : 0
-    // const y = dx === 'y' ? Math.round((this[dw] - dividerWidth) / 2) : 0
-    // const w = dx === 'x' ? dividerWidth : this.size.w
-    // const h = dx === 'y' ? dividerWidth : this.size.h
+    const x = dx === 'x' ? Math.round((this.size[dw] - dividerWidth) / 2) : 0
+    const y = dx === 'y' ? Math.round((this.size[dw] - dividerWidth) / 2) : 0
+    const w = dx === 'x' ? dividerWidth : this.size.w
+    const h = dx === 'y' ? dividerWidth : this.size.h
 
-    // if (this.pressed) {
-    //   ctx.fillStyle = colorFor(dividerColorPress)
-    //   ctx.fillRect(px + x, py + y, w, h)
-    // }
-    // else if (this.hovered) {
-    //   ctx.fillStyle = colorFor(dividerColorHover)
-    //   ctx.fillRect(px + x, py + y, w, h)
-    // }
+    if (this.pressed) {
+      ctx.fillStyle = colorFor(dividerColorPress)
+      ctx.fillRect(px + x, py + y, w, h)
+    }
+    else if (this.hovered) {
+      ctx.fillStyle = colorFor(dividerColorHover)
+      ctx.fillRect(px + x, py + y, w, h)
+    }
   }
 
   private cursorClaims = 0
@@ -96,8 +98,8 @@ class SplitDivider extends view {
         let min = split.min
         let max = split.max
 
-        // if (min < 0) min += split[dw]
-        // if (max <= 0) max += split[dw] - 1
+        if (min < 0) min += split.size[dw]
+        if (max <= 0) max += split.size[dw] - 1
 
         split.pos = b[dx]
         if (split.pos < min) split.pos = min
@@ -128,42 +130,50 @@ export class split extends view {
   resizer?: SplitDivider
 
   override init(): void {
-    // this.addLayoutKeys('pos', 'dir')
+    this.$multiplex('dir', 'pos').watch(debounce(() => {
+      this.layout()
+      this.needsRedraw()
+    }))
+
     this.resizer = make(SplitDivider, { split: this })
     this.children = [...this.children, this.resizer]
   }
 
-  // override onChildResized(): void {
-  //   this.adjust?.()
-  //   this.layoutTree()
-  // }
+  override layout(): void {
+    const dx = this.dir
+    const dw = dx === 'x' ? 'w' : 'h'
+    const [a, b] = this.children
 
-  // override layout(): void {
-  //   // const dx = this.dir
-  //   // const dw = dx === 'x' ? 'w' : 'h'
-  //   // const a = this.children[0]
-  //   // const b = this.children[1]
+    const as = { ...a.size }
+    const bs = { ...b.size }
+    const ap = { ...a.point }
+    const bp = { ...b.point }
 
-  //   // a.point.x = b.point.x = 0
-  //   // a.point.y = b.point.y = 0
-  //   // a.w = b.w = this.w
-  //   // a.h = b.h = this.h
+    ap.x = bp.x = 0
+    ap.y = bp.y = 0
+    as.w = bs.w = this.size.w
+    as.h = bs.h = this.size.h
 
-  //   // a[dw] = this.pos
+    as[dw] = this.pos
 
-  //   // b[dx] = this.pos
-  //   // b[dw] = this[dw] - this.pos
+    bp[dx] = this.pos
+    bs[dw] = this.size[dw] - this.pos
 
-  //   // if (this.resizer) {
-  //   //   this.resizer.point.x = 0
-  //   //   this.resizer.point.y = 0
-  //   //   this.resizer[dx] = this.pos - 1
+    if (this.resizer) {
+      const rp = { x: 0, y: 0 }
+      rp[dx] = this.pos - 1
+      this.resizer.point = rp
 
-  //   //   this.resizer.w = this.w
-  //   //   this.resizer.h = this.h
-  //   //   this.resizer[dw] = 2
-  //   // }
-  // }
+      const rs = { ...this.size }
+      rs[dw] = 2
+      this.resizer.size = rs
+    }
+
+    a.size = as
+    b.size = bs
+    a.point = ap
+    b.point = bp
+  }
 
 }
 
