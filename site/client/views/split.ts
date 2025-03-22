@@ -1,6 +1,5 @@
-import { Cursor } from "../../shared/cursor.js"
 import { colorFor } from "../util/colors.js"
-import { xresize, yresize } from "../util/cursors.js"
+import { useCursor, xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { debounce } from "../util/throttle.js"
 import { type Point } from "../util/types.js"
@@ -14,12 +13,12 @@ class SplitDivider extends view {
   pressed: boolean = false
   dividerColor: number = 0x33333300
 
-  private cursor!: Cursor
+  cursor!: ReturnType<typeof useCursor>
 
   override init(): void {
     this.$multiplex('hovered', 'pressed').watch(() => this.needsRedraw())
     this.background = this.dividerColor
-    this.cursor = this.split.dir === 'x' ? xresize : yresize
+    this.cursor = useCursor(this, this.split.dir === 'x' ? xresize : yresize)
   }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
@@ -47,28 +46,16 @@ class SplitDivider extends view {
     }
   }
 
-  private cursorClaims = 0
-  private cursorClaim(n: number) {
-    this.cursorClaims += n
-    if (this.cursorClaims === 0) {
-      this.panel?.setCursor(null)
-    }
-    else if (this.cursorClaims === n) {
-      if (this.split.min === this.split.max) return
-      this.panel?.setCursor(this.cursor)
-    }
-  }
-
   override onMouseEnter(): void {
-    this.cursorClaim(1)
+    this.cursor.push()
   }
 
   override onMouseExit(): void {
-    this.cursorClaim(-1)
+    this.cursor.pop()
   }
 
   override onMouseDown(button: number, pos: Point): void {
-    this.cursorClaim(1)
+    this.cursor.push()
     const split = this.split
     const dx = split.dir
     const dw = dx === 'x' ? 'w' : 'h'
@@ -96,7 +83,7 @@ class SplitDivider extends view {
 
     this.onMouseMove = dragMove(pos, b)
     this.onMouseUp = () => {
-      this.cursorClaim(-1)
+      this.cursor.pop()
       this.pressed = false
       delete this.onMouseMove
       delete this.onMouseUp

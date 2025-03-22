@@ -1,3 +1,4 @@
+import { useCursor, xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { vacuumFirstChild } from "../util/layout.js"
 import { multiplex } from "../util/ref.js"
@@ -68,9 +69,14 @@ export class scroll extends view {
       const track = xy === 'x' ? this.trackh : this.trackv
       const scroll = xy === 'x' ? 'scrollx' : 'scrolly'
 
-      bar.onMouseUp = () => delete bar.onMouseMove
+      const cursor = useCursor(this, xy === 'x' ? xresize : yresize)
+
+      bar.onMouseEnter = () => cursor.push()
+      bar.onMouseExit = () => cursor.pop()
+
       bar.onMouseDown = (b, pos) => {
         if (b !== 0) return
+        cursor.push()
         bar.onMouseMove = dragMove(pos, {
           x: bar.point.x,
           y: bar.point.y,
@@ -79,6 +85,11 @@ export class scroll extends view {
             this[scroll] = per * (this.content.size[wh] - this.area.size[wh])
           }
         })
+      }
+
+      bar.onMouseUp = () => {
+        cursor.pop()
+        delete bar.onMouseMove
       }
     }
 
