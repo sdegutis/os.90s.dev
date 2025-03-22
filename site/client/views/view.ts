@@ -153,12 +153,6 @@ export class view {
     this.layout?.()
   }
 
-  $multiplex(...keys: (keyof this)[]) {
-    const listener = new Listener()
-    keys.forEach(key => this.$watch(key, () => listener.dispatch()))
-    return listener
-  }
-
   $watch<K extends keyof this>(key: K, fn: (val: this[K], old: this[K]) => void) {
     return this.$ref(key).watch(([val, old]) => fn(val, old))
   }
@@ -166,6 +160,12 @@ export class view {
   $ref<K extends keyof this>(key: K) {
     const { $$refs } = (this as unknown as { $$refs: Map<string, Ref<any>> })
     return $$refs.get(key as string) as Ref<this[K]>
+  }
+
+  $multiplex(...keys: (keyof this)[]) {
+    const listener = new Listener()
+    keys.forEach(key => this.$watch(key, () => listener.dispatch()))
+    return listener
   }
 
 }
