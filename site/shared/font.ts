@@ -20,16 +20,15 @@ export class Font {
 
     if (c) this.spr.colorize(c)
 
-    for (let i = 0; i < text.length; i++) {
-      const ch = text[i]
-
+    for (const ch of Array.from(text)) {
       if (ch === '\n') {
         posy++
         posx = 0
         continue
       }
 
-      const ci = ch.charCodeAt(0) - 32
+      let ci = ch.charCodeAt(0) - 32
+      if (ci < 0 || ci > 95) ci = 95
       const sx = ci % 16 * this.cw
       const sy = Math.floor(ci / 16) * this.ch
 
@@ -82,6 +81,6 @@ export const crt2025 = new Font(`
 0 0 0 1 0 1 1 1 1 1 1 1 1 1 0 1 1 1 1 0 0 1 1 1 1 0 1 1 1 1 1 1 0 1 0 1 1 1 1 1 0 1 1 0 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 1 1 0 1 1 0 1 0 1 1 0 1 1 0 0 0 0
 1 0 1 1 0 1 1 0 1 1 0 0 0 1 0 1 0 1 1 0 1 1 0 1 0 1 0 1 0 1 0 1 1 1 1 0 0 1 0 0 1 1 0 1 1 0 0 0
-1 1 0 1 1 1 1 1 0 0 1 1 0 1 0 1 0 1 1 0 1 1 1 1 0 1 0 0 1 0 1 0 0 0 1 0 0 1 0 0 1 0 0 0 0 0 0 0
+1 1 0 1 1 1 1 1 0 0 1 1 0 1 0 1 0 1 1 0 1 1 1 1 0 1 0 0 1 0 1 0 0 0 1 0 0 1 0 0 1 0 0 0 0 0 1 0
 1 0 0 0 0 1 1 0 1 1 1 1 0 1 0 1 1 1 0 1 0 1 1 1 1 0 1 0 1 0 1 1 1 0 1 1 0 1 0 1 1 0 0 0 0 0 0 0
 `.trimStart())

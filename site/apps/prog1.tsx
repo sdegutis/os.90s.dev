@@ -7,7 +7,7 @@ await prog.init()
 
 const size = $({ w: 100, h: 100 })
 
-const textarea = <textarea background={0x99000099} multiline={false} onEnter={function () {
+const textarea = <textarea text={'hello😭lol'} background={0x99000099} multiline={false} onEnter={function () {
   console.log('hey', this.text)
 }} />
 
