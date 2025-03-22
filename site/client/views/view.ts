@@ -24,10 +24,8 @@ export class view {
 
   canFocus: boolean = false
   passthrough: boolean = false
-
-  visible: boolean = true
   hovered: boolean = false
-
+  visible: boolean = true
   background: number = 0x00000000
 
   mouse: Point = { x: 0, y: 0 }
@@ -108,12 +106,12 @@ export class view {
     }
   }
 
-  onChildResized = debounce(() => {
+  private onChildResized = debounce(() => {
     this.adjust?.()
     this.layout?.()
   })
 
-  needsRedraw() {
+  protected needsRedraw() {
     this.panel?.needsRedraw()
   }
 

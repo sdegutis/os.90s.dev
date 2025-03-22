@@ -43,13 +43,13 @@ export const Fragment = ''
 export const jsxs = createNode
 export const jsx = createNode
 
-function createNode(tag: any, data: any): JSX.Element {
+function createNode(tag: any, data: Record<string, any>): JSX.Element {
   if (typeof tag === 'function') {
     return tag(data)
   }
 
-  if (data.children instanceof view) {
-    data.children = [data.children]
+  if (data["children"] instanceof view) {
+    data["children"] = [data["children"]]
   }
 
   const ctor = primitives[tag as keyof typeof primitives]
