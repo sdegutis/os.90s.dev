@@ -163,6 +163,19 @@ export class view {
         enumerable: true,
       })
     }
+
+    const protos = []
+    let proto: view | undefined = this
+
+    while (proto = Object.getPrototypeOf(proto))
+      if (Object.hasOwn(proto, 'init'))
+        protos.push(proto)
+
+    while (proto = protos.pop())
+      proto.init!.call(this)
+
+    this.adjust?.()
+    this.layout?.()
   }
 
 }
@@ -190,19 +203,5 @@ export function make<T extends view>(
   const v = new ctor()
   Object.assign(v, data)
   v.$setup()
-
-  const protos = []
-  let proto: view | undefined = v
-
-  while (proto = Object.getPrototypeOf(proto))
-    if (Object.hasOwn(proto, 'init'))
-      protos.push(proto)
-
-  while (proto = protos.pop())
-    proto.init!.call(v)
-
-  v.adjust?.()
-  v.layout?.()
-
   return v
 }
