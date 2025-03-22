@@ -1,41 +1,39 @@
 import { Program } from "../client/core/prog.js"
 import { PanelView } from "../client/util/panelview.js"
-import { $ } from "../client/util/ref.js"
+import { $, multiplex } from "../client/util/ref.js"
 
 const prog = new Program()
 await prog.init()
 
 const size = $({ w: 100, h: 100 })
 
-const textarea = <textarea text={Array(20).fill('hello world testing long box').join('\n')} background={0x99000099} multiline={true} onEnter={function () {
+const textarea = <textarea text={''} background={0x99000099} multiline={false} onEnter={function () {
   console.log('hey', this.text)
 }} />
 
 const panel = await prog.makePanel({
   size,
   view: <PanelView size={size} title={'test panel'}>
-    <panedyb background={0x00330099}>
-      <margin padding={1}>
+    <view>
+      <groupy background={0x00330099}>
         <scroll
-          // showv={false}
-          // showh={false}
-          // adoptedByParent={function (p) {
-          //   multiplex([textarea.$ref('size'), p.$ref('size')], () => {
-          //     this.point = { x: 5, y: 0 }
-          //     this.size = { w: p.size.w - 10, h: textarea.size.h }
-          //   })
-          // }}
+          showv={false}
+          showh={false}
+          adoptedByParent={function (p) {
+            multiplex([textarea.$ref('size'), p.$ref('size')], () => {
+              this.point = { x: 5, y: 0 }
+              this.size = { w: p.size.w - 10, h: textarea.size.h }
+            })
+          }}
           background={0xffffff11}
           onMouseDown={function (...args) { this.firstChild?.onMouseDown?.(...args) }}
         >
           {textarea}
         </scroll>
-      </margin>
-      <groupx>
         <button padding={3}><label text={'test1'} /></button>
         <button padding={3}><label text={'test2'} /></button>
-      </groupx>
-    </panedyb>
+      </groupy>
+    </view>
   </PanelView>,
 })
 
