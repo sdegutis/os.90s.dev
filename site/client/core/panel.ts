@@ -100,6 +100,7 @@ export class Panel {
 
     this.rpc.listen('mousedown', (b) => {
       this.clicking = this.hovered
+      if (this.clicking) this.clicking.pressed = true
       this.hovered?.onMouseDown?.(b, this.absmouse)
 
       let node: View | null = this.hovered
@@ -126,6 +127,7 @@ export class Panel {
 
     this.rpc.listen('mouseup', () => {
       this.clicking?.onMouseUp?.()
+      if (this.clicking) this.clicking.pressed = false
       this.clicking = null
     })
 

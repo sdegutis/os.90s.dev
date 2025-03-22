@@ -1,7 +1,7 @@
 import { Listener } from "../../shared/listener.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
-import { $, Ref } from "../util/ref.js"
+import { $, multiplex, Ref } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
 import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../util/types.js"
 
@@ -20,9 +20,17 @@ export class View {
 
   canFocus: boolean = false
   passthrough: boolean = false
-  hovered: boolean = false
   visible: boolean = true
+
+  hovered: boolean = false
+  pressed: boolean = false
+  selected: boolean = false
+  state: 'selected' | 'pressed' | 'hovered' | 'normal' = 'normal'
+
   background: number = 0x00000000
+  hoverBackground: number = 0x00000000
+  pressBackground: number = 0x00000000
+  selectedBackground: number = 0x00000000
 
   panelOffset: Point = { x: 0, y: 0 }
 
@@ -58,6 +66,14 @@ export class View {
   adoptedByPanel?(panel: Panel): void
 
   init() {
+    multiplex([this.$ref('pressed'), this.$ref('hovered'), this.$ref('selected')], () => {
+      this.state =
+        this.selected ? 'selected' :
+          this.pressed ? 'pressed' :
+            this.hovered ? 'hovered' :
+              'normal'
+    })
+
     this.$watch('parent', (parent) => {
       if (parent) this.adoptedByParent?.(parent)
     })
@@ -78,7 +94,11 @@ export class View {
       this.needsRedraw()
     })
 
-    this.$watch('visible', () => {
+    this.$multiplex(
+      'visible', 'state',
+      'background',
+      'hoverBackground', 'selectedBackground', 'pressBackground',
+    ).watch(() => {
       this.needsRedraw()
     })
 
@@ -104,6 +124,16 @@ export class View {
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     this.drawBackground(ctx, px, py, colorFor(this.background))
+
+    if (this.selected) {
+      this.drawBackground(ctx, px, py, colorFor(this.selectedBackground))
+    }
+    else if (this.pressed) {
+      this.drawBackground(ctx, px, py, colorFor(this.pressBackground))
+    }
+    else if (this.hovered) {
+      this.drawBackground(ctx, px, py, colorFor(this.hoverBackground))
+    }
   }
 
   protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: string) {

@@ -10,7 +10,7 @@ class SplitDivider extends View {
   split!: Split
   override  passthrough: boolean = false
 
-  pressed: boolean = false
+  override pressed: boolean = false
   dividerColor: number = 0x33333300
 
   cursor!: ReturnType<typeof useCursor>

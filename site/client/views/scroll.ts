@@ -15,8 +15,8 @@ export class Scroll extends View {
   content!: View
   area = make(View, { passthrough: true })
 
-  barv = make(View, { size: { w: 3, h: 0 }, background: 0xffffff33 })
-  barh = make(View, { size: { w: 0, h: 3 }, background: 0xffffff33 })
+  barv = make(View, { size: { w: 3, h: 0 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barh = make(View, { size: { w: 0, h: 3 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
 
   trackv = make(View, { background: 0x00000033, children: [this.barv] })
   trackh = make(View, { background: 0x00000033, children: [this.barh] })
