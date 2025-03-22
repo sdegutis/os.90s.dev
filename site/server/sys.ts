@@ -133,7 +133,6 @@ export class Sys {
       this.focused = panel
       this.focused.rpc.send('focus', [])
     }
-    panel.moveToFront()
   }
 
   removePanel(panel: Panel) {
