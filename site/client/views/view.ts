@@ -33,7 +33,6 @@ export class view {
 
   onPanelFocus?(): void
   onPanelBlur?(): void
-  adopted?(): void
 
   onMouseDown?(button: number, pos: Point): void
   onMouseMove?(pos: Point): void
@@ -53,7 +52,18 @@ export class view {
   adjust?(): void
   layout?(): void
 
+  adoptedByParent?(parent: view): void
+  adoptedByPanel?(panel: Panel): void
+
   init() {
+    this.$watch('parent', (parent) => {
+      if (parent) this.adoptedByParent?.(parent)
+    })
+
+    this.$watch('panel', (panel) => {
+      if (panel) this.adoptedByPanel?.(panel)
+    })
+
     this.$watch('size', () => {
       this.layout?.()
       this.parent?.onChildResized()
@@ -101,7 +111,6 @@ export class view {
 
   adoptTree(panel: Panel | null) {
     this.panel = panel
-    this.adopted?.()
     for (const child of this.children) {
       child.adoptTree(panel)
     }
