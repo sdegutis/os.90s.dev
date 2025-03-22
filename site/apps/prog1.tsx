@@ -7,15 +7,23 @@ await prog.init()
 
 const size = $({ w: 100, h: 100 })
 
-const textarea = <textarea background={0x99000099} multiline={false} onEnter={function () {
+const textarea = <textarea background={0x99000099} multiline={true} onEnter={function () {
   console.log('hey', this.text)
 }} />
+
+let show = $(false)
+setInterval(() => show.val = !show.val, 1000)
 
 const panel = await prog.makePanel({
   size,
   view: <PanelView size={size} title={'test panel'}>
     <panedyb>
-      <scroll background={0xffffff11} onMouseDown={function (...args) { this.firstChild?.onMouseDown?.(...args) }}>
+      <scroll
+        showh={show}
+        showv={show}
+        background={0xffffff11}
+        onMouseDown={function (...args) { this.firstChild?.onMouseDown?.(...args) }}
+      >
         {textarea}
       </scroll>
       <groupx>

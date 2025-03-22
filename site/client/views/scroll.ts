@@ -18,20 +18,32 @@ export class scroll extends view {
   barv = make(view, { size: { w: 3, h: 0 }, background: 0xffffff33 })
   barh = make(view, { size: { w: 0, h: 3 }, background: 0xffffff33 })
 
-  trackv = make(view, { size: { w: 3, h: 0 }, background: 0x00000033, children: [this.barv] })
-  trackh = make(view, { size: { w: 0, h: 3 }, background: 0x00000033, children: [this.barh] })
-  corner = make(view, { size: { w: 0, h: 3 }, background: 0x00000033 })
+  trackv = make(view, { background: 0x00000033, children: [this.barv] })
+  trackh = make(view, { background: 0x00000033, children: [this.barh] })
+  corner = make(view, { background: 0x00000033, size: { w: 0, h: 3 } })
+
+  showh = true
+  showv = true
 
   override init(): void {
     this.content = this.children[0]
     this.area.children = [this.content]
 
-    this.children = [make(panedxb, {
-      children: [
-        make(panedyb, { children: [this.area, this.trackh] }),
-        make(panedyb, { children: [this.trackv, this.corner], size: { h: 0, w: this.trackv.size.w } })
-      ],
-    })]
+    const panea = make(panedyb, { children: [this.area, this.trackh] })
+    const paneb = make(panedyb, { children: [this.trackv, this.corner] })
+    this.children = [make(panedxb, { children: [panea, paneb] })]
+
+    const reflectTracksShown = () => {
+      this.trackh.size = { w: 0, h: this.showh ? 3 : 0 }
+      this.corner.size = { w: 0, h: this.showh ? 3 : 0 }
+      paneb.size = { w: this.showv ? 3 : 0, h: 0 }
+      this.layout()
+      this.constrainContent()
+    }
+
+    reflectTracksShown()
+    this.$watch('showh', reflectTracksShown)
+    this.$watch('showv', reflectTracksShown)
 
     const percent = multiplex([
       this.area.$ref('size'),
