@@ -1,7 +1,7 @@
 import { crt2025, Font } from "../../shared/font.js"
-import { view } from "./view.js"
+import { View } from "./view.js"
 
-export class label extends view {
+export class Label extends View {
 
   override passthrough: boolean = true
 

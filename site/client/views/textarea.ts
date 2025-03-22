@@ -1,15 +1,15 @@
 import { crt2025, Font } from "../../shared/font.js"
 import { type Point } from "../util/types.js"
-import { scroll } from "./scroll.js"
-import { make, view } from "./view.js"
+import { Scroll } from "./scroll.js"
+import { make, View } from "./view.js"
 
-export class textarea extends view {
+export class Textarea extends View {
 
   font: Font = crt2025
   color: number = 0xffffffff
 
-  private label!: view
-  private _cursor!: view
+  private label!: View
+  private _cursor!: View
 
   override canFocus: boolean = true
 
@@ -52,7 +52,7 @@ export class textarea extends view {
   }
 
   override init(): void {
-    this._cursor = make(view, {
+    this._cursor = make(View, {
       onMouseDown: (...args) => this.onMouseDown(...args),
       background: this.cursorColor,
       visible: false,
@@ -62,7 +62,7 @@ export class textarea extends view {
       }
     })
 
-    this.label = make(view, {
+    this.label = make(View, {
       adjust: () => this.adjustTextLabel(),
       draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),
       onMouseDown: (...args) => this.onMouseDown(...args),
@@ -132,7 +132,7 @@ export class textarea extends view {
   private findScrollAncestor() {
     let node = this.parent
     while (node) {
-      if (node instanceof scroll) return node
+      if (node instanceof Scroll) return node
       node = node.parent
     }
     return node

@@ -3,11 +3,11 @@ import { useCursor, xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { debounce } from "../util/throttle.js"
 import { type Point } from "../util/types.js"
-import { make, view } from "./view.js"
+import { make, View } from "./view.js"
 
-class SplitDivider extends view {
+class SplitDivider extends View {
 
-  split!: split
+  split!: Split
   override  passthrough: boolean = false
 
   pressed: boolean = false
@@ -88,7 +88,7 @@ class SplitDivider extends view {
 
 }
 
-export class split extends view {
+export class Split extends View {
 
   pos: number = 20
   min: number = 10
@@ -145,10 +145,10 @@ export class split extends view {
 
 }
 
-export class splitx extends split {
+export class SplitX extends Split {
   override dir = 'x' as const
 }
 
-export class splity extends split {
+export class SplitY extends Split {
   override dir = 'y' as const
 }

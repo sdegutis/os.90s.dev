@@ -1,6 +1,6 @@
 import { Ref } from "../client/util/ref.js"
 import { primitives } from "../client/views/index.js"
-import { make, view } from "../client/views/view.js"
+import { make, View } from "../client/views/view.js"
 
 type Primitives = typeof primitives
 
@@ -9,7 +9,7 @@ type FixThis<T, K extends keyof T, Else> =
   ? (this: T, ...args: A) => R
   : Else
 
-type JsxChildren = view | view[] | Ref<view[]>
+type JsxChildren = View | View[] | Ref<View[]>
 
 type JsxAttrs<T> = {
   [K in keyof T]?: K extends 'children' ? JsxChildren : FixThis<T, K, T[K] | Ref<T[K]>>
@@ -29,7 +29,7 @@ declare global {
 
     type ElementChildrenAttribute = { children: any }
 
-    type Element = view
+    type Element = View
 
     type ElementType =
       | keyof IntrinsicElements
@@ -48,7 +48,7 @@ function createNode(tag: any, data: Record<string, any>): JSX.Element {
     return tag(data)
   }
 
-  if (data["children"] instanceof view) {
+  if (data["children"] instanceof View) {
     data["children"] = [data["children"]]
   }
 

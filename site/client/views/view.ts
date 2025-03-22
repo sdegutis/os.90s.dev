@@ -5,15 +5,15 @@ import { $, Ref } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
 import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../util/types.js"
 
-export class view {
+export class View {
 
   panel: Panel | null = null
 
-  parent: view | null = null
-  children: readonly view[] = []
+  parent: View | null = null
+  children: readonly View[] = []
 
-  get firstChild(): view | undefined { return this.children[0] }
-  get lastChild(): view | undefined { return this.children[this.children.length - 1] }
+  get firstChild(): View | undefined { return this.children[0] }
+  get lastChild(): View | undefined { return this.children[this.children.length - 1] }
 
   point: Point = { x: 0, y: 0 }
   size: Size = { w: 0, h: 0 }
@@ -54,7 +54,7 @@ export class view {
   adjust?(): void
   layout?(): void
 
-  adoptedByParent?(parent: view): void
+  adoptedByParent?(parent: View): void
   adoptedByPanel?(panel: Panel): void
 
   init() {
@@ -154,7 +154,7 @@ export class view {
     }
 
     const protos = []
-    let proto: view | undefined = this
+    let proto: View | undefined = this
 
     while (proto = Object.getPrototypeOf(proto))
       if (Object.hasOwn(proto, 'init'))
@@ -184,7 +184,7 @@ export class view {
 
 }
 
-export function make<T extends view>(
+export function make<T extends View>(
   ctor: new () => T,
   data: { [K in keyof T]?: T[K] | Ref<T[K]> },
 ): T {

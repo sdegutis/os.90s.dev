@@ -1,5 +1,5 @@
 import { colorFor } from "../util/colors.js"
-import { border } from "./border.js"
+import { Border } from "./border.js"
 
 export class ClickCounter {
 
@@ -19,7 +19,7 @@ export class ClickCounter {
 
 }
 
-export class button extends border {
+export class Button extends Border {
 
   override init(): void {
     this.$multiplex(
