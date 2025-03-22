@@ -33,21 +33,22 @@ export class view {
 
   onPanelFocus?(): void
   onPanelBlur?(): void
+  adopted?(): void
 
   onMouseDown?(button: number, pos: Point): void
   onMouseMove?(pos: Point): void
   onMouseUp?(): void
-  onWheel?(x: number, y: number): void
 
   onMouseEnter?(): void
   onMouseExit?(): void
 
+  onWheel?(x: number, y: number): void
+
   onFocus?(): void
-  onKeyDown?(key: string): void
-  onKeyUp?(key: string): void
   onBlur?(): void
 
-  adopted?(): void
+  onKeyDown?(key: string): void
+  onKeyUp?(key: string): void
 
   adjust?(): void
   layout?(): void
