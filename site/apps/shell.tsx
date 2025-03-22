@@ -30,14 +30,17 @@ const taskbar = await prog.makePanel({
 function Clock() {
   let date = false
   let time = $('')
+
   const toggle = () => {
     date = !date
     udpateTime()
   }
+
   const udpateTime = () => {
     const d = new Date()
     time.val = date ? d.toLocaleString() : d.toLocaleTimeString()
   }
+
   setInterval(udpateTime, 1000)
   udpateTime()
 
