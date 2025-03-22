@@ -1,7 +1,6 @@
 import { Listener } from "./listener.js"
 
 export type PanelOrdering = 'normal' | 'bottom' | 'top'
-export type PanelPosition = [number, number]
 
 export interface ServerProgram {
   init(): void

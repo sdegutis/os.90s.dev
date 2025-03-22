@@ -1,4 +1,4 @@
-import { wRPC, type ClientProgram, type PanelOrdering, type PanelPosition, type ServerProgram } from "../../shared/rpc.js"
+import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "../../shared/rpc.js"
 import type { Ref } from "../util/ref.js"
 import type { Size } from "../views/view.js"
 import { Panel } from "./panel.js"
@@ -46,7 +46,7 @@ export class Program {
 
   async makePanel(config: {
     order?: PanelOrdering,
-    pos?: PanelPosition,
+    pos?: [number, number],
     size: Ref<Size>,
     view: JSX.Element,
   }) {
