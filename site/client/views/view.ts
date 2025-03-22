@@ -3,7 +3,7 @@ import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
 import { $, Ref, type Equals } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
-import type { Point, Size } from "../util/types.js"
+import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../util/types.js"
 
 export class view {
 
@@ -169,22 +169,6 @@ export class view {
     return $$refs.get(key as string) as Ref<this[K]>
   }
 
-}
-
-export const pointEquals = (a: Point, b: Point) => {
-  return a.x === b.x && a.y === b.y
-}
-
-export const sizeEquals = (a: Size, b: Size) => {
-  return a.w === b.w && a.h === b.h
-}
-
-export const arrayEquals = <T extends ArrayLike<any>>(a: T, b: T) => {
-  if (a.length !== b.length) return false
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) return false
-  }
-  return true
 }
 
 export function make<T extends view>(
