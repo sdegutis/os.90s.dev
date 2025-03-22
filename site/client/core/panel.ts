@@ -95,6 +95,7 @@ export class Panel {
         view.onMouseExit?.()
         view.hovered = false
       }
+      this.hovered = null
       this.hoveredTree.clear()
     })
 
@@ -212,6 +213,7 @@ export class Panel {
       view.onMouseExit?.()
     }
 
+    console.log('enter', this.hovered, activeHovered)
     if (this.hovered !== activeHovered) {
       if (this.hovered) this.hovered.hovered = false
       this.hovered = activeHovered

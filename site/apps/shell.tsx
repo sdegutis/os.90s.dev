@@ -42,8 +42,8 @@ function Clock() {
   udpateTime()
 
   return (
-    <border padding={2} passthrough={false} onMouseDown={toggle}>
+    <button padding={2} passthrough={false} onClick={toggle}>
       <label text={time} />
-    </border>
+    </button>
   )
 }
