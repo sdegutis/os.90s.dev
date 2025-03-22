@@ -6,13 +6,14 @@ await prog.init()
 
 const dialog = <border
   passthrough={false}
-  onPanelBlur={() => { no(); panel.close() }}
+  onPanelBlur={no}
+  canFocus={true}
+  onKeyDown={key => {
+    if (key === 'Enter') ok()
+    if (key === 'Escape') no()
+  }}
   onMouseDown={function (b, pos) {
-    const fn = dragMove(pos, panel)
-    this.onMouseMove = () => {
-      fn()
-      console.log(panel.point)
-    }
+    this.onMouseMove = dragMove(pos, panel)
     this.onMouseUp = () => delete this.onMouseMove
   }}
   background={0x000000cc} padding={1} borderColor={0x005599ff}>
@@ -36,6 +37,7 @@ const panel = await prog.makePanel({
 })
 
 panel.focus()
+dialog.focus()
 
-function ok() { console.log('ok') }
-function no() { console.log('no') }
+function ok() { console.log('ok'); panel.close() }
+function no() { console.log('no'); panel.close() }
