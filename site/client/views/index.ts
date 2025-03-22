@@ -3,6 +3,7 @@ import { button } from "./button.js"
 import { group, groupx, groupy } from "./group.js"
 import { image } from "./image.js"
 import { label } from "./label.js"
+import { margin } from "./margin.js"
 import { paned, panedxa, panedxb, panedya, panedyb } from "./paned.js"
 import { scroll } from "./scroll.js"
 import { spaced, spacedx, spacedy } from "./spaced.js"
@@ -14,6 +15,7 @@ export const primitives = {
 
   view,
   border,
+  margin,
   label,
   image,
   button,
