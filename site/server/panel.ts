@@ -3,6 +3,7 @@ import { crt2025 } from "../shared/font.js"
 import { Listener } from "../shared/listener.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../shared/rpc.js"
 import type { Process } from "./process.js"
+import type { Sys } from "./sys.js"
 
 type Rect = { x: number, y: number, w: number, h: number }
 
@@ -28,7 +29,7 @@ export class Panel {
   didAdjust = new Listener()
   didRedraw = new Listener()
 
-  constructor(rect: Rect, proc: Process, port: MessagePort, pos: PanelOrdering) {
+  constructor(rect: Rect, proc: Process, port: MessagePort, pos: PanelOrdering, sys: Sys) {
     this.proc = proc
     this.port = port
     this.rpc = wRPC<ServerPanel, ClientPanel>(port)
@@ -44,10 +45,18 @@ export class Panel {
     const posi = pos === 'bottom' ? 0 : Panel.ordered.findLastIndex(p => p.pos !== 'top') + 1
     Panel.ordered.splice(posi, 0, this)
 
-    if (this.x === -1 || this.y === -1) {
+    const positioning = (this.x === -1 || this.y === -1) ? 'default' :
+      (this.x === -2 || this.y === -2) ? 'center' :
+        'given'
+
+    if (positioning === 'default') {
       const cascadeFrom = Panel.ordered.findLast(p => p.pos === 'normal' && p !== this)
       this.x = (cascadeFrom?.x ?? 0) + 10
       this.y = (cascadeFrom?.y ?? 0) + 10
+    }
+    else if (positioning === 'center') {
+      this.x = Math.round(sys.width / 2 - this.w / 2)
+      this.y = Math.round(sys.height / 2 - this.h / 2)
     }
 
     this.rpc.listen('focus', () => {

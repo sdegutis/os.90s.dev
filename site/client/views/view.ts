@@ -1,7 +1,7 @@
 import { Listener } from "../../shared/listener.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
-import { $, multiplex, Ref } from "../util/ref.js"
+import { $, Ref } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
 import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../util/types.js"
 
@@ -25,7 +25,6 @@ export class View {
   hovered: boolean = false
   pressed: boolean = false
   selected: boolean = false
-  state: 'selected' | 'pressed' | 'hovered' | 'normal' = 'normal'
 
   background: number = 0x00000000
   hoverBackground: number = 0x00000000
@@ -66,14 +65,6 @@ export class View {
   adoptedByPanel?(panel: Panel): void
 
   init() {
-    multiplex([this.$ref('pressed'), this.$ref('hovered'), this.$ref('selected')], () => {
-      this.state =
-        this.selected ? 'selected' :
-          this.pressed ? 'pressed' :
-            this.hovered ? 'hovered' :
-              'normal'
-    })
-
     this.$watch('parent', (parent) => {
       if (parent) this.adoptedByParent?.(parent)
     })
@@ -95,9 +86,8 @@ export class View {
     })
 
     this.$multiplex(
-      'visible', 'state',
-      'background',
-      'hoverBackground', 'selectedBackground', 'pressBackground',
+      'visible', 'hovered', 'pressed', 'selected',
+      'background', 'hoverBackground', 'selectedBackground', 'pressBackground',
     ).watch(() => {
       this.needsRedraw()
     })
