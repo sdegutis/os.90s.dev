@@ -68,8 +68,6 @@ export class scroll extends view {
       this.barh.visible = pw < 1
       this.barh.point = { x, y: this.barh.point.y }
       this.barh.size = { w, h: this.barh.size.h }
-
-      console.log(y, h, percent.val)
     })
 
     const makeTrackDraggable = (xy: 'x' | 'y') => {
