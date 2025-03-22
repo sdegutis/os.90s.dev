@@ -12,11 +12,15 @@ const textarea = <textarea background={0x99000099} />
 const panel = await prog.makePanel({
   size,
   view: <PanelView size={size} title={'test panel'}>
-    <groupy background={0xffffff11} onMouseDown={function (...args) { this.firstChild?.onMouseDown?.(...args) }}>
-      <button padding={3}><label text={'test1'} /></button>
-      {textarea}
-      <button padding={3}><label text={'test2'} /></button>
-    </groupy>
+    <panedyb>
+      <scroll background={0xffffff11} onMouseDown={function (...args) { this.firstChild?.onMouseDown?.(...args) }}>
+        {textarea}
+      </scroll>
+      <groupx>
+        <button padding={3}><label text={'test1'} /></button>
+        <button padding={3}><label text={'test2'} /></button>
+      </groupx>
+    </panedyb>
   </PanelView>,
 })
 
