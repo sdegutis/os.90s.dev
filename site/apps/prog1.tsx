@@ -15,9 +15,9 @@ const children = $([
   ...Array(20).keys().map(i => <label text={`view ${i.toString()}`} />)
 ])
 
-// setInterval(() => {
-//   children.val = children.val.toSpliced(children.val.length - 1, 1)
-// }, 300)
+setInterval(() => {
+  children.val = children.val.toSpliced(children.val.length - 1, 1)
+}, 300)
 
 const size = $({ w: 100, h: 100 })
 

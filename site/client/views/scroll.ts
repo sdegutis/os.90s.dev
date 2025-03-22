@@ -95,6 +95,7 @@ export class scroll extends view {
     makeTrackDraggable('x')
     makeTrackDraggable('y')
 
+    this.content.$watch('size', () => this.constrainContent())
     this.$watch('size', () => this.constrainContent())
     this.$watch('scrollx', () => this.constrainContent())
     this.$watch('scrolly', () => this.constrainContent())
