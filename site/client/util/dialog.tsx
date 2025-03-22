@@ -1,7 +1,7 @@
-import type { Program } from "../core/prog.js"
+import { program } from "../core/prog.js"
 import { dragMove } from "./drag.js"
 
-export async function showDialog(prog: Program, text: string) {
+export async function showDialog(text: string) {
   const result = Promise.withResolvers<boolean>()
 
   const dialog = <border
@@ -30,7 +30,7 @@ export async function showDialog(prog: Program, text: string) {
     </border>
   </border>
 
-  const panel = await prog.makePanel({
+  const panel = await program.makePanel({
     size: dialog.$ref('size'),
     pos: 'center',
     view: dialog,

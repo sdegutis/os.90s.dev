@@ -38,7 +38,7 @@ const panel = await program.makePanel({
       </scroll>
       <groupx>
         <button onClick={async () => {
-          console.log(await showPrompt(program, 'hey? hows it going?\nwell this is fine'))
+          console.log(await showPrompt('hey? hows it going?\nwell this is fine'))
         }} padding={3}><label text={'hmm'} /></button>
       </groupx>
     </panedyb>

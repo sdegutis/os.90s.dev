@@ -1,9 +1,9 @@
-import type { Program } from "../core/prog.js"
+import { program } from "../core/prog.js"
 import type { Textarea } from "../views/textarea.js"
 import { dragMove } from "./drag.js"
 import { multiplex } from "./ref.js"
 
-export async function showPrompt(prog: Program, text: string) {
+export async function showPrompt(text: string) {
   const result = Promise.withResolvers<string | null>()
 
   const prompt = <label text={text} />
@@ -54,7 +54,7 @@ export async function showPrompt(prog: Program, text: string) {
     </border>
   </border>
 
-  const panel = await prog.makePanel({
+  const panel = await program.makePanel({
     size: dialog.$ref('size'),
     pos: 'center',
     view: dialog,
