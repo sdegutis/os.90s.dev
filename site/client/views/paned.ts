@@ -1,7 +1,7 @@
 import { debounce } from "../util/throttle.js"
-import { View } from "./view.js"
+import { view } from "./view.js"
 
-export class Paned extends View {
+export class paned extends view {
 
   gap: number = 0
   dir: 'x' | 'y' = 'x'
@@ -57,22 +57,22 @@ export class Paned extends View {
 
 }
 
-export class PanedXA extends Paned {
+export class panedxa extends paned {
   override dir = 'x' as const
   override vacuum = 'a' as const
 }
 
-export class PanedXB extends Paned {
+export class panedxb extends paned {
   override dir = 'x' as const
   override vacuum = 'b' as const
 }
 
-export class PanedYA extends Paned {
+export class panedya extends paned {
   override dir = 'y' as const
   override vacuum = 'a' as const
 }
 
-export class PanedYB extends Paned {
+export class panedyb extends paned {
   override dir = 'y' as const
   override vacuum = 'b' as const
 }

@@ -1,7 +1,7 @@
 import { colorFor } from "../util/colors.js"
-import { View } from "./view.js"
+import { view } from "./view.js"
 
-export class Border extends View {
+export class border extends view {
 
   borderColor: number = 0x00000000
   padding: number = 0

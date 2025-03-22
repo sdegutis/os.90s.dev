@@ -4,7 +4,7 @@ import { wRPC, type ClientPanel, type ServerPanel } from "../../shared/rpc.js"
 import type { Ref } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
 import type { Point, Size } from "../util/types.js"
-import type { View } from "../views/view.js"
+import type { view } from "../views/view.js"
 
 type Pos = {
   x: number,
@@ -38,10 +38,10 @@ export class Panel {
   readonly canvas = new OffscreenCanvas(0, 0)
   readonly ctx = this.canvas.getContext('2d')!
 
-  private hoveredTree = new Set<View>()
-  private hovered: View | null = null
-  private clicking: View | null = null
-  private focused: View | null = null
+  private hoveredTree = new Set<view>()
+  private hovered: view | null = null
+  private clicking: view | null = null
+  private focused: view | null = null
 
   constructor(keymap: Set<string>, port: MessagePort, id: number, point: Ref<Point>, size: Ref<Size>, root: JSX.Element) {
     Panel.all.set(id, this)
@@ -103,7 +103,7 @@ export class Panel {
       if (this.clicking) this.clicking.pressed = true
       this.hovered?.onMouseDown?.(b, this.absmouse)
 
-      let node: View | null = this.hovered
+      let node: view | null = this.hovered
       while (node) {
         if (!node.passthrough && this.focusView(node)) {
           return
@@ -132,7 +132,7 @@ export class Panel {
     })
 
     this.rpc.listen('wheel', (x, y) => {
-      let node: View | null = this.hovered
+      let node: view | null = this.hovered
       while (node) {
         if (node.onWheel) {
           node.onWheel(x, y)
@@ -154,7 +154,7 @@ export class Panel {
     this.rpc.send('focus', [])
   }
 
-  focusView(node: View) {
+  focusView(node: view) {
     if (node === this.focused) return true
     if (!node.canFocus) return false
 
@@ -211,7 +211,7 @@ export class Panel {
     }
   }
 
-  private hover(node: View, x: number, y: number): View | null {
+  private hover(node: view, x: number, y: number): view | null {
     if (!node.visible) return null
 
     let tx = 0
@@ -241,7 +241,7 @@ export class Panel {
   }
 
   private drawTree(
-    node: View,
+    node: view,
     x: number,
     y: number,
   ) {

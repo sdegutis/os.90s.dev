@@ -1,44 +1,44 @@
-import { Border } from "./border.js"
-import { Button } from "./button.js"
-import { Group, GroupX, GroupY } from "./group.js"
-import { ImageView } from "./image.js"
-import { Label } from "./label.js"
-import { Margin } from "./margin.js"
-import { Paned, PanedXA, PanedXB, PanedYA, PanedYB } from "./paned.js"
-import { Scroll } from "./scroll.js"
-import { Spaced, SpacedX, SpacedY } from "./spaced.js"
-import { Split, SplitX, SplitY } from "./split.js"
-import { Textarea } from "./textarea.js"
-import { View } from "./view.js"
+import { border } from "./border.js"
+import { button } from "./button.js"
+import { group, groupx, groupy } from "./group.js"
+import { image } from "./image.js"
+import { label } from "./label.js"
+import { margin } from "./margin.js"
+import { paned, panedxa, panedxb, panedya, panedyb } from "./paned.js"
+import { scroll } from "./scroll.js"
+import { spaced, spacedx, spacedy } from "./spaced.js"
+import { split, splitx, splity } from "./split.js"
+import { textarea } from "./textarea.js"
+import { view } from "./view.js"
 
 export const primitives = {
 
-  view: View,
-  border: Border,
-  margin: Margin,
-  label: Label,
-  image: ImageView,
-  button: Button,
-  textarea: Textarea,
+  view,
+  border,
+  margin,
+  label,
+  image,
+  button,
+  textarea,
 
-  scroll: Scroll,
+  scroll,
 
-  group: Group,
-  groupx: GroupX,
-  groupy: GroupY,
+  group,
+  groupx,
+  groupy,
 
-  paned: Paned,
-  panedxa: PanedXA,
-  panedxb: PanedXB,
-  panedya: PanedYA,
-  panedyb: PanedYB,
+  paned,
+  panedxa,
+  panedxb,
+  panedya,
+  panedyb,
 
-  split: Split,
-  splitx: SplitX,
-  splity: SplitY,
+  split,
+  splitx,
+  splity,
 
-  spaced: Spaced,
-  spacedx: SpacedX,
-  spacedy: SpacedY,
+  spaced,
+  spacedx,
+  spacedy,
 
 }

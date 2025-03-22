@@ -1,7 +1,7 @@
 import type { Bitmap } from "../../shared/bitmap.js"
-import { View } from "./view.js"
+import { view } from "./view.js"
 
-export class ImageView extends View {
+export class image extends view {
 
   bitmap: Bitmap | null = null
 

@@ -1,6 +1,6 @@
-import { View } from "./view.js"
+import { view } from "./view.js"
 
-export class Group extends View {
+export class group extends view {
 
   gap: number = 0
   dir: 'x' | 'y' = 'x'
@@ -53,10 +53,10 @@ export class Group extends View {
 
 }
 
-export class GroupX extends Group {
+export class groupx extends group {
   override dir = 'x' as const
 }
 
-export class GroupY extends Group {
+export class groupy extends group {
   override dir = 'y' as const
 }

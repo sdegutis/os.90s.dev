@@ -1,6 +1,6 @@
-import type { View } from "../views/view.js"
+import type { view } from "../views/view.js"
 
-export function vacuumFirstChild(this: View) {
+export function vacuumFirstChild(this: view) {
   const c = this.firstChild
   if (c) {
     c.point = { x: 0, y: 0 }

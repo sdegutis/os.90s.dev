@@ -1,5 +1,5 @@
 import { program } from "../core/prog.js"
-import type { Textarea } from "../views/textarea.js"
+import type { textarea } from "../views/textarea.js"
 import { dragMove } from "./drag.js"
 import { multiplex } from "./ref.js"
 
@@ -7,7 +7,7 @@ export async function showPrompt(text: string) {
   const result = Promise.withResolvers<string | null>()
 
   const prompt = <label text={text} />
-  const textarea = <textarea multiline={false} /> as Textarea
+  const textarea = <textarea multiline={false} /> as textarea
 
   textarea.onEnter = ok
 
