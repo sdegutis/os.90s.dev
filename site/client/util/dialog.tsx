@@ -6,7 +6,10 @@ export async function showDialog(text: string) {
 
   const dialog = <border
     passthrough={false}
-    onPanelBlur={no}
+    onPanelBlur={() => {
+      panel.focus()
+      no()
+    }}
     canFocus={true}
     onKeyDown={key => {
       if (key === 'Enter') ok()
