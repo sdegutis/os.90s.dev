@@ -6,12 +6,17 @@ await prog.init()
 
 const dialog = <border
   passthrough={false}
+  onPanelBlur={() => { no(); panel.close() }}
   onMouseDown={function (b, pos) {
-    this.onMouseMove = dragMove(pos, dialog)
+    const fn = dragMove(pos, panel)
+    this.onMouseMove = () => {
+      fn()
+      console.log(panel.point)
+    }
     this.onMouseUp = () => delete this.onMouseMove
   }}
   background={0x000000cc} padding={1} borderColor={0x005599ff}>
-  <border padding={3} passthrough={true}>
+  <border padding={3}>
     <groupy align={'z'} gap={4}>
       <border padding={2}>
         <label text={'are you sure?'} />
