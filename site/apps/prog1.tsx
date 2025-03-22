@@ -1,6 +1,6 @@
 import { Program } from "../client/core/prog.js"
-import { showDialog } from "../client/util/dialog.js"
 import { PanelView } from "../client/util/panelview.js"
+import { showPrompt } from "../client/util/prompt.js"
 import { $, multiplex } from "../client/util/ref.js"
 
 const prog = new Program()
@@ -41,7 +41,7 @@ const panel = await prog.makePanel({
       </scroll>
       <groupx>
         <button onClick={async () => {
-          console.log(await showDialog(prog, 'hey? hows it going?\nwell this is fine'))
+          console.log(await showPrompt(prog, 'hey? hows it going?\nwell this is fine'))
         }} padding={3}><label text={'hmm'} /></button>
       </groupx>
     </panedyb>

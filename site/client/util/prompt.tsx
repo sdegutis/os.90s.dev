@@ -1,8 +1,29 @@
 import type { Program } from "../core/prog.js"
+import type { Textarea } from "../views/textarea.js"
 import { dragMove } from "./drag.js"
+import { multiplex } from "./ref.js"
 
-export async function showDialog(prog: Program, text: string) {
-  const result = Promise.withResolvers<boolean>()
+export async function showPrompt(prog: Program, text: string) {
+  const result = Promise.withResolvers<string | null>()
+
+  const prompt = <label text={text} />
+  const textarea = <textarea multiline={false} /> as Textarea
+
+  textarea.onEnter = ok
+
+  const scroll = <scroll
+    showh={false}
+    showv={false}
+    size={multiplex([
+      prompt.$ref('size'),
+      textarea.$ref('size'),
+    ], () => ({
+      w: prompt.size.w,
+      h: textarea.size.h,
+    }))}
+  >
+    {textarea}
+  </scroll>
 
   const dialog = <border
     passthrough={false}
@@ -20,7 +41,10 @@ export async function showDialog(prog: Program, text: string) {
     <border padding={3}>
       <groupy align={'z'} gap={4}>
         <border padding={2}>
-          <label text={text} />
+          {prompt}
+        </border>
+        <border padding={2} background={0xffffff11}>
+          {scroll}
         </border>
         <groupx gap={2}>
           <button onClick={no} background={0x99000099} padding={2}><label text={'cancel'} /></button>
@@ -39,8 +63,10 @@ export async function showDialog(prog: Program, text: string) {
   panel.focus()
   dialog.focus()
 
-  function ok() { panel.close(); result.resolve(true) }
-  function no() { panel.close(); result.resolve(false) }
+  textarea.focus()
+
+  function ok() { panel.close(); result.resolve(textarea.text) }
+  function no() { panel.close(); result.resolve(null) }
 
   return result.promise
 }
