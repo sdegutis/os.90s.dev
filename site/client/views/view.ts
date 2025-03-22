@@ -24,7 +24,14 @@ export class view {
   visible: boolean = true
   background: number = 0x00000000
 
-  mouse: Point = { x: 0, y: 0 }
+  panelOffset: Point = { x: 0, y: 0 }
+
+  get mouse(): Point {
+    return {
+      x: (this.panel?.absmouse.x ?? 0) - this.panelOffset.x - (this.panel?.point.x ?? 0),
+      y: (this.panel?.absmouse.y ?? 0) - this.panelOffset.y - (this.panel?.point.y ?? 0),
+    }
+  }
 
   onPanelFocus?(): void
   onPanelBlur?(): void
@@ -93,7 +100,6 @@ export class view {
     this.$ref('children').equals = arrayEquals
     this.$ref('point').equals = pointEquals
     this.$ref('size').equals = sizeEquals
-    this.$ref('mouse').equals = pointEquals
   }
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {

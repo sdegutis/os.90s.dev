@@ -63,7 +63,7 @@ export class scroll extends view {
       this.barh.size = { w, h: this.barh.size.h }
     })
 
-    const makeTrackDraggable = (xy: 'x' | 'y') => {
+    for (const xy of ['x', 'y'] as const) {
       const wh = xy === 'x' ? 'w' : 'h'
       const bar = xy === 'x' ? this.barh : this.barv
       const track = xy === 'x' ? this.trackh : this.trackv
@@ -92,9 +92,6 @@ export class scroll extends view {
         delete bar.onMouseMove
       }
     }
-
-    makeTrackDraggable('x')
-    makeTrackDraggable('y')
 
     this.content.$watch('size', () => this.constrainContent())
     this.$watch('size', () => this.constrainContent())

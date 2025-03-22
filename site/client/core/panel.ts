@@ -222,8 +222,6 @@ export class Panel {
 
     this.hoveredTree.add(node)
 
-    node.mouse = { x, y }
-
     let i = node.children.length
     while (i--) {
       const child = node.children[i]
@@ -255,7 +253,12 @@ export class Panel {
       this.ctx.rect(x + child.point.x, y + child.point.y, child.size.w, child.size.h)
       this.ctx.clip()
 
-      this.drawTree(child, x + child.point.x, y + child.point.y)
+      child.panelOffset = {
+        x: x + child.point.x,
+        y: y + child.point.y,
+      }
+
+      this.drawTree(child, child.panelOffset.x, child.panelOffset.y)
 
       this.ctx.restore()
     }

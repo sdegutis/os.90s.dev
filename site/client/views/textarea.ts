@@ -1,5 +1,4 @@
 import { crt2025, Font } from "../../shared/font.js"
-import { vacuumFirstChild } from "../util/layout.js"
 import { type Point } from "../util/types.js"
 import { scroll } from "./scroll.js"
 import { make, view } from "./view.js"
@@ -9,7 +8,6 @@ export class textarea extends view {
   font: Font = crt2025
   color: number = 0xffffffff
 
-  private scroll!: scroll
   private label!: view
   private _cursor!: view
 
@@ -33,8 +31,6 @@ export class textarea extends view {
   private row = 0
   private col = 0
   private end = 0
-
-  override layout = vacuumFirstChild
 
   private colors: number[][] = []
 
@@ -70,12 +66,7 @@ export class textarea extends view {
       children: [this._cursor]
     })
 
-    this.scroll = make(scroll, {
-      onMouseDown: (...args) => this.onMouseDown(...args),
-      children: [this.label]
-    })
-
-    this.children = [this.scroll]
+    this.children = [this.label]
 
     this.reflectCursorPos()
     this.adjustTextLabel()
@@ -125,6 +116,7 @@ export class textarea extends view {
       w: (cols * this.font.cw) + (cols * this.font.xgap),
       h: (rows * this.font.ch) + (rows * this.font.ygap),
     }
+    this.size = this.label.size
   }
 
   private reflectCursorPos() {
@@ -134,36 +126,48 @@ export class textarea extends view {
     }
   }
 
+  private findScrollAncestor() {
+    let node = this.parent
+    while (node) {
+      if (node instanceof scroll) return node
+      node = node.parent
+    }
+    return node
+  }
+
   private scrollCursorIntoView() {
+    const scroll = this.findScrollAncestor()
+    if (!scroll) return
+
     let x = this._cursor.point.x
     let y = this._cursor.point.y
 
     let node = this._cursor
-    while (node !== this.scroll) {
+    while (node !== scroll) {
       node = node.parent!
       x += node.point.x
       y += node.point.y
     }
 
     if (y < 0) {
-      this.scroll.scrolly -= -y
+      scroll.scrolly -= -y
       this.adjustTextLabel()
     }
 
     if (x < 0) {
-      this.scroll.scrollx -= -x
+      scroll.scrollx -= -x
       this.adjustTextLabel()
     }
 
-    const maxy = this.scroll.area.size.h - this._cursor.size.h
+    const maxy = scroll.area.size.h - this._cursor.size.h
     if (y > maxy) {
-      this.scroll.scrolly -= maxy - y
+      scroll.scrolly -= maxy - y
       this.adjustTextLabel()
     }
 
-    const maxx = this.scroll.area.size.w - this._cursor.size.w
+    const maxx = scroll.area.size.w - this._cursor.size.w
     if (x > maxx) {
-      this.scroll.scrollx -= maxx - x
+      scroll.scrollx -= maxx - x
       this.adjustTextLabel()
     }
   }
