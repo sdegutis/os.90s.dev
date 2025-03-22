@@ -35,6 +35,7 @@ export async function showPrompt(text: string) {
     onKeyDown={key => {
       if (key === 'Enter') ok()
       if (key === 'Escape') no()
+      return true
     }}
     onMouseDown={function (b, pos) {
       this.onMouseMove = dragMove(pos, panel)
