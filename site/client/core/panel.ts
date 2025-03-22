@@ -1,8 +1,9 @@
 import type { Cursor } from "../../shared/cursor.js"
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type ServerPanel } from "../../shared/rpc.js"
+import type { Ref } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
-import type { view } from "../views/view.js"
+import type { Size, view } from "../views/view.js"
 
 type Pos = {
   x: number,
@@ -15,8 +16,10 @@ export class Panel {
 
   get x() { return this._x }; _x
   get y() { return this._y }; _y
-  get w() { return this._w }; _w
-  get h() { return this._h }; _h
+
+  private _size: Ref<Size>
+  get size() { return this._size.val }
+  set size(s: Size) { this._size.val = s }
 
   id
   rpc
@@ -38,19 +41,26 @@ export class Panel {
   private clicking: view | null = null
   private focused: view | null = null
 
-  constructor(keymap: Set<string>, port: MessagePort, id: number, x: number, y: number, w: number, h: number, root: JSX.Element) {
+  constructor(keymap: Set<string>, port: MessagePort, id: number, x: number, y: number, size: Ref<Size>, root: JSX.Element) {
     Panel.all.set(id, this)
 
     this.keymap = keymap
 
-    this.canvas.width = w
-    this.canvas.height = h
+    this._size = size
+
+    this.canvas.width = size.val.w
+    this.canvas.height = size.val.h
 
     this.id = id
     this._x = x
     this._y = y
-    this._w = w
-    this._h = h
+
+    size.watch(([size]) => {
+      this.rpc.send('adjust', [this.x, this.y, size.w, size.h])
+      this.canvas.width = size.w
+      this.canvas.height = size.h
+      this.blit()
+    })
 
     this.rpc = wRPC<ClientPanel, ServerPanel>(port)
 
@@ -177,17 +187,7 @@ export class Panel {
     this._y = y
     this.fixMouse()
     this.checkUnderMouse()
-    this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
-  }
-
-  resize(w: number, h: number) {
-    this._w = w
-    this._h = h
-    this.rpc.send('adjust', [this.x, this.y, this.w, this.h])
-    this.canvas.width = w
-    this.canvas.height = h
-    this.root.size = { w, h }
-    this.blit()
+    this.rpc.send('adjust', [this.x, this.y, this.size.w, this.size.h])
   }
 
   private checkUnderMouse() {

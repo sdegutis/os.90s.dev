@@ -1,22 +1,24 @@
 import { Program } from "../client/core/prog.js"
-import { dragMove } from "../client/util/drag.js"
+import { dragMove, dragResize } from "../client/util/drag.js"
 import { $ } from "../client/util/ref.js"
 
 const prog = new Program()
 await prog.init()
 
-const size = $({ w: 320 / 2, h: 180 / 2 })
+const size = $({ w: 40, h: 40 })
 const panel = await prog.makePanel({
   size,
   view: (
-    <view size={size} background={0x77000033}
-      onMouseDown={function (b, pos) {
-        this.onMouseMove = dragMove(pos, panel)
-        this.onMouseUp = () => {
-          delete this.onMouseMove
-          delete this.onMouseUp
-        }
-      }}
-    />
+    <border borderColor={0x00990099} padding={2}>
+      <view size={size.adapt(s => ({ w: s.w - 4, h: s.h - 4 }))} background={0x77000077}
+        onMouseDown={function (b, pos) {
+          this.onMouseMove = b === 0 ? dragMove(pos, panel) : dragResize(pos, panel)
+          this.onMouseUp = () => {
+            delete this.onMouseMove
+            delete this.onMouseUp
+          }
+        }}
+      />
+    </border>
   ),
 })
