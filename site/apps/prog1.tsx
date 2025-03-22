@@ -15,7 +15,7 @@ const panel = await prog.makePanel({
   size,
   view: <PanelView size={size} title={'test panel'}>
     <panedyb background={0x00330099}>
-      <margin padding={3}>
+      <margin padding={1}>
         <scroll
           // showv={false}
           // showh={false}
