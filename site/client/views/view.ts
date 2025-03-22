@@ -1,7 +1,7 @@
 import { Listener } from "../../shared/listener.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
-import { $, Ref, type Equals } from "../util/ref.js"
+import { $, Ref } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
 import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../util/types.js"
 
@@ -11,16 +11,12 @@ export class view {
 
   parent: view | null = null
   children: readonly view[] = []
-  protected children$equals: Equals<typeof this.children> = arrayEquals
 
   get firstChild(): view | undefined { return this.children[0] }
   get lastChild(): view | undefined { return this.children[this.children.length - 1] }
 
   point: Point = { x: 0, y: 0 }
-  protected point$equals: Equals<typeof this.point> = pointEquals
-
   size: Size = { w: 0, h: 0 }
-  protected size$equals: Equals<typeof this.size> = sizeEquals
 
   canFocus: boolean = false
   passthrough: boolean = false
@@ -29,7 +25,6 @@ export class view {
   background: number = 0x00000000
 
   mouse: Point = { x: 0, y: 0 }
-  protected mouse$equals: Equals<typeof this.mouse> = pointEquals
 
   onPanelFocus?(): void
   onPanelBlur?(): void
@@ -94,6 +89,11 @@ export class view {
       child.parent = this
       child.adoptTree(this.panel)
     }
+
+    this.$ref('children').equals = arrayEquals
+    this.$ref('point').equals = pointEquals
+    this.$ref('size').equals = sizeEquals
+    this.$ref('mouse').equals = pointEquals
   }
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
@@ -138,7 +138,6 @@ export class view {
       if (val instanceof Function) continue
 
       const ref = val instanceof Ref ? val : $(val)
-      ref.equals = (this as any)[`${key as string}$equals`]
       $$refs.set(key, ref)
 
       Object.defineProperty(this, key, {
