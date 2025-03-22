@@ -1,6 +1,6 @@
 import { Program } from "../client/core/prog.js"
 import { PanelView } from "../client/util/panelview.js"
-import { $ } from "../client/util/ref.js"
+import { $, multiplex } from "../client/util/ref.js"
 
 const prog = new Program()
 await prog.init()
@@ -19,7 +19,12 @@ const panel = await prog.makePanel({
         <scroll
           showv={false}
           showh={false}
-          size={textarea.$ref('size').adapt(s => ({ w: 30, h: s.h }))}
+          adoptedByParent={function (p) {
+            multiplex([textarea.$ref('size'), p.$ref('size')], () => {
+              this.point = { x: 5, y: 0 }
+              this.size = { w: p.size.w - 10, h: textarea.size.h }
+            })
+          }}
           background={0xffffff11}
           onMouseDown={function (...args) { this.firstChild?.onMouseDown?.(...args) }}
         >
