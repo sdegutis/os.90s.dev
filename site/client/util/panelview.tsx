@@ -37,34 +37,13 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
     }
   }
 
-  function minw() { }
-
-  function maxw() { }
-
-  function axew() {
-    panel.close()
-  }
-
-
-  const sizeMinus2 = data.size.adapt(s => ({
-    w: s.w - 2,
-    h: s.h - 2,
-  }))
-
-  function vacuumContent(this: view) {
-    const c = this.firstChild
-    if (c) {
-      c.point = { x: 1, y: 0 }
-      c.size = {
-        w: this.size.w - 2,
-        h: this.size.h - 1,
-      }
-    }
-  }
+  function minw() { /* panel.min() */ }
+  function maxw() { /* panel.max() */ }
+  function axew() { panel.close() }
 
   return (
-    <border
-      borderColor={borderColor}
+    <margin
+      marginColor={borderColor}
       padding={1}
       size={data.size}
       adoptedByPanel={p => panel = p}
@@ -72,7 +51,7 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
       onPanelBlur={() => focused.val = false}
       background={0x070707dd}
     >
-      <panedya size={sizeMinus2} gap={0}>
+      <panedya gap={-1}>
 
         <spacedx onMouseDown={titleBarMouseDown}>
           <border>
@@ -90,15 +69,15 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
           </border>
         </spacedx>
 
-        <view layout={vacuumContent}>
+        <margin padding={1}>
           {data.children}
-        </view>
+        </margin>
 
       </panedya>
 
       <PanelResizer size={data.size} />
 
-    </border>
+    </margin>
   )
 
 }
