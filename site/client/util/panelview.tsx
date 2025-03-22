@@ -25,7 +25,6 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
 export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, children: view }) {
 
   let panel: Panel
-  const adopted = function (this: view) { panel = this.panel! }
 
   const focused = $(false)
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
@@ -46,10 +45,6 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
     panel.close()
   }
 
-  const toplevel = {
-    onPanelFocus: () => focused.val = true,
-    onPanelBlur: () => focused.val = false,
-  }
 
   const sizeMinus2 = data.size.adapt(s => ({
     w: s.w - 2,
@@ -68,8 +63,15 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
   }
 
   return (
-    <border borderColor={borderColor} padding={1} size={data.size} adopted={adopted} background={0x070707dd} {...toplevel}>
-
+    <border
+      borderColor={borderColor}
+      padding={1}
+      size={data.size}
+      init={function () { this.$watch('panel', p => panel = p!) }}
+      onPanelFocus={() => focused.val = true}
+      onPanelBlur={() => focused.val = false}
+      background={0x070707dd}
+    >
       <panedya size={sizeMinus2} gap={0}>
 
         <spacedx onMouseDown={titleBarMouseDown}>
@@ -132,8 +134,8 @@ function PanelResizer(data: { size: Ref<Size> }) {
 
   return <image
     passthrough={false}
+    init={function () { this.$watch('panel', p => panel = p!) }}
     bitmap={adjImage}
-    adopted={function (this: view) { panel = this.panel! }}
     onMouseEnter={function (this: view) { setClaims(+1) }}
     onMouseExit={function (this: view) { setClaims(-1) }}
     point={data.size.adapt(s => ({

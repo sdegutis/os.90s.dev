@@ -7,7 +7,7 @@ import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../
 
 export class view {
 
-  panel?: Panel | undefined
+  panel: Panel | null = null
 
   parent: view | null = null
   children: readonly view[] = []
@@ -99,7 +99,7 @@ export class view {
     this.panel?.focusView(this)
   }
 
-  adoptTree(panel: Panel | undefined) {
+  adoptTree(panel: Panel | null) {
     this.panel = panel
     this.adopted?.()
     for (const child of this.children) {
@@ -175,7 +175,11 @@ export function make<T extends view>(
   data: { [K in keyof T]?: T[K] | Ref<T[K]> },
 ): T {
   const v = new ctor()
+  const init = data.init
+  delete data.init
   Object.assign(v, data)
   v.$setup()
+  const initfn = (init instanceof Ref ? init.val : init)
+  initfn?.apply(v)
   return v
 }

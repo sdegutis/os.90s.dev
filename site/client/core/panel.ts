@@ -63,11 +63,9 @@ export class Panel {
     })
 
     point.watch(([point]) => {
-      console.log('moving')
-
+      this.rpc.send('adjust', [point.x, point.y, this.size.w, this.size.h])
       this.fixMouse()
       this.checkUnderMouse()
-      this.rpc.send('adjust', [point.x, point.y, this.size.w, this.size.h])
     })
 
     this.rpc = wRPC<ClientPanel, ServerPanel>(port)
