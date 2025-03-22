@@ -12,6 +12,7 @@ export class Sys {
   hovered: Panel | null = null
   focused: Panel | null = null
   clicking: Panel | null = null
+  prevFocused: Panel | null = null
 
   width: number
   height: number
@@ -129,6 +130,7 @@ export class Sys {
 
   focusPanel(panel: Panel) {
     if (this.focused !== panel) {
+      this.prevFocused = this.focused
       this.focused?.rpc.send('blur', [])
       this.focused = panel
       this.focused.rpc.send('focus', [])
@@ -145,6 +147,12 @@ export class Sys {
     if (this.hovered === panel) this.hovered = null
     if (this.clicking === panel) this.clicking = null
     if (this.focused === panel) this.focused = null
+
+    if (this.prevFocused) {
+      const prev = this.prevFocused
+      this.prevFocused = null
+      this.focusPanel(prev)
+    }
 
     this.checkUnderMouse()
 
