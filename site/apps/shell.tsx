@@ -7,7 +7,7 @@ await prog.init()
 const desktopSize = $({ w: prog.width, h: prog.height - 8 })
 const desktop = await prog.makePanel({
   order: 'bottom',
-  pos: [0, 0],
+  pos: $({ x: 0, y: 0 }),
   size: desktopSize,
   view: (
     <view size={desktopSize} background={0x333333ff} />
@@ -18,7 +18,7 @@ const taskbarSize = $({ w: prog.width, h: 8 })
 const taskbar = await prog.makePanel({
   order: 'top',
   size: taskbarSize,
-  pos: [0, prog.height - 8],
+  pos: $({ x: 0, y: prog.height - 8 }),
   view: (
     <spacedx size={taskbarSize} background={0x444444ff}>
       <groupx></groupx>

@@ -1,6 +1,6 @@
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "../../shared/rpc.js"
-import type { Ref } from "../util/ref.js"
-import type { Size } from "../views/view.js"
+import { $, type Ref } from "../util/ref.js"
+import type { Point, Size } from "../views/view.js"
 import { Panel } from "./panel.js"
 
 export class Program {
@@ -46,13 +46,16 @@ export class Program {
 
   async makePanel(config: {
     order?: PanelOrdering,
-    pos?: [number, number],
+    pos?: Ref<Point>,
     size: Ref<Size>,
     view: JSX.Element,
   }) {
     const order = config.order ?? 'normal'
     const { size: { val: { w, h } } } = config
-    const [mx, my] = config.pos ?? [-1, -1]
+
+    const point = config.pos ?? $({ x: -1, y: -1 })
+    const { x: mx, y: my } = point.val
+
     this.rpc.send('newpanel', [order, mx, my, w, h])
     const [id, x, y, port] = await this.rpc.once('newpanel')
 
