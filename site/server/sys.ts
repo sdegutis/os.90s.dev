@@ -75,10 +75,9 @@ export class Sys {
         return
       }
 
-      this.focusPanel(this.hovered)
-
       this.clicking = this.hovered
-      this.clicking.moveToFront()
+      this.focusPanel(this.clicking)
+
       this.clicking.rpc.send('mousedown', [e.button])
       this.redrawAllPanels()
     }
@@ -134,6 +133,7 @@ export class Sys {
       this.focused = panel
       this.focused.rpc.send('focus', [])
     }
+    panel.moveToFront()
   }
 
   removePanel(panel: Panel) {

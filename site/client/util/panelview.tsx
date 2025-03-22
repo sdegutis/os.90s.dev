@@ -59,10 +59,10 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
   function vacuumContent(this: view) {
     const c = this.firstChild
     if (c) {
-      c.point = { x: 1, y: 1 }
+      c.point = { x: 1, y: 0 }
       c.size = {
         w: this.size.w - 2,
-        h: this.size.h - 2,
+        h: this.size.h - 1,
       }
     }
   }
