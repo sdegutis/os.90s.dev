@@ -54,18 +54,20 @@ export class scroll extends view {
       this.$ref('scrolly'),
     ], () => {
       const ph = Math.min(1, percent.val.h)
-      const h = Math.max(3, Math.floor(this.trackv.size.h * ph))
-      const y = Math.floor((this.trackv.size.h - h) * (this.scrolly / (this.content.size.h - this.area.size.h)))
+      const h = Math.max(3, Math.floor(this.area.size.h * ph))
+      const y = Math.floor((this.area.size.h - h) * (this.scrolly / (this.content.size.h - this.area.size.h)))
       this.barv.visible = ph < 1
       this.barv.point = { x: this.barv.point.x, y }
       this.barv.size = { w: this.barv.size.w, h }
 
       const pw = Math.min(1, percent.val.w)
-      const w = Math.max(3, Math.floor(this.trackh.size.w * pw))
-      const x = Math.floor((this.trackh.size.w - w) * (this.scrollx / (this.content.size.w - this.area.size.w)))
+      const w = Math.max(3, Math.floor(this.area.size.w * pw))
+      const x = Math.floor((this.area.size.w - w) * (this.scrollx / (this.content.size.w - this.area.size.w)))
       this.barh.visible = pw < 1
       this.barh.point = { x, y: this.barh.point.y }
       this.barh.size = { w, h: this.barh.size.h }
+
+      console.log(y, h, percent.val)
     })
 
     const makeTrackDraggable = (xy: 'x' | 'y') => {
