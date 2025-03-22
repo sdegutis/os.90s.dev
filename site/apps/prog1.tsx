@@ -1,51 +1,52 @@
 import { Program } from "../client/core/prog.js"
-import { dragMove } from "../client/util/drag.js"
+import { showDialog } from "../client/util/dialog.js"
+import { PanelView } from "../client/util/panelview.js"
+import { $, multiplex } from "../client/util/ref.js"
 
 const prog = new Program()
 await prog.init()
 
-async function showDialog(prog: Program, text: string) {
-  const result = Promise.withResolvers()
+const size = $({ w: 100, h: 100 })
 
-  const dialog = <border
-    passthrough={false}
-    onPanelBlur={no}
-    canFocus={true}
-    onKeyDown={key => {
-      if (key === 'Enter') ok()
-      if (key === 'Escape') no()
-    }}
-    onMouseDown={function (b, pos) {
-      this.onMouseMove = dragMove(pos, panel)
-      this.onMouseUp = () => delete this.onMouseMove
-    }}
-    background={0x000000cc} padding={1} borderColor={0x005599ff}>
-    <border padding={3}>
-      <groupy align={'z'} gap={4}>
-        <border padding={2}>
-          <label text={text} />
-        </border>
-        <groupx gap={2}>
-          <button onClick={no} background={0x99000099} padding={2}><label text={'cancel'} /></button>
-          <button onClick={ok} background={0xffffff33} padding={2}><label text={'ok'} /></button>
-        </groupx>
-      </groupy>
-    </border>
-  </border>
+const textarea = <textarea text={''} background={0x99000099} multiline={false} onEnter={function () {
+  console.log('hey', this.text)
+}} />
 
-  const panel = await prog.makePanel({
-    size: dialog.$ref('size'),
-    pos: 'center',
-    view: dialog,
-  })
+// const textarea = <textarea />
 
-  panel.focus()
-  dialog.focus()
+// const scroll = <scroll
+//   background={0xffffff11}
+//   onMouseDown={function (...args) { this.content?.onMouseDown?.(...args) }}
+// >
+//   {textarea}
+// </scroll>
 
-  function ok() { panel.close(); result.resolve(true) }
-  function no() { panel.close(); result.resolve(false) }
+const panel = await prog.makePanel({
+  size,
+  view: <PanelView size={size} title={'test panel'}>
+    <panedyb>
+      <scroll
+        // showv={false}
+        // showh={false}
+        adoptedByParent={function (p) {
+          multiplex([textarea.$ref('size'), p.$ref('size')], () => {
+            this.point = { x: 5, y: 0 }
+            this.size = { w: p.size.w - 10, h: textarea.size.h }
+          })
+        }}
+        background={0xffffff11}
+        onMouseDown={function (...args) { this.firstChild?.onMouseDown?.(...args) }}
+      >
+        {textarea}
+      </scroll>
+      <groupx>
+        <button onClick={async () => {
+          console.log(await showDialog(prog, 'hey? hows it going?\nwell this is fine'))
+        }} padding={3}><label text={'hmm'} /></button>
+      </groupx>
+    </panedyb>
+  </PanelView>,
+})
 
-  return result.promise
-}
-
-console.log(await showDialog(prog, 'hey? hows it going?\nwell this is fine'))
+textarea.focus()
+panel.focus()
