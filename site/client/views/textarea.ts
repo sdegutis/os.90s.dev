@@ -15,6 +15,9 @@ export class textarea extends view {
 
   private lines: string[] = ['']
 
+  multiline = true
+  onEnter?(): void
+
   get text() { return this.lines.join('\n') }
   set text(s: string) {
     this.lines = s.split('\n')
@@ -266,11 +269,16 @@ export class textarea extends view {
       }
     }
     else if (key === 'Enter') {
-      const [a, b] = this.halves()
-      this.lines[this.row] = a
-      this.lines.splice(++this.row, 0, b)
-      this.end = this.col = 0
-      this.adjustTextLabel()
+      if (this.multiline) {
+        const [a, b] = this.halves()
+        this.lines[this.row] = a
+        this.lines.splice(++this.row, 0, b)
+        this.end = this.col = 0
+        this.adjustTextLabel()
+      }
+      else {
+        this.onEnter?.()
+      }
     }
     else if (key.length === 1 && !this.panel?.isKeyDown('Control') && !this.panel?.isKeyDown('Alt')) {
       const [a, b] = this.halves()

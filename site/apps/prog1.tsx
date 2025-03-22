@@ -7,7 +7,9 @@ await prog.init()
 
 const size = $({ w: 100, h: 100 })
 
-const textarea = <textarea background={0x99000099} />
+const textarea = <textarea background={0x99000099} multiline={false} onEnter={function () {
+  console.log('hey', this.text)
+}} />
 
 const panel = await prog.makePanel({
   size,
