@@ -51,18 +51,8 @@ export class view {
 
   adopted?(): void
 
-  draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
-    this.drawBackground(ctx, px, py, colorFor(this.background))
-  }
-
-  protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: string) {
-    ctx.fillStyle = bg
-    ctx.fillRect(px, py, this.size.w, this.size.h)
-  }
-
-  focus() {
-    this.panel?.focusView(this)
-  }
+  adjust?(): void
+  layout?(): void
 
   init() {
     this.$watch('size', () => {
@@ -97,6 +87,19 @@ export class view {
     }
   }
 
+  draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+    this.drawBackground(ctx, px, py, colorFor(this.background))
+  }
+
+  protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: string) {
+    ctx.fillStyle = bg
+    ctx.fillRect(px, py, this.size.w, this.size.h)
+  }
+
+  focus() {
+    this.panel?.focusView(this)
+  }
+
   adoptTree(panel: Panel | undefined) {
     this.panel = panel
     this.adopted?.()
@@ -112,24 +115,6 @@ export class view {
 
   needsRedraw() {
     this.panel?.needsRedraw()
-  }
-
-  adjust?(): void
-  layout?(): void
-
-  $multiplex(...keys: (keyof this)[]) {
-    const listener = new Listener()
-    keys.forEach(key => this.$watch(key, () => listener.dispatch()))
-    return listener
-  }
-
-  $watch<K extends keyof this>(key: K, fn: (val: this[K], old: this[K]) => void) {
-    return this.$ref(key).watch(([val, old]) => fn(val, old))
-  }
-
-  $ref<K extends keyof this>(key: K) {
-    const { $$refs } = (this as unknown as { $$refs: Map<string, Ref<any>> })
-    return $$refs.get(key as string) as Ref<this[K]>
   }
 
   $setup() {
@@ -167,6 +152,21 @@ export class view {
 
     this.adjust?.()
     this.layout?.()
+  }
+
+  $multiplex(...keys: (keyof this)[]) {
+    const listener = new Listener()
+    keys.forEach(key => this.$watch(key, () => listener.dispatch()))
+    return listener
+  }
+
+  $watch<K extends keyof this>(key: K, fn: (val: this[K], old: this[K]) => void) {
+    return this.$ref(key).watch(([val, old]) => fn(val, old))
+  }
+
+  $ref<K extends keyof this>(key: K) {
+    const { $$refs } = (this as unknown as { $$refs: Map<string, Ref<any>> })
+    return $$refs.get(key as string) as Ref<this[K]>
   }
 
 }
