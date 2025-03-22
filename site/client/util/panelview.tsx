@@ -55,6 +55,17 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
     h: s.h - 2,
   }))
 
+  function vacuumContent(this: view) {
+    const c = this.firstChild
+    if (c) {
+      c.point = { x: 1, y: 1 }
+      c.size = {
+        w: this.size.w - 2,
+        h: this.size.h - 2,
+      }
+    }
+  }
+
   return (
     <border borderColor={borderColor} padding={1} size={data.size} adopted={adopted} background={0x070707dd} {...toplevel}>
 
@@ -76,9 +87,9 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
           </border>
         </spacedx>
 
-        <border background={0x99000099}>
+        <view layout={vacuumContent}>
           {data.children}
-        </border>
+        </view>
 
       </panedya>
 
