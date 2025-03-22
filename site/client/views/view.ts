@@ -140,7 +140,7 @@ export class View {
     })
 
     for (const key in this) {
-      let val = this[key] as any
+      let val = this[key]
       if (val instanceof Function) continue
 
       const ref = val instanceof Ref ? val : $(val)
