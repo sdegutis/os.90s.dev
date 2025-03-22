@@ -30,3 +30,11 @@ export class Ref<T> extends Listener<[T, T], void> {
 }
 
 export const $ = <T>(val: T) => new Ref(val)
+
+export function multiplex<T>(refs: Ref<any>[], fn: () => T) {
+  const ref = $(fn())
+  for (const r of refs) {
+    r.watch(() => ref.val = fn())
+  }
+  return ref
+}

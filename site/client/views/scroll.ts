@@ -1,16 +1,8 @@
 import { dragMove } from "../util/drag.js"
 import { vacuumFirstChild } from "../util/layout.js"
-import { $, type Ref } from "../util/ref.js"
+import { multiplex } from "../util/ref.js"
 import { panedxb, panedyb } from "./paned.js"
 import { make, view } from "./view.js"
-
-function multiplex<T>(refs: Ref<any>[], fn: () => T) {
-  const ref = $(fn())
-  for (const r of refs) {
-    r.watch(() => ref.val = fn())
-  }
-  return ref
-}
 
 export class scroll extends view {
 
