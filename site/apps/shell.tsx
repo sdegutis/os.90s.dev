@@ -28,12 +28,21 @@ const taskbar = await prog.makePanel({
 })
 
 function Clock() {
+  let date = false
   let time = $('')
-  const udpateTime = () => time.val = new Date().toLocaleTimeString()
+  const toggle = () => {
+    date = !date
+    udpateTime()
+  }
+  const udpateTime = () => {
+    const d = new Date()
+    time.val = date ? d.toLocaleString() : d.toLocaleTimeString()
+  }
   setInterval(udpateTime, 1000)
   udpateTime()
+
   return (
-    <border padding={2}>
+    <border padding={2} passthrough={false} onMouseDown={toggle}>
       <label text={time} />
     </border>
   )
