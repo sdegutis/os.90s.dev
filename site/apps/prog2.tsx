@@ -1,12 +1,9 @@
-import { Program } from "../client/core/prog.js"
+import { program } from "../client/core/prog.js"
 import { dragMove, dragResize } from "../client/util/drag.js"
 import { $ } from "../client/util/ref.js"
 
-const prog = new Program()
-await prog.init()
-
 const size = $({ w: 40, h: 40 })
-const panel = await prog.makePanel({
+const panel = await program.makePanel({
   size,
   view: (
     <border borderColor={0x00990099} padding={2}>

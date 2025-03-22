@@ -1,8 +1,5 @@
-import { Program } from "../client/core/prog.js"
+import { program } from "../client/core/prog.js"
 import { dragMove, dragResize } from "../client/util/drag.js"
-
-const prog = new Program()
-await prog.init()
 
 const center = <label text={'hey world'}
   background={0x77000077}
@@ -17,7 +14,7 @@ const center = <label text={'hey world'}
 
 const size = center.$ref('size').adapt(s => ({ w: s.w + 4, h: s.h + 4 }))
 
-const panel = await prog.makePanel({
+const panel = await program.makePanel({
   size,
   view: (
     <border borderColor={0x00990099} padding={2}>

@@ -1,10 +1,7 @@
-import { Program } from "../client/core/prog.js"
+import { program } from "../client/core/prog.js"
 import { PanelView } from "../client/util/panelview.js"
 import { showPrompt } from "../client/util/prompt.js"
 import { $, multiplex } from "../client/util/ref.js"
-
-const prog = new Program()
-await prog.init()
 
 const size = $({ w: 100, h: 100 })
 
@@ -21,7 +18,7 @@ const textarea = <textarea text={''} background={0x99000099} multiline={false} o
 //   {textarea}
 // </scroll>
 
-const panel = await prog.makePanel({
+const panel = await program.makePanel({
   size,
   view: <PanelView size={size} title={'test panel'}>
     <panedyb>
@@ -41,7 +38,7 @@ const panel = await prog.makePanel({
       </scroll>
       <groupx>
         <button onClick={async () => {
-          console.log(await showPrompt(prog, 'hey? hows it going?\nwell this is fine'))
+          console.log(await showPrompt(program, 'hey? hows it going?\nwell this is fine'))
         }} padding={3}><label text={'hmm'} /></button>
       </groupx>
     </panedyb>

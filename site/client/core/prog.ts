@@ -84,3 +84,6 @@ export class Program {
   }
 
 }
+
+export const program = new Program()
+await program.init()

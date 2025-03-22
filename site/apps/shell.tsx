@@ -1,11 +1,8 @@
-import { Program } from "../client/core/prog.js"
+import { program } from "../client/core/prog.js"
 import { $ } from "../client/util/ref.js"
 
-const prog = new Program()
-await prog.init()
-
-const desktopSize = $({ w: prog.width, h: prog.height - 8 })
-const desktop = await prog.makePanel({
+const desktopSize = $({ w: program.width, h: program.height - 8 })
+const desktop = await program.makePanel({
   order: 'bottom',
   pos: $({ x: 0, y: 0 }),
   size: desktopSize,
@@ -14,11 +11,11 @@ const desktop = await prog.makePanel({
   )
 })
 
-const taskbarSize = $({ w: prog.width, h: 8 })
-const taskbar = await prog.makePanel({
+const taskbarSize = $({ w: program.width, h: 8 })
+const taskbar = await program.makePanel({
   order: 'top',
   size: taskbarSize,
-  pos: $({ x: 0, y: prog.height - 8 }),
+  pos: $({ x: 0, y: program.height - 8 }),
   view: (
     <spacedx size={taskbarSize} background={0x444444ff}>
       <groupx></groupx>
