@@ -21,6 +21,9 @@ export async function showPrompt(text: string) {
       w: prompt.size.w,
       h: textarea.size.h,
     }))}
+    onMouseDown={(...args) => {
+      textarea.onMouseDown(...args)
+    }}
   >
     {textarea}
   </scroll>
@@ -31,7 +34,6 @@ export async function showPrompt(text: string) {
       panel.focus()
       no()
     }}
-    canFocus={true}
     onKeyDown={key => {
       if (key === 'Enter') ok()
       if (key === 'Escape') no()
