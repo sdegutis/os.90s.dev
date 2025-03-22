@@ -3,9 +3,10 @@ import { Cursor } from "../../shared/cursor.js"
 import type { Panel } from "../core/panel.js"
 import type { image } from "../views/image.js"
 import type { spacedx } from "../views/spaced.js"
-import type { Point, Size, view } from "../views/view.js"
+import type { view } from "../views/view.js"
 import { dragMove, dragResize } from "./drag.js"
 import { $, Ref } from "./ref.js"
+import type { Point, Size } from "./types.js"
 
 const minImage = new Bitmap([0x333333ff], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
 const maxImage = new Bitmap([0x333333ff], 4, [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1,])

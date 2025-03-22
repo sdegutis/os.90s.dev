@@ -1,6 +1,6 @@
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "../../shared/rpc.js"
 import { $, type Ref } from "../util/ref.js"
-import type { Point, Size } from "../views/view.js"
+import type { Point, Size } from "../util/types.js"
 import { Panel } from "./panel.js"
 
 export class Program {

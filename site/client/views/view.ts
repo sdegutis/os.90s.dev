@@ -3,16 +3,7 @@ import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
 import { $, Ref, type Equals } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
-
-export type Point = {
-  readonly x: number,
-  readonly y: number,
-}
-
-export type Size = {
-  readonly w: number,
-  readonly h: number,
-}
+import type { Point, Size } from "../util/types.js"
 
 export class view {
 

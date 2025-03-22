@@ -1,4 +1,4 @@
-import type { Point } from "../views/view.js"
+import type { Point } from "./types.js"
 
 type Size = {
   readonly w: number,

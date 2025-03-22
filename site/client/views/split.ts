@@ -3,7 +3,8 @@ import { Cursor } from "../../shared/cursor.js"
 import { colorFor } from "../util/colors.js"
 import { dragMove } from "../util/drag.js"
 import { debounce } from "../util/throttle.js"
-import { make, view, type Point } from "./view.js"
+import { type Point } from "../util/types.js"
+import { make, view } from "./view.js"
 
 const xresize = new Cursor(2, 1, new Bitmap([0x00000099, 0xffffffff], 5, [
   1, 1, 1, 1, 1,

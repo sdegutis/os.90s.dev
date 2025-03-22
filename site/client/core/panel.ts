@@ -3,7 +3,8 @@ import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type ServerPanel } from "../../shared/rpc.js"
 import type { Ref } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
-import type { Size, view } from "../views/view.js"
+import type { Size } from "../util/types.js"
+import type { view } from "../views/view.js"
 
 type Pos = {
   x: number,
