@@ -142,35 +142,35 @@ export class Textarea extends View {
     const scroll = this.findScrollAncestor()
     if (!scroll) return
 
-    let x = this._cursor.point.x
-    let y = this._cursor.point.y
+    let cx = this._cursor.point.x
+    let cy = this._cursor.point.y
 
     let node = this._cursor
-    while (node !== scroll) {
+    while (node.parent !== scroll) {
       node = node.parent!
-      x += node.point.x
-      y += node.point.y
+      cx += node.point.x
+      cy += node.point.y
     }
 
-    if (y < 0) {
-      scroll.scrolly -= -y
+    if (cy < 0) {
+      scroll.scrolly -= -cy
       this.adjustTextLabel()
     }
 
-    if (x < 0) {
-      scroll.scrollx -= -x
+    if (cx < 0) {
+      scroll.scrollx -= -cx
       this.adjustTextLabel()
     }
 
     const maxy = scroll.area.size.h - this._cursor.size.h
-    if (y > maxy) {
-      scroll.scrolly -= maxy - y
+    if (cy > maxy) {
+      scroll.scrolly -= maxy - cy
       this.adjustTextLabel()
     }
 
     const maxx = scroll.area.size.w - this._cursor.size.w
-    if (x > maxx) {
-      scroll.scrollx -= maxx - x
+    if (cx > maxx) {
+      scroll.scrollx -= maxx - cx
       this.adjustTextLabel()
     }
   }
