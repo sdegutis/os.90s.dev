@@ -37,8 +37,6 @@ export class scroll extends view {
       this.trackh.size = { w: 0, h: this.showh ? 3 : 0 }
       this.corner.size = { w: 0, h: this.showh ? 3 : 0 }
       paneb.size = { w: this.showv ? 3 : 0, h: 0 }
-      this.layout()
-      this.constrainContent()
     }
 
     reflectTracksShown()
@@ -105,6 +103,7 @@ export class scroll extends view {
       }
     }
 
+    paneb.$watch('size', () => this.constrainContent())
     this.content.$watch('size', () => this.constrainContent())
     this.$watch('size', () => this.constrainContent())
     this.$watch('scrollx', () => this.constrainContent())
