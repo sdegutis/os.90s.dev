@@ -59,7 +59,8 @@ export class Program {
     this.rpc.send('newpanel', [order, mx, my, w, h])
     const [id, x, y, port] = await this.rpc.once('newpanel')
 
-    const panel = new Panel(this.keymap, port, id, x, y, config.size, config.view)
+    point.val = { x, y }
+    const panel = new Panel(this.keymap, port, id, point, config.size, config.view)
 
     this.panels.add(panel)
     panel.didClose.watch(() => {

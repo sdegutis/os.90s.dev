@@ -5,8 +5,8 @@ type Size = {
   readonly h: number,
 }
 
-interface Movable extends Point {
-  move(x: number, y: number): void
+interface Movable {
+  point: Point
 }
 
 interface Resizable {
@@ -14,7 +14,7 @@ interface Resizable {
 }
 
 export function dragMove(pos: Point, o: Movable) {
-  const startPos = { x: o.x, y: o.y }
+  const startPos = { x: o.point.x, y: o.point.y }
   const offx = pos.x - startPos.x
   const offy = pos.y - startPos.y
   return () => {
@@ -22,7 +22,7 @@ export function dragMove(pos: Point, o: Movable) {
     const diffy = pos.y - startPos.y
     const x = startPos.x + diffx - offx
     const y = startPos.y + diffy - offy
-    o.move(x, y)
+    o.point = { x, y }
   }
 }
 

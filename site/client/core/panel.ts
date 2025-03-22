@@ -3,7 +3,7 @@ import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type ServerPanel } from "../../shared/rpc.js"
 import type { Ref } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
-import type { Size } from "../util/types.js"
+import type { Point, Size } from "../util/types.js"
 import type { view } from "../views/view.js"
 
 type Pos = {
@@ -15,8 +15,9 @@ export class Panel {
 
   static all = new Map<number, Panel>()
 
-  get x() { return this._x }; _x
-  get y() { return this._y }; _y
+  private _point: Ref<Point>
+  get point() { return this._point.val }
+  set point(s: Point) { this._point.val = s }
 
   private _size: Ref<Size>
   get size() { return this._size.val }
@@ -42,25 +43,31 @@ export class Panel {
   private clicking: view | null = null
   private focused: view | null = null
 
-  constructor(keymap: Set<string>, port: MessagePort, id: number, x: number, y: number, size: Ref<Size>, root: JSX.Element) {
+  constructor(keymap: Set<string>, port: MessagePort, id: number, point: Ref<Point>, size: Ref<Size>, root: JSX.Element) {
     Panel.all.set(id, this)
 
+    this.id = id
     this.keymap = keymap
 
+    this._point = point
     this._size = size
 
     this.canvas.width = size.val.w
     this.canvas.height = size.val.h
 
-    this.id = id
-    this._x = x
-    this._y = y
-
     size.watch(([size]) => {
-      this.rpc.send('adjust', [this.x, this.y, size.w, size.h])
+      this.rpc.send('adjust', [this.point.x, this.point.y, size.w, size.h])
       this.canvas.width = size.w
       this.canvas.height = size.h
       this.blit()
+    })
+
+    point.watch(([point]) => {
+      console.log('moving')
+
+      this.fixMouse()
+      this.checkUnderMouse()
+      this.rpc.send('adjust', [point.x, point.y, this.size.w, this.size.h])
     })
 
     this.rpc = wRPC<ClientPanel, ServerPanel>(port)
@@ -183,14 +190,6 @@ export class Panel {
     this.focused?.onKeyUp?.(key)
   }
 
-  move(x: number, y: number) {
-    this._x = x
-    this._y = y
-    this.fixMouse()
-    this.checkUnderMouse()
-    this.rpc.send('adjust', [this.x, this.y, this.size.w, this.size.h])
-  }
-
   private checkUnderMouse() {
     const lastHovered = this.hoveredTree
     this.hoveredTree = new Set()
@@ -292,8 +291,8 @@ export class Panel {
   }
 
   private fixMouse() {
-    this.mouse.x = this.absmouse.x - this.x
-    this.mouse.y = this.absmouse.y - this.y
+    this.mouse.x = this.absmouse.x - this.point.x
+    this.mouse.y = this.absmouse.y - this.point.y
   }
 
 }

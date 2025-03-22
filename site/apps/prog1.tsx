@@ -1,20 +1,80 @@
 import { Program } from "../client/core/prog.js"
-import { PanelView } from "../client/util/panelview.js"
 import { $ } from "../client/util/ref.js"
+import { Bitmap } from "../shared/bitmap.js"
 
 const prog = new Program()
 await prog.init()
 
-const size = $({ w: 100, h: 100 })
+const mnuImage = new Bitmap([0x333333ff], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1])
 
-const textarea = <textarea background={0xffffff11} />
+const children = $([
+  <button padding={2}><label text={'hey'} /></button>,
+  <image bitmap={mnuImage} />,
+  <textarea size={{ w: 20, h: 20 }} />,
+  ...Array(20).keys().map(i => <label text={`view ${i.toString()}`} />)
+])
+
+const size = $({ w: 100, h: 100 })
 
 const panel = await prog.makePanel({
   size,
-  view: <PanelView size={size} title={'test panel'}>
-    {textarea}
-  </PanelView>,
+  view:
+    <split size={size} background={0x00330099} max={-10} min={10} pos={50}>
+      <split dir={'x'} pos={50}>
+        <scroll background={0x222222ff}>
+          <groupy align={'a'} gap={2} background={0x99000033} children={children} />
+        </scroll>
+        <spacedx>
+          <label text={'hi'} />
+          <label text={'he'} />
+          <label text={'ho'} />
+        </spacedx>
+      </split>
+      <view background={0x33000099}>
+        <image bitmap={mnuImage} />
+      </view>
+    </split>
+  // <panedya size={size} background={0x00330099}>
+  //   <label text={'yep'} background={0x33000099} />
+  //   <splitx pos={50} min={10} max={-10} background={0x000033dd}>
+  //     <scroll background={0x00770099}>
+  //       <border background={0x00009999} padding={2}>
+  //         <groupy gap={2} align={'a'}>
+  //           {children}
+  //         </groupy>
+  //       </border>
+  //     </scroll>
+  //     <border padding={3} background={0x99000099}>
+  //       <border padding={3} background={0x00009999}>
+  //         <groupy gap={2} background={0x00003399}>
+  //           <label text={'one'} />
+  //           <label text={'two'} />
+  //         </groupy>
+  //       </border>
+  //     </border>
+  //   </splitx>
+  // </panedya>
+  ,
+  // view: <PanelView title={'test panel'}>
+  //   <panedya background={0x00330099}>
+  //     <label text={'yep'} background={0x33000099} />
+  //     <splitx pos={50} min={10} max={-10}>
+  //       <scroll background={0x00330099}>
+  //         <border background={0x00009999} padding={2}>
+  //           <groupy gap={2} align={'a'}>
+  //             {children}
+  //           </groupy>
+  //         </border>
+  //       </scroll>
+  //       <border padding={3} background={0x99000099}>
+  //         <border padding={3} background={0x00009999}>
+  //           <groupy gap={2} background={0x00003399}>
+  //             <label text={'one'} />
+  //             <label text={'two'} />
+  //           </groupy>
+  //         </border>
+  //       </border>
+  //     </splitx>
+  //   </panedya>
+  // </PanelView>,
 })
-
-textarea.focus()
-panel.focus()

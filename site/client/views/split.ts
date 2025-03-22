@@ -61,19 +61,15 @@ class SplitDivider extends view {
     const dw = dx === 'x' ? 'w' : 'h'
 
     const b = {
-      x: split.pos,
-      y: split.pos,
-      move(x: number, y: number) {
-        b.x = x
-        b.y = y
-
+      get point() { return { x: split.pos, y: split.pos } },
+      set point(p: { x: number, y: number }) {
         let min = split.min
         let max = split.max
 
         if (min < 0) min += split.size[dw]
         if (max <= 0) max += split.size[dw] - 1
 
-        split.pos = b[dx]
+        split.pos = p[dx]
         if (split.pos < min) split.pos = min
         if (split.pos > max) split.pos = max
       }
