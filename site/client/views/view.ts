@@ -152,19 +152,15 @@ export class view {
   }
 
   $setup() {
-    const $$refs = new Map<string, Ref<any>>()
-    Object.defineProperty(this, '$$refs', {
-      enumerable: false,
-      writable: false,
-      value: $$refs,
-    })
-
     for (const key in this) {
       let val = this[key]
       if (val instanceof Function) continue
 
       const ref = val instanceof Ref ? val : $(val)
-      $$refs.set(key, ref)
+      Object.defineProperty(this, `$${key}`, {
+        value: ref,
+        enumerable: false,
+      })
 
       Object.defineProperty(this, key, {
         get: () => ref.val,
@@ -192,8 +188,7 @@ export class view {
   }
 
   $ref<K extends keyof this>(key: K) {
-    const { $$refs } = (this as unknown as { $$refs: Map<string, Ref<any>> })
-    return $$refs.get(key as string) as Ref<this[K]>
+    return this[`$${key as string}` as keyof this] as Ref<this[K]>
   }
 
   $multiplex(...keys: (keyof this)[]) {
