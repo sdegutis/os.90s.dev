@@ -14,9 +14,11 @@ const panel = await program.makePanel({
           this.focus()
         }} />
       </scroll>
-      <center>
-        <button padding={2}><label text={'hmm'} /></button>
-      </center>
+      <margin padding={1} marginColor={0x000099ff}>
+        <center background={0x99000033}>
+          <button background={0x00990033} padding={2}><label text={'hmm'} /></button>
+        </center>
+      </margin>
     </splitxa>
   </PanelView>,
 })

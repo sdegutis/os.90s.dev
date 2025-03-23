@@ -1,6 +1,5 @@
 import { useCursor, xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
-import { vacuumFirstChild } from "../util/layout.js"
 import { multiplex } from "../util/ref.js"
 import { panedxb, panedyb } from "./paned.js"
 import { make, view } from "./view.js"
@@ -129,7 +128,12 @@ export class scroll extends view {
   }
 
   override layout(): void {
-    vacuumFirstChild.apply(this)
+    const c = this.firstChild
+    if (c) {
+      c.point = { x: 0, y: 0 }
+      c.size = this.size
+    }
+
     this.content.point = {
       x: -this.scrollx,
       y: -this.scrolly,
