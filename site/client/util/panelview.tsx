@@ -53,7 +53,7 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
     >
       <panedya gap={-1}>
 
-        <spacedx onMouseDown={titleBarMouseDown}>
+        <spacedx passthrough={false} onMouseDown={titleBarMouseDown}>
           <border>
             <groupx gap={1}>
               <button padding={2}><image bitmap={mnuImage} /></button>
