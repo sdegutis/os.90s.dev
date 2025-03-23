@@ -1,9 +1,4 @@
-import type { Point } from "./types.js"
-
-type Size = {
-  readonly w: number,
-  readonly h: number,
-}
+import type { Point, Size } from "./types.js"
 
 interface Movable {
   point: Point
