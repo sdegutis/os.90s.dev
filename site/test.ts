@@ -42,7 +42,7 @@ context.configure({
 
 
 
-const rectsmodule = device.createShaderModule({
+const rectsmodule2 = device.createShaderModule({
   label: 'test shaders',
   code: `
     struct Rect {
@@ -105,16 +105,16 @@ const rectsmodule = device.createShaderModule({
   `,
 })
 
-const rectspipeline = device.createRenderPipeline({
+const rectspipeline2 = device.createRenderPipeline({
   label: 'draw rects',
   layout: 'auto',
   vertex: {
     entryPoint: 'vs',
-    module: rectsmodule,
+    module: rectsmodule2,
   },
   fragment: {
     entryPoint: 'fs',
-    module: rectsmodule,
+    module: rectsmodule2,
     targets: [{
       format: presentationFormat,
 
@@ -135,9 +135,9 @@ const rectspipeline = device.createRenderPipeline({
 
 const randint = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min
 
-const rectgroups = Array(1).keys().map(() => {
+const rectgroups2 = Array(1).keys().map(() => {
 
-  const numrects = 10
+  const numrects = 1
 
   const rectsData = new Int32Array(numrects * 5)
 
@@ -149,7 +149,7 @@ const rectgroups = Array(1).keys().map(() => {
 
   let bindgroup = device.createBindGroup({
     label: 'bindgrup1',
-    layout: rectspipeline.getBindGroupLayout(0),
+    layout: rectspipeline2.getBindGroupLayout(0),
     entries: [
       { binding: 0, resource: { buffer: rectsStorage } },
     ]
@@ -158,11 +158,16 @@ const rectgroups = Array(1).keys().map(() => {
   update()
 
   for (let i = 0; i < numrects; i++) {
-    rectsData[(i * 5) + 0] = randint(0, 320 - 10)
-    rectsData[(i * 5) + 1] = randint(1, 320 / 10)
-    rectsData[(i * 5) + 2] = randint(0, 180 - 10)
-    rectsData[(i * 5) + 3] = randint(1, 180 / 10)
-    rectsData[(i * 5) + 4] = randint(0, 0xffffffff)
+    rectsData[(i * 5) + 0] = 1
+    rectsData[(i * 5) + 1] = 3
+    rectsData[(i * 5) + 2] = 1
+    rectsData[(i * 5) + 3] = 3
+    rectsData[(i * 5) + 4] = 0xff000033
+    // rectsData[(i * 5) + 0] = randint(0, 320 - 10)
+    // rectsData[(i * 5) + 1] = randint(1, 320 / 10)
+    // rectsData[(i * 5) + 2] = randint(0, 180 - 10)
+    // rectsData[(i * 5) + 3] = randint(1, 180 / 10)
+    // rectsData[(i * 5) + 4] = randint(0, 0xffffffff)
   }
 
   device.queue.writeBuffer(rectsStorage, 0, rectsData)
@@ -175,13 +180,13 @@ const rectgroups = Array(1).keys().map(() => {
 
 }).toArray()
 
-function drawrects(pass: GPURenderPassEncoder) {
+function drawrects2(pass: GPURenderPassEncoder) {
 
-  for (const group of rectgroups) {
+  for (const group of rectgroups2) {
 
     // group.update()
 
-    pass.setPipeline(rectspipeline)
+    pass.setPipeline(rectspipeline2)
     pass.setBindGroup(0, group.bindgroup)
     pass.draw(6, group.numrects)
   }
@@ -326,6 +331,177 @@ canvas.onmousemove = (e) => {
 
 
 
+
+
+
+
+
+
+
+const rectsmodule = device.createShaderModule({
+  label: 'test shaders',
+  code: `
+    struct Rect {
+      x: i32,
+      w: i32,
+      y: i32,
+      h: i32,
+      c: u32,
+    };
+
+    struct Output {
+      @builtin(position) pos: vec4f,
+      @location(0) @interpolate(flat) col: vec4f,
+    };
+
+    struct Input {
+      @builtin(vertex_index) vertexIndex: u32,
+      @builtin(instance_index) instanceIndex: u32,
+    };
+
+    @group(0) @binding(0) var<storage, read> rects: array<Rect>;
+
+    @vertex fn vs(input: Input) -> Output {
+      let rect = rects[input.instanceIndex];
+
+      let cx1: f32 = f32(rect.x);
+      let cx2: f32 = f32(rect.x + rect.w);
+      let cy1: f32 = f32(rect.y);
+      let cy2: f32 = f32(rect.y + rect.h);
+      
+      let x0: f32 = (cx1 - 160) / 160f;
+      let x1: f32 = (cx1 - 159) / 160f;
+      let x2: f32 = (cx2 - 160) / 160f;
+      let y1: f32 = (cy1 -  89) / -90f;
+      let y2: f32 = (cy2 -  90) / -90f;
+      let y3: f32 = (cy2 -  91) / -90f;
+
+      let verts = array(
+        vec2f(x0,y1),
+        vec2f(x2,y1),
+
+        vec2f(x0,y2),
+        vec2f(x2,y2),
+        
+        vec2f(x2,y1),
+        vec2f(x2,y3),
+                
+        vec2f(x1,y1),
+        vec2f(x1,y3),
+      );
+
+      let c = rect.c;
+      let r = f32((c >> 24) & 0xff) / 255f;
+      let g = f32((c >> 16) & 0xff) / 255f;
+      let b = f32((c >>  8) & 0xff) / 255f;
+      let a = f32(c & 0xff) / 255f;
+
+      var out: Output;
+      out.pos = vec4f(verts[input.vertexIndex], 0.0, 1.0);
+      out.col = vec4f(r,g,b,a);
+      return out;
+    }
+
+    @fragment fn fs(input: Output) -> @location(0) vec4f {
+      return input.col;
+    }
+  `,
+})
+
+const LINEVERTS = 8
+
+const rectspipeline = device.createRenderPipeline({
+  label: 'draw rects',
+  layout: 'auto',
+  primitive: {
+    topology: 'line-list'
+  },
+  vertex: {
+    entryPoint: 'vs',
+    module: rectsmodule,
+  },
+  fragment: {
+    entryPoint: 'fs',
+    module: rectsmodule,
+    targets: [{
+      format: presentationFormat,
+
+      blend: {
+        color: {
+          operation: 'add',
+          srcFactor: 'src-alpha',
+          dstFactor: 'one-minus-src-alpha',
+        },
+        alpha: {},
+      },
+
+    }],
+  },
+})
+
+
+const rectgroups = Array(1).keys().map(() => {
+
+  const numrects = 1
+
+  const rectsData = new Int32Array(numrects * 5)
+
+  const rectsStorage = device.createBuffer({
+    label: 'rects',
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+    size: rectsData.length * 4,
+  })
+
+  let bindgroup = device.createBindGroup({
+    label: 'bindgrup1',
+    layout: rectspipeline.getBindGroupLayout(0),
+    entries: [
+      { binding: 0, resource: { buffer: rectsStorage } },
+    ]
+  })
+
+  update()
+
+  for (let i = 0; i < numrects; i++) {
+    rectsData[(i * 5) + 0] = 5
+    rectsData[(i * 5) + 1] = 3
+    rectsData[(i * 5) + 2] = 1
+    rectsData[(i * 5) + 3] = 3
+    rectsData[(i * 5) + 4] = 0xff000033
+    // rectsData[(i * 5) + 0] = randint(0, 320 - 10)
+    // rectsData[(i * 5) + 1] = randint(1, 320 / 10)
+    // rectsData[(i * 5) + 2] = randint(0, 180 - 10)
+    // rectsData[(i * 5) + 3] = randint(1, 180 / 10)
+    // rectsData[(i * 5) + 4] = randint(0, 0xffffffff)
+  }
+
+  device.queue.writeBuffer(rectsStorage, 0, rectsData)
+
+  function update() {
+
+  }
+
+  return { bindgroup, numrects, update }
+
+}).toArray()
+
+function drawrects(pass: GPURenderPassEncoder) {
+
+  for (const group of rectgroups) {
+
+    // group.update()
+
+    pass.setPipeline(rectspipeline)
+    pass.setBindGroup(0, group.bindgroup)
+    pass.draw(LINEVERTS, group.numrects)
+  }
+
+
+}
+
+
+
+
 // setTimeout(ontick((d) => {
 
 //   console.log(d)
@@ -347,6 +523,7 @@ function render() {
     }],
   })
 
+  drawrects2(pass)
   drawrects(pass)
   drawpoints(pass)
 
