@@ -46,7 +46,7 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
       marginColor={borderColor}
       padding={1}
       size={data.size}
-      adoptedByPanel={p => panel = p}
+      presented={p => panel = p}
       onPanelFocus={() => focused.val = true}
       onPanelBlur={() => focused.val = false}
       background={0x070707dd}
@@ -113,7 +113,7 @@ function PanelResizer(data: { size: Ref<Size> }) {
 
   return <image
     passthrough={false}
-    adoptedByPanel={p => panel = p}
+    presented={p => panel = p}
     bitmap={adjImage}
     onMouseEnter={function (this: view) { setClaims(+1) }}
     onMouseExit={function (this: view) { setClaims(-1) }}

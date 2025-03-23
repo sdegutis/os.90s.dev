@@ -9,7 +9,7 @@ const panel = await program.makePanel({
   pos: 'center',
   view: <PanelView size={size} title={'test panel'}>
     <scroll background={0xffffff11} onMouseDown={function (...args) { this.content?.onMouseDown?.(...args) }}>
-      <textarea adoptedByPanel={function () {
+      <textarea presented={function () {
         this.focus()
       }} />
     </scroll>

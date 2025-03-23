@@ -61,16 +61,16 @@ export class view {
   adjust?(): void
   layout?(): void
 
-  adoptedByParent?(parent: view): void
-  adoptedByPanel?(panel: Panel): void
+  adopted?(parent: view): void
+  presented?(panel: Panel): void
 
   init() {
     this.$watch('parent', (parent) => {
-      if (parent) this.adoptedByParent?.(parent)
+      if (parent) this.adopted?.(parent)
     })
 
     this.$watch('panel', (panel) => {
-      if (panel) this.adoptedByPanel?.(panel)
+      if (panel) this.presented?.(panel)
     })
 
     this.$watch('size', () => {
