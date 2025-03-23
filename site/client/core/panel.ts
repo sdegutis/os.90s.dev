@@ -6,11 +6,6 @@ import { debounce } from "../util/throttle.js"
 import type { Point, Size } from "../util/types.js"
 import type { view } from "../views/view.js"
 
-type Pos = {
-  x: number,
-  y: number,
-}
-
 export class Panel {
 
   static all = new Map<number, Panel>()
@@ -26,8 +21,8 @@ export class Panel {
   id
   rpc
 
-  absmouse: Pos = { x: 0, y: 0 }
-  mouse: Pos = { x: 0, y: 0 }
+  absmouse = { x: 0, y: 0 }
+  mouse = { x: 0, y: 0 }
   keymap = new Set<string>()
 
   didClose = new Listener()
