@@ -70,7 +70,12 @@ export class view {
     })
 
     this.$$watch('panel', (panel) => {
-      if (panel) this.presented?.(panel)
+      if (panel) {
+        this.presented?.(panel)
+        if (this.autofocus) {
+          this.focus()
+        }
+      }
     })
 
     this.$$watch('size', () => {
@@ -130,6 +135,8 @@ export class view {
     ctx.fillStyle = bg
     ctx.fillRect(px, py, this.size.w, this.size.h)
   }
+
+  autofocus = false
 
   focus() {
     this.panel?.focusView(this)
