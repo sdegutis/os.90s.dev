@@ -42,8 +42,8 @@ context.configure({
 
 
 
-const rectsmodule2 = device.createShaderModule({
-  label: 'test shaders',
+const rectsmodule = device.createShaderModule({
+  label: 'rectsmodule',
   code: `
     struct Rect {
       x: i32,
@@ -105,16 +105,16 @@ const rectsmodule2 = device.createShaderModule({
   `,
 })
 
-const rectspipeline2 = device.createRenderPipeline({
+const rectspipeline = device.createRenderPipeline({
   label: 'draw rects',
   layout: 'auto',
   vertex: {
     entryPoint: 'vs',
-    module: rectsmodule2,
+    module: rectsmodule,
   },
   fragment: {
     entryPoint: 'fs',
-    module: rectsmodule2,
+    module: rectsmodule,
     targets: [{
       format: presentationFormat,
 
@@ -135,9 +135,9 @@ const rectspipeline2 = device.createRenderPipeline({
 
 const randint = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min
 
-const rectgroups2 = Array(1).keys().map(() => {
+const rectgroups = Array(1).keys().map(() => {
 
-  const numrects = 1
+  const numrects = 10
 
   const rectsData = new Int32Array(numrects * 5)
 
@@ -149,7 +149,7 @@ const rectgroups2 = Array(1).keys().map(() => {
 
   let bindgroup = device.createBindGroup({
     label: 'bindgrup1',
-    layout: rectspipeline2.getBindGroupLayout(0),
+    layout: rectspipeline.getBindGroupLayout(0),
     entries: [
       { binding: 0, resource: { buffer: rectsStorage } },
     ]
@@ -158,16 +158,16 @@ const rectgroups2 = Array(1).keys().map(() => {
   update()
 
   for (let i = 0; i < numrects; i++) {
-    rectsData[(i * 5) + 0] = 1
-    rectsData[(i * 5) + 1] = 3
-    rectsData[(i * 5) + 2] = 1
-    rectsData[(i * 5) + 3] = 3
-    rectsData[(i * 5) + 4] = 0xff000033
-    // rectsData[(i * 5) + 0] = randint(0, 320 - 10)
-    // rectsData[(i * 5) + 1] = randint(1, 320 / 10)
-    // rectsData[(i * 5) + 2] = randint(0, 180 - 10)
-    // rectsData[(i * 5) + 3] = randint(1, 180 / 10)
-    // rectsData[(i * 5) + 4] = randint(0, 0xffffffff)
+    // rectsData[(i * 5) + 0] = 1
+    // rectsData[(i * 5) + 1] = 3
+    // rectsData[(i * 5) + 2] = 1
+    // rectsData[(i * 5) + 3] = 3
+    // rectsData[(i * 5) + 4] = 0xff000033
+    rectsData[(i * 5) + 0] = randint(0, 320 - 10)
+    rectsData[(i * 5) + 1] = randint(1, 320 / 10)
+    rectsData[(i * 5) + 2] = randint(0, 180 - 10)
+    rectsData[(i * 5) + 3] = randint(1, 180 / 10)
+    rectsData[(i * 5) + 4] = randint(0, 0xffffffff)
   }
 
   device.queue.writeBuffer(rectsStorage, 0, rectsData)
@@ -180,13 +180,13 @@ const rectgroups2 = Array(1).keys().map(() => {
 
 }).toArray()
 
-function drawrects2(pass: GPURenderPassEncoder) {
+function drawrects(pass: GPURenderPassEncoder) {
 
-  for (const group of rectgroups2) {
+  for (const group of rectgroups) {
 
     // group.update()
 
-    pass.setPipeline(rectspipeline2)
+    pass.setPipeline(rectspipeline)
     pass.setBindGroup(0, group.bindgroup)
     pass.draw(6, group.numrects)
   }
@@ -201,7 +201,7 @@ function drawrects2(pass: GPURenderPassEncoder) {
 
 
 const mousemodule = device.createShaderModule({
-  label: 'module2',
+  label: 'mousemodule',
   code: `
     struct Output {
       @builtin(position) pos: vec4f,
@@ -338,8 +338,8 @@ canvas.onmousemove = (e) => {
 
 
 
-const rectsmodule = device.createShaderModule({
-  label: 'test shaders',
+const boxesmodule = device.createShaderModule({
+  label: 'boxesmodule',
   code: `
     struct Rect {
       x: i32,
@@ -408,9 +408,7 @@ const rectsmodule = device.createShaderModule({
   `,
 })
 
-const LINEVERTS = 8
-
-const rectspipeline = device.createRenderPipeline({
+const boxespipeline = device.createRenderPipeline({
   label: 'draw rects',
   layout: 'auto',
   primitive: {
@@ -418,11 +416,11 @@ const rectspipeline = device.createRenderPipeline({
   },
   vertex: {
     entryPoint: 'vs',
-    module: rectsmodule,
+    module: boxesmodule,
   },
   fragment: {
     entryPoint: 'fs',
-    module: rectsmodule,
+    module: boxesmodule,
     targets: [{
       format: presentationFormat,
 
@@ -440,9 +438,9 @@ const rectspipeline = device.createRenderPipeline({
 })
 
 
-const rectgroups = Array(1).keys().map(() => {
+const boxgroups = Array(1).keys().map(() => {
 
-  const numrects = 1
+  const numrects = 10
 
   const rectsData = new Int32Array(numrects * 5)
 
@@ -454,7 +452,7 @@ const rectgroups = Array(1).keys().map(() => {
 
   let bindgroup = device.createBindGroup({
     label: 'bindgrup1',
-    layout: rectspipeline.getBindGroupLayout(0),
+    layout: boxespipeline.getBindGroupLayout(0),
     entries: [
       { binding: 0, resource: { buffer: rectsStorage } },
     ]
@@ -463,16 +461,16 @@ const rectgroups = Array(1).keys().map(() => {
   update()
 
   for (let i = 0; i < numrects; i++) {
-    rectsData[(i * 5) + 0] = 5
-    rectsData[(i * 5) + 1] = 3
-    rectsData[(i * 5) + 2] = 1
-    rectsData[(i * 5) + 3] = 3
-    rectsData[(i * 5) + 4] = 0xff000033
-    // rectsData[(i * 5) + 0] = randint(0, 320 - 10)
-    // rectsData[(i * 5) + 1] = randint(1, 320 / 10)
-    // rectsData[(i * 5) + 2] = randint(0, 180 - 10)
-    // rectsData[(i * 5) + 3] = randint(1, 180 / 10)
-    // rectsData[(i * 5) + 4] = randint(0, 0xffffffff)
+    // rectsData[(i * 5) + 0] = 5
+    // rectsData[(i * 5) + 1] = 3
+    // rectsData[(i * 5) + 2] = 1
+    // rectsData[(i * 5) + 3] = 3
+    // rectsData[(i * 5) + 4] = 0xff000033
+    rectsData[(i * 5) + 0] = randint(0, 320 - 10)
+    rectsData[(i * 5) + 1] = randint(1, 320 / 10)
+    rectsData[(i * 5) + 2] = randint(0, 180 - 10)
+    rectsData[(i * 5) + 3] = randint(1, 180 / 10)
+    rectsData[(i * 5) + 4] = randint(0, 0xffffffff)
   }
 
   device.queue.writeBuffer(rectsStorage, 0, rectsData)
@@ -485,15 +483,15 @@ const rectgroups = Array(1).keys().map(() => {
 
 }).toArray()
 
-function drawrects(pass: GPURenderPassEncoder) {
+function drawboxes(pass: GPURenderPassEncoder) {
 
-  for (const group of rectgroups) {
+  for (const group of boxgroups) {
 
     // group.update()
 
-    pass.setPipeline(rectspipeline)
+    pass.setPipeline(boxespipeline)
     pass.setBindGroup(0, group.bindgroup)
-    pass.draw(LINEVERTS, group.numrects)
+    pass.draw(8, group.numrects)
   }
 
 
@@ -523,8 +521,8 @@ function render() {
     }],
   })
 
-  drawrects2(pass)
   drawrects(pass)
+  drawboxes(pass)
   drawpoints(pass)
 
   pass.end()
