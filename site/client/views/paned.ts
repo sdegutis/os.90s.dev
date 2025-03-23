@@ -7,8 +7,6 @@ export class paned extends view {
   dir: 'x' | 'y' = 'x'
   vacuum: 'a' | 'b' = 'a'
 
-  override passthrough: boolean = true
-
   override init(): void {
     this.$$multiplex('gap', 'dir', 'vacuum').watch(debounce(() => {
       this.children.forEach(c => c.adjust?.())

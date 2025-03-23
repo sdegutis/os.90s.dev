@@ -3,8 +3,6 @@ import { view } from "./view.js"
 
 export class label extends view {
 
-  override passthrough: boolean = true
-
   textColor: number = 0xffffffff
   font: Font = crt2025
   text: string = ''

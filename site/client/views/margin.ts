@@ -6,8 +6,6 @@ export class margin extends view {
   marginColor: number = 0x00000000
   padding: number = 0
 
-  override passthrough: boolean = true
-
   override init(): void {
     this.$$multiplex('padding', 'size').watch(() => {
       this.layout()

@@ -13,10 +13,10 @@ export class scroll extends view {
   scrolly: number = 0
 
   content!: view
-  area = make(view, { passthrough: true })
+  area = make(view, {})
 
-  barv = make(view, { size: { w: 3, h: 0 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
-  barh = make(view, { size: { w: 0, h: 3 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barv = make(view, { size: { w: 3, h: 0 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barh = make(view, { size: { w: 0, h: 3 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
 
   trackv = make(view, { background: 0x00000033, children: [this.barv] })
   trackh = make(view, { background: 0x00000033, children: [this.barh] })
@@ -24,6 +24,8 @@ export class scroll extends view {
 
   showh = true
   showv = true
+
+  override passthrough: boolean = false
 
   override init(): void {
     this.content = this.children[0]

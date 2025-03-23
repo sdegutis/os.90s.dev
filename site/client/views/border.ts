@@ -6,8 +6,6 @@ export class border extends view {
   borderColor: number = 0x00000000
   padding: number = 0
 
-  override passthrough: boolean = true
-
   override init(): void {
     this.$$multiplex('padding').watch(() => {
       this.adjust()

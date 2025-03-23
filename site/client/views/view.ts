@@ -19,7 +19,7 @@ export class view {
   size: Size = { w: 0, h: 0 }
 
   canFocus: boolean = false
-  passthrough: boolean = false
+  passthrough: boolean = true
   visible: boolean = true
 
   hovered: boolean = false

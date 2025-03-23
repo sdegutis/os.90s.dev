@@ -5,8 +5,6 @@ export class image extends view {
 
   bitmap: Bitmap | null = null
 
-  override passthrough: boolean = true
-
   override init(): void {
     this.$$multiplex('bitmap').watch(() => this.adjust())
   }

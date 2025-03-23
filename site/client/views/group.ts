@@ -7,8 +7,6 @@ export class group extends view {
   dir: 'x' | 'y' = 'x'
   align: 'a' | 'm' | 'z' | '+' = 'm'
 
-  override passthrough: boolean = true
-
   override init(): void {
     this.$$multiplex('gap', 'dir', 'align', 'children').watch(() => this.adjust())
     this.$$watch('children', () => this.layout())
