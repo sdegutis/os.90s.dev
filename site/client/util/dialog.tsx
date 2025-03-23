@@ -22,7 +22,7 @@ export async function showDialog(text: string) {
     }}
     background={0x000000cc} padding={1} borderColor={0x005599ff}>
     <border padding={3}>
-      <groupy align={'z'} gap={4}>
+      <groupy align={'m'} gap={4}>
         <border padding={2}>
           <label text={text} />
         </border>
