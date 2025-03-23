@@ -8,6 +8,10 @@ export async function showPrompt(text: string) {
 
   const prompt = <label text={text} />
   const textarea = <textarea multiline={false} /> as textarea
+  const buttons = <groupx gap={2}>
+    <button onClick={no} background={0x99000099} padding={2}><label text={'cancel'} /></button>
+    <button onClick={ok} background={0xffffff33} padding={2}><label text={'ok'} /></button>
+  </groupx>
 
   textarea.onEnter = ok
 
@@ -17,8 +21,9 @@ export async function showPrompt(text: string) {
     size={multiplex([
       prompt.$ref('size'),
       textarea.$ref('size'),
+      buttons.$ref('size'),
     ], () => ({
-      w: prompt.size.w,
+      w: Math.max(buttons.size.w, prompt.size.w) - 4,
       h: textarea.size.h,
     }))}
     onMouseDown={(...args) => {
@@ -45,17 +50,14 @@ export async function showPrompt(text: string) {
     }}
     background={0x000000cc} padding={1} borderColor={0x005599ff}>
     <border padding={3}>
-      <groupy align={'z'} gap={4}>
+      <groupy align={'m'} gap={4}>
         <border padding={2}>
           {prompt}
         </border>
         <border padding={2} background={0xffffff11}>
           {scroll}
         </border>
-        <groupx gap={2}>
-          <button onClick={no} background={0x99000099} padding={2}><label text={'cancel'} /></button>
-          <button onClick={ok} background={0xffffff33} padding={2}><label text={'ok'} /></button>
-        </groupx>
+        {buttons}
       </groupy>
     </border>
   </border>

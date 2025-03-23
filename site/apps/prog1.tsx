@@ -1,6 +1,7 @@
 import { program } from "../client/core/prog.js"
 import { showMenu } from "../client/util/menu.js"
 import { PanelView } from "../client/util/panelview.js"
+import { showPrompt } from "../client/util/prompt.js"
 import { $ } from "../client/util/ref.js"
 
 const size = $({ w: 100, h: 50 })
@@ -17,7 +18,9 @@ const panel = await program.makePanel({
       </scroll>
       <groupx>
         <button
-          onClick={function () {
+          onClick={async function () {
+            await showPrompt('is this so cool or what')
+
             showMenu(this.panel!.absmouse, [
               { text: 'test 1', onClick() { console.log('test 1!') } },
               { text: 'test two', onClick() { console.log('test 2!') } },
