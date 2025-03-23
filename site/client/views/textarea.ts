@@ -1,5 +1,4 @@
 import { crt2025, Font } from "../../shared/font.js"
-import { debounce } from "../util/throttle.js"
 import { type Point } from "../util/types.js"
 import { scroll } from "./scroll.js"
 import { make, view } from "./view.js"
@@ -24,6 +23,7 @@ export class textarea extends view {
     this.lines = s.split('\n')
     this.highlight()
     this.row = Math.min(this.row, this.lines.length - 1)
+    this.fixCol()
     this.adjustTextLabel()
   }
 
@@ -31,9 +31,9 @@ export class textarea extends view {
 
   cursorColor = 0x0000FF99
 
-  row = 0
-  col = 0
-  end = 0
+  private row = 0
+  private col = 0
+  private end = 0
 
   private colors: number[][] = []
 
@@ -75,12 +75,6 @@ export class textarea extends view {
     this.adjustTextLabel()
 
     this.$watch('cursorColor', c => this._cursor.background = c)
-
-    this.$multiplex('row').watch(debounce(() => {
-      this.col = Math.min(this.lines[this.row].length, this.end)
-      this.reflectCursorPos()
-      this.needsRedraw()
-    }))
   }
 
   override onMouseDown(button: number, pos: Point): void {
@@ -94,6 +88,7 @@ export class textarea extends view {
 
     this.row = Math.min(row, this.lines.length - 1)
     this.end = this.col = col
+    this.fixCol()
     this.restartBlinking()
     this.reflectCursorPos()
     this.scrollCursorIntoView()
@@ -223,9 +218,11 @@ export class textarea extends view {
     }
     else if (key === 'ArrowDown') {
       this.row = Math.min(this.row + 1, this.lines.length - 1)
+      this.fixCol()
     }
     else if (key === 'ArrowUp') {
       this.row = Math.max(0, this.row - 1)
+      this.fixCol()
     }
     else if (key === 'Tab') {
       const [a, b] = this.halves()
@@ -306,6 +303,10 @@ export class textarea extends view {
     const first = line.slice(0, this.col)
     const last = line.slice(this.col)
     return [first, last] as const
+  }
+
+  private fixCol() {
+    this.col = Math.min(this.lines[this.row].length, this.end)
   }
 
   private blink?: ReturnType<typeof setInterval>
