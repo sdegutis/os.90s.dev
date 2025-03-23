@@ -16,7 +16,7 @@ class SplitDivider extends view {
   cursor!: ReturnType<typeof useCursor>
 
   override init(): void {
-    this.$multiplex('hovered', 'pressed').watch(() => this.needsRedraw())
+    this.$$multiplex('hovered', 'pressed').watch(() => this.needsRedraw())
     this.background = this.dividerColor
     this.cursor = useCursor(this, this.split.dir === 'x' ? xresize : yresize)
   }
@@ -98,7 +98,7 @@ export class split extends view {
   resizer?: SplitDivider
 
   override init(): void {
-    this.$multiplex('dir', 'pos', 'size').watch(debounce(() => {
+    this.$$multiplex('dir', 'pos', 'size').watch(debounce(() => {
       this.layout()
       this.needsRedraw()
     }))

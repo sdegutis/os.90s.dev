@@ -10,7 +10,7 @@ export class paned extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    this.$multiplex('gap', 'dir', 'vacuum').watch(debounce(() => {
+    this.$$multiplex('gap', 'dir', 'vacuum').watch(debounce(() => {
       this.children.forEach(c => c.adjust?.())
       this.needsRedraw()
       this.layout()

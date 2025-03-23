@@ -65,34 +65,34 @@ export class view {
   presented?(panel: Panel): void
 
   init() {
-    this.$watch('parent', (parent) => {
+    this.$$watch('parent', (parent) => {
       if (parent) this.adopted?.(parent)
     })
 
-    this.$watch('panel', (panel) => {
+    this.$$watch('panel', (panel) => {
       if (panel) this.presented?.(panel)
     })
 
-    this.$watch('size', () => {
+    this.$$watch('size', () => {
       this.layout?.()
       this.parent?.onChildResized()
       this.panel?.needsMouseCheck()
       this.needsRedraw()
     })
 
-    this.$watch('point', () => {
+    this.$$watch('point', () => {
       this.panel?.needsMouseCheck()
       this.needsRedraw()
     })
 
-    this.$multiplex(
+    this.$$multiplex(
       'visible', 'hovered', 'pressed', 'selected',
       'background', 'hoverBackground', 'selectedBackground', 'pressBackground',
     ).watch(() => {
       this.needsRedraw()
     })
 
-    this.$watch('children', () => {
+    this.$$watch('children', () => {
       for (const child of this.children) {
         child.parent = this
         child.adoptTree(this.panel)
@@ -107,9 +107,9 @@ export class view {
       child.adoptTree(this.panel)
     }
 
-    this.$ref('children').equals = arrayEquals
-    this.$ref('point').equals = pointEquals
-    this.$ref('size').equals = sizeEquals
+    this.$$ref('children').equals = arrayEquals
+    this.$$ref('point').equals = pointEquals
+    this.$$ref('size').equals = sizeEquals
   }
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
@@ -151,7 +151,7 @@ export class view {
     this.panel?.needsRedraw()
   }
 
-  $setup() {
+  $$setup() {
     for (const key in this) {
       let val = this[key]
       if (val instanceof Function) continue
@@ -183,17 +183,17 @@ export class view {
     this.layout?.()
   }
 
-  $watch<K extends keyof this>(key: K, fn: (val: this[K], old: this[K]) => void) {
-    return this.$ref(key).watch((val, old) => fn(val, old))
+  $$watch<K extends keyof this>(key: K, fn: (val: this[K], old: this[K]) => void) {
+    return this.$$ref(key).watch((val, old) => fn(val, old))
   }
 
-  $ref<K extends keyof this>(key: K) {
+  $$ref<K extends keyof this>(key: K) {
     return this[`$${key as string}` as keyof this] as Ref<this[K]>
   }
 
-  $multiplex(...keys: (keyof this)[]) {
+  $$multiplex(...keys: (keyof this)[]) {
     const listener = new Listener()
-    keys.forEach(key => this.$watch(key, () => listener.dispatch()))
+    keys.forEach(key => this.$$watch(key, () => listener.dispatch()))
     return listener
   }
 
@@ -207,7 +207,7 @@ export function make<T extends view>(
   const init = data.init
   delete data.init
   Object.assign(v, data)
-  v.$setup()
+  v.$$setup()
   const initfn = (init instanceof Ref ? init.val : init)
   initfn?.apply(v)
   return v

@@ -19,9 +19,9 @@ export async function showPrompt(text: string) {
     showh={false}
     showv={false}
     size={multiplex([
-      prompt.$ref('size'),
-      textarea.$ref('size'),
-      buttons.$ref('size'),
+      prompt.$$ref('size'),
+      textarea.$$ref('size'),
+      buttons.$$ref('size'),
     ], () => ({
       w: Math.max(buttons.size.w, prompt.size.w) - 4,
       h: textarea.size.h,
@@ -63,7 +63,7 @@ export async function showPrompt(text: string) {
   </border>
 
   const panel = await program.makePanel({
-    size: dialog.$ref('size'),
+    size: dialog.$$ref('size'),
     pos: 'center',
     view: dialog,
   })

@@ -9,11 +9,11 @@ export class border extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    this.$multiplex('padding').watch(() => {
+    this.$$multiplex('padding').watch(() => {
       this.adjust()
       this.layout()
     })
-    this.$multiplex('borderColor').watch(() => this.needsRedraw())
+    this.$$multiplex('borderColor').watch(() => this.needsRedraw())
   }
 
   override adjust(): void {

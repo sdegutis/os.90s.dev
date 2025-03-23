@@ -10,8 +10,8 @@ export class group extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    this.$multiplex('gap', 'dir', 'align', 'children').watch(() => this.adjust())
-    this.$watch('children', () => this.layout())
+    this.$$multiplex('gap', 'dir', 'align', 'children').watch(() => this.adjust())
+    this.$$watch('children', () => this.layout())
   }
 
   override adjust(): void {

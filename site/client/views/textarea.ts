@@ -74,7 +74,7 @@ export class textarea extends view {
     this.reflectCursorPos()
     this.adjustTextLabel()
 
-    this.$watch('cursorColor', c => this._cursor.background = c)
+    this.$$watch('cursorColor', c => this._cursor.background = c)
   }
 
   override onMouseDown(button: number, pos: Point): void {

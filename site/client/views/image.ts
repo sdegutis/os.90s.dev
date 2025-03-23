@@ -8,7 +8,7 @@ export class image extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    this.$multiplex('bitmap').watch(() => this.adjust())
+    this.$$multiplex('bitmap').watch(() => this.adjust())
   }
 
   override adjust(): void {

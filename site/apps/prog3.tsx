@@ -12,7 +12,7 @@ const center = <label text={'hey world'}
     }
   }} />
 
-const size = center.$ref('size').adapt(s => ({ w: s.w + 4, h: s.h + 4 }))
+const size = center.$$ref('size').adapt(s => ({ w: s.w + 4, h: s.h + 4 }))
 
 const panel = await program.makePanel({
   size,

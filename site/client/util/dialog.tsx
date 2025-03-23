@@ -35,7 +35,7 @@ export async function showDialog(text: string) {
   </border>
 
   const panel = await program.makePanel({
-    size: dialog.$ref('size'),
+    size: dialog.$$ref('size'),
     pos: 'center',
     view: dialog,
   })

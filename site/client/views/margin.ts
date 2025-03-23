@@ -9,10 +9,10 @@ export class margin extends view {
   override passthrough: boolean = true
 
   override init(): void {
-    this.$multiplex('padding', 'size').watch(() => {
+    this.$$multiplex('padding', 'size').watch(() => {
       this.layout()
     })
-    this.$multiplex('marginColor').watch(() => this.needsRedraw())
+    this.$$multiplex('marginColor').watch(() => this.needsRedraw())
   }
 
   override layout(): void {
