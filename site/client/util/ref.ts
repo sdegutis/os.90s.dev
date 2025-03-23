@@ -4,8 +4,7 @@ export type Equals<T> = (a: T, b: T) => boolean
 
 export class Ref<T> {
 
-  listener = new Listener<[T, T], void>()
-
+  private listener = new Listener<[T, T], void>()
   private _val: T
   equals?: Equals<T> | undefined
 
