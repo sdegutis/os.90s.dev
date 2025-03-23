@@ -123,14 +123,17 @@ export class split extends view {
     as.w = bs.w = this.size.w
     as.h = bs.h = this.size.h
 
-    as[dw] = this.pos
+    let pos = this.pos
+    if (this.stick === 'b') pos = this.size[dw] - pos
 
-    bp[dx] = this.pos
-    bs[dw] = this.size[dw] - this.pos
+    as[dw] = pos
+
+    bp[dx] = pos
+    bs[dw] = this.size[dw] - pos
 
     if (this.resizer) {
       const rp = { x: 0, y: 0 }
-      rp[dx] = this.pos - 1
+      rp[dx] = pos - 1
       this.resizer.point = rp
 
       const rs = { ...this.size }
