@@ -192,7 +192,7 @@ export class Panel {
     this.clearRepeater = () => clearTimeout(repeater)
   }
 
-  clearRepeater?: () => void
+  private clearRepeater?: () => void
 
   onKeyUp(key: string) {
     this.clearRepeater?.()

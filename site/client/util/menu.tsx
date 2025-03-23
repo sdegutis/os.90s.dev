@@ -1,0 +1,61 @@
+import { program } from "../core/prog.js"
+import { $ } from "./ref.js"
+import type { Point } from "./types.js"
+
+export type MenuItem = { text: string, onClick(): void } | '-'
+
+const borderColor = 0xffffff11
+const bgColor = 0x222222bb
+
+export async function showMenu(from: Point, items: MenuItem[]) {
+  const group = (
+    <groupy gap={0} align={'+'}>
+      {items.flatMap(item => {
+        if (item === '-') {
+          return [
+            <view size={{ w: 0, h: 1 }} />,
+            <view background={borderColor} size={{ w: 0, h: 1 }} />,
+            <view size={{ w: 0, h: 1 }} />,
+          ]
+        }
+        return <button padding={2} onClick={() => {
+          item.onClick()
+          panel.close()
+        }}>
+          <label text={item.text} />
+        </button>
+      })}
+    </groupy>
+  )
+
+  const root = (
+    <border
+      onKeyDown={key => {
+        if (key === 'Escape') panel.close()
+        return true
+      }}
+      canFocus={true}
+      onPanelBlur={() => {
+        panel.focus()
+        panel.close()
+      }}
+      borderColor={borderColor}
+      padding={1}
+      background={bgColor}
+    >
+      <border padding={1}>
+        {group}
+      </border>
+    </border>
+  )
+
+  const panel = await program.makePanel({
+    size: root.$ref('size'),
+    pos: $(from),
+    order: 'top',
+    view: root,
+  })
+
+  panel.focus()
+  root.focus()
+}

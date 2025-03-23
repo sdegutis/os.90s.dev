@@ -1,10 +1,11 @@
+import type { Size } from "../util/types.js"
 import { view } from "./view.js"
 
 export class group extends view {
 
   gap: number = 0
   dir: 'x' | 'y' = 'x'
-  align: 'a' | 'm' | 'z' = 'm'
+  align: 'a' | 'm' | 'z' | '+' = 'm'
 
   override passthrough: boolean = true
 
@@ -44,8 +45,12 @@ export class group extends view {
       point[dx] = x
       x += child.size[dw] + this.gap
       point[dy] = this.align === 'm' ? Math.round((this.size[dh] - child.size[dh]) / 2) :
-        this.align === 'a' ? 0 :
+        (this.align === 'a' || this.align === '+') ? 0 :
           this.size[dh] - child.size[dh]
+
+      if (this.align === '+') {
+        child.size = { [dw]: child.size[dw], [dh]: this.size[dh] } as Size
+      }
 
       child.point = point
     }

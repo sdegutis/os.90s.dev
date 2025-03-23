@@ -1,9 +1,9 @@
 import { program } from "../client/core/prog.js"
+import { showMenu } from "../client/util/menu.js"
 import { PanelView } from "../client/util/panelview.js"
 import { $ } from "../client/util/ref.js"
-import type { view } from "../client/views/view.js"
 
-const size = $({ w: 100, h: 100 })
+const size = $({ w: 100, h: 50 })
 
 const panel = await program.makePanel({
   size,
@@ -16,30 +16,20 @@ const panel = await program.makePanel({
         }} />
       </scroll>
       <groupx>
-        <button onClick={function () { showMenu(this) }} padding={2}><label text={'test'} /></button>
+        <button
+          onClick={function () {
+            showMenu(this.panel!.absmouse, [
+              { text: 'test 1', onClick() { console.log('test 1!') } },
+              { text: 'test two', onClick() { console.log('test 2!') } },
+              { text: 'test 3', onClick() { console.log('test 3!') } },
+              '-',
+              { text: 'test 4', onClick() { console.log('test 4!?') } },
+            ])
+          }}
+          padding={2}><label text={'test'} /></button>
       </groupx>
     </panedyb>
   </PanelView>,
 })
 
 panel.focus()
-
-async function showMenu(from: view) {
-
-  console.log(from)
-
-
-  const size = $({ w: 50, h: 50 })
-  const panel = await program.makePanel({
-    size,
-    pos: $({
-      x: from.panelOffset.x + from.panel!.point.x,
-      y: from.panelOffset.y + from.panel!.point.y,
-    }),
-    order: 'top',
-    view: (
-      <view size={size} background={0x99000099} />
-    )
-  })
-
-}
