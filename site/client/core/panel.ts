@@ -55,14 +55,14 @@ export class Panel {
     this.canvas.width = size.val.w
     this.canvas.height = size.val.h
 
-    size.watch(([size]) => {
+    size.watch((size) => {
       this.rpc.send('adjust', [this.point.x, this.point.y, size.w, size.h])
       this.canvas.width = size.w
       this.canvas.height = size.h
       this.blit()
     })
 
-    point.watch(([point]) => {
+    point.watch((point) => {
       this.rpc.send('adjust', [point.x, point.y, this.size.w, this.size.h])
       this.fixMouse()
       this.checkUnderMouse()

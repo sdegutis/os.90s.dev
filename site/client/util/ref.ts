@@ -2,13 +2,14 @@ import { Listener } from "../../shared/listener.js"
 
 export type Equals<T> = (a: T, b: T) => boolean
 
-export class Ref<T> extends Listener<[T, T], void> {
+export class Ref<T> {
+
+  listener = new Listener<[T, T], void>()
 
   private _val: T
   equals?: Equals<T> | undefined
 
   constructor(val: T, equals?: Equals<T>) {
-    super()
     this.equals = equals
     this._val = val
   }
@@ -18,12 +19,16 @@ export class Ref<T> extends Listener<[T, T], void> {
     if (this.equals?.(this._val, val) ?? this._val === val) return
     const old = this._val
     this._val = val
-    this.dispatch([val, old])
+    this.listener.dispatch([val, old])
+  }
+
+  watch(fn: (data: T, old: T) => void) {
+    return this.listener.watch(([data, old]) => fn(data, old))
   }
 
   adapt<U>(fn: (data: T, old: T) => U) {
     const r = $(fn(this._val, this._val))
-    this.watch(([data, old]) => r.val = fn(data, old))
+    this.watch((data, old) => r.val = fn(data, old))
     return r
   }
 

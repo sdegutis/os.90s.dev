@@ -188,7 +188,7 @@ export class view {
   }
 
   $watch<K extends keyof this>(key: K, fn: (val: this[K], old: this[K]) => void) {
-    return this.$ref(key).watch(([val, old]) => fn(val, old))
+    return this.$ref(key).watch((val, old) => fn(val, old))
   }
 
   $ref<K extends keyof this>(key: K) {
