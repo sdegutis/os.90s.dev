@@ -94,6 +94,7 @@ export class split extends view {
   min: number = 10
   max: number = -10
   dir: 'x' | 'y' = 'y'
+  stick: 'a' | 'b' = 'a'
 
   resizer?: SplitDivider
 
@@ -145,10 +146,22 @@ export class split extends view {
 
 }
 
-export class splitx extends split {
+export class splitxa extends split {
   override dir = 'x' as const
+  override stick = 'a' as const
 }
 
-export class splity extends split {
+export class splitya extends split {
   override dir = 'y' as const
+  override stick = 'a' as const
+}
+
+export class splitxb extends split {
+  override dir = 'x' as const
+  override stick = 'b' as const
+}
+
+export class splityb extends split {
+  override dir = 'y' as const
+  override stick = 'b' as const
 }
