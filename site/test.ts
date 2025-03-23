@@ -200,6 +200,163 @@ function drawrects(pass: GPURenderPassEncoder) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const pointsmodule = device.createShaderModule({
+  label: 'pointsmodule',
+  code: `
+    struct Output {
+      @builtin(position) pos: vec4f,
+      @location(0) @interpolate(flat) col: vec4f,
+    };
+
+    struct Input {
+      @builtin(vertex_index) vertexIndex: u32,
+    };
+
+    struct Mouse {
+      pos: vec2f,
+      r: f32,
+      g: f32,
+      b: f32,
+      a: f32,
+    };
+
+    @group(0) @binding(0) var<storage, read> mouse: array<Mouse>;
+
+    @vertex fn vs(input: Input) -> Output {
+      let pos = mouse[input.vertexIndex];
+
+      let x1: f32 = (pos.pos.x+1 - 160) / 160f;
+      let y1: f32 = (pos.pos.y+1 -  90) / -90f;
+
+      var out: Output;
+      out.pos = vec4f(x1,y1,0,1);
+      out.col = vec4f(pos.r,pos.g,pos.b,pos.a);
+      return out;
+    }
+
+    @fragment fn fs(input: Output) -> @location(0) vec4f {
+      return input.col;
+    }
+  `,
+})
+
+const pointspipeline = device.createRenderPipeline({
+  label: 'draw points',
+  primitive: { topology: 'point-list' },
+  layout: 'auto',
+  vertex: {
+    entryPoint: 'vs',
+    module: pointsmodule,
+  },
+  fragment: {
+    entryPoint: 'fs',
+    module: pointsmodule,
+    targets: [{
+      format: presentationFormat,
+
+      blend: {
+        color: {
+          operation: 'add',
+          srcFactor: 'src-alpha',
+          dstFactor: 'one-minus-src-alpha',
+        },
+        alpha: {},
+      },
+
+    }],
+  },
+})
+
+
+
+const pointgroups = Array(1).keys().map(() => {
+
+  const numpoints = 10
+
+  const pointsData = new Int32Array(numpoints * 5)
+
+  const pointsStorage = device.createBuffer({
+    label: 'points',
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+    size: pointsData.length * 4,
+  })
+
+  let bindgroup = device.createBindGroup({
+    label: 'bindgrup1',
+    layout: pointspipeline.getBindGroupLayout(0),
+    entries: [
+      { binding: 0, resource: { buffer: pointsStorage } },
+    ]
+  })
+
+  update()
+
+  for (let i = 0; i < numpoints; i++) {
+    // pointsData[(i * 5) + 0] = 1
+    // pointsData[(i * 5) + 1] = 3
+    // pointsData[(i * 5) + 2] = 1
+    // pointsData[(i * 5) + 3] = 3
+    // pointsData[(i * 5) + 4] = 0xff000033
+    pointsData[(i * 5) + 0] = randint(0, 320 - 10)
+    pointsData[(i * 5) + 1] = randint(1, 320 / 10)
+    pointsData[(i * 5) + 2] = randint(0, 180 - 10)
+    pointsData[(i * 5) + 3] = randint(1, 180 / 10)
+    pointsData[(i * 5) + 4] = randint(0, 0xffffffff)
+  }
+
+  device.queue.writeBuffer(pointsStorage, 0, pointsData)
+
+  function update() {
+
+  }
+
+  return { bindgroup, numpoints, update }
+
+}).toArray()
+
+function drawpoints(pass: GPURenderPassEncoder) {
+
+  for (const group of pointgroups) {
+
+    // group.update()
+
+    pass.setPipeline(pointspipeline)
+    pass.setBindGroup(0, group.bindgroup)
+    pass.draw(6, group.numpoints)
+  }
+
+
+}
+
+
+
 const mousemodule = device.createShaderModule({
   label: 'mousemodule',
   code: `
@@ -288,7 +445,7 @@ const mousebindgroup = device.createBindGroup({
   ]
 })
 
-function drawpoints(pass: GPURenderPassEncoder) {
+function drawmouse(pass: GPURenderPassEncoder) {
 
   pass.setPipeline(mousepipeline)
   pass.setBindGroup(0, mousebindgroup)
@@ -322,7 +479,6 @@ canvas.onmousemove = (e) => {
   mouseData[6 + 4] = 0
   mouseData[6 + 5] = .5
 
-  console.log(mouseData.length)
   device.queue.writeBuffer(mouseStorage, 0, mouseData)
   render()
 }
@@ -524,6 +680,7 @@ function render() {
   drawrects(pass)
   drawboxes(pass)
   drawpoints(pass)
+  drawmouse(pass)
 
   pass.end()
 
