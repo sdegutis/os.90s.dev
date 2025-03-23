@@ -1,4 +1,3 @@
-import { ontick } from "./client/util/ontick.js"
 
 const GRID_W = 320
 const GRID_H = 180
@@ -138,7 +137,7 @@ const randint = (min: number, max: number) => Math.floor(Math.random() * (max - 
 
 const rectgroups = Array(1).keys().map(() => {
 
-  const numrects = 10
+  const numrects = 1000
 
   const rectsData = new Int32Array(numrects * 5)
 
@@ -297,9 +296,9 @@ const pointspipeline = device.createRenderPipeline({
 
 
 
-const pointgroups = Array(1000).keys().map(() => {
+const pointgroups = Array(1).keys().map(() => {
 
-  const numpoints = 100
+  const numpoints = 10000
 
   const pointsData = new Float32Array(numpoints * 6)
 
@@ -336,20 +335,20 @@ const pointgroups = Array(1000).keys().map(() => {
 
   function update() {
 
-    for (let i = 0; i < numpoints; i++) {
-      // pointsData[(i * 5) + 0] = 1
-      // pointsData[(i * 5) + 1] = 3
-      // pointsData[(i * 5) + 2] = 1
-      // pointsData[(i * 5) + 3] = 3
-      // pointsData[(i * 5) + 4] = 0xff000033
-      pointsData[(i * 6) + 0] = randint(0, 320 - 10)
-      pointsData[(i * 6) + 1] = randint(0, 180 - 10)
-      pointsData[(i * 6) + 2] = Math.random()
-      pointsData[(i * 6) + 3] = Math.random()
-      pointsData[(i * 6) + 4] = Math.random()
-      pointsData[(i * 6) + 5] = Math.random()
-    }
-    device.queue.writeBuffer(pointsStorage, 0, pointsData)
+    // for (let i = 0; i < numpoints; i++) {
+    //   // pointsData[(i * 5) + 0] = 1
+    //   // pointsData[(i * 5) + 1] = 3
+    //   // pointsData[(i * 5) + 2] = 1
+    //   // pointsData[(i * 5) + 3] = 3
+    //   // pointsData[(i * 5) + 4] = 0xff000033
+    //   pointsData[(i * 6) + 0] = randint(0, 320 - 10)
+    //   pointsData[(i * 6) + 1] = randint(0, 180 - 10)
+    //   pointsData[(i * 6) + 2] = Math.random()
+    //   pointsData[(i * 6) + 3] = Math.random()
+    //   pointsData[(i * 6) + 4] = Math.random()
+    //   pointsData[(i * 6) + 5] = Math.random()
+    // }
+    // device.queue.writeBuffer(pointsStorage, 0, pointsData)
 
   }
 
@@ -612,7 +611,7 @@ const boxespipeline = device.createRenderPipeline({
 
 const boxgroups = Array(1).keys().map(() => {
 
-  const numrects = 10
+  const numrects = 1000
 
   const rectsData = new Int32Array(numrects * 5)
 
@@ -672,12 +671,12 @@ function drawboxes(pass: GPURenderPassEncoder) {
 
 
 
-setTimeout(ontick((d) => {
+// setTimeout(ontick((d) => {
 
-  console.log(d)
-  render()
+//   console.log(d)
+//   render()
 
-}, 60), 5 * 1000)
+// }, 60), 5 * 1000)
 
 
 function render() {
@@ -693,10 +692,10 @@ function render() {
     }],
   })
 
-  // drawrects(pass)
-  // drawboxes(pass)
+  drawrects(pass)
+  drawboxes(pass)
   drawpoints(pass)
-  // drawmouse(pass)
+  drawmouse(pass)
 
   pass.end()
 
