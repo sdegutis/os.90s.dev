@@ -8,11 +8,19 @@ const panel = await program.makePanel({
   size,
   pos: 'center',
   view: <PanelView size={size} title={'test panel'}>
-    <scroll background={0xffffff11} onMouseDown={function (...args) { this.content?.onMouseDown?.(...args) }}>
-      <textarea presented={function () {
-        this.focus()
-      }} />
-    </scroll>
+    <splitx>
+
+      <scroll background={0xffffff11} onMouseDown={function (...args) { this.content?.onMouseDown?.(...args) }}>
+        <textarea presented={function () {
+          this.focus()
+        }} />
+      </scroll>
+      <groupy>
+        <button padding={2}><label text={'hmm'} /></button>
+        <button padding={2}><label text={'hmm'} /></button>
+        <button padding={2}><label text={'hmm'} /></button>
+      </groupy>
+    </splitx>
   </PanelView>,
 })
 
