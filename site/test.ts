@@ -670,109 +670,6 @@ function drawboxes(pass: GPURenderPassEncoder) {
 
 
 
-const tmod = device.createShaderModule({
-  label: 'tmod',
-  code: `
-struct OurVertexShaderOutput {
-  @builtin(position) position: vec4f,
-  @location(0) texcoord: vec2f,
-};
- 
-@vertex fn vs(
-  @builtin(vertex_index) vertexIndex : u32
-) -> OurVertexShaderOutput {
-  let pos = array(
-    // 1st triangle
-    vec2f( 0.0,  0.0),  // center
-    vec2f( 1.0,  0.0),  // right, center
-    vec2f( 0.0,  1.0),  // center, top
- 
-    // 2nd triangle
-    vec2f( 0.0,  1.0),  // center, top
-    vec2f( 1.0,  0.0),  // right, center
-    vec2f( 1.0,  1.0),  // right, top
-  );
- 
-  var vsOutput: OurVertexShaderOutput;
-  let xy = pos[vertexIndex];
-  vsOutput.position = vec4f(xy, 0.0, 1.0);
-  vsOutput.texcoord = xy;
-  return vsOutput;
-}
- 
-@group(0) @binding(0) var ourSampler: sampler;
-@group(0) @binding(1) var ourTexture: texture_2d<f32>;
- 
-@fragment fn fs(fsInput: OurVertexShaderOutput) -> @location(0) vec4f {
-  return textureSample(ourTexture, ourSampler, fsInput.texcoord);
-}
-  `,
-})
-
-
-
-const pline = device.createRenderPipeline({
-  label: 'pline',
-  layout: 'auto',
-  vertex: {
-    entryPoint: 'vs',
-    module: tmod,
-  },
-  fragment: {
-    entryPoint: 'fs',
-    module: tmod,
-    targets: [{
-      format: presentationFormat,
-
-      blend: {
-        color: {
-          operation: 'add',
-          srcFactor: 'src-alpha',
-          dstFactor: 'one-minus-src-alpha',
-        },
-        alpha: {},
-      },
-
-    }],
-  },
-})
-
-const r = [0xff, 0, 0, 0xff]
-const g = [0, 0xff, 0, 0xff]
-const b = [0, 0, 0xff, 0xff]
-
-const tdata = new Uint8Array([
-  r, r, g,
-  g, g, b,
-  b, b, r,
-].flat())
-
-
-const texture = device.createTexture({
-  size: [3, 3],
-  format: 'rgba8unorm',
-  usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
-})
-
-device.queue.writeTexture(
-  { texture },
-  tdata,
-  { bytesPerRow: 3 * 4 },
-  { width: 3, height: 3 },
-)
-
-const sampler = device.createSampler()
-
-const tbind = device.createBindGroup({
-  layout: pline.getBindGroupLayout(0),
-  entries: [
-    { binding: 0, resource: sampler },
-    { binding: 1, resource: texture.createView() },
-  ],
-})
-
-
-
 
 
 
@@ -803,10 +700,6 @@ function render() {
   drawboxes(pass)
   drawpoints(pass)
   drawmouse(pass)
-
-  pass.setPipeline(pline)
-  pass.setBindGroup(0, tbind)
-  pass.draw(6)
 
   pass.end()
 
