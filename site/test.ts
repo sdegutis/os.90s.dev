@@ -1,3 +1,4 @@
+import { ontick } from "./client/util/ontick.js"
 
 const GRID_W = 320
 const GRID_H = 180
@@ -239,7 +240,7 @@ const pointsmodule = device.createShaderModule({
       @builtin(vertex_index) vertexIndex: u32,
     };
 
-    struct Mouse {
+    struct Pixel {
       pos: vec2f,
       r: f32,
       g: f32,
@@ -247,10 +248,10 @@ const pointsmodule = device.createShaderModule({
       a: f32,
     };
 
-    @group(0) @binding(0) var<storage, read> mouse: array<Mouse>;
+    @group(0) @binding(0) var<storage, read> pixels: array<Pixel>;
 
     @vertex fn vs(input: Input) -> Output {
-      let pos = mouse[input.vertexIndex];
+      let pos = pixels[input.vertexIndex];
 
       let x1: f32 = (pos.pos.x+1 - 160) / 160f;
       let y1: f32 = (pos.pos.y+1 -  90) / -90f;
@@ -296,11 +297,11 @@ const pointspipeline = device.createRenderPipeline({
 
 
 
-const pointgroups = Array(1).keys().map(() => {
+const pointgroups = Array(1000).keys().map(() => {
 
-  const numpoints = 10
+  const numpoints = 100
 
-  const pointsData = new Int32Array(numpoints * 5)
+  const pointsData = new Float32Array(numpoints * 6)
 
   const pointsStorage = device.createBuffer({
     label: 'points',
@@ -324,16 +325,31 @@ const pointgroups = Array(1).keys().map(() => {
     // pointsData[(i * 5) + 2] = 1
     // pointsData[(i * 5) + 3] = 3
     // pointsData[(i * 5) + 4] = 0xff000033
-    pointsData[(i * 5) + 0] = randint(0, 320 - 10)
-    pointsData[(i * 5) + 1] = randint(1, 320 / 10)
-    pointsData[(i * 5) + 2] = randint(0, 180 - 10)
-    pointsData[(i * 5) + 3] = randint(1, 180 / 10)
-    pointsData[(i * 5) + 4] = randint(0, 0xffffffff)
+    pointsData[(i * 6) + 0] = randint(0, 320 - 10)
+    pointsData[(i * 6) + 1] = randint(0, 180 - 10)
+    pointsData[(i * 6) + 2] = Math.random()
+    pointsData[(i * 6) + 3] = Math.random()
+    pointsData[(i * 6) + 4] = Math.random()
+    pointsData[(i * 6) + 5] = Math.random()
   }
-
   device.queue.writeBuffer(pointsStorage, 0, pointsData)
 
   function update() {
+
+    for (let i = 0; i < numpoints; i++) {
+      // pointsData[(i * 5) + 0] = 1
+      // pointsData[(i * 5) + 1] = 3
+      // pointsData[(i * 5) + 2] = 1
+      // pointsData[(i * 5) + 3] = 3
+      // pointsData[(i * 5) + 4] = 0xff000033
+      pointsData[(i * 6) + 0] = randint(0, 320 - 10)
+      pointsData[(i * 6) + 1] = randint(0, 180 - 10)
+      pointsData[(i * 6) + 2] = Math.random()
+      pointsData[(i * 6) + 3] = Math.random()
+      pointsData[(i * 6) + 4] = Math.random()
+      pointsData[(i * 6) + 5] = Math.random()
+    }
+    device.queue.writeBuffer(pointsStorage, 0, pointsData)
 
   }
 
@@ -345,11 +361,11 @@ function drawpoints(pass: GPURenderPassEncoder) {
 
   for (const group of pointgroups) {
 
-    // group.update()
+    group.update()
 
     pass.setPipeline(pointspipeline)
     pass.setBindGroup(0, group.bindgroup)
-    pass.draw(6, group.numpoints)
+    pass.draw(group.numpoints)
   }
 
 
@@ -656,12 +672,12 @@ function drawboxes(pass: GPURenderPassEncoder) {
 
 
 
-// setTimeout(ontick((d) => {
+setTimeout(ontick((d) => {
 
-//   console.log(d)
-//   render()
+  console.log(d)
+  render()
 
-// }, 60), 5 * 1000)
+}, 60), 5 * 1000)
 
 
 function render() {
@@ -677,10 +693,10 @@ function render() {
     }],
   })
 
-  drawrects(pass)
-  drawboxes(pass)
+  // drawrects(pass)
+  // drawboxes(pass)
   drawpoints(pass)
-  drawmouse(pass)
+  // drawmouse(pass)
 
   pass.end()
 
