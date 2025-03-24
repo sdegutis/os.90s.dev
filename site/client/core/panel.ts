@@ -285,7 +285,24 @@ export class Panel {
     this.checkUnderMouse()
   })
 
-  setCursor(c: Cursor | null) {
+  private cursors: Cursor[] = []
+
+  pushCursor(c: Cursor) {
+    this.cursors.push(c)
+    if (this.cursors.length === 1) {
+      this.setCursor(c)
+    }
+  }
+
+  popCursor() {
+    const old = this.cursors[0]
+    this.cursors.shift()
+    if (this.cursors[0] !== old) {
+      this.setCursor(this.cursors[0] ?? null)
+    }
+  }
+
+  private setCursor(c: Cursor | null) {
     this.rpc.send('cursor', [c?.toString() ?? ''])
   }
 
@@ -309,4 +326,9 @@ export class Panel {
     this.mouse.y = this.absmouse.y - this.point.y
   }
 
+}
+
+export type CursorLock = {
+  push(): void
+  pop(): void
 }

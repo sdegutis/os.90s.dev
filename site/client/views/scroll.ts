@@ -1,4 +1,4 @@
-import { useCursor, xresize, yresize } from "../util/cursors.js"
+import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { make } from "../util/dyn.js"
 import { multiplex } from "../util/ref.js"
@@ -81,14 +81,14 @@ export class Scroll extends View {
       const track = xy === 'x' ? this.trackh : this.trackv
       const scroll = xy === 'x' ? 'scrollx' : 'scrolly'
 
-      const cursor = useCursor(this, xy === 'x' ? xresize : yresize)
+      const cursor = xy === 'x' ? xresize : yresize
 
-      bar.onMouseEnter = () => cursor.push()
-      bar.onMouseExit = () => cursor.pop()
+      bar.onMouseEnter = () => this.panel?.pushCursor(cursor)
+      bar.onMouseExit = () => this.panel?.popCursor()
 
       bar.onMouseDown = (b, pos) => {
         if (b !== 0) return
-        cursor.push()
+        this.panel?.pushCursor(cursor)
         const view = this
         bar.onMouseMove = dragMove(pos, {
           get point() { return bar.point },
@@ -100,7 +100,7 @@ export class Scroll extends View {
       }
 
       bar.onMouseUp = () => {
-        cursor.pop()
+        this.panel?.popCursor()
         delete bar.onMouseMove
       }
     }

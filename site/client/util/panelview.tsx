@@ -90,22 +90,11 @@ function PanelResizer(data: { size: Ref<Size> }) {
 
   let panel: Panel
 
-  let claims = 0
-  function setClaims(n: number) {
-    claims += n
-    if (claims === 0) {
-      panel.setCursor(null)
-    }
-    else if (claims === n) {
-      panel.setCursor(adjCursor)
-    }
-  }
-
   function resizerMouseDown(this: ImageView, button: number, pos: Point) {
-    setClaims(1)
+    panel.pushCursor(adjCursor)
     this.onMouseMove = dragResize(pos, panel)
     this.onMouseUp = () => {
-      setClaims(-1)
+      panel.popCursor()
       delete this.onMouseMove
       delete this.onMouseUp
     }
@@ -115,8 +104,8 @@ function PanelResizer(data: { size: Ref<Size> }) {
     passthrough={false}
     presented={p => panel = p}
     bitmap={adjImage}
-    onMouseEnter={function (this: View) { setClaims(+1) }}
-    onMouseExit={function (this: View) { setClaims(-1) }}
+    onMouseEnter={function (this: View) { panel.pushCursor(adjCursor) }}
+    onMouseExit={function (this: View) { panel.popCursor() }}
     point={data.size.adapt(s => ({
       x: s.w - adjImage.width,
       y: s.h - adjImage.height,
