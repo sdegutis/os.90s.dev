@@ -1,33 +1,25 @@
 import type { Point, Size } from "./types.js"
 
-interface Movable {
-  point: Point
-}
-
-interface Resizable {
-  size: Size
-}
-
-export function dragMove(pos: Point, o: Movable) {
+export function dragMove(anchor: Point, o: { point: Point }) {
   const startPos = { x: o.point.x, y: o.point.y }
-  const offx = pos.x - startPos.x
-  const offy = pos.y - startPos.y
+  const offx = anchor.x - startPos.x
+  const offy = anchor.y - startPos.y
   return () => {
-    const diffx = pos.x - startPos.x
-    const diffy = pos.y - startPos.y
+    const diffx = anchor.x - startPos.x
+    const diffy = anchor.y - startPos.y
     const x = startPos.x + diffx - offx
     const y = startPos.y + diffy - offy
     o.point = { x, y }
   }
 }
 
-export function dragResize(size: Point, o: Resizable) {
+export function dragResize(anchor: Point, o: { size: Size }) {
   const startPos = { w: o.size.w, h: o.size.h }
-  const offx = size.x - startPos.w
-  const offy = size.y - startPos.h
+  const offx = anchor.x - startPos.w
+  const offy = anchor.y - startPos.h
   return () => {
-    const diffx = size.x - startPos.w
-    const diffy = size.y - startPos.h
+    const diffx = anchor.x - startPos.w
+    const diffy = anchor.y - startPos.h
     const w = startPos.w + diffx - offx
     const h = startPos.h + diffy - offy
     o.size = { w, h }

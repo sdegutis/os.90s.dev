@@ -12,7 +12,7 @@ const panel = await program.makePanel({
     <splitxa>
       <margin padding={0} paddingColor={0x99000099}>
         <center background={0x00330099}>
-          <button onClick={function () {
+          <button onClick={async function () {
             const s = this.parent?.parent?.parent as Split
             s.dir = s.dir === 'x' ? 'y' : 'x'
           }} padding={2}><label text={'test'} /></button>

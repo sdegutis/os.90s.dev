@@ -6,7 +6,7 @@ import type { SpacedX } from "../views/spaced.js"
 import type { View } from "../views/view.js"
 import { dragMove, dragResize } from "./drag.js"
 import { $, Ref } from "./ref.js"
-import type { Point, Size } from "./types.js"
+import type { Size } from "./types.js"
 
 const minImage = new Bitmap([0xffffff33], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
 const maxImage = new Bitmap([0xffffff33], 4, [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1,])
@@ -29,8 +29,8 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
   const focused = $(false)
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
 
-  function titleBarMouseDown(this: SpacedX, button: number, pos: Point) {
-    this.onMouseMove = dragMove(pos, panel)
+  function titleBarMouseDown(this: SpacedX, button: number) {
+    this.onMouseMove = dragMove(panel.absmouse, panel)
     this.onMouseUp = () => {
       delete this.onMouseMove
       delete this.onMouseUp
@@ -90,9 +90,9 @@ function PanelResizer(data: { size: Ref<Size> }) {
 
   let panel: Panel
 
-  function resizerMouseDown(this: ImageView, button: number, pos: Point) {
+  function resizerMouseDown(this: ImageView, button: number) {
     panel.pushCursor(adjCursor)
-    this.onMouseMove = dragResize(pos, panel)
+    this.onMouseMove = dragResize(panel.mouse, panel)
     this.onMouseUp = () => {
       panel.popCursor()
       delete this.onMouseMove

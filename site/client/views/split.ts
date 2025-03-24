@@ -3,7 +3,6 @@ import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { make } from "../util/dyn.js"
 import { debounce } from "../util/throttle.js"
-import { type Point } from "../util/types.js"
 import { View } from "./view.js"
 
 class SplitDivider extends View {
@@ -37,7 +36,7 @@ class SplitDivider extends View {
     this.panel?.popCursor()
   }
 
-  override onMouseDown(button: number, pos: Point): void {
+  override onMouseDown(button: number): void {
     this.panel?.pushCursor(this.cursor)
     const split = this.split
     const dx = split.dir
@@ -55,7 +54,7 @@ class SplitDivider extends View {
 
     this.pressed = true
 
-    this.onMouseMove = dragMove(pos, b)
+    this.onMouseMove = dragMove(this.panel!.mouse, b)
     this.onMouseUp = () => {
       this.panel?.popCursor()
       this.pressed = false

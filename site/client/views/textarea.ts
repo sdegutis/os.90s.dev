@@ -1,6 +1,5 @@
 import { crt2025, Font } from "../../shared/font.js"
 import { make } from "../util/dyn.js"
-import { type Point } from "../util/types.js"
 import { Scroll } from "./scroll.js"
 import { View } from "./view.js"
 
@@ -80,7 +79,7 @@ export class Textarea extends View {
     this.$$watch('cursorColor', c => this._cursor.background = c)
   }
 
-  override onMouseDown(button: number, pos: Point): void {
+  override onMouseDown(button: number): void {
     this.focus()
 
     let x = this.mouse.x - this.label.point.x

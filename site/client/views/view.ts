@@ -40,7 +40,7 @@ export class View extends Dynamic {
   onPanelFocus?(): void
   onPanelBlur?(): void
 
-  onMouseDown?(button: number, pos: Point): void
+  onMouseDown?(button: number): void
   onMouseMove?(pos: Point): void
   onMouseUp?(): void
 
