@@ -18,11 +18,11 @@ export class Panel {
   get size() { return this.$size.val }
   set size(s: Size) { this.$size.val = s }
 
-  $absmouse: Ref<Point> = $({ x: 0, y: 0 })
+  readonly $absmouse: Ref<Point> = $({ x: 0, y: 0 })
   get absmouse() { return this.$absmouse.val }
   set absmouse(p: Point) { this.$absmouse.val = p }
 
-  $mouse: Ref<Point> = $({ x: 0, y: 0 })
+  readonly $mouse: Ref<Point> = $({ x: 0, y: 0 })
   get mouse() { return this.$mouse.val }
   set mouse(p: Point) { this.$mouse.val = p }
 
