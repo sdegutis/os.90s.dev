@@ -5,7 +5,7 @@ export class Dynamic {
   static make<T extends Dynamic>(this: new () => T, data: { [K in keyof T]?: T[K] | Ref<T[K]> }) {
     const v = new this()
 
-    const init = data.init
+    const init = data.init instanceof Ref ? data.init.val : data.init
     delete data.init
 
     Object.assign(v, data)
@@ -34,8 +34,7 @@ export class Dynamic {
     while (proto = protos.pop())
       proto.init!.call(v)
 
-    const initfn = (init instanceof Ref ? init.val : init)
-    initfn?.apply(v)
+    init?.apply(v)
 
     return v
   }
