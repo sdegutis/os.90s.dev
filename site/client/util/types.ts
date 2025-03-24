@@ -8,15 +8,15 @@ export type Size = {
   readonly h: number,
 }
 
-export const pointEquals = (a: Point, b: Point) => {
+export function pointEquals(a: Point, b: Point) {
   return a.x === b.x && a.y === b.y
 }
 
-export const sizeEquals = (a: Size, b: Size) => {
+export function sizeEquals(a: Size, b: Size) {
   return a.w === b.w && a.h === b.h
 }
 
-export const arrayEquals = <T extends ArrayLike<any>>(a: T, b: T) => {
+export function arrayEquals<T extends ArrayLike<any>>(a: T, b: T) {
   if (a.length !== b.length) return false
   for (let i = 0; i < a.length; i++) {
     if (a[i] !== b[i]) return false
