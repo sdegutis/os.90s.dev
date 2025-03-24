@@ -57,8 +57,6 @@ export async function showMenu(from: Point, items: MenuItem[]) {
     from = { ...from, x: from.x - root.size.w }
   }
 
-  console.log(root.size)
-
   const panel = await program.makePanel({
     size: root.$.size,
     pos: $(from),
