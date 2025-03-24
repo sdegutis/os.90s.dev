@@ -38,7 +38,7 @@ export async function showPrompt(text: string) {
   const dialog = <border
     passthrough={false}
     onPanelBlur={() => {
-      panel.focus()
+      panel.focusPanel()
       no()
     }}
     onKeyDown={key => {
@@ -69,7 +69,7 @@ export async function showPrompt(text: string) {
     view: dialog,
   })
 
-  panel.focus()
+  panel.focusPanel()
   dialog.focus()
 
   textarea.focus()

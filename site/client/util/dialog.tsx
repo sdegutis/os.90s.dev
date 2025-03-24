@@ -7,7 +7,7 @@ export async function showDialog(text: string) {
   const dialog = <border
     passthrough={false}
     onPanelBlur={() => {
-      panel.focus()
+      panel.focusPanel()
       no()
     }}
     canFocus={true}
@@ -39,7 +39,7 @@ export async function showDialog(text: string) {
     view: dialog,
   })
 
-  panel.focus()
+  panel.focusPanel()
   dialog.focus()
 
   function ok() { panel.close(); result.resolve(true) }

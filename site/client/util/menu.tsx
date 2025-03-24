@@ -36,7 +36,7 @@ export async function showMenu(from: Point, items: MenuItem[]) {
       }}
       canFocus={true}
       onPanelBlur={() => {
-        panel.focus()
+        panel.focusPanel()
         panel.close()
       }}
       paddingColor={borderColor}
@@ -56,6 +56,6 @@ export async function showMenu(from: Point, items: MenuItem[]) {
     view: root,
   })
 
-  panel.focus()
+  panel.focusPanel()
   root.focus()
 }

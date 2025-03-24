@@ -152,7 +152,7 @@ export class Panel {
     }
   }
 
-  focus() {
+  focusPanel() {
     this.rpc.send('focus', [])
   }
 

@@ -32,4 +32,4 @@ const panel = await program.makePanel({
   </PanelView>,
 })
 
-panel.focus()
+panel.focusPanel()
