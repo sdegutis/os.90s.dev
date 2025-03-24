@@ -62,7 +62,7 @@ class SplitDivider extends View {
 
 export class Split extends View {
 
-  dividerColorHovered = 0xffffff33
+  dividerColorHovered = 0xffffff11
   dividerColorPressed = 0x1177ffcc
 
   pos: number = 20
