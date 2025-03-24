@@ -10,13 +10,13 @@ export class Panel {
 
   static all = new Map<number, Panel>()
 
-  private _point: Ref<Point>
-  get point() { return this._point.val }
-  set point(s: Point) { this._point.val = s }
+  readonly $point: Ref<Point>
+  get point() { return this.$point.val }
+  set point(s: Point) { this.$point.val = s }
 
-  private _size: Ref<Size>
-  get size() { return this._size.val }
-  set size(s: Size) { this._size.val = s }
+  readonly $size: Ref<Size>
+  get size() { return this.$size.val }
+  set size(s: Size) { this.$size.val = s }
 
   $absmouse: Ref<Point> = $({ x: 0, y: 0 })
   get absmouse() { return this.$absmouse.val }
@@ -47,8 +47,8 @@ export class Panel {
     this.id = id
     this.keymap = keymap
 
-    this._point = point
-    this._size = size
+    this.$point = point
+    this.$size = size
 
     this.canvas.width = size.val.w
     this.canvas.height = size.val.h
