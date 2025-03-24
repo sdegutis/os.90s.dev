@@ -1,10 +1,6 @@
-import { colorFor } from "../util/colors.js"
-import { View } from "./view.js"
+import { Margin } from "./margin.js"
 
-export class Border extends View {
-
-  paddingColor: number = 0x00000000
-  padding: number = 0
+export class Border extends Margin {
 
   override init(): void {
     this.$$multiplex('padding').watch(() => {
@@ -30,23 +26,6 @@ export class Border extends View {
         x: this.padding,
         y: this.padding,
       }
-    }
-  }
-
-  override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
-    super.draw(ctx, px, py)
-    this.drawBorder(ctx, px, py, colorFor(this.paddingColor))
-  }
-
-  protected drawBorder(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, col: string) {
-    ctx.strokeStyle = col
-    for (let i = 0; i < this.padding; i++) {
-      ctx.strokeRect(
-        px + i + .5,
-        py + i + .5,
-        this.size.w - i * 2 - 1,
-        this.size.h - i * 2 - 1,
-      )
     }
   }
 
