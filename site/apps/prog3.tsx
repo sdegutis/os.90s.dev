@@ -17,7 +17,7 @@ const size = center.$$ref('size').adapt(s => ({ w: s.w + 4, h: s.h + 4 }))
 const panel = await program.makePanel({
   size,
   view: (
-    <border borderColor={0x00990099} padding={2}>
+    <border paddingColor={0x00990099} padding={2}>
       {center}
     </border>
   ),

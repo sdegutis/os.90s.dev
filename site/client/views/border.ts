@@ -3,7 +3,7 @@ import { View } from "./view.js"
 
 export class Border extends View {
 
-  borderColor: number = 0x00000000
+  paddingColor: number = 0x00000000
   padding: number = 0
 
   override init(): void {
@@ -11,7 +11,7 @@ export class Border extends View {
       this.adjust()
       this.layout()
     })
-    this.$$multiplex('borderColor').watch(() => this.needsRedraw())
+    this.$$multiplex('paddingColor').watch(() => this.needsRedraw())
     this.adjust()
     this.layout()
   }
@@ -35,7 +35,7 @@ export class Border extends View {
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)
-    this.drawBorder(ctx, px, py, colorFor(this.borderColor))
+    this.drawBorder(ctx, px, py, colorFor(this.paddingColor))
   }
 
   protected drawBorder(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, col: string) {

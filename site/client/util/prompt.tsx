@@ -48,7 +48,7 @@ export async function showPrompt(text: string) {
       this.onMouseMove = dragMove(pos, panel)
       this.onMouseUp = () => delete this.onMouseMove
     }}
-    background={0x000000cc} padding={1} borderColor={0x005599ff}>
+    background={0x000000cc} padding={1} paddingColor={0x005599ff}>
     <border padding={3}>
       <groupy align={'m'} gap={4}>
         <border padding={2}>

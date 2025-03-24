@@ -3,14 +3,14 @@ import { View } from "./view.js"
 
 export class Margin extends View {
 
-  marginColor: number = 0x00000000
+  paddingColor: number = 0x00000000
   padding: number = 0
 
   override init(): void {
     this.$$watch('padding', () => {
       this.layout()
     })
-    this.$$multiplex('marginColor').watch(() => this.needsRedraw())
+    this.$$multiplex('paddingColor').watch(() => this.needsRedraw())
     this.layout()
   }
 
@@ -30,7 +30,7 @@ export class Margin extends View {
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     super.draw(ctx, px, py)
-    this.drawBorder(ctx, px, py, colorFor(this.marginColor))
+    this.drawBorder(ctx, px, py, colorFor(this.paddingColor))
   }
 
   protected drawBorder(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, col: string) {

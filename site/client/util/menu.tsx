@@ -39,7 +39,7 @@ export async function showMenu(from: Point, items: MenuItem[]) {
         panel.focus()
         panel.close()
       }}
-      borderColor={borderColor}
+      paddingColor={borderColor}
       padding={1}
       background={bgColor}
     >

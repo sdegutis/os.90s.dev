@@ -43,7 +43,7 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
 
   return (
     <margin
-      marginColor={borderColor}
+      paddingColor={borderColor}
       padding={1}
       size={data.size}
       presented={p => panel = p}
