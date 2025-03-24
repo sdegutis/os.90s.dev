@@ -5,18 +5,19 @@ import { View } from "../client/views/view.js"
 
 type Primitives = typeof primitives
 
-type FixThis<T, K extends keyof T, Else> =
-  T[K] extends ((...args: infer A) => infer R) | undefined
-  ? (this: T, ...args: A) => R
-  : Else
-
-type JsxChildren = View | View[] | Ref<View[]>
-
 type JsxAttrs<T> = {
-  [K in keyof T]?: K extends 'children' ? JsxChildren : FixThis<T, K, T[K] | Ref<T[K]>>
-}
+  [K in keyof T]?: (
 
-type FunctionElement = (data: any) => JSX.Element
+    K extends 'children'
+    ? View | View[] | Ref<View[]>
+
+    : T[K] extends ((...args: infer A) => infer R) | undefined
+    ? (this: T, ...args: A) => R
+
+    : T[K] | Ref<T[K]>
+
+  )
+}
 
 declare global {
 
@@ -34,7 +35,7 @@ declare global {
 
     type ElementType =
       | keyof IntrinsicElements
-      | FunctionElement
+      | ((data: any) => JSX.Element)
 
   }
 
