@@ -10,7 +10,7 @@ import { View } from "./view.js"
 class SplitDivider extends View {
 
   split!: Split
-  override  passthrough: boolean = false
+  override passthrough: boolean = false
   override pressed: boolean = false
   private cursor!: Cursor
 
