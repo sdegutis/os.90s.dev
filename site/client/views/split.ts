@@ -1,9 +1,10 @@
 import { colorFor } from "../util/colors.js"
 import { useCursor, xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
+import { make } from "../util/dyn.js"
 import { debounce } from "../util/throttle.js"
 import { type Point } from "../util/types.js"
-import { make, view } from "./view.js"
+import { view } from "./view.js"
 
 class SplitDivider extends view {
 

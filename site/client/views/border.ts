@@ -12,6 +12,8 @@ export class border extends view {
       this.layout()
     })
     this.$$multiplex('borderColor').watch(() => this.needsRedraw())
+    this.adjust()
+    this.layout()
   }
 
   override adjust(): void {

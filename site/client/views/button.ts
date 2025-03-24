@@ -10,6 +10,10 @@ export class button extends border {
 
   onClick?(button: number): void
 
+  override init(): void {
+    this.adjust()
+  }
+
   override onMouseDown(button: number): void {
     this.onMouseUp = () => {
       if (this.pressed) {

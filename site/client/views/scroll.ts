@@ -1,8 +1,9 @@
 import { useCursor, xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
+import { make } from "../util/dyn.js"
 import { multiplex } from "../util/ref.js"
 import { panedxb, panedyb } from "./paned.js"
-import { make, view } from "./view.js"
+import { view } from "./view.js"
 
 export class scroll extends view {
 

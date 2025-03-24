@@ -19,13 +19,12 @@ export const primitives = {
   border,
   margin,
   center,
+  scroll,
 
   label,
   image,
   button,
   textarea,
-
-  scroll,
 
   group,
   groupx,

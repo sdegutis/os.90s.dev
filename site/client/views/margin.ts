@@ -11,6 +11,7 @@ export class margin extends view {
       this.layout()
     })
     this.$$multiplex('marginColor').watch(() => this.needsRedraw())
+    this.layout()
   }
 
   override layout(): void {

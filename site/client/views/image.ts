@@ -7,6 +7,7 @@ export class image extends view {
 
   override init(): void {
     this.$$multiplex('bitmap').watch(() => this.adjust())
+    this.adjust()
   }
 
   override adjust(): void {

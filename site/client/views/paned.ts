@@ -13,6 +13,7 @@ export class paned extends view {
       this.needsRedraw()
       this.layout()
     }))
+    this.layout()
   }
 
   override layout(): void {

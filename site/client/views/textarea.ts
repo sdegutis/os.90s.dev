@@ -1,7 +1,8 @@
 import { crt2025, Font } from "../../shared/font.js"
+import { make } from "../util/dyn.js"
 import { type Point } from "../util/types.js"
 import { scroll } from "./scroll.js"
-import { make, view } from "./view.js"
+import { view } from "./view.js"
 
 export class textarea extends view {
 

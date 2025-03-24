@@ -1,6 +1,7 @@
+import { make } from "../client/util/dyn.js"
 import { Ref } from "../client/util/ref.js"
 import { primitives } from "../client/views/index.js"
-import { make, view } from "../client/views/view.js"
+import { view } from "../client/views/view.js"
 
 type Primitives = typeof primitives
 

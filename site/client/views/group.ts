@@ -10,6 +10,8 @@ export class group extends view {
   override init(): void {
     this.$$multiplex('gap', 'dir', 'align', 'children').watch(() => this.adjust())
     this.$$watch('children', () => this.layout())
+    this.adjust()
+    // this.layout()
   }
 
   override adjust(): void {

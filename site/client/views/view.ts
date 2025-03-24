@@ -1,11 +1,10 @@
-import { Listener } from "../../shared/listener.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
-import { $, Ref } from "../util/ref.js"
+import { Dynamic } from "../util/dyn.js"
 import { debounce } from "../util/throttle.js"
 import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../util/types.js"
 
-export class view {
+export class view extends Dynamic {
 
   panel: Panel | null = null
 
@@ -64,7 +63,7 @@ export class view {
   adopted?(parent: view): void
   presented?(panel: Panel): void
 
-  init() {
+  override init(): void {
     this.$$watch('parent', (parent) => {
       if (parent) this.adopted?.(parent)
     })
@@ -158,64 +157,4 @@ export class view {
     this.panel?.needsRedraw()
   }
 
-  $$setup() {
-    for (const key in this) {
-      let val = this[key]
-      if (val instanceof Function) continue
-
-      const ref = val instanceof Ref ? val : $(val)
-      Object.defineProperty(this, `$${key}`, {
-        value: ref,
-        enumerable: false,
-      })
-
-      Object.defineProperty(this, key, {
-        get: () => ref.val,
-        set: (v) => ref.val = v,
-        enumerable: true,
-      })
-    }
-
-    const protos = []
-    let proto: view | undefined = this
-
-    while (proto = Object.getPrototypeOf(proto))
-      if (Object.hasOwn(proto, 'init'))
-        protos.push(proto)
-
-    while (proto = protos.pop())
-      proto.init!.call(this)
-
-    this.adjust?.()
-    this.layout?.()
-  }
-
-  $$watch<K extends keyof this>(key: K, fn: (val: this[K], old: this[K]) => void) {
-    return this.$$ref(key).watch((val, old) => fn(val, old))
-  }
-
-  $$ref<K extends keyof this>(key: K) {
-    return this[`$${key as string}` as keyof this] as Ref<this[K]>
-  }
-
-  $$multiplex(...keys: (keyof this)[]) {
-    const listener = new Listener()
-    keys.forEach(key => this.$$watch(key, () => listener.dispatch()))
-    return listener
-  }
-
-}
-
-export function make<T extends view>(
-  ctor: new () => T,
-  data: { [K in keyof T]?: T[K] | Ref<T[K]> },
-): T {
-  const v = new ctor()
-  const init = data.init
-  delete data.init
-  Object.assign(v, data)
-  v.$$setup()
-  const initfn = (init instanceof Ref ? init.val : init)
-  initfn?.apply(v)
-  return v
 }
