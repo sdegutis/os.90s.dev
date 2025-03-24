@@ -1,7 +1,7 @@
+import { Listener } from "../../shared/listener.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
 import { Dynamic } from "../util/dyn.js"
-import { debounce } from "../util/throttle.js"
 import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../util/types.js"
 
 export class view extends Dynamic {
@@ -65,6 +65,11 @@ export class view extends Dynamic {
   presented?(panel: Panel): void
 
   override init(): void {
+    this.childResized.watch(() => {
+      this.adjust?.()
+      this.layout?.()
+    })
+
     this.$$watch('parent', (parent) => {
       if (parent) this.adopted?.(parent)
     })
@@ -80,7 +85,7 @@ export class view extends Dynamic {
 
     this.$$watch('size', () => {
       this.layout?.()
-      this.parent?.onChildResized()
+      this.parent?.childResized.dispatch()
       this.panel?.needsMouseCheck()
       this.needsRedraw()
     })
@@ -140,10 +145,7 @@ export class view extends Dynamic {
     this.panel?.focusView(this)
   }
 
-  private onChildResized = debounce(() => {
-    this.adjust?.()
-    this.layout?.()
-  })
+  private childResized = new Listener()
 
   protected needsRedraw() {
     this.panel?.needsRedraw()
