@@ -64,6 +64,8 @@ export class View extends Dynamic {
   adopted?(parent: View): void
   presented?(panel: Panel): void
 
+  private childResized = new Listener()
+
   override init(): void {
     this.childResized.watch(() => {
       this.adjust?.()
@@ -144,8 +146,6 @@ export class View extends Dynamic {
   focus() {
     this.panel?.focusView(this)
   }
-
-  private childResized = new Listener()
 
   protected needsRedraw() {
     this.panel?.needsRedraw()
