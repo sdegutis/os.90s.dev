@@ -1,6 +1,5 @@
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
-import { make } from "../util/dyn.js"
 import { multiplex } from "../util/ref.js"
 import { PanedXB, PanedYB } from "./paned.js"
 import { View } from "./view.js"
@@ -13,14 +12,14 @@ export class Scroll extends View {
   scrolly: number = 0
 
   content!: View
-  area = make(View, {})
+  area = View.make({})
 
-  barv = make(View, { size: { w: 3, h: 0 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
-  barh = make(View, { size: { w: 0, h: 3 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barv = View.make({ size: { w: 3, h: 0 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barh = View.make({ size: { w: 0, h: 3 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
 
-  trackv = make(View, { background: 0x00000033, children: [this.barv] })
-  trackh = make(View, { background: 0x00000033, children: [this.barh] })
-  corner = make(View, { background: 0x00000033, size: { w: 0, h: 3 } })
+  trackv = View.make({ background: 0x00000033, children: [this.barv] })
+  trackh = View.make({ background: 0x00000033, children: [this.barh] })
+  corner = View.make({ background: 0x00000033, size: { w: 0, h: 3 } })
 
   showh = true
   showv = true
@@ -31,9 +30,9 @@ export class Scroll extends View {
     this.content = this.children[0]
     this.area.children = [this.content]
 
-    const panea = make(PanedYB, { children: [this.area, this.trackh] })
-    const paneb = make(PanedYB, { children: [this.trackv, this.corner] })
-    this.children = [make(PanedXB, { children: [panea, paneb] })]
+    const panea = PanedYB.make({ children: [this.area, this.trackh] })
+    const paneb = PanedYB.make({ children: [this.trackv, this.corner] })
+    this.children = [PanedXB.make({ children: [panea, paneb] })]
 
     const reflectTracksShown = () => {
       this.trackh.size = { w: 0, h: this.showh ? 3 : 0 }

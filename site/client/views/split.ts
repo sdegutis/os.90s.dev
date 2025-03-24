@@ -1,7 +1,6 @@
 import { colorFor } from "../util/colors.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
-import { make } from "../util/dyn.js"
 import { debounce } from "../util/throttle.js"
 import { View } from "./view.js"
 
@@ -96,7 +95,7 @@ export class Split extends View {
     this.$.pos.watch(fixpos)
     this.$.size.watch(fixpos)
 
-    this.resizer = make(SplitDivider, { split: this })
+    this.resizer = SplitDivider.make({ split: this })
     this.children = [...this.children, this.resizer]
   }
 

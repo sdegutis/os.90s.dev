@@ -2,13 +2,24 @@ import { $, Ref } from "./ref.js"
 
 export class Dynamic {
 
+  static make<T extends Dynamic>(this: new () => T, data: { [K in keyof T]?: T[K] | Ref<T[K]> }) {
+    const v = new this()
+    const init = data.init
+    delete data.init
+    Object.assign(v, data)
+    v.#setup()
+    const initfn = (init instanceof Ref ? init.val : init)
+    initfn?.apply(v)
+    return v
+  }
+
   init?(): void
 
   $ = Object.create(null) as {
     readonly [K in (keyof this & string) as (K extends '$' ? never : K)]: this[K] extends ((...args: any) => any) | undefined ? never : Ref<this[K]>
   }
 
-  $setup() {
+  #setup() {
     for (const key in this) {
       let val = this[key]
       if (val instanceof Function) continue
@@ -34,18 +45,4 @@ export class Dynamic {
       proto.init!.call(this)
   }
 
-}
-
-export function make<T extends Dynamic>(
-  ctor: new () => T,
-  data: { [K in keyof T]?: T[K] | Ref<T[K]> },
-): T {
-  const v = new ctor()
-  const init = data.init
-  delete data.init
-  Object.assign(v, data)
-  v.$setup()
-  const initfn = (init instanceof Ref ? init.val : init)
-  initfn?.apply(v)
-  return v
 }

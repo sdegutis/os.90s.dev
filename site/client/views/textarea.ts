@@ -1,5 +1,4 @@
 import { crt2025, Font } from "../../shared/font.js"
-import { make } from "../util/dyn.js"
 import { Scroll } from "./scroll.js"
 import { View } from "./view.js"
 
@@ -53,7 +52,7 @@ export class Textarea extends View {
   }
 
   override init(): void {
-    this._cursor = make(View, {
+    this._cursor = View.make({
       onMouseDown: (...args) => this.onMouseDown(...args),
       background: this.cursorColor,
       visible: false,
@@ -63,7 +62,7 @@ export class Textarea extends View {
       }
     })
 
-    this.label = make(View, {
+    this.label = View.make({
       passthrough: false,
       adjust: () => this.adjustTextLabel(),
       draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),

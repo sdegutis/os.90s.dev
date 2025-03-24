@@ -1,4 +1,3 @@
-import { make } from "../client/util/dyn.js"
 import { Ref } from "../client/util/ref.js"
 import { primitives } from "../client/views/index.js"
 import { View } from "../client/views/view.js"
@@ -55,5 +54,5 @@ function createNode(tag: any, data: Record<string, any>): JSX.Element {
   }
 
   const ctor = primitives[tag as keyof typeof primitives]
-  return make(ctor, data)
+  return ctor.make(data)
 }
