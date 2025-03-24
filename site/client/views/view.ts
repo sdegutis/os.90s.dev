@@ -11,9 +11,6 @@ export class View extends Dynamic {
   parent: View | null = null
   children: readonly View[] = []
 
-  get firstChild(): View | undefined { return this.children[0] }
-  get lastChild(): View | undefined { return this.children[this.children.length - 1] }
-
   point: Point = { x: 0, y: 0 }
   size: Size = { w: 0, h: 0 }
 
@@ -150,5 +147,8 @@ export class View extends Dynamic {
   protected needsRedraw() {
     this.panel?.needsRedraw()
   }
+
+  get firstChild(): View | undefined { return this.children[0] }
+  get lastChild(): View | undefined { return this.children[this.children.length - 1] }
 
 }
