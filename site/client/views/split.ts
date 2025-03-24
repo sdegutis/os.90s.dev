@@ -68,15 +68,7 @@ class SplitDivider extends View {
     const b = {
       get point() { return { x: p, y: p } },
       set point(p: { x: number, y: number }) {
-        let min = split.min
-        let max = split.max
-
-        if (min < 0) min += split.size[dw]
-        if (max <= 0) max += split.size[dw] - 1
-
         split.pos = sticka ? p[dx] : split.size[dw] - p[dx]
-        if (split.pos < min) split.pos = min
-        if (split.pos > max) split.pos = max
       }
     }
 
@@ -105,6 +97,18 @@ export class Split extends View {
 
   override init(): void {
     this.$$multiplex('dir', 'pos', 'size').watch(debounce(() => {
+      const dx = this.dir
+      const dw = dx === 'x' ? 'w' : 'h'
+
+      let min = this.min
+      let max = this.max
+
+      if (min < 0) min += this.size[dw]
+      if (max <= 0) max += this.size[dw] - 1
+
+      if (this.pos < min) this.pos = min
+      if (this.pos > max) this.pos = max
+
       this.layout()
       this.needsRedraw()
     }))
