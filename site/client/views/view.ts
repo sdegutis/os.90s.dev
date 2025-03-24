@@ -1,4 +1,3 @@
-import { Listener } from "../../shared/listener.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
 import { Dynamic } from "../util/dyn.js"
@@ -61,14 +60,7 @@ export class View extends Dynamic {
   adopted?(parent: View): void
   presented?(panel: Panel): void
 
-  private childResized = new Listener()
-
   override init(): void {
-    this.childResized.watch(() => {
-      this.adjust?.()
-      this.layout?.()
-    })
-
     this.$.parent.watch((parent) => {
       if (parent) this.adopted?.(parent)
     })
@@ -84,7 +76,7 @@ export class View extends Dynamic {
 
     this.$.size.watch(() => {
       this.layout?.()
-      this.parent?.childResized.dispatch()
+      this.parent?.childResized()
       this.panel?.needsMouseCheck()
       this.needsRedraw()
     })
@@ -135,6 +127,11 @@ export class View extends Dynamic {
     else if (this.hovered) {
       this.drawBackground(ctx, px, py, colorFor(this.hoverBackground))
     }
+  }
+
+  protected childResized() {
+    this.adjust?.()
+    this.layout?.()
   }
 
   protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: string) {
