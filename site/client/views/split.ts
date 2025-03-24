@@ -21,10 +21,10 @@ class SplitDivider extends View {
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     if (this.pressed) {
-      this.drawBackground(ctx, px, py, colorFor(this.split.dividerColorPress))
+      this.drawBackground(ctx, px, py, colorFor(this.split.dividerColorPressed))
     }
     else if (this.hovered && this.split.min !== this.split.max) {
-      this.drawBackground(ctx, px, py, colorFor(this.split.dividerColorHover))
+      this.drawBackground(ctx, px, py, colorFor(this.split.dividerColorHovered))
     }
   }
 
@@ -67,8 +67,8 @@ class SplitDivider extends View {
 
 export class Split extends View {
 
-  dividerColorHover = 0xffffff33
-  dividerColorPress = 0x1177ffcc
+  dividerColorHovered = 0xffffff33
+  dividerColorPressed = 0x1177ffcc
 
   pos: number = 20
   min: number = 10
