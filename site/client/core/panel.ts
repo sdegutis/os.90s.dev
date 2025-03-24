@@ -1,7 +1,7 @@
 import type { Cursor } from "../../shared/cursor.js"
 import { Listener } from "../../shared/listener.js"
 import { wRPC, type ClientPanel, type ServerPanel } from "../../shared/rpc.js"
-import type { Ref } from "../util/ref.js"
+import { $, type Ref } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
 import type { Point, Size } from "../util/types.js"
 import type { View } from "../views/view.js"
@@ -21,8 +21,15 @@ export class Panel {
   id
   rpc
 
-  absmouse = { x: 0, y: 0 }
-  mouse = { x: 0, y: 0 }
+  $absmouse = $({ x: 0, y: 0 })
+  $mouse = $({ x: 0, y: 0 })
+
+  get absmouse() { return this.$absmouse.val }
+  set absmouse(p: Point) { this.$absmouse.val = p }
+
+  get mouse() { return this.$mouse.val }
+  set mouse(p: Point) { this.$mouse.val = p }
+
   keymap = new Set<string>()
 
   didClose = new Listener()
@@ -109,8 +116,7 @@ export class Panel {
     })
 
     this.rpc.listen('mousemoved', (x, y) => {
-      this.absmouse.x = x
-      this.absmouse.y = y
+      this.absmouse = { x, y }
       this.fixMouse()
       this.checkUnderMouse()
 
@@ -319,8 +325,10 @@ export class Panel {
   }
 
   private fixMouse() {
-    this.mouse.x = this.absmouse.x - this.point.x
-    this.mouse.y = this.absmouse.y - this.point.y
+    this.mouse = {
+      x: this.absmouse.x - this.point.x,
+      y: this.absmouse.y - this.point.y,
+    }
   }
 
 }

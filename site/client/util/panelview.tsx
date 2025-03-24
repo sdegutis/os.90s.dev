@@ -30,7 +30,7 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
 
   function titleBarMouseDown(this: SpacedX, button: number) {
-    this.onMouseMove = dragMove(panel.absmouse, panel)
+    this.onMouseMove = dragMove(panel.$absmouse, panel)
     this.onMouseUp = () => {
       delete this.onMouseMove
       delete this.onMouseUp
@@ -92,7 +92,7 @@ function PanelResizer(data: { size: Ref<Size> }) {
 
   function resizerMouseDown(this: ImageView, button: number) {
     panel.pushCursor(adjCursor)
-    this.onMouseMove = dragResize(panel.mouse, panel)
+    this.onMouseMove = dragResize(panel.$mouse, panel)
     this.onMouseUp = () => {
       panel.popCursor()
       delete this.onMouseMove

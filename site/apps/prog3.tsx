@@ -5,7 +5,7 @@ const center = <label text={'hey world'}
   background={0x77000077}
   passthrough={false}
   onMouseDown={function (b) {
-    const anchor = panel.absmouse
+    const anchor = panel.$absmouse
     this.onMouseMove = b === 0 ? dragMove(anchor, panel) : dragResize(anchor, panel)
     this.onMouseUp = () => {
       delete this.onMouseMove
