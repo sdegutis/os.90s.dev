@@ -42,7 +42,9 @@ export class Panel {
 
     Panel.all.set(this.id = ++Panel.id, this)
 
-    const posi = pos === 'bottom' ? 0 : Panel.ordered.findLastIndex(p => p.pos !== 'top') + 1
+    const posi = pos === 'bottom' ? 0 :
+      pos === 'top' ? Panel.ordered.length :
+        Panel.ordered.findLastIndex(p => p.pos !== 'top') + 1
     Panel.ordered.splice(posi, 0, this)
 
     const positioning = (this.x === -1 || this.y === -1) ? 'default' :

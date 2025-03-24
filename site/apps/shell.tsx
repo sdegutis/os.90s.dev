@@ -1,5 +1,7 @@
 import { program } from "../client/core/prog.js"
+import { showMenu } from "../client/util/menu.js"
 import { $ } from "../client/util/ref.js"
+import type { View } from "../client/views/view.js"
 
 const desktopSize = $({ w: program.width, h: program.height - 8 })
 const desktop = await program.makePanel({
@@ -28,7 +30,19 @@ function Clock() {
   let date = false
   let time = $('')
 
-  const toggle = () => {
+  function toggle(this: View, b: number) {
+    if (b === 2) {
+      showMenu(this.panel!.mouse, [
+        ...Array(30).keys().map(i => ({ text: 'test1', onClick: () => { console.log('test1') } })).toArray(),
+        { text: 'test1', onClick: () => { console.log('test1') } },
+        { text: 'test2', onClick: () => { console.log('test2') } },
+        { text: 'test3', onClick: () => { console.log('test3') } },
+        '-',
+        { text: 'test4', onClick: () => { console.log('test4') } },
+      ])
+      return
+    }
+
     date = !date
     udpateTime()
   }
