@@ -18,9 +18,6 @@ export class Panel {
   get size() { return this._size.val }
   set size(s: Size) { this._size.val = s }
 
-  id
-  rpc
-
   $absmouse: Ref<Point> = $({ x: 0, y: 0 })
   get absmouse() { return this.$absmouse.val }
   set absmouse(p: Point) { this.$absmouse.val = p }
@@ -29,11 +26,11 @@ export class Panel {
   get mouse() { return this.$mouse.val }
   set mouse(p: Point) { this.$mouse.val = p }
 
-  keymap = new Set<string>()
-
-  didClose = new Listener()
+  id
+  rpc
   root
-
+  keymap = new Set<string>()
+  didClose = new Listener()
   isFocused = false
 
   readonly canvas = new OffscreenCanvas(0, 0)
