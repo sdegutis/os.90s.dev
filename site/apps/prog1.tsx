@@ -4,7 +4,7 @@ import { $ } from "../shared/ref.js"
 
 
 const panel = await Panel.create(
-  <PanelView size={$({ w: 75, h: 50 })} title={'test panel'}>
+  <PanelView size={$({ w: 175, h: 150 })} title={'Font Maker'}>
     <view />
   </PanelView>
 )
