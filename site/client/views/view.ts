@@ -20,6 +20,7 @@ export class view extends Dynamic {
   canFocus: boolean = false
   passthrough: boolean = true
   visible: boolean = true
+  autofocus: boolean = false
 
   hovered: boolean = false
   pressed: boolean = false
@@ -134,8 +135,6 @@ export class view extends Dynamic {
     ctx.fillStyle = bg
     ctx.fillRect(px, py, this.size.w, this.size.h)
   }
-
-  autofocus = false
 
   focus() {
     this.panel?.focusView(this)
