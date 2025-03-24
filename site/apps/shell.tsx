@@ -8,17 +8,15 @@ program.$size.watch(s => {
   console.log(s)
 })
 
-const desktopSize = program.$size.adapt(s => ({ ...s, h: s.h - 8 }))
 const desktop = await Panel.create((
-  <view size={desktopSize} background={0x333333ff} />
+  <view size={program.$size.adapt(s => ({ ...s, h: s.h - 8 }))} background={0x333333ff} />
 ), {
   order: 'bottom',
   pos: $({ x: 0, y: 0 }),
 })
 
-const taskbarSize = program.$size.adapt(s => ({ ...s, h: 8 }))
 const taskbar = await Panel.create((
-  <spacedx size={taskbarSize} background={0x444444ff}>
+  <spacedx size={program.$size.adapt(s => ({ ...s, h: 8 }))} background={0x444444ff}>
     <groupx></groupx>
     <Clock />
   </spacedx>
