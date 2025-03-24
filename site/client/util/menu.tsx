@@ -1,4 +1,5 @@
 import { $ } from "../../shared/ref.js"
+import { Panel } from "../core/panel.js"
 import { program } from "../core/prog.js"
 import type { Point } from "./types.js"
 
@@ -57,11 +58,7 @@ export async function showMenu(from: Point, items: MenuItem[]) {
     from = { ...from, x: from.x - root.size.w }
   }
 
-  const panel = await program.makePanel({
-    pos: $(from),
-    order: 'top',
-    view: root,
-  })
+  const panel = await Panel.create(root, { pos: $(from), order: 'top' })
 
   panel.focusPanel()
   root.focus()

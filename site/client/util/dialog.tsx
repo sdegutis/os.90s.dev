@@ -1,4 +1,4 @@
-import { program } from "../core/prog.js"
+import { Panel } from "../core/panel.js"
 import { dragMove } from "./drag.js"
 
 export async function showDialog(text: string) {
@@ -33,10 +33,7 @@ export async function showDialog(text: string) {
     </border>
   </border>
 
-  const panel = await program.makePanel({
-    pos: 'center',
-    view: dialog,
-  })
+  const panel = await Panel.create(dialog, { pos: 'center' })
 
   panel.focusPanel()
   dialog.focus()

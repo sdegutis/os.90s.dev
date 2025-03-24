@@ -1,5 +1,5 @@
 import { multiplex } from "../../shared/ref.js"
-import { program } from "../core/prog.js"
+import { Panel } from "../core/panel.js"
 import type { Textarea } from "../views/textarea.js"
 import { dragMove } from "./drag.js"
 
@@ -63,10 +63,7 @@ export async function showPrompt(text: string) {
     </border>
   </border>
 
-  const panel = await program.makePanel({
-    pos: 'center',
-    view: dialog,
-  })
+  const panel = await Panel.create(dialog, { pos: 'center' })
 
   panel.focusPanel()
   dialog.focus()

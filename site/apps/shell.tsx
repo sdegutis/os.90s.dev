@@ -1,3 +1,4 @@
+import { Panel } from "../client/core/panel.js"
 import { program } from "../client/core/prog.js"
 import { showMenu } from "../client/util/menu.js"
 import type { View } from "../client/views/view.js"
@@ -8,24 +9,22 @@ program.$size.watch(s => {
 })
 
 const desktopSize = program.$size.adapt(s => ({ ...s, h: s.h - 8 }))
-const desktop = await program.makePanel({
+const desktop = await Panel.create((
+  <view size={desktopSize} background={0x333333ff} />
+), {
   order: 'bottom',
   pos: $({ x: 0, y: 0 }),
-  view: (
-    <view size={desktopSize} background={0x333333ff} />
-  )
 })
 
 const taskbarSize = program.$size.adapt(s => ({ ...s, h: 8 }))
-const taskbar = await program.makePanel({
+const taskbar = await Panel.create((
+  <spacedx size={taskbarSize} background={0x444444ff}>
+    <groupx></groupx>
+    <Clock />
+  </spacedx>
+), {
   order: 'top',
   pos: program.$size.adapt(s => ({ x: 0, y: s.h - 8 })),
-  view: (
-    <spacedx size={taskbarSize} background={0x444444ff}>
-      <groupx></groupx>
-      <Clock />
-    </spacedx>
-  )
 })
 
 function Clock() {

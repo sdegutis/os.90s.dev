@@ -1,3 +1,4 @@
+import { Panel } from "../client/core/panel.js"
 import { program } from "../client/core/prog.js"
 import { showDialog } from "../client/util/dialog.js"
 import { PanelView } from "../client/util/panelview.js"
@@ -15,9 +16,8 @@ fasdfasdfsadf
 fasdfasdfsadf
 `
 
-const panel = await program.makePanel({
-  pos: 'center',
-  view: <PanelView size={size} title={'test panel'}>
+const panel = await Panel.create(
+  <PanelView size={size} title={'test panel'}>
     <splitxa>
       <margin padding={0} paddingColor={0x99000099}>
         <center background={0x00330099}>
@@ -36,8 +36,8 @@ const panel = await program.makePanel({
         <textarea autofocus text={t} />
       </scroll>
     </splitxa>
-  </PanelView>,
-})
+  </PanelView>
+)
 
 panel.focusPanel()
 

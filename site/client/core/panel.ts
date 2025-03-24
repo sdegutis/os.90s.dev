@@ -1,10 +1,11 @@
 import type { Cursor } from "../../shared/cursor.js"
 import { Listener } from "../../shared/listener.js"
 import { $, type Ref } from "../../shared/ref.js"
-import { wRPC, type ClientPanel, type ServerPanel } from "../../shared/rpc.js"
+import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../../shared/rpc.js"
 import { debounce } from "../util/throttle.js"
 import type { Point, Size } from "../util/types.js"
 import type { View } from "../views/view.js"
+import { program } from "./prog.js"
 
 export class Panel {
 
@@ -40,6 +41,13 @@ export class Panel {
   private hovered: View | null = null
   private clicking: View | null = null
   private focused: View | null = null
+
+  static async create(view: JSX.Element, config?: {
+    order?: PanelOrdering,
+    pos?: Ref<Point> | 'default' | 'center',
+  }) {
+    return await program.makePanel({ view, ...config })
+  }
 
   constructor(keymap: Set<string>, port: MessagePort, id: number, point: Ref<Point>, size: Ref<Size>, root: JSX.Element) {
     Panel.all.set(id, this)
