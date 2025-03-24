@@ -34,15 +34,15 @@ export class Dynamic {
       proto.init!.call(this)
   }
 
-  $$watch<K extends keyof this>(key: K, fn: (val: this[K], old: this[K]) => void) {
+  $$ref<K extends keyof this & string>(key: K) {
+    return this[`$${key}` as keyof this] as Ref<this[K]>
+  }
+
+  $$watch<K extends keyof this & string>(key: K, fn: (val: this[K], old: this[K]) => void) {
     return this.$$ref(key).watch((val, old) => fn(val, old))
   }
 
-  $$ref<K extends keyof this>(key: K) {
-    return this[`$${key as string}` as keyof this] as Ref<this[K]>
-  }
-
-  $$multiplex(...keys: (keyof this)[]) {
+  $$multiplex(...keys: (keyof this & string)[]) {
     const listener = new Listener()
     keys.forEach(key => this.$$watch(key, () => listener.dispatch()))
     return listener

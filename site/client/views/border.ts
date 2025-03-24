@@ -3,7 +3,7 @@ import { Margin } from "./margin.js"
 export class Border extends Margin {
 
   override init(): void {
-    this.$$multiplex('padding').watch(() => {
+    this.$$watch('padding', () => {
       this.adjust()
     })
     this.adjust()
