@@ -1,9 +1,9 @@
 import { Bitmap } from "../../shared/bitmap.js"
 import { Cursor } from "../../shared/cursor.js"
 import type { Panel } from "../core/panel.js"
-import type { image } from "../views/image.js"
-import type { spacedx } from "../views/spaced.js"
-import type { view } from "../views/view.js"
+import type { ImageView } from "../views/image.js"
+import type { SpacedX } from "../views/spaced.js"
+import type { View } from "../views/view.js"
 import { dragMove, dragResize } from "./drag.js"
 import { $, Ref } from "./ref.js"
 import type { Point, Size } from "./types.js"
@@ -22,14 +22,14 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
   0, 1, 1, 1, 0,
 ]))
 
-export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, children: view }) {
+export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, children: View }) {
 
   let panel: Panel
 
   const focused = $(false)
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
 
-  function titleBarMouseDown(this: spacedx, button: number, pos: Point) {
+  function titleBarMouseDown(this: SpacedX, button: number, pos: Point) {
     this.onMouseMove = dragMove(pos, panel)
     this.onMouseUp = () => {
       delete this.onMouseMove
@@ -101,7 +101,7 @@ function PanelResizer(data: { size: Ref<Size> }) {
     }
   }
 
-  function resizerMouseDown(this: image, button: number, pos: Point) {
+  function resizerMouseDown(this: ImageView, button: number, pos: Point) {
     setClaims(1)
     this.onMouseMove = dragResize(pos, panel)
     this.onMouseUp = () => {
@@ -115,8 +115,8 @@ function PanelResizer(data: { size: Ref<Size> }) {
     passthrough={false}
     presented={p => panel = p}
     bitmap={adjImage}
-    onMouseEnter={function (this: view) { setClaims(+1) }}
-    onMouseExit={function (this: view) { setClaims(-1) }}
+    onMouseEnter={function (this: View) { setClaims(+1) }}
+    onMouseExit={function (this: View) { setClaims(-1) }}
     point={data.size.adapt(s => ({
       x: s.w - adjImage.width,
       y: s.h - adjImage.height,

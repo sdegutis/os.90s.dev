@@ -1,7 +1,7 @@
 import { colorFor } from "../util/colors.js"
-import { view } from "./view.js"
+import { View } from "./view.js"
 
-export class margin extends view {
+export class Margin extends View {
 
   marginColor: number = 0x00000000
   padding: number = 0

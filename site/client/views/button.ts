@@ -1,6 +1,6 @@
-import { border } from "./border.js"
+import { Border } from "./border.js"
 
-export class button extends border {
+export class Button extends Border {
 
   override hoverBackground: number = 0xffffff22
   override pressBackground: number = 0xffffff11

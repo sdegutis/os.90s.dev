@@ -1,6 +1,6 @@
-import { view } from "./view.js"
+import { View } from "./view.js"
 
-export class spaced extends view {
+export class Spaced extends View {
 
   dir: 'x' | 'y' = 'x'
 
@@ -50,10 +50,10 @@ export class spaced extends view {
 
 }
 
-export class spacedx extends spaced {
+export class SpacedX extends Spaced {
   override dir = 'x' as const
 }
 
-export class spacedy extends spaced {
+export class SpacedY extends Spaced {
   override dir = 'y' as const
 }

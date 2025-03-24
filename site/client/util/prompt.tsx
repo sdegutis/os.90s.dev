@@ -1,5 +1,5 @@
 import { program } from "../core/prog.js"
-import type { textarea } from "../views/textarea.js"
+import type { Textarea } from "../views/textarea.js"
 import { dragMove } from "./drag.js"
 import { multiplex } from "./ref.js"
 
@@ -7,7 +7,7 @@ export async function showPrompt(text: string) {
   const result = Promise.withResolvers<string | null>()
 
   const prompt = <label text={text} />
-  const textarea = <textarea multiline={false} /> as textarea
+  const textarea = <textarea multiline={false} /> as Textarea
   const buttons = <groupx gap={2}>
     <button onClick={no} background={0x99000099} padding={2}><label text={'cancel'} /></button>
     <button onClick={ok} background={0xffffff33} padding={2}><label text={'ok'} /></button>

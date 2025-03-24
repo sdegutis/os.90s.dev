@@ -4,11 +4,11 @@ import { dragMove } from "../util/drag.js"
 import { make } from "../util/dyn.js"
 import { debounce } from "../util/throttle.js"
 import { type Point } from "../util/types.js"
-import { view } from "./view.js"
+import { View } from "./view.js"
 
-class SplitDivider extends view {
+class SplitDivider extends View {
 
-  split!: split
+  split!: Split
   override  passthrough: boolean = false
 
   override pressed: boolean = false
@@ -92,7 +92,7 @@ class SplitDivider extends view {
 
 }
 
-export class split extends view {
+export class Split extends View {
 
   pos: number = 20
   min: number = 10
@@ -153,22 +153,22 @@ export class split extends view {
 
 }
 
-export class splitxa extends split {
+export class SplitXA extends Split {
   override dir = 'x' as const
   override stick = 'a' as const
 }
 
-export class splitya extends split {
+export class SplitYA extends Split {
   override dir = 'y' as const
   override stick = 'a' as const
 }
 
-export class splitxb extends split {
+export class SplitXB extends Split {
   override dir = 'x' as const
   override stick = 'b' as const
 }
 
-export class splityb extends split {
+export class SplitYB extends Split {
   override dir = 'y' as const
   override stick = 'b' as const
 }

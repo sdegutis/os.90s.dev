@@ -1,7 +1,7 @@
 import type { Size } from "../util/types.js"
-import { view } from "./view.js"
+import { View } from "./view.js"
 
-export class group extends view {
+export class Group extends View {
 
   gap: number = 0
   dir: 'x' | 'y' = 'x'
@@ -58,10 +58,10 @@ export class group extends view {
 
 }
 
-export class groupx extends group {
+export class GroupX extends Group {
   override dir = 'x' as const
 }
 
-export class groupy extends group {
+export class GroupY extends Group {
   override dir = 'y' as const
 }

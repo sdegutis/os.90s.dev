@@ -4,15 +4,15 @@ import { colorFor } from "../util/colors.js"
 import { Dynamic } from "../util/dyn.js"
 import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../util/types.js"
 
-export class view extends Dynamic {
+export class View extends Dynamic {
 
   panel: Panel | null = null
 
-  parent: view | null = null
-  children: readonly view[] = []
+  parent: View | null = null
+  children: readonly View[] = []
 
-  get firstChild(): view | undefined { return this.children[0] }
-  get lastChild(): view | undefined { return this.children[this.children.length - 1] }
+  get firstChild(): View | undefined { return this.children[0] }
+  get lastChild(): View | undefined { return this.children[this.children.length - 1] }
 
   point: Point = { x: 0, y: 0 }
   size: Size = { w: 0, h: 0 }
@@ -61,7 +61,7 @@ export class view extends Dynamic {
   adjust?(): void
   layout?(): void
 
-  adopted?(parent: view): void
+  adopted?(parent: View): void
   presented?(panel: Panel): void
 
   override init(): void {

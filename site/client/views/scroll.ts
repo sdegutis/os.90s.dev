@@ -2,25 +2,25 @@ import { useCursor, xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { make } from "../util/dyn.js"
 import { multiplex } from "../util/ref.js"
-import { panedxb, panedyb } from "./paned.js"
-import { view } from "./view.js"
+import { PanedXB, PanedYB } from "./paned.js"
+import { View } from "./view.js"
 
-export class scroll extends view {
+export class Scroll extends View {
 
   scrollBy: number = 6
 
   scrollx: number = 0
   scrolly: number = 0
 
-  content!: view
-  area = make(view, {})
+  content!: View
+  area = make(View, {})
 
-  barv = make(view, { size: { w: 3, h: 0 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
-  barh = make(view, { size: { w: 0, h: 3 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barv = make(View, { size: { w: 3, h: 0 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barh = make(View, { size: { w: 0, h: 3 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
 
-  trackv = make(view, { background: 0x00000033, children: [this.barv] })
-  trackh = make(view, { background: 0x00000033, children: [this.barh] })
-  corner = make(view, { background: 0x00000033, size: { w: 0, h: 3 } })
+  trackv = make(View, { background: 0x00000033, children: [this.barv] })
+  trackh = make(View, { background: 0x00000033, children: [this.barh] })
+  corner = make(View, { background: 0x00000033, size: { w: 0, h: 3 } })
 
   showh = true
   showv = true
@@ -31,9 +31,9 @@ export class scroll extends view {
     this.content = this.children[0]
     this.area.children = [this.content]
 
-    const panea = make(panedyb, { children: [this.area, this.trackh] })
-    const paneb = make(panedyb, { children: [this.trackv, this.corner] })
-    this.children = [make(panedxb, { children: [panea, paneb] })]
+    const panea = make(PanedYB, { children: [this.area, this.trackh] })
+    const paneb = make(PanedYB, { children: [this.trackv, this.corner] })
+    this.children = [make(PanedXB, { children: [panea, paneb] })]
 
     const reflectTracksShown = () => {
       this.trackh.size = { w: 0, h: this.showh ? 3 : 0 }

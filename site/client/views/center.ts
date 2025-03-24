@@ -1,6 +1,6 @@
-import { view } from "./view.js"
+import { View } from "./view.js"
 
-export class center extends view {
+export class Center extends View {
 
   override layout(): void {
     for (const child of this.children) {
