@@ -49,11 +49,11 @@ export async function showMenu(from: Point, items: MenuItem[]) {
     </border>
   )
 
-  if (from.y + root.size.h > program.height) {
+  if (from.y + root.size.h > program.size.h) {
     from = { ...from, y: from.y - root.size.h }
   }
 
-  if (from.x + root.size.w > program.width) {
+  if (from.x + root.size.w > program.size.w) {
     from = { ...from, x: from.x - root.size.w }
   }
 

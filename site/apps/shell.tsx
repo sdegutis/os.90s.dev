@@ -3,11 +3,11 @@ import { showMenu } from "../client/util/menu.js"
 import type { View } from "../client/views/view.js"
 import { $ } from "../shared/ref.js"
 
-program.onResized.watch(s => {
+program.$size.watch(s => {
   console.log(s)
 })
 
-const desktopSize = $({ w: program.width, h: program.height - 8 })
+const desktopSize = program.$size.adapt(s => ({ ...s, h: s.h - 8 }))
 const desktop = await program.makePanel({
   order: 'bottom',
   pos: $({ x: 0, y: 0 }),
@@ -17,11 +17,11 @@ const desktop = await program.makePanel({
   )
 })
 
-const taskbarSize = $({ w: program.width, h: 8 })
+const taskbarSize = program.$size.adapt(s => ({ ...s, h: 8 }))
 const taskbar = await program.makePanel({
   order: 'top',
   size: taskbarSize,
-  pos: $({ x: 0, y: program.height - 8 }),
+  pos: program.$size.adapt(s => ({ x: 0, y: s.h - 8 })),
   view: (
     <spacedx size={taskbarSize} background={0x444444ff}>
       <groupx></groupx>
