@@ -5,8 +5,8 @@ export class Spaced extends View {
   dir: 'x' | 'y' = 'x'
 
   override init(): void {
-    this.$$multiplex('dir').watch(() => this.adjust())
-    this.$$multiplex('size').watch(() => this.layout())
+    this.$.dir.watch(() => this.adjust())
+    this.$.size.watch(() => this.layout())
     this.adjust()
     this.layout()
   }

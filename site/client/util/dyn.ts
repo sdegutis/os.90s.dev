@@ -1,5 +1,4 @@
-import { Listener } from "../../shared/listener.js"
-import { $, Ref } from "./ref.js"
+import { $, multiplex, Ref } from "./ref.js"
 
 export class Dynamic {
 
@@ -10,11 +9,8 @@ export class Dynamic {
       let val = this[key]
       if (val instanceof Function) continue
 
-      const ref = val instanceof Ref ? val : $(val)
-      Object.defineProperty(this, `$${key}`, {
-        value: ref,
-        enumerable: false,
-      })
+      const ref = val instanceof Ref ? val : $(val);
+      (this.$ as any)[key] = ref
 
       Object.defineProperty(this, key, {
         get: () => ref.val,
@@ -34,18 +30,16 @@ export class Dynamic {
       proto.init!.call(this)
   }
 
-  $$ref<K extends keyof this & string>(key: K) {
-    return this[`$${key}` as keyof this] as Ref<this[K]>
+  $ = Object.create(null) as {
+    readonly [K in (keyof this & string) as (K extends '$' ? never : K)]: this[K] extends ((...args: any) => any) | undefined ? never : Ref<this[K]>
   }
 
-  $$watch<K extends keyof this & string>(key: K, fn: (val: this[K], old: this[K]) => void) {
-    return this.$$ref(key).watch((val, old) => fn(val, old))
-  }
-
-  $$multiplex(...keys: (keyof this & string)[]) {
-    const listener = new Listener()
-    keys.forEach(key => this.$$watch(key, () => listener.dispatch()))
-    return listener
+  $$multiplex(...keys: (keyof this['$'])[]) {
+    return {
+      watch: (fn: (...args: any) => any) => {
+        return multiplex(keys.map(k => (this.$ as any)[k as any]), fn)
+      }
+    }
   }
 
 }

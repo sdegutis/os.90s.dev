@@ -13,15 +13,17 @@ export async function showPrompt(text: string) {
     <button onClick={ok} background={0xffffff33} padding={2}><label text={'ok'} /></button>
   </groupx>
 
+  // prompt.$.
+
   textarea.onEnter = ok
 
   const scroll = <scroll
     showh={false}
     showv={false}
     size={multiplex([
-      prompt.$$ref('size'),
-      textarea.$$ref('size'),
-      buttons.$$ref('size'),
+      prompt.$.size,
+      textarea.$.size,
+      buttons.$.size,
     ], () => ({
       w: Math.max(buttons.size.w, prompt.size.w) - 4,
       h: textarea.size.h,
@@ -63,7 +65,7 @@ export async function showPrompt(text: string) {
   </border>
 
   const panel = await program.makePanel({
-    size: dialog.$$ref('size'),
+    size: dialog.$.size,
     pos: 'center',
     view: dialog,
   })

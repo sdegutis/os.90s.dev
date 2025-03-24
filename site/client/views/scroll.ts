@@ -42,12 +42,12 @@ export class Scroll extends View {
     }
 
     reflectTracksShown()
-    this.$$watch('showh', reflectTracksShown)
-    this.$$watch('showv', reflectTracksShown)
+    this.$.showh.watch(reflectTracksShown)
+    this.$.showv.watch(reflectTracksShown)
 
     const percent = multiplex([
-      this.area.$$ref('size'),
-      this.content.$$ref('size'),
+      this.area.$.size,
+      this.content.$.size,
     ], () => ({
       w: this.area.size.w / this.content.size.w,
       h: this.area.size.h / this.content.size.h,
@@ -55,8 +55,8 @@ export class Scroll extends View {
 
     multiplex([
       percent,
-      this.$$ref('scrollx'),
-      this.$$ref('scrolly'),
+      this.$.scrollx,
+      this.$.scrolly,
     ], () => {
       const as = this.area.size
 
@@ -105,11 +105,11 @@ export class Scroll extends View {
       }
     }
 
-    paneb.$$watch('size', () => this.constrainContent())
-    this.content.$$watch('size', () => this.constrainContent())
-    this.$$watch('size', () => this.constrainContent())
-    this.$$watch('scrollx', () => this.constrainContent())
-    this.$$watch('scrolly', () => this.constrainContent())
+    paneb.$.size.watch(() => this.constrainContent())
+    this.content.$.size.watch(() => this.constrainContent())
+    this.$.size.watch(() => this.constrainContent())
+    this.$.scrollx.watch(() => this.constrainContent())
+    this.$.scrolly.watch(() => this.constrainContent())
   }
 
   private constrainContent() {

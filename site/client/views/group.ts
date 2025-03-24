@@ -9,7 +9,7 @@ export class Group extends View {
 
   override init(): void {
     this.$$multiplex('gap', 'dir', 'align', 'children').watch(() => this.adjust())
-    this.$$watch('children', () => this.layout())
+    this.$.children.watch(() => this.layout())
     this.adjust()
     // this.layout()
   }

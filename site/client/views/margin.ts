@@ -7,10 +7,10 @@ export class Margin extends View {
   padding: number = 0
 
   override init(): void {
-    this.$$watch('padding', () => {
+    this.$.padding.watch(() => {
       this.layout()
     })
-    this.$$multiplex('paddingColor').watch(() => this.needsRedraw())
+    this.$.paddingColor.watch(() => this.needsRedraw())
     this.layout()
   }
 

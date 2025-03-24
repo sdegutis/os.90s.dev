@@ -1,5 +1,4 @@
 import { program } from "../client/core/prog.js"
-import { showDialog } from "../client/util/dialog.js"
 import { PanelView } from "../client/util/panelview.js"
 import { showPrompt } from "../client/util/prompt.js"
 import { $ } from "../client/util/ref.js"
@@ -19,7 +18,7 @@ const panel = await program.makePanel({
             s.dir = s.dir === 'x' ? 'y' : 'x'
 
             await showPrompt('hey1')
-            await showDialog('hey2')
+            await showPrompt('hey2 much longer string')
 
           }} padding={2}><label text={'test'} /></button>
         </center>

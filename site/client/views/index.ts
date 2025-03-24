@@ -46,4 +46,4 @@ export const primitives = {
   spacedx: SpacedX,
   spacedy: SpacedY,
 
-}
+} satisfies Record<string, typeof View>

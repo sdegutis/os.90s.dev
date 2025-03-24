@@ -6,7 +6,7 @@ export class ImageView extends View {
   bitmap: Bitmap | null = null
 
   override init(): void {
-    this.$$multiplex('bitmap').watch(() => this.adjust())
+    this.$.bitmap.watch(() => this.adjust())
     this.adjust()
   }
 

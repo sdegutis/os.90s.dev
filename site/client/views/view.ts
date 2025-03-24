@@ -69,11 +69,11 @@ export class View extends Dynamic {
       this.layout?.()
     })
 
-    this.$$watch('parent', (parent) => {
+    this.$.parent.watch((parent) => {
       if (parent) this.adopted?.(parent)
     })
 
-    this.$$watch('panel', (panel) => {
+    this.$.panel.watch((panel) => {
       if (panel) {
         this.presented?.(panel)
         if (this.autofocus) {
@@ -82,14 +82,14 @@ export class View extends Dynamic {
       }
     })
 
-    this.$$watch('size', () => {
+    this.$.size.watch(() => {
       this.layout?.()
       this.parent?.childResized.dispatch()
       this.panel?.needsMouseCheck()
       this.needsRedraw()
     })
 
-    this.$$watch('point', () => {
+    this.$.point.watch(() => {
       this.panel?.needsMouseCheck()
       this.needsRedraw()
     })
@@ -101,7 +101,7 @@ export class View extends Dynamic {
       this.needsRedraw()
     })
 
-    this.$$watch('children', () => {
+    this.$.children.watch(() => {
       for (const child of this.children) {
         child.parent = this
         this.panel?.adoptTree(child)
@@ -116,9 +116,9 @@ export class View extends Dynamic {
       this.panel?.adoptTree(child)
     }
 
-    this.$$ref('children').equals = arrayEquals
-    this.$$ref('point').equals = pointEquals
-    this.$$ref('size').equals = sizeEquals
+    this.$.children.equals = arrayEquals
+    this.$.point.equals = pointEquals
+    this.$.size.equals = sizeEquals
   }
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
