@@ -106,9 +106,6 @@ export class Panel {
         }
         node = node.parent
       }
-
-      // this.focused?.onBlur?.()
-      // this.focused = null
     })
 
     this.rpc.listen('mousemoved', (x, y) => {
