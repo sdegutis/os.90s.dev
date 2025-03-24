@@ -16,7 +16,7 @@ const desktop = await Panel.create((
 })
 
 const taskbar = await Panel.create((
-  <spacedx size={program.$size.adapt(s => ({ ...s, h: 8 }))} background={0x444444ff}>
+  <spacedx size={program.$size.adapt(s => ({ ...s, h: 8 }))} background={0x000000dd}>
     <groupx></groupx>
     <Clock />
   </spacedx>

@@ -1,5 +1,4 @@
 import { Panel } from "../client/core/panel.js"
-import { program } from "../client/core/prog.js"
 import { showDialog } from "../client/util/dialog.js"
 import { PanelView } from "../client/util/panelview.js"
 import { showPrompt } from "../client/util/prompt.js"
@@ -40,6 +39,6 @@ const panel = await Panel.create(
 
 panel.focusPanel()
 
-setTimeout(() => {
-  program.resize(320 * 2, 180 * 2)
-}, 1000)
+// setTimeout(() => {
+//   program.resize(320 * 2, 180 * 2)
+// }, 1000)
