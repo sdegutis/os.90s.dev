@@ -100,7 +100,7 @@ export class view extends Dynamic {
     this.$$watch('children', () => {
       for (const child of this.children) {
         child.parent = this
-        child.adoptTree(this.panel)
+        this.panel?.adoptTree(child)
       }
       this.adjust?.()
       this.layout?.()
@@ -109,7 +109,7 @@ export class view extends Dynamic {
 
     for (const child of this.children) {
       child.parent = this
-      child.adoptTree(this.panel)
+      this.panel?.adoptTree(child)
     }
 
     this.$$ref('children').equals = arrayEquals
@@ -138,13 +138,6 @@ export class view extends Dynamic {
 
   focus() {
     this.panel?.focusView(this)
-  }
-
-  adoptTree(panel: Panel | null) {
-    this.panel = panel
-    for (const child of this.children) {
-      child.adoptTree(panel)
-    }
   }
 
   private onChildResized = debounce(() => {

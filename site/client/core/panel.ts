@@ -139,11 +139,18 @@ export class Panel {
     })
 
     this.root = root
-    this.root.adoptTree(this)
+    this.adoptTree(this.root)
 
     this.hovered = this.root
 
     this.blit()
+  }
+
+  adoptTree(node: view) {
+    node.panel = this
+    for (const child of node.children) {
+      this.adoptTree(child)
+    }
   }
 
   focus() {
