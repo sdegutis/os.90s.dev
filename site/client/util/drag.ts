@@ -1,4 +1,4 @@
-import type { Ref } from "./ref.js"
+import type { Ref } from "../../shared/ref.js"
 import type { Point, Size } from "./types.js"
 
 export function dragMove(anchor: Ref<Point>, o: { point: Point }) {

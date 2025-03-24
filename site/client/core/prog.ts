@@ -1,5 +1,6 @@
+import { Listener } from "../../shared/listener.js"
+import { $, type Ref } from "../../shared/ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "../../shared/rpc.js"
-import { $, type Ref } from "../util/ref.js"
 import type { Point, Size } from "../util/types.js"
 import { Panel } from "./panel.js"
 
@@ -16,6 +17,8 @@ export class Program {
 
   keymap = new Set<string>()
 
+  onResized = new Listener<{ w: number, h: number }>()
+
   async init() {
     this.rpc.send('init', [])
     const [id, w, h, keymap] = await this.rpc.once('init')
@@ -24,6 +27,10 @@ export class Program {
     this.height = h
 
     keymap.forEach(k => this.keymap.add(k))
+
+    this.rpc.listen('resized', (w, h) => {
+      this.onResized.dispatch({ w, h })
+    })
 
     this.rpc.listen('keydown', (key) => {
       this.keymap.add(key)
@@ -75,6 +82,10 @@ export class Program {
   terminate() {
     this.rpc.send('terminate', [])
     self.close()
+  }
+
+  resize(w: number, h: number) {
+    this.rpc.send('resize', [w, h])
   }
 
 }

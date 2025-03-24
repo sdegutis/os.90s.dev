@@ -6,11 +6,13 @@ export interface ServerProgram {
   init(): void
   newpanel(ord: PanelOrdering, x: number, y: number, w: number, h: number): void
   terminate(): void
+  resize(w: number, h: number): void
   pong(n: number): void
 }
 
 export interface ClientProgram {
   init(id: number, w: number, h: number, keymap: string[]): void
+  resized(w: number, h: number): void
   ping(n: number): void
   keydown(key: string): void
   keyup(key: string): void

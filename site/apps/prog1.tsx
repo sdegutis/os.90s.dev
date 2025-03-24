@@ -2,8 +2,8 @@ import { program } from "../client/core/prog.js"
 import { showDialog } from "../client/util/dialog.js"
 import { PanelView } from "../client/util/panelview.js"
 import { showPrompt } from "../client/util/prompt.js"
-import { $ } from "../client/util/ref.js"
 import type { Split } from "../client/views/split.js"
+import { $ } from "../shared/ref.js"
 
 const size = $({ w: 75, h: 50 })
 
@@ -41,3 +41,7 @@ const panel = await program.makePanel({
 })
 
 panel.focusPanel()
+
+setTimeout(() => {
+  program.resize(320 * 2, 180 * 2)
+}, 1000)

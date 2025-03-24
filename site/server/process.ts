@@ -30,12 +30,15 @@ export class Process {
     this.rpc = rpc
 
     rpc.once('terminate').then(() => {
-      console.log('terminating in server', this.id)
       this.terminate()
     })
 
+    rpc.listen('resize', (w, h) => {
+      sys.resize(w, h)
+    })
+
     rpc.once('init').then(() => {
-      rpc.send('init', [this.id, this.sys.width, this.sys.height, [...this.sys.keymap]])
+      rpc.send('init', [this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap]])
     })
 
     this.heartbeat = setInterval(async () => {

@@ -1,7 +1,7 @@
 import type { Cursor } from "../../shared/cursor.js"
 import { Listener } from "../../shared/listener.js"
+import { $, type Ref } from "../../shared/ref.js"
 import { wRPC, type ClientPanel, type ServerPanel } from "../../shared/rpc.js"
-import { $, type Ref } from "../util/ref.js"
 import { debounce } from "../util/throttle.js"
 import type { Point, Size } from "../util/types.js"
 import type { View } from "../views/view.js"

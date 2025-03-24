@@ -1,6 +1,6 @@
+import { multiplex } from "../../shared/ref.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
-import { multiplex } from "../util/ref.js"
 import { PanedXB, PanedYB } from "./paned.js"
 import { View } from "./view.js"
 

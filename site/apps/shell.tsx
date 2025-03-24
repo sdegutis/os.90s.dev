@@ -1,7 +1,11 @@
 import { program } from "../client/core/prog.js"
 import { showMenu } from "../client/util/menu.js"
-import { $ } from "../client/util/ref.js"
 import type { View } from "../client/views/view.js"
+import { $ } from "../shared/ref.js"
+
+program.onResized.watch(s => {
+  console.log(s)
+})
 
 const desktopSize = $({ w: program.width, h: program.height - 8 })
 const desktop = await program.makePanel({

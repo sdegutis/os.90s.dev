@@ -1,5 +1,5 @@
+import { $ } from "../../shared/ref.js"
 import { program } from "../core/prog.js"
-import { $ } from "./ref.js"
 import type { Point } from "./types.js"
 
 export type MenuItem = { text: string, onClick(): void } | '-'

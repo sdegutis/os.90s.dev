@@ -1,11 +1,12 @@
 import { Cursor } from "../shared/cursor.js"
+import { $ } from "../shared/ref.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 import { Process } from "./process.js"
 
 export class Sys {
 
-  ctx
+  private ctx
   mouse = { x: 0, y: 0 }
   keymap = new Set<string>()
 
@@ -14,15 +15,14 @@ export class Sys {
   clicking: Panel | null = null
   prevFocused: Panel | null = null
 
-  width: number
-  height: number
+  $size
+  get size() { return this.$size.val }
 
-  constructor(w: number, h: number) {
-    const { canvas, ctx } = setupCanvas(w, h)
+  constructor(width: number, height: number) {
+    this.$size = $({ w: width, h: height })
+
+    const { canvas, ctx } = setupCanvas(this.$size)
     this.ctx = ctx
-
-    this.width = w
-    this.height = h
 
     canvas.oncontextmenu = (e) => {
       e.preventDefault()
@@ -45,8 +45,8 @@ export class Sys {
     }
 
     canvas.onmousemove = (e) => {
-      const x = Math.min(w - 1, e.offsetX)
-      const y = Math.min(h - 1, e.offsetY)
+      const x = Math.min(this.size.w - 1, e.offsetX)
+      const y = Math.min(this.size.h - 1, e.offsetY)
 
       if (x === this.mouse.x && y === this.mouse.y) return
       this.mouse.x = x
@@ -87,6 +87,12 @@ export class Sys {
     }
   }
 
+  resize(w: number, h: number) {
+    this.$size.val = { w, h }
+    Process.all.forEach(p => p.rpc.send('resized', [w, h]))
+    this.redrawAllPanels()
+  }
+
   private findHovered() {
     for (const panel of Panel.ordered.toReversed()) {
       if (this.mouse.x >= panel.x && this.mouse.y >= panel.y &&
@@ -98,7 +104,7 @@ export class Sys {
   }
 
   redrawAllPanels() {
-    this.ctx.clearRect(0, 0, this.width, this.height)
+    this.ctx.clearRect(0, 0, this.size.w, this.size.h)
     for (const panel of Panel.ordered) {
       if (panel.img) {
         this.ctx.drawImage(panel.img, panel.x, panel.y)

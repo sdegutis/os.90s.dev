@@ -1,9 +1,11 @@
-export function setupCanvas(width: number, height: number) {
+import type { Ref } from "../shared/ref.js"
+
+export function setupCanvas(size: Ref<{ readonly w: number, readonly h: number }>) {
 
   const canvas = document.createElement('canvas')
 
-  canvas.width = width
-  canvas.height = height
+  canvas.width = size.val.w
+  canvas.height = size.val.h
 
   canvas.style.imageRendering = 'pixelated'
   canvas.style.backgroundColor = '#000'
@@ -15,14 +17,22 @@ export function setupCanvas(width: number, height: number) {
   canvas.tabIndex = 1
   canvas.focus()
 
-  new ResizeObserver(() => {
+  function resize() {
     const rect = canvas.parentElement!.getBoundingClientRect()
-    let w = width, h = height, s = 1
+    let w = size.val.w, h = size.val.h, s = 1
     while (
-      (w += width) <= rect.width &&
-      (h += height) <= rect.height) s++
+      (w += size.val.w) <= rect.width &&
+      (h += size.val.h) <= rect.height) s++
     canvas.style.transform = `scale(${s})`
-  }).observe(canvas.parentElement!)
+  }
+
+  size.watch(s => {
+    canvas.width = s.w
+    canvas.height = s.h
+    resize()
+  })
+
+  new ResizeObserver(resize).observe(canvas.parentElement!)
 
   const ctx = canvas.getContext('2d')!
   return { ctx, canvas }

@@ -57,8 +57,8 @@ export class Panel {
       this.y = (cascadeFrom?.y ?? 0) + 10
     }
     else if (positioning === 'center') {
-      this.x = Math.round(sys.width / 2 - this.w / 2)
-      this.y = Math.round(sys.height / 2 - this.h / 2)
+      this.x = Math.round(sys.size.w / 2 - this.w / 2)
+      this.y = Math.round(sys.size.h / 2 - this.h / 2)
     }
 
     this.rpc.listen('focus', () => {

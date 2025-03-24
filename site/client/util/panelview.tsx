@@ -1,11 +1,11 @@
 import { Bitmap } from "../../shared/bitmap.js"
 import { Cursor } from "../../shared/cursor.js"
+import { $, type Ref } from "../../shared/ref.js"
 import type { Panel } from "../core/panel.js"
 import type { ImageView } from "../views/image.js"
 import type { SpacedX } from "../views/spaced.js"
 import type { View } from "../views/view.js"
 import { dragMove, dragResize } from "./drag.js"
-import { $, Ref } from "./ref.js"
 import type { Size } from "./types.js"
 
 const minImage = new Bitmap([0xffffff33], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
