@@ -3,21 +3,21 @@ import { $, Ref } from "./ref.js"
 export class Dynamic {
 
   static make<T extends Dynamic>(this: new () => T, data: { [K in keyof T]?: T[K] | Ref<T[K]> }) {
-    const v = new this()
+    const o = new this()
 
     const init = data.init instanceof Ref ? data.init.val : data.init
     delete data.init
 
-    Object.assign(v, data)
+    Object.assign(o, data)
 
-    for (const key in v) {
-      let val = v[key]
+    for (const key in o) {
+      let val = o[key]
       if (val instanceof Function) continue
 
       const ref = val instanceof Ref ? val : $(val);
-      (v.$ as any)[key] = ref
+      (o.$ as any)[key] = ref
 
-      Object.defineProperty(v, key, {
+      Object.defineProperty(o, key, {
         get: () => ref.val,
         set: (v) => ref.val = v,
         enumerable: true,
@@ -25,18 +25,18 @@ export class Dynamic {
     }
 
     const protos = []
-    let proto: Dynamic | undefined = v
+    let proto: Dynamic | undefined = o
 
     while (proto = Object.getPrototypeOf(proto))
       if (Object.hasOwn(proto, 'init'))
         protos.push(proto)
 
     while (proto = protos.pop())
-      proto.init!.call(v)
+      proto.init!.call(o)
 
-    init?.apply(v)
+    init?.apply(o)
 
-    return v
+    return o
   }
 
   init?(): void
