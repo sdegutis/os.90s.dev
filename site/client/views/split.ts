@@ -1,4 +1,3 @@
-import type { Cursor } from "../../shared/cursor.js"
 import { colorFor } from "../util/colors.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
@@ -12,11 +11,13 @@ class SplitDivider extends View {
   split!: Split
   override passthrough: boolean = false
   override pressed: boolean = false
-  private cursor!: Cursor
 
   override init(): void {
     this.$$multiplex('hovered', 'pressed').watch(() => this.needsRedraw())
-    this.cursor = this.split.dir === 'x' ? xresize : yresize
+  }
+
+  get cursor() {
+    return this.split.dir === 'x' ? xresize : yresize
   }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
