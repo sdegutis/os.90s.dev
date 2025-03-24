@@ -49,6 +49,16 @@ export async function showMenu(from: Point, items: MenuItem[]) {
     </border>
   )
 
+  if (from.y + root.size.h > program.height) {
+    from = { ...from, y: from.y - root.size.h }
+  }
+
+  if (from.x + root.size.w > program.width) {
+    from = { ...from, x: from.x - root.size.w }
+  }
+
+  console.log(root.size)
+
   const panel = await program.makePanel({
     size: root.$.size,
     pos: $(from),

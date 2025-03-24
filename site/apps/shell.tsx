@@ -32,8 +32,7 @@ function Clock() {
 
   function toggle(this: View, b: number) {
     if (b === 2) {
-      showMenu(this.panel!.mouse, [
-        ...Array(30).keys().map(i => ({ text: 'test1', onClick: () => { console.log('test1') } })).toArray(),
+      showMenu(this.panel!.absmouse, [
         { text: 'test1', onClick: () => { console.log('test1') } },
         { text: 'test2', onClick: () => { console.log('test2') } },
         { text: 'test3', onClick: () => { console.log('test3') } },
