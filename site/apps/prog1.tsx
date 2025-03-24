@@ -8,7 +8,7 @@ const panel = await program.makePanel({
   size,
   pos: 'center',
   view: <PanelView size={size} title={'test panel'}>
-    <splitxa>
+    <splitxa pos={3}>
       <center background={0x00330099}>
         <button padding={2}><label text={'test'} /></button>
       </center>
