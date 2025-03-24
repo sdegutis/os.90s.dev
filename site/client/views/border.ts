@@ -5,11 +5,8 @@ export class Border extends Margin {
   override init(): void {
     this.$$multiplex('padding').watch(() => {
       this.adjust()
-      this.layout()
     })
-    this.$$multiplex('paddingColor').watch(() => this.needsRedraw())
     this.adjust()
-    this.layout()
   }
 
   override adjust(): void {
@@ -17,6 +14,7 @@ export class Border extends Margin {
       w: this.padding + (this.firstChild?.size.w ?? 0) + this.padding,
       h: this.padding + (this.firstChild?.size.h ?? 0) + this.padding,
     }
+    this.layout()
   }
 
   override layout(): void {
