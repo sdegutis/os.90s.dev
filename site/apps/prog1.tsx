@@ -5,7 +5,15 @@ import { showPrompt } from "../client/util/prompt.js"
 import { $ } from "../client/util/ref.js"
 import type { Split } from "../client/views/split.js"
 
-const size = $({ w: 175, h: 150 })
+const size = $({ w: 75, h: 50 })
+
+const t = `
+fasdfasdfsadf
+fasdfasdfsadf
+fasdfasdfsadf
+fasdfasdfsadf
+fasdfasdfsadf
+`
 
 const panel = await program.makePanel({
   size,
@@ -26,7 +34,7 @@ const panel = await program.makePanel({
         </center>
       </margin>
       <scroll background={0xffffff11} onMouseDown={function (...args) { this.content?.onMouseDown?.(...args) }}>
-        <textarea autofocus />
+        <textarea autofocus text={t} />
       </scroll>
     </splitxa>
   </PanelView>,

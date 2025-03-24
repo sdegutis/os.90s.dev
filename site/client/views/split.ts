@@ -28,7 +28,7 @@ class SplitDivider extends View {
   }
 
   override onMouseExit(): void {
-    this.panel?.popCursor()
+    this.panel?.popCursor(this.cursor)
   }
 
   override onMouseDown(button: number): void {
@@ -52,7 +52,7 @@ class SplitDivider extends View {
     const done = dragMove(this.panel!.$mouse, b)
     this.onMouseUp = () => {
       done()
-      this.panel?.popCursor()
+      this.panel?.popCursor(this.cursor)
       this.pressed = false
       delete this.onMouseUp
     }

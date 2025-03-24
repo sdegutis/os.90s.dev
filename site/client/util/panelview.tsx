@@ -90,7 +90,7 @@ function PanelResizer(data: { size: Ref<Size> }) {
     panel.pushCursor(adjCursor)
     const done = dragResize(panel.$mouse, panel)
     this.onMouseUp = () => {
-      panel.popCursor()
+      panel.popCursor(adjCursor)
       done()
       delete this.onMouseUp
     }
@@ -101,7 +101,7 @@ function PanelResizer(data: { size: Ref<Size> }) {
     presented={p => panel = p}
     bitmap={adjImage}
     onMouseEnter={function (this: View) { panel.pushCursor(adjCursor) }}
-    onMouseExit={function (this: View) { panel.popCursor() }}
+    onMouseExit={function (this: View) { panel.popCursor(adjCursor) }}
     point={data.size.adapt(s => ({
       x: s.w - adjImage.width,
       y: s.h - adjImage.height,

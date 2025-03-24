@@ -93,6 +93,7 @@ export class Panel {
         view.onMouseExit?.()
         view.hovered = false
       }
+      if (this.hovered) this.hovered.hovered = false
       this.hovered = null
       this.hoveredTree.clear()
     })
@@ -293,10 +294,12 @@ export class Panel {
     }
   }
 
-  popCursor() {
-    const old = this.cursors[0]
-    this.cursors.shift()
-    if (this.cursors[0] !== old) {
+  popCursor(c: Cursor) {
+    const idx = this.cursors.findIndex(cursor => cursor === c)
+    if (idx === -1) return
+    const oldFirst = this.cursors[0]
+    this.cursors.splice(idx, 1)
+    if (this.cursors[0] !== oldFirst) {
       this.setCursor(this.cursors[0] ?? null)
     }
   }
