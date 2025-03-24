@@ -7,7 +7,7 @@ export class Margin extends View {
   padding: number = 0
 
   override init(): void {
-    this.$$multiplex('padding', 'size').watch(() => {
+    this.$$watch('padding', () => {
       this.layout()
     })
     this.$$multiplex('marginColor').watch(() => this.needsRedraw())
