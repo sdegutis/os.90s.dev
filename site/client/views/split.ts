@@ -11,40 +11,20 @@ class SplitDivider extends View {
 
   split!: Split
   override  passthrough: boolean = false
-
   override pressed: boolean = false
-  dividerColor: number = 0x33333300
-
   private cursor!: Cursor
 
   override init(): void {
     this.$$multiplex('hovered', 'pressed').watch(() => this.needsRedraw())
-    this.background = this.dividerColor
     this.cursor = this.split.dir === 'x' ? xresize : yresize
   }
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
-    if (this.split.min === this.split.max) return
-
-    const dividerColorHover = 0xffffff33
-    const dividerColorPress = 0x1177ffcc
-    const dividerWidth = 1
-
-    const dx = this.split.dir
-    const dw = dx === 'x' ? 'w' : 'h'
-
-    const x = dx === 'x' ? Math.round((this.size[dw] - dividerWidth) / 2) : 0
-    const y = dx === 'y' ? Math.round((this.size[dw] - dividerWidth) / 2) : 0
-    const w = dx === 'x' ? dividerWidth : this.size.w
-    const h = dx === 'y' ? dividerWidth : this.size.h
-
     if (this.pressed) {
-      ctx.fillStyle = colorFor(dividerColorPress)
-      ctx.fillRect(px + x, py + y, w, h)
+      this.drawBackground(ctx, px, py, colorFor(this.split.dividerColorPress))
     }
-    else if (this.hovered) {
-      ctx.fillStyle = colorFor(dividerColorHover)
-      ctx.fillRect(px + x, py + y, w, h)
+    else if (this.hovered && this.split.min !== this.split.max) {
+      this.drawBackground(ctx, px, py, colorFor(this.split.dividerColorHover))
     }
   }
 
@@ -86,6 +66,9 @@ class SplitDivider extends View {
 }
 
 export class Split extends View {
+
+  dividerColorHover = 0xffffff33
+  dividerColorPress = 0x1177ffcc
 
   pos: number = 20
   min: number = 10
