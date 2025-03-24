@@ -17,6 +17,7 @@ const panel = await program.makePanel({
           <button onClick={async function () {
             const s = this.parent?.parent?.parent as Split
             s.dir = s.dir === 'x' ? 'y' : 'x'
+            s.stick = s.stick === 'a' ? 'b' : 'a'
 
             await showDialog('hey1')
             await showPrompt('hey2 much longer string')

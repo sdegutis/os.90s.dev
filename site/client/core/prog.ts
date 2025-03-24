@@ -51,17 +51,11 @@ export class Program {
     view: JSX.Element,
   }) {
     const order = config.order ?? 'normal'
-    const { size: { val: { w, h } } } = config
+    const point = (!config.pos || config.pos === 'default') ? $({ x: -1, y: -1 }) :
+      config.pos === 'center' ? $({ x: -2, y: -2 }) :
+        config.pos
 
-    const configPoint = config.pos ?? 'default'
-
-    const point = configPoint === 'default' ? $({ x: -1, y: -1 }) :
-      configPoint === 'center' ? $({ x: -2, y: -2 }) :
-        configPoint
-
-    const { x: mx, y: my } = point.val
-
-    this.rpc.send('newpanel', [order, mx, my, w, h])
+    this.rpc.send('newpanel', [order, point.val.x, point.val.y, config.size.val.w, config.size.val.h])
     const [id, x, y, port] = await this.rpc.once('newpanel')
 
     point.val = { x, y }
