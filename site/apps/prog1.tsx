@@ -16,7 +16,6 @@ fasdfasdfsadf
 `
 
 const panel = await program.makePanel({
-  size,
   pos: 'center',
   view: <PanelView size={size} title={'test panel'}>
     <splitxa>

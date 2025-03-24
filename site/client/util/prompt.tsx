@@ -64,7 +64,6 @@ export async function showPrompt(text: string) {
   </border>
 
   const panel = await program.makePanel({
-    size: dialog.$.size,
     pos: 'center',
     view: dialog,
   })

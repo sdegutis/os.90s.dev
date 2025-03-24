@@ -11,7 +11,6 @@ const desktopSize = program.$size.adapt(s => ({ ...s, h: s.h - 8 }))
 const desktop = await program.makePanel({
   order: 'bottom',
   pos: $({ x: 0, y: 0 }),
-  size: desktopSize,
   view: (
     <view size={desktopSize} background={0x333333ff} />
   )
@@ -20,7 +19,6 @@ const desktop = await program.makePanel({
 const taskbarSize = program.$size.adapt(s => ({ ...s, h: 8 }))
 const taskbar = await program.makePanel({
   order: 'top',
-  size: taskbarSize,
   pos: program.$size.adapt(s => ({ x: 0, y: s.h - 8 })),
   view: (
     <spacedx size={taskbarSize} background={0x444444ff}>

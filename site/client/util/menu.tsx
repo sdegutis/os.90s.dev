@@ -58,7 +58,6 @@ export async function showMenu(from: Point, items: MenuItem[]) {
   }
 
   const panel = await program.makePanel({
-    size: root.$.size,
     pos: $(from),
     order: 'top',
     view: root,

@@ -51,7 +51,6 @@ export class Program {
   async makePanel(config: {
     order?: PanelOrdering,
     pos?: Ref<Point> | 'default' | 'center',
-    size: Ref<Size>,
     view: JSX.Element,
   }) {
     const order = config.order ?? 'normal'
@@ -59,11 +58,13 @@ export class Program {
       config.pos === 'center' ? $({ x: -2, y: -2 }) :
         config.pos
 
-    this.rpc.send('newpanel', [order, point.val.x, point.val.y, config.size.val.w, config.size.val.h])
+    const root = config.view
+
+    this.rpc.send('newpanel', [order, point.val.x, point.val.y, root.size.w, root.size.h])
     const [id, x, y, port] = await this.rpc.once('newpanel')
 
     point.val = { x, y }
-    const panel = new Panel(this.keymap, port, id, point, config.size, config.view)
+    const panel = new Panel(this.keymap, port, id, point, root.$.size, config.view)
 
     this.panels.add(panel)
     panel.didClose.watch(() => {
