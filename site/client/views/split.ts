@@ -49,11 +49,11 @@ class SplitDivider extends View {
 
     this.pressed = true
 
-    this.onMouseMove = dragMove(this.panel!.$mouse, b)
+    const done = dragMove(this.panel!.$mouse, b)
     this.onMouseUp = () => {
+      done()
       this.panel?.popCursor()
       this.pressed = false
-      delete this.onMouseMove
       delete this.onMouseUp
     }
   }

@@ -21,12 +21,11 @@ export class Panel {
   id
   rpc
 
-  $absmouse = $({ x: 0, y: 0 })
-  $mouse = $({ x: 0, y: 0 })
-
+  $absmouse: Ref<Point> = $({ x: 0, y: 0 })
   get absmouse() { return this.$absmouse.val }
   set absmouse(p: Point) { this.$absmouse.val = p }
 
+  $mouse: Ref<Point> = $({ x: 0, y: 0 })
   get mouse() { return this.$mouse.val }
   set mouse(p: Point) { this.$mouse.val = p }
 

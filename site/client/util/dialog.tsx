@@ -17,8 +17,7 @@ export async function showDialog(text: string) {
       return true
     }}
     onMouseDown={function (b) {
-      this.onMouseMove = dragMove(panel.$absmouse, panel)
-      this.onMouseUp = () => delete this.onMouseMove
+      this.onMouseUp = dragMove(panel.$absmouse, panel)
     }}
     background={0x000000cc} padding={1} paddingColor={0x005599ff}>
     <border padding={3}>
