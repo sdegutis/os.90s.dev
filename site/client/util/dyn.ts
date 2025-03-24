@@ -1,10 +1,14 @@
-import { $, multiplex, Ref } from "./ref.js"
+import { $, Ref } from "./ref.js"
 
 export class Dynamic {
 
   init?(): void
 
-  $$setup() {
+  $ = Object.create(null) as {
+    readonly [K in (keyof this & string) as (K extends '$' ? never : K)]: this[K] extends ((...args: any) => any) | undefined ? never : Ref<this[K]>
+  }
+
+  $setup() {
     for (const key in this) {
       let val = this[key]
       if (val instanceof Function) continue
@@ -30,18 +34,6 @@ export class Dynamic {
       proto.init!.call(this)
   }
 
-  $ = Object.create(null) as {
-    readonly [K in (keyof this & string) as (K extends '$' ? never : K)]: this[K] extends ((...args: any) => any) | undefined ? never : Ref<this[K]>
-  }
-
-  $$multiplex(...keys: (keyof this['$'])[]) {
-    return {
-      watch: (fn: (...args: any) => any) => {
-        return multiplex(keys.map(k => (this.$ as any)[k as any]), fn)
-      }
-    }
-  }
-
 }
 
 export function make<T extends Dynamic>(
@@ -52,7 +44,7 @@ export function make<T extends Dynamic>(
   const init = data.init
   delete data.init
   Object.assign(v, data)
-  v.$$setup()
+  v.$setup()
   const initfn = (init instanceof Ref ? init.val : init)
   initfn?.apply(v)
   return v

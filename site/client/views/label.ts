@@ -8,8 +8,9 @@ export class Label extends View {
   text: string = ''
 
   override init(): void {
-    this.$$multiplex('text', 'font').watch(() => this.adjust())
-    this.$$multiplex('text', 'font', 'textColor').watch(() => this.needsRedraw())
+    this.$.text.watch(() => this.adjust())
+    this.$.font.watch(() => this.adjust())
+    this.$.textColor.watch(() => this.needsRedraw())
     this.adjust()
   }
 

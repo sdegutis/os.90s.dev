@@ -8,11 +8,16 @@ export class Paned extends View {
   vacuum: 'a' | 'b' = 'a'
 
   override init(): void {
-    this.$$multiplex('gap', 'dir', 'vacuum').watch(debounce(() => {
+    const relayout = debounce(() => {
       this.children.forEach(c => c.adjust?.())
       this.needsRedraw()
       this.layout()
-    }))
+    })
+
+    this.$.gap.watch(relayout)
+    this.$.dir.watch(relayout)
+    this.$.vacuum.watch(relayout)
+
     this.layout()
   }
 

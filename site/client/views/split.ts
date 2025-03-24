@@ -11,10 +11,6 @@ class SplitDivider extends View {
   override passthrough: boolean = false
   override pressed: boolean = false
 
-  override init(): void {
-    this.$$multiplex('hovered', 'pressed').watch(() => this.needsRedraw())
-  }
-
   get cursor() {
     return this.split.dir === 'x' ? xresize : yresize
   }
@@ -79,7 +75,7 @@ export class Split extends View {
   resizer?: SplitDivider
 
   override init(): void {
-    this.$$multiplex('dir', 'pos', 'size').watch(debounce(() => {
+    const fixpos = debounce(() => {
       const dx = this.dir
       const dw = dx === 'x' ? 'w' : 'h'
 
@@ -94,7 +90,11 @@ export class Split extends View {
 
       this.layout()
       this.needsRedraw()
-    }))
+    })
+
+    this.$.dir.watch(fixpos)
+    this.$.pos.watch(fixpos)
+    this.$.size.watch(fixpos)
 
     this.resizer = make(SplitDivider, { split: this })
     this.children = [...this.children, this.resizer]

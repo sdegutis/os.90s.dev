@@ -94,12 +94,14 @@ export class View extends Dynamic {
       this.needsRedraw()
     })
 
-    this.$$multiplex(
-      'visible', 'hovered', 'pressed', 'selected',
-      'background', 'hoverBackground', 'selectedBackground', 'pressBackground',
-    ).watch(() => {
-      this.needsRedraw()
-    })
+    this.$.visible.watch(() => this.needsRedraw())
+    this.$.hovered.watch(() => this.needsRedraw())
+    this.$.pressed.watch(() => this.needsRedraw())
+    this.$.selected.watch(() => this.needsRedraw())
+    this.$.background.watch(() => this.needsRedraw())
+    this.$.hoverBackground.watch(() => this.needsRedraw())
+    this.$.selectedBackground.watch(() => this.needsRedraw())
+    this.$.pressBackground.watch(() => this.needsRedraw())
 
     this.$.children.watch(() => {
       for (const child of this.children) {

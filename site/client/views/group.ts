@@ -8,7 +8,10 @@ export class Group extends View {
   align: 'a' | 'm' | 'z' | '+' = 'm'
 
   override init(): void {
-    this.$$multiplex('gap', 'dir', 'align', 'children').watch(() => this.adjust())
+    this.$.gap.watch(() => this.adjust())
+    this.$.dir.watch(() => this.adjust())
+    this.$.align.watch(() => this.adjust())
+    this.$.children.watch(() => this.adjust())
     this.$.children.watch(() => this.layout())
     this.adjust()
     // this.layout()
