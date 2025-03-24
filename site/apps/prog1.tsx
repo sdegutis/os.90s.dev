@@ -6,7 +6,6 @@ import { showPrompt } from "../client/util/prompt.js"
 import type { Split } from "../client/views/split.js"
 import { $ } from "../shared/ref.js"
 
-const size = $({ w: 75, h: 50 })
 
 const t = `
 fasdfasdfsadf
@@ -17,7 +16,7 @@ fasdfasdfsadf
 `
 
 const panel = await Panel.create(
-  <PanelView size={size} title={'test panel'}>
+  <PanelView size={$({ w: 75, h: 50 })} title={'test panel'}>
     <splitxa>
       <margin padding={0} paddingColor={0x99000099}>
         <center background={0x00330099}>
