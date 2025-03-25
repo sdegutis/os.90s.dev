@@ -17,6 +17,7 @@ const SAMPLE_TEXT = [
 const width = $(3)
 const height = $(4)
 const zoom = $(8)
+const current = $(' ')
 
 zoom.intercept(n => Math.max(1, n))
 
@@ -28,7 +29,7 @@ const panel = await Panel.create(
       <scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <border padding={zoom}>
           <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map(ch =>
-            <CharView char={ch} zoom={zoom} width={width} height={height} />
+            <CharView char={ch} zoom={zoom} width={width} height={height} hover={ch => current.val = ch} />
           )} />
         </border>
       </scroll>
@@ -48,6 +49,10 @@ const panel = await Panel.create(
               <label textColor={0xffffff33} text='zoom' />
               <label textColor={0xffff00cc} text={zoom.adapt(n => n.toString())} />
             </groupx>
+            <groupx gap={2}>
+              <label textColor={0xffffff33} text='hover' />
+              <label textColor={0xffff00cc} text={current} />
+            </groupx>
           </groupx>
         </groupy>
       </border>
@@ -55,7 +60,15 @@ const panel = await Panel.create(
   </PanelView>
 )
 
-function CharView({ char, width, height, zoom }: { char: string, zoom: Ref<number>, width: Ref<number>, height: Ref<number> }) {
+function CharView(
+  { char, width, height, zoom, hover }: {
+    hover: (ch: string) => void,
+    char: string,
+    zoom: Ref<number>,
+    width: Ref<number>,
+    height: Ref<number>,
+  }
+) {
   function drawSpot(view: View) {
     return {
       x: Math.floor(view.mouse.x / zoom.val) * zoom.val,
@@ -75,7 +88,7 @@ function CharView({ char, width, height, zoom }: { char: string, zoom: Ref<numbe
           this.$.hovered.watch(() => this.needsRedraw())
         }}
 
-        onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE) }}
+        onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE); hover(char) }}
         onMouseExit={function () { this.panel?.popCursor(Cursor.NONE) }}
         onMouseMove={function () { this.needsRedraw() }}
 
