@@ -1,5 +1,6 @@
 import { Panel } from "../client/core/panel.js"
 import { PanelView } from "../client/util/panelview.js"
+import { pointEquals } from "../client/util/types.js"
 import { View } from "../client/views/view.js"
 import { Cursor } from "../shared/cursor.js"
 import { $, multiplex, Ref } from "../shared/ref.js"
@@ -78,7 +79,6 @@ function CharView(
 
     onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE); hover(char) }}
     onMouseExit={function () { this.panel?.popCursor(Cursor.NONE) }}
-    onMouseMove={function () { this.needsRedraw() }}
 
     draw={function (ctx, px, py) {
       View.prototype.draw.call(this, ctx, px, py)
@@ -116,40 +116,23 @@ function CharView(
 
   />
 
-  view.$.hovered.watch(() => view.needsRedraw())
-
   const $spot = multiplex([view.$.mouse, zoom], () => {
     const x = Math.floor(view.mouse.x / zoom.val)
     const y = Math.floor(view.mouse.y / zoom.val)
     return { x, y }
   })
+  $spot.equals = pointEquals
 
   const $key = $spot.adapt(s => `${s.x},${s.y}`)
 
-  // $spot.watch((s) => {
-  //   console.log('spot', s)
-  // })
-
-  // $key.watch((s) => {
-  //   console.log('key', s)
-  // })
-
+  view.$.hovered.watch(() => view.needsRedraw())
+  $spot.watch(() => view.needsRedraw())
 
   view.onMouseDown = function (b) {
-    const add = () => {
-      const x = Math.floor(this.mouse.x / zoom.val)
-      const y = Math.floor(this.mouse.y / zoom.val)
-      const key = `${x},${y}`
-      spots[key] = b === 0
-      return { x, y }
-    }
-    const start = add()
-
-    // const 
-    // dragMove(this.$.mouse, {
-    //   get point() { return start },
-    //   set point()
-    // })
+    const on = b === 0
+    spots[$key.val] = on
+    this.onMouseMove = () => spots[$key.val] = on
+    this.onMouseUp = () => delete this.onMouseMove
   }
 
   return (
