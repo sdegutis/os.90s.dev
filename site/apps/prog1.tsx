@@ -1,7 +1,9 @@
 import { Panel } from "../client/core/panel.js"
+import { dragMove } from "../client/util/drag.js"
 import { PanelView } from "../client/util/panelview.js"
 import { pointEquals } from "../client/util/types.js"
 import { View } from "../client/views/view.js"
+import { Bitmap } from "../shared/bitmap.js"
 import { Cursor } from "../shared/cursor.js"
 import { $, multiplex, Ref } from "../shared/ref.js"
 
@@ -41,14 +43,17 @@ const panel = await Panel.create(
             <groupx gap={2}>
               <label textColor={0xffffff33} text='width' />
               <label textColor={0xffff00cc} text={width.adapt(n => n.toString())} />
+              <Slider val={width} min={1} max={10} />
             </groupx>
             <groupx gap={2}>
               <label textColor={0xffffff33} text='height' />
               <label textColor={0xffff00cc} text={height.adapt(n => n.toString())} />
+              <Slider val={height} min={1} max={10} />
             </groupx>
             <groupx gap={2}>
               <label textColor={0xffffff33} text='zoom' />
               <label textColor={0xffff00cc} text={zoom.adapt(n => n.toString())} />
+              <Slider val={zoom} min={1} max={10} />
             </groupx>
             <groupx gap={2}>
               <label textColor={0xffffff33} text='hover' />
@@ -60,6 +65,35 @@ const panel = await Panel.create(
     </panedyb>
   </PanelView>
 )
+
+function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number }) {
+  const w = 30
+  const kw = 4
+
+  const knobImage = new Bitmap([0x00990099], kw, [
+    0, 1, 1, 0,
+    1, 1, 1, 1,
+    1, 1, 1, 1,
+    0, 1, 1, 0,
+  ])
+
+  const $per = $((val.val - min) / (max - min))
+  $per.intercept(per => Math.max(0, Math.min(per, 1)))
+  $per.watch(per => val.val = Math.round(per * (max - min) + min))
+
+  const knob = <image bitmap={knobImage} point={$per.adapt(per => ({ x: per * (w - kw), y: 0 }))} />
+
+  const onMouseDown = function (this: View): void {
+    const $movepoint = $(knob.point)
+    $movepoint.watch(p => $per.val = p.x / (w - kw))
+    this.onMouseUp = dragMove(this.$.mouse, $movepoint)
+  }
+
+  return <view canMouse size={{ w, h: 4 }} onMouseDown={onMouseDown}>
+    <view point={{ x: 0, y: 1 }} size={{ w, h: 1 }} background={0xffffff77} />
+    {knob}
+  </view>
+}
 
 function CharView(
   { char, width, height, zoom, hover }: {
