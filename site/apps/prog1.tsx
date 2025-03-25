@@ -16,14 +16,14 @@ const SAMPLE_TEXT = [
 
 const width = $(3)
 const height = $(4)
-const zoom = $(2)
+const zoom = $(8)
 
 zoom.intercept(n => Math.max(1, n))
 
 const CHARSET = Array(96).keys().map(i => String.fromCharCode(i + 32)).toArray()
 
 const panel = await Panel.create(
-  <PanelView title={'Font Maker'}>
+  <PanelView title={'Font Maker'} size={$({ w: 500, h: 300 })}>
     <panedyb>
       <scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <border padding={zoom}>
@@ -56,36 +56,48 @@ const panel = await Panel.create(
 )
 
 function CharView({ char, width, height, zoom }: { char: string, zoom: Ref<number>, width: Ref<number>, height: Ref<number> }) {
-  return <border background={0xffffff11} padding={1}>
+  function drawSpot(view: View) {
+    return {
+      x: Math.floor(view.mouse.x / zoom.val) * zoom.val,
+      y: Math.floor(view.mouse.y / zoom.val) * zoom.val,
+    }
+  }
 
-    <view
+  return (
+    <border paddingColor={0xffffff11} padding={1}>
 
-      canMouse
+      <view
 
-      init={function () {
-        this.$.hovered.watch(() => this.needsRedraw())
-      }}
+        canMouse
+        background={0x00000033}
 
-      onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE) }}
-      onMouseExit={function () { this.panel?.popCursor(Cursor.NONE) }}
-      onMouseMove={function () { this.needsRedraw() }}
+        init={function () {
+          this.$.hovered.watch(() => this.needsRedraw())
+        }}
 
-      draw={function (ctx, px, py) {
-        if (this.hovered) {
-          ctx.fillStyle = '#f00'
-          ctx.fillRect(px + this.mouse.x, py + this.mouse.y, 1, 1)
-        }
-      }}
+        onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE) }}
+        onMouseExit={function () { this.panel?.popCursor(Cursor.NONE) }}
+        onMouseMove={function () { this.needsRedraw() }}
 
-      size={multiplex([width, height, zoom], () => ({
-        w: width.val * zoom.val,
-        h: height.val * zoom.val,
-      }))}
+        draw={function (ctx, px, py) {
+          View.prototype.draw.call(this, ctx, px, py)
 
-    />
+          if (this.hovered) {
+            const xy = drawSpot(this)
+            ctx.fillStyle = '#00f9'
+            ctx.fillRect(px + xy.x, py + xy.y, zoom.val, zoom.val)
+          }
+        }}
 
-    {/* <label background={0x000000ff} text={data.char} /> */}
-  </border>
+        size={multiplex([width, height, zoom], () => ({
+          w: width.val * zoom.val,
+          h: height.val * zoom.val,
+        }))}
+
+      />
+
+    </border>
+  )
 }
 
 panel.focusPanel()
