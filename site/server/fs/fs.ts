@@ -75,10 +75,10 @@ class FS {
         const name = m.slice(subpath.length)
         const type = v.type
 
-        if (v.type === 'folder')
+        if (type === 'folder')
           return { name, type }
         else
-          return { name, type, content: v }
+          return { name, type, content: v.content }
       })
       .filter(e => e !== null)
       .toArray()
