@@ -22,7 +22,12 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
   0, 1, 1, 1, 0,
 ]))
 
-export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, children: View }) {
+export function PanelView(data: {
+  size?: Ref<Size>,
+  title: string | Ref<string>, children: View,
+}) {
+
+  const size = data.size ?? $({ w: 200, h: 150 })
 
   let panel: Panel
 
@@ -41,7 +46,7 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
     <margin
       paddingColor={borderColor}
       padding={1}
-      size={data.size}
+      size={size}
       presented={p => panel = p}
       onPanelFocus={() => focused.val = true}
       onPanelBlur={() => focused.val = false}
@@ -71,7 +76,7 @@ export function PanelView(data: { size: Ref<Size>, title: string | Ref<string>, 
 
       </panedya>
 
-      <PanelResizer size={data.size} />
+      <PanelResizer size={size} />
 
     </margin>
   )
