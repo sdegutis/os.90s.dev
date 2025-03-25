@@ -70,7 +70,7 @@ function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number 
   const w = 30
   const kw = 4
 
-  const knobImage = new Bitmap([0x00990099], kw, [
+  const knobImage = new Bitmap([0xffffff99], kw, [
     0, 1, 1, 0,
     1, 1, 1, 1,
     1, 1, 1, 1,
@@ -81,7 +81,7 @@ function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number 
   $per.intercept(per => Math.max(0, Math.min(per, 1)))
   $per.watch(per => val.val = Math.round(per * (max - min) + min))
 
-  const knob = <image bitmap={knobImage} point={$per.adapt(per => ({ x: per * (w - kw), y: 0 }))} />
+  const knob = <image bitmap={knobImage} point={$per.adapt(per => ({ x: Math.round(per * (w - kw)), y: 0 }))} />
 
   const onMouseDown = function (this: View): void {
     const $movepoint = $(knob.point)
