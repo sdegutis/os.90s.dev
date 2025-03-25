@@ -1,10 +1,7 @@
 import { Panel } from "../client/core/panel.js"
-import { testCompile } from "../client/util/compile.js"
 import { PanelView } from "../client/util/panelview.js"
 import { View } from "../client/views/view.js"
 import { $ } from "../shared/ref.js"
-
-testCompile()
 
 const SAMPLE_TEXT = [
   "how quickly daft jumping zebras vex!",
