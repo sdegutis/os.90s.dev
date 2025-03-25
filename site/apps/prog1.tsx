@@ -7,7 +7,10 @@ const SAMPLE_TEXT = [
   "how quickly daft jumping zebras vex!",
   "the five boxing wizards jump quickly.",
   "the quick brown fox, jumps over the lazy dog.",
-  ` .,'!?1234567890-+/()":;%*=[]<>_&#|{}\`$@~^\\`,
+  "abcdefghijklmnopqrstuvwxyz",
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+  "0123456789 (){}[]<>",
+  `.,'!?-+/":;%*=_&#|\`$@~^\\`,
 ].join('\n')
 
 const width = $(3)
@@ -17,11 +20,16 @@ const zoom = $(2)
 const panel = await Panel.create(
   <PanelView title={'Font Maker'}>
     <panedyb>
-      <view background={0x222222ff} draw={makeStripeDrawer()}>
-        <grid children={Array(20).keys().map(i =>
-          <label text={i.toString()} />
+      <margin padding={2} paddingColor={0x000099ff} background={0x222222ff}>
+        {/* <view> */}
+
+        <grid flow draw={makeStripeDrawer()} background={0x99000099} children={Array(20).keys().map(i =>
+          <border background={0x99000099} padding={2}>
+            <label background={0x00990099} text={i.toString()} />
+          </border>
         ).toArray()} />
-      </view>
+        {/* </view> */}
+      </margin>
       <border padding={2}>
         <groupy align='a' gap={4}>
           <label text={SAMPLE_TEXT} />
