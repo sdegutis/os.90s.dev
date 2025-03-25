@@ -113,7 +113,7 @@ export class Panel {
 
       let node: View | null = this.hovered
       while (node) {
-        if (!node.passthrough && this.focusView(node)) {
+        if (node.canMouse && this.focusView(node)) {
           return
         }
         node = node.parent
@@ -250,7 +250,7 @@ export class Panel {
       if (found) return found
     }
 
-    if (node.passthrough) return null
+    if (!node.canMouse) return null
 
     return node
   }

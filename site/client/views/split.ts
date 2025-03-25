@@ -5,7 +5,7 @@ import { View } from "./view.js"
 class SplitDivider extends View {
 
   split!: Split
-  override passthrough: boolean = false
+  override canMouse: boolean = true
   override pressed: boolean = false
 
   get cursor() {

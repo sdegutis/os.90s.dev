@@ -14,7 +14,7 @@ export class View extends Dynamic {
   size: Size = { w: 0, h: 0 }
 
   canFocus: boolean = false
-  passthrough: boolean = true
+  canMouse: boolean = false
   visible: boolean = true
   autofocus: boolean = false
 

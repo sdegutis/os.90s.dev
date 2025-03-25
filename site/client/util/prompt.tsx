@@ -36,7 +36,7 @@ export async function showPrompt(text: string) {
   </scroll>
 
   const dialog = <border
-    passthrough={false}
+    canMouse
     onPanelBlur={() => {
       panel.focusPanel()
       no()

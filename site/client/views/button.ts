@@ -6,7 +6,7 @@ export class Button extends Border {
   override pressBackground: number = 0xffffff11
   override selectedBackground: number = 0xffffff33
 
-  override passthrough = false
+  override canMouse = true
 
   onClick?(button: number): void
 

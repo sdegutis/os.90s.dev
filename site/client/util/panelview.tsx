@@ -54,7 +54,7 @@ export function PanelView(data: {
     >
       <panedya gap={-1}>
 
-        <spacedx passthrough={false} onMouseDown={titleBarMouseDown}>
+        <spacedx canMouse onMouseDown={titleBarMouseDown}>
           <border>
             <groupx gap={1}>
               <button padding={2}><image bitmap={mnuImage} /></button>
@@ -102,7 +102,7 @@ function PanelResizer(data: { size: Ref<Size> }) {
   }
 
   return <image
-    passthrough={false}
+    canMouse
     presented={p => panel = p}
     bitmap={adjImage}
     onMouseEnter={function (this: View) { panel.pushCursor(adjCursor) }}

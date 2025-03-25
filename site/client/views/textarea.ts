@@ -11,7 +11,7 @@ export class Textarea extends View {
   private _cursor!: View
 
   override canFocus: boolean = true
-  override passthrough: boolean = false
+  override canMouse: boolean = true
 
   private lines: string[] = ['']
 
@@ -63,7 +63,7 @@ export class Textarea extends View {
     })
 
     this.label = View.make({
-      passthrough: false,
+      canMouse: true,
       adjust: () => this.adjustTextLabel(),
       draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),
       onMouseDown: (...args) => this.onMouseDown(...args),

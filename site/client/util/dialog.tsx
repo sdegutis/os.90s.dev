@@ -5,7 +5,7 @@ export async function showDialog(text: string) {
   const result = Promise.withResolvers<boolean>()
 
   const dialog = <border
-    passthrough={false}
+    canMouse
     onPanelBlur={() => {
       panel.focusPanel()
       no()

@@ -14,8 +14,8 @@ export class Scroll extends View {
   content!: View
   area = View.make({})
 
-  barv = View.make({ size: { w: 3, h: 0 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
-  barh = View.make({ size: { w: 0, h: 3 }, passthrough: false, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barv = View.make({ size: { w: 3, h: 0 }, canMouse: true, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barh = View.make({ size: { w: 0, h: 3 }, canMouse: true, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
 
   trackv = View.make({ background: 0x00000033, children: [this.barv] })
   trackh = View.make({ background: 0x00000033, children: [this.barh] })
@@ -24,7 +24,7 @@ export class Scroll extends View {
   showh = true
   showv = true
 
-  override passthrough: boolean = false
+  override canMouse: boolean = true
 
   override init(): void {
     this.content = this.children[0]
