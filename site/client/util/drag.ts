@@ -14,8 +14,8 @@ export function dragMove(anchor: Ref<Point>, o: { point: Point }) {
   })
 }
 
-export function dragResize(anchor: Ref<Point>, o: { size: Size }) {
-  const start = o.size
+export function dragResize(anchor: Ref<Point>, o: Ref<Size>) {
+  const start = o.val
   const offx = anchor.val.x - start.w
   const offy = anchor.val.y - start.h
   return anchor.watch(() => {
@@ -23,6 +23,6 @@ export function dragResize(anchor: Ref<Point>, o: { size: Size }) {
     const diffy = anchor.val.y - start.h
     const w = start.w + diffx - offx
     const h = start.h + diffy - offy
-    o.size = { w, h }
+    o.val = { w, h }
   })
 }

@@ -93,7 +93,7 @@ function PanelResizer(data: { size: Ref<Size> }) {
 
   function resizerMouseDown(this: ImageView, button: number) {
     panel.pushCursor(adjCursor)
-    const done = dragResize(panel.$mouse, panel)
+    const done = dragResize(panel.$mouse, panel.$size)
     this.onMouseUp = () => {
       panel.popCursor(adjCursor)
       done()

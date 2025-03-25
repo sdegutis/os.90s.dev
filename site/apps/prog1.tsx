@@ -69,12 +69,7 @@ function CharView(
     height: Ref<number>,
   }
 ) {
-  function drawSpot(view: View) {
-    return {
-      x: Math.floor(view.mouse.x / zoom.val) * zoom.val,
-      y: Math.floor(view.mouse.y / zoom.val) * zoom.val,
-    }
-  }
+  const spots: Record<string, boolean> = Object.create(null)
 
   return (
     <border paddingColor={0xffffff11} padding={1}>
@@ -88,6 +83,23 @@ function CharView(
           this.$.hovered.watch(() => this.needsRedraw())
         }}
 
+        onMouseDown={function (b) {
+          const add = () => {
+            const x = Math.floor(this.mouse.x / zoom.val)
+            const y = Math.floor(this.mouse.y / zoom.val)
+            const key = `${x},${y}`
+            spots[key] = b === 0
+            return { x, y }
+          }
+          const start = add()
+
+          // dragMove(this.$.mouse, {
+          //   get point() { return start },
+          //   set point()
+          // })
+
+        }}
+
         onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE); hover(char) }}
         onMouseExit={function () { this.panel?.popCursor(Cursor.NONE) }}
         onMouseMove={function () { this.needsRedraw() }}
@@ -95,8 +107,27 @@ function CharView(
         draw={function (ctx, px, py) {
           View.prototype.draw.call(this, ctx, px, py)
 
+          ctx.fillStyle = '#fff'
+          for (let x = 0; x < width.val; x++) {
+            for (let y = 0; y < height.val; y++) {
+              const key = `${x},${y}`
+              const on = spots[key]
+              if (on) {
+                ctx.fillRect(
+                  px + x * zoom.val,
+                  py + y * zoom.val,
+                  zoom.val,
+                  zoom.val,
+                )
+              }
+            }
+          }
+
           if (this.hovered) {
-            const xy = drawSpot(this)
+            const xy = {
+              x: Math.floor(this.mouse.x / zoom.val) * zoom.val,
+              y: Math.floor(this.mouse.y / zoom.val) * zoom.val,
+            }
             ctx.fillStyle = '#00f9'
             ctx.fillRect(px + xy.x, py + xy.y, zoom.val, zoom.val)
           }
