@@ -4,10 +4,6 @@ import { showMenu } from "../client/util/menu.js"
 import type { View } from "../client/views/view.js"
 import { $ } from "../shared/ref.js"
 
-program.$size.watch(s => {
-  console.log(s)
-})
-
 const desktop = await Panel.create((
   <view size={program.$size.adapt(s => ({ ...s, h: s.h - 8 }))} background={0x333333ff} />
 ), {
@@ -32,8 +28,8 @@ function Clock() {
   function toggle(this: View, b: number) {
     if (b === 2) {
       showMenu(this.panel!.absmouse, [
-        { text: 'test1', onClick: () => { console.log('test1') } },
-        { text: 'test2', onClick: () => { console.log('test2') } },
+        { text: 'test1', onClick: () => { program.resize(320, 180) } },
+        { text: 'test2', onClick: () => { program.resize(320 * 2, 180 * 2) } },
         { text: 'test3', onClick: () => { console.log('test3') } },
         '-',
         { text: 'test4', onClick: () => { console.log('test4') } },

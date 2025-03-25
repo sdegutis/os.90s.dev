@@ -4,7 +4,7 @@ await initSwc()
 
 export function testCompile() {
 
-  console.log('hey', transformSync('const a:number = <foo>33</foo>', {
+  console.log('test', transformSync('const a:number = <foo>33</foo>', {
     isModule: true,
     jsc: {
       parser: { syntax: 'typescript', tsx: true },
