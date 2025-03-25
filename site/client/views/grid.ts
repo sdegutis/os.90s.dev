@@ -9,8 +9,15 @@ export class Grid extends View {
   ygap = 0
 
   override init(): void {
-    this.adjust()
-    this.layout()
+    const fixall = () => {
+      this.adjust()
+      this.layout()
+    }
+    this.$.cols.watch(fixall)
+    this.$.flow.watch(fixall)
+    this.$.xgap.watch(fixall)
+    this.$.ygap.watch(fixall)
+    fixall()
   }
 
   override adopted(parent: View): void {

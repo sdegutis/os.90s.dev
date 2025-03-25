@@ -23,8 +23,8 @@ const panel = await Panel.create(
   <PanelView title={'Font Maker'}>
     <panedyb>
       <scroll draw={makeStripeDrawer()} background={0xffffff11}>
-        <border padding={3}>
-          <grid xgap={3} ygap={3} cols={16} children={CHARSET.map(ch =>
+        <border padding={zoom}>
+          <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map(ch =>
             <border background={0xffffff11} padding={1}>
               <label background={0x000000ff} text={ch} />
             </border>
@@ -37,15 +37,15 @@ const panel = await Panel.create(
           <groupx gap={7}>
             <groupx gap={2}>
               <label text='width' textColor={0xffffff33} />
-              <label text={width.adapt(n => n.toString())} />
+              <label passthrough={false} text={width.adapt(n => n.toString())} onMouseDown={b => width.val += (b === 0 ? 1 : -1)} />
             </groupx>
             <groupx gap={2}>
               <label text='height' textColor={0xffffff33} />
-              <label text={height.adapt(n => n.toString())} />
+              <label passthrough={false} text={height.adapt(n => n.toString())} onMouseDown={b => height.val += (b === 0 ? 1 : -1)} />
             </groupx>
             <groupx gap={2}>
               <label text='zoom' textColor={0xffffff33} />
-              <label text={zoom.adapt(n => n.toString())} />
+              <label passthrough={false} text={zoom.adapt(n => n.toString())} onMouseDown={b => zoom.val += (b === 0 ? 1 : -1)} />
             </groupx>
           </groupx>
         </groupy>
