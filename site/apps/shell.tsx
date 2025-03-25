@@ -28,8 +28,8 @@ function Clock() {
   function toggle(this: View, b: number) {
     if (b === 2) {
       showMenu(this.panel!.absmouse, [
-        { text: 'test1', onClick: () => { program.resize(320, 180) } },
-        { text: 'test2', onClick: () => { program.resize(320 * 2, 180 * 2) } },
+        { text: '320 x 180', onClick: () => { program.resize(320, 180) } },
+        { text: '640 x 360', onClick: () => { program.resize(320 * 2, 180 * 2) } },
         { text: 'test3', onClick: () => { console.log('test3') } },
         '-',
         { text: 'test4', onClick: () => { console.log('test4') } },
