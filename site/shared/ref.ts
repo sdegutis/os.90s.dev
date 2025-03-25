@@ -4,6 +4,7 @@ export type Equals<T> = (a: T, b: T) => boolean
 
 export class Ref<T> {
 
+  private interceptors = new Set<(a: T) => T>()
   private listener = new Listener<[T, T], void>()
   private _val: T
   equals?: Equals<T> | undefined
@@ -15,6 +16,7 @@ export class Ref<T> {
 
   get val() { return this._val }
   set val(val: T) {
+    this.interceptors.forEach(fn => val = fn(val))
     if (this.equals?.(this._val, val) ?? this._val === val) return
     const old = this._val
     this._val = val
@@ -23,6 +25,11 @@ export class Ref<T> {
 
   watch(fn: (data: T, old: T) => void) {
     return this.listener.watch(([data, old]) => fn(data, old))
+  }
+
+  intercept(fn: (data: T) => T) {
+    this.interceptors.add(fn)
+    return () => this.interceptors.delete(fn)
   }
 
   adapt<U>(fn: (data: T, old: T) => U) {

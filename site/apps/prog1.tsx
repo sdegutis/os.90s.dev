@@ -18,6 +18,8 @@ const width = $(3)
 const height = $(4)
 const zoom = $(2)
 
+zoom.intercept(n => Math.max(1, n))
+
 const CHARSET = Array(96).keys().map(i => String.fromCharCode(i + 32)).toArray()
 
 const panel = await Panel.create(
