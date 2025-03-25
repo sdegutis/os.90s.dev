@@ -25,15 +25,15 @@ const panel = await Panel.create(
           <label text={SAMPLE_TEXT} />
           <groupx gap={7}>
             <groupx gap={2}>
-              <label text='width' textColor={0x777777ff} />
+              <label text='width' textColor={0xffffff33} />
               <label text={width.adapt(n => n.toString())} />
             </groupx>
             <groupx gap={2}>
-              <label text='height' textColor={0x777777ff} />
+              <label text='height' textColor={0xffffff33} />
               <label text={height.adapt(n => n.toString())} />
             </groupx>
             <groupx gap={2}>
-              <label text='zoom' textColor={0x777777ff} />
+              <label text='zoom' textColor={0xffffff33} />
               <label text={zoom.adapt(n => n.toString())} />
             </groupx>
           </groupx>

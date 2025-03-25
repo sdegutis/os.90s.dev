@@ -13,6 +13,7 @@ export class Bitmap {
   width: number
   height: number
 
+  private original
   canvas
   private ctx
 
@@ -47,7 +48,8 @@ export class Bitmap {
       }
     }
 
-    ctx.globalCompositeOperation = 'source-atop'
+    this.original = new OffscreenCanvas(w, h)
+    this.original.getContext('2d')!.drawImage(canvas, 0, 0)
   }
 
   toString() {
@@ -68,6 +70,10 @@ export class Bitmap {
     if (this.lastcol === col) return
     this.lastcol = col
 
+    this.ctx.globalCompositeOperation = 'source-over'
+    this.ctx.drawImage(this.original, 0, 0)
+
+    this.ctx.globalCompositeOperation = 'source-in'
     this.ctx.fillStyle = colorFor(col)
     this.ctx.fillRect(0, 0, this.width, this.height)
   }
