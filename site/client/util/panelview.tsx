@@ -23,8 +23,9 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
 ]))
 
 export function PanelView(data: {
-  size?: Ref<Size>,
   title: string | Ref<string>, children: View,
+  size?: Ref<Size>,
+  showMenu?: () => void,
 }) {
 
   const size = data.size ?? $({ w: 200, h: 150 })
@@ -57,7 +58,7 @@ export function PanelView(data: {
         <spacedx canMouse onMouseDown={titleBarMouseDown}>
           <border>
             <groupx gap={1}>
-              <button padding={2}><image bitmap={mnuImage} /></button>
+              <button onClick={() => data.showMenu?.()} padding={2}><image bitmap={mnuImage} /></button>
               <label text={data.title} />
             </groupx>
           </border>

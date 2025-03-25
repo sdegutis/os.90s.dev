@@ -1,5 +1,6 @@
 import { Panel } from "../client/core/panel.js"
 import { dragMove } from "../client/util/drag.js"
+import { showMenu } from "../client/util/menu.js"
 import { PanelView } from "../client/util/panelview.js"
 import { debounce } from "../client/util/throttle.js"
 import { pointEquals } from "../client/util/types.js"
@@ -61,8 +62,18 @@ const rebuild = debounce(() => {
   font.val = new Font(fontsrc)
 })
 
+function doMenu() {
+  showMenu(panel.absmouse, [
+    {
+      text: 'load file', onClick: () => {
+
+      }
+    }
+  ])
+}
+
 const panel = await Panel.create(
-  <PanelView title={'Font Maker'} size={$({ w: 500, h: 300 })}>
+  <PanelView title={'Font Maker'} size={$({ w: 500, h: 300 })} showMenu={doMenu}>
     <panedyb>
       <scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <border padding={zoom}>
