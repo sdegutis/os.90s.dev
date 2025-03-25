@@ -29,6 +29,7 @@ export class Ref<T> {
 
   intercept(fn: (data: T) => T) {
     this.interceptors.add(fn)
+    this.val = fn(this.val)
     return () => this.interceptors.delete(fn)
   }
 

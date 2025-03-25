@@ -1,6 +1,5 @@
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
-import { debounce } from "../util/throttle.js"
 import { View } from "./view.js"
 
 class SplitDivider extends View {
@@ -73,7 +72,11 @@ export class Split extends View {
   resizer?: SplitDivider
 
   override init(): void {
-    const fixpos = debounce(() => {
+    this.$.dir.watch(() => { this.layout(); this.needsRedraw() })
+    this.$.pos.watch(() => { this.layout(); this.needsRedraw() })
+    this.$.size.watch(() => { this.layout(); this.needsRedraw() })
+
+    this.$.pos.intercept((pos) => {
       const dx = this.dir
       const dw = dx === 'x' ? 'w' : 'h'
 
@@ -83,16 +86,8 @@ export class Split extends View {
       if (min < 0) min += this.size[dw]
       if (max <= 0) max += this.size[dw] - 1
 
-      if (this.pos < min) this.pos = min
-      if (this.pos > max) this.pos = max
-
-      this.layout()
-      this.needsRedraw()
+      return Math.max(min, Math.min(pos, max))
     })
-
-    this.$.dir.watch(fixpos)
-    this.$.pos.watch(fixpos)
-    this.$.size.watch(fixpos)
 
     this.resizer = SplitDivider.make({ split: this })
     this.children = [...this.children, this.resizer]
