@@ -116,16 +116,16 @@ export class View extends Dynamic {
   }
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
-    this.drawBackground(ctx, px, py, colorFor(this.background))
+    this.drawBackground(ctx, px, py, this.background)
 
     if (this.selected) {
-      this.drawBackground(ctx, px, py, colorFor(this.selectedBackground))
+      this.drawBackground(ctx, px, py, this.selectedBackground)
     }
     else if (this.pressed) {
-      this.drawBackground(ctx, px, py, colorFor(this.pressBackground))
+      this.drawBackground(ctx, px, py, this.pressBackground)
     }
     else if (this.hovered) {
-      this.drawBackground(ctx, px, py, colorFor(this.hoverBackground))
+      this.drawBackground(ctx, px, py, this.hoverBackground)
     }
   }
 
@@ -134,8 +134,8 @@ export class View extends Dynamic {
     this.layout?.()
   }
 
-  protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: string) {
-    ctx.fillStyle = bg
+  protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: number) {
+    ctx.fillStyle = colorFor(bg)
     ctx.fillRect(px, py, this.size.w, this.size.h)
   }
 

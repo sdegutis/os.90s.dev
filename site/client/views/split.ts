@@ -1,4 +1,3 @@
-import { colorFor } from "../util/colors.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { debounce } from "../util/throttle.js"
@@ -16,10 +15,10 @@ class SplitDivider extends View {
 
   override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     if (this.pressed) {
-      this.drawBackground(ctx, px, py, colorFor(this.split.dividerColorPressed))
+      this.drawBackground(ctx, px, py, this.split.dividerColorPressed)
     }
     else if (this.hovered && this.split.min !== this.split.max) {
-      this.drawBackground(ctx, px, py, colorFor(this.split.dividerColorHovered))
+      this.drawBackground(ctx, px, py, this.split.dividerColorHovered)
     }
   }
 
