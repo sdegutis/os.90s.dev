@@ -2,6 +2,7 @@ import { multiplex } from "../../shared/ref.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
 import { Dynamic } from "../util/dyn.js"
+import { debounce } from "../util/throttle.js"
 import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../util/types.js"
 
 export class View extends Dynamic {
@@ -132,10 +133,10 @@ export class View extends Dynamic {
     }
   }
 
-  protected childResized() {
+  protected childResized = debounce(() => {
     this.adjust?.()
     this.layout?.()
-  }
+  })
 
   protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: number) {
     ctx.fillStyle = colorFor(bg)
