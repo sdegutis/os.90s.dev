@@ -22,7 +22,7 @@ const CHARSET = Array(96).keys().map(i => String.fromCharCode(i + 32)).toArray()
 const panel = await Panel.create(
   <PanelView title={'Font Maker'}>
     <panedyb>
-      <scroll draw={makeStripeDrawer()} background={0xffffff11} onWheel={(x, y) => zoom.val += -y / 100}>
+      <scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <border padding={zoom}>
           <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map(ch =>
             <border background={0xffffff11} padding={1}>
@@ -31,7 +31,7 @@ const panel = await Panel.create(
           )} />
         </border>
       </scroll>
-      <border padding={2}>
+      <border padding={2} passthrough={false} onWheel={(x, y) => zoom.val += -y / 100}>
         <groupy align='a' gap={4}>
           <label text={SAMPLE_TEXT} />
           <groupx gap={7}>
