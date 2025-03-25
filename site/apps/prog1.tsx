@@ -25,6 +25,10 @@ const height = $(4)
 const zoom = $(8)
 const current = $(' ')
 
+const zoommin = 1
+const zoommax = 12
+zoom.intercept(n => Math.max(zoommin, Math.min(n, zoommax)))
+
 const font = $(crt34)
 
 zoom.intercept(n => Math.max(1, n))
@@ -109,7 +113,7 @@ const panel = await Panel.create(
             <groupx gap={2}>
               <label textColor={0xffffff33} text='zoom' />
               <label textColor={0xffff00cc} text={zoom.adapt(n => n.toString().padStart(2, ' '))} />
-              <Slider val={zoom} min={1} max={12} />
+              <Slider val={zoom} min={zoommin} max={zoommax} />
             </groupx>
             <groupx gap={2}>
               <label textColor={0xffffff33} text='hover' />
@@ -133,7 +137,7 @@ function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number 
     0, 1, 1, 0,
   ])
 
-  const $per = $((val.val - min) / (max - min))
+  const $per = val.adapt(val => (val - min) / (max - min))
   $per.intercept(per => Math.max(0, Math.min(per, 1)))
   $per.watch(per => val.val = Math.round(per * (max - min) + min))
 
