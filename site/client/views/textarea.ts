@@ -1,10 +1,10 @@
-import { crt2025, Font } from "../../shared/font.js"
+import { crt34, Font } from "../../shared/font.js"
 import { Scroll } from "./scroll.js"
 import { View } from "./view.js"
 
 export class Textarea extends View {
 
-  font: Font = crt2025
+  font: Font = crt34
   color: number = 0xffffffff
 
   private label!: View

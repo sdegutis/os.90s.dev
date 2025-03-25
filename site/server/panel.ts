@@ -1,5 +1,5 @@
 import { Cursor } from "../shared/cursor.js"
-import { crt2025 } from "../shared/font.js"
+import { crt34 } from "../shared/font.js"
 import { Listener } from "../shared/listener.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../shared/rpc.js"
 import type { Process } from "./process.js"
@@ -112,7 +112,7 @@ export class Panel {
     ctx.fillStyle = '#fff3'
     ctx.fillRect(0, 0, this.w, this.h)
 
-    const font = crt2025
+    const font = crt34
     const str = 'app not responding\nfix the problem or\nrightclick to quit'
     const size = font.calcSize(str)
 

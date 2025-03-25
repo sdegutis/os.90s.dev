@@ -56,7 +56,7 @@ export class Font {
 
 }
 
-export const crt2025 = new Font(`
+export const crt34 = new Font(`
 #ffffffff
 
 0 0 0 0 1 0 1 0 1 1 1 1 0 1 0 0 1 0 1 1 1 1 1 0 0 0 1 0 1 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1

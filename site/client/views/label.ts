@@ -1,10 +1,10 @@
-import { crt2025, Font } from "../../shared/font.js"
+import { crt34, Font } from "../../shared/font.js"
 import { View } from "./view.js"
 
 export class Label extends View {
 
   textColor: number = 0xffffffff
-  font: Font = crt2025
+  font: Font = crt34
   text: string = ''
 
   override init(): void {
