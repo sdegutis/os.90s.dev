@@ -3,6 +3,8 @@ import { DataFile } from "./datafile.js"
 
 export class Cursor {
 
+  static readonly NONE = new Cursor(0, 0, new Bitmap([], 1, [0]))
+
   offx: number
   offy: number
   bitmap: Bitmap

@@ -1,7 +1,8 @@
 import { Panel } from "../client/core/panel.js"
 import { PanelView } from "../client/util/panelview.js"
 import { View } from "../client/views/view.js"
-import { $ } from "../shared/ref.js"
+import { Cursor } from "../shared/cursor.js"
+import { $, multiplex, Ref } from "../shared/ref.js"
 
 const SAMPLE_TEXT = [
   "how quickly daft jumping zebras vex!",
@@ -25,9 +26,7 @@ const panel = await Panel.create(
       <scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <border padding={zoom}>
           <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map(ch =>
-            <border background={0xffffff11} padding={1}>
-              <label background={0x000000ff} text={ch} />
-            </border>
+            <CharView char={ch} zoom={zoom} width={width} height={height} />
           )} />
         </border>
       </scroll>
@@ -53,6 +52,39 @@ const panel = await Panel.create(
     </panedyb>
   </PanelView>
 )
+
+function CharView({ char, width, height, zoom }: { char: string, zoom: Ref<number>, width: Ref<number>, height: Ref<number> }) {
+  return <border background={0xffffff11} padding={1}>
+
+    <view
+
+      passthrough={false}
+
+      init={function () {
+        this.$.hovered.watch(() => this.needsRedraw())
+      }}
+
+      onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE) }}
+      onMouseExit={function () { this.panel?.popCursor(Cursor.NONE) }}
+      onMouseMove={function () { this.needsRedraw() }}
+
+      draw={function (ctx, px, py) {
+        if (this.hovered) {
+          ctx.fillStyle = '#f00'
+          ctx.fillRect(px + this.mouse.x, py + this.mouse.y, 1, 1)
+        }
+      }}
+
+      size={multiplex([width, height, zoom], () => ({
+        w: width.val * zoom.val,
+        h: height.val * zoom.val,
+      }))}
+
+    />
+
+    {/* <label background={0x000000ff} text={data.char} /> */}
+  </border>
+}
 
 panel.focusPanel()
 
