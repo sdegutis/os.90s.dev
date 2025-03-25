@@ -1,3 +1,4 @@
+import { multiplex } from "../../shared/ref.js"
 import type { Panel } from "../core/panel.js"
 import { colorFor } from "../util/colors.js"
 import { Dynamic } from "../util/dyn.js"
@@ -28,13 +29,7 @@ export class View extends Dynamic {
   selectedBackground: number = 0x00000000
 
   panelOffset: Point = { x: 0, y: 0 }
-
-  get mouse(): Point {
-    return {
-      x: (this.panel?.absmouse.x ?? 0) - this.panelOffset.x - (this.panel?.point.x ?? 0),
-      y: (this.panel?.absmouse.y ?? 0) - this.panelOffset.y - (this.panel?.point.y ?? 0),
-    }
-  }
+  mouse: Point = { x: 0, y: 0 }
 
   onPanelFocus?(): void
   onPanelBlur?(): void
@@ -67,7 +62,15 @@ export class View extends Dynamic {
 
     this.$.panel.watch((panel) => {
       if (panel) {
+        multiplex([this.$.panelOffset, panel.$mouse], () => {
+          this.mouse = {
+            x: panel.mouse.x - this.panelOffset.x,
+            y: panel.mouse.y - this.panelOffset.y,
+          }
+        })
+
         this.presented?.(panel)
+
         if (this.autofocus) {
           this.focus()
         }
@@ -143,7 +146,7 @@ export class View extends Dynamic {
     this.panel?.focusView(this)
   }
 
-  protected needsRedraw() {
+  needsRedraw() {
     this.panel?.needsRedraw()
   }
 

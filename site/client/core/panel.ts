@@ -1,6 +1,6 @@
 import type { Cursor } from "../../shared/cursor.js"
 import { Listener } from "../../shared/listener.js"
-import { $, type Ref } from "../../shared/ref.js"
+import { $, multiplex, type Ref } from "../../shared/ref.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../../shared/rpc.js"
 import { debounce } from "../util/throttle.js"
 import type { Point, Size } from "../util/types.js"
@@ -23,7 +23,7 @@ export class Panel {
   get absmouse() { return this.$absmouse.val }
   set absmouse(p: Point) { this.$absmouse.val = p }
 
-  readonly $mouse: Ref<Point> = $({ x: 0, y: 0 })
+  readonly $mouse: Ref<Point>
   get mouse() { return this.$mouse.val }
   set mouse(p: Point) { this.$mouse.val = p }
 
@@ -58,6 +58,11 @@ export class Panel {
     this.$point = point
     this.$size = size
 
+    this.$mouse = multiplex([this.$absmouse, this.$point], () => ({
+      x: this.absmouse.x - this.point.x,
+      y: this.absmouse.y - this.point.y,
+    }))
+
     this.canvas.width = size.val.w
     this.canvas.height = size.val.h
 
@@ -70,7 +75,6 @@ export class Panel {
 
     point.watch((point) => {
       this.rpc.send('adjust', [point.x, point.y, this.size.w, this.size.h])
-      this.fixMouse()
       this.checkUnderMouse()
     })
 
@@ -122,7 +126,6 @@ export class Panel {
 
     this.rpc.listen('mousemoved', (x, y) => {
       this.absmouse = { x, y }
-      this.fixMouse()
       this.checkUnderMouse()
 
       const sendto = this.clicking ?? this.hovered
@@ -329,13 +332,6 @@ export class Panel {
 
   isKeyDown(key: string) {
     return this.keymap.has(key)
-  }
-
-  private fixMouse() {
-    this.mouse = {
-      x: this.absmouse.x - this.point.x,
-      y: this.absmouse.y - this.point.y,
-    }
   }
 
 }

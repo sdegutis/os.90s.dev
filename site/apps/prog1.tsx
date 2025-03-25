@@ -71,75 +71,90 @@ function CharView(
 ) {
   const spots: Record<string, boolean> = Object.create(null)
 
+  const view = <view
+
+    canMouse
+    background={0x00000033}
+
+    onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE); hover(char) }}
+    onMouseExit={function () { this.panel?.popCursor(Cursor.NONE) }}
+    onMouseMove={function () { this.needsRedraw() }}
+
+    draw={function (ctx, px, py) {
+      View.prototype.draw.call(this, ctx, px, py)
+
+      ctx.fillStyle = '#fff'
+      for (let x = 0; x < width.val; x++) {
+        for (let y = 0; y < height.val; y++) {
+          const key = `${x},${y}`
+          const on = spots[key]
+          if (on) {
+            ctx.fillRect(
+              px + x * zoom.val,
+              py + y * zoom.val,
+              zoom.val,
+              zoom.val
+            )
+          }
+        }
+      }
+
+      if (this.hovered) {
+        const xy = {
+          x: Math.floor(this.mouse.x / zoom.val) * zoom.val,
+          y: Math.floor(this.mouse.y / zoom.val) * zoom.val,
+        }
+        ctx.fillStyle = '#00f9'
+        ctx.fillRect(px + xy.x, py + xy.y, zoom.val, zoom.val)
+      }
+    }}
+
+    size={multiplex([width, height, zoom], () => ({
+      w: width.val * zoom.val,
+      h: height.val * zoom.val,
+    }))}
+
+  />
+
+  view.$.hovered.watch(() => view.needsRedraw())
+
+  const $spot = multiplex([view.$.mouse, zoom], () => {
+    const x = Math.floor(view.mouse.x / zoom.val)
+    const y = Math.floor(view.mouse.y / zoom.val)
+    return { x, y }
+  })
+
+  const $key = $spot.adapt(s => `${s.x},${s.y}`)
+
+  // $spot.watch((s) => {
+  //   console.log('spot', s)
+  // })
+
+  // $key.watch((s) => {
+  //   console.log('key', s)
+  // })
+
+
+  view.onMouseDown = function (b) {
+    const add = () => {
+      const x = Math.floor(this.mouse.x / zoom.val)
+      const y = Math.floor(this.mouse.y / zoom.val)
+      const key = `${x},${y}`
+      spots[key] = b === 0
+      return { x, y }
+    }
+    const start = add()
+
+    // const 
+    // dragMove(this.$.mouse, {
+    //   get point() { return start },
+    //   set point()
+    // })
+  }
+
   return (
     <border paddingColor={0xffffff11} padding={1}>
-
-      <view
-
-        canMouse
-        background={0x00000033}
-
-        init={function () {
-          this.$.hovered.watch(() => this.needsRedraw())
-        }}
-
-        onMouseDown={function (b) {
-          const add = () => {
-            const x = Math.floor(this.mouse.x / zoom.val)
-            const y = Math.floor(this.mouse.y / zoom.val)
-            const key = `${x},${y}`
-            spots[key] = b === 0
-            return { x, y }
-          }
-          const start = add()
-
-          // dragMove(this.$.mouse, {
-          //   get point() { return start },
-          //   set point()
-          // })
-
-        }}
-
-        onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE); hover(char) }}
-        onMouseExit={function () { this.panel?.popCursor(Cursor.NONE) }}
-        onMouseMove={function () { this.needsRedraw() }}
-
-        draw={function (ctx, px, py) {
-          View.prototype.draw.call(this, ctx, px, py)
-
-          ctx.fillStyle = '#fff'
-          for (let x = 0; x < width.val; x++) {
-            for (let y = 0; y < height.val; y++) {
-              const key = `${x},${y}`
-              const on = spots[key]
-              if (on) {
-                ctx.fillRect(
-                  px + x * zoom.val,
-                  py + y * zoom.val,
-                  zoom.val,
-                  zoom.val,
-                )
-              }
-            }
-          }
-
-          if (this.hovered) {
-            const xy = {
-              x: Math.floor(this.mouse.x / zoom.val) * zoom.val,
-              y: Math.floor(this.mouse.y / zoom.val) * zoom.val,
-            }
-            ctx.fillStyle = '#00f9'
-            ctx.fillRect(px + xy.x, py + xy.y, zoom.val, zoom.val)
-          }
-        }}
-
-        size={multiplex([width, height, zoom], () => ({
-          w: width.val * zoom.val,
-          h: height.val * zoom.val,
-        }))}
-
-      />
-
+      {view}
     </border>
   )
 }
