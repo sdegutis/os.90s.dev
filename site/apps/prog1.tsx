@@ -21,8 +21,8 @@ const panel = await Panel.create(
   <PanelView title={'Font Maker'}>
     <panedyb>
       <scroll draw={makeStripeDrawer()} background={0x99000099}>
-        <border padding={3}>
-          <grid xgap={3} ygap={3} cols={3} children={Array(20).keys().map(i =>
+        <border padding={5}>
+          <grid background={0x00990099} xgap={10} ygap={10} cols={3} children={Array(20).keys().map(i =>
             <border background={0x99000099} padding={2}>
               <label background={0x00990099} text={i.toString()} />
             </border>

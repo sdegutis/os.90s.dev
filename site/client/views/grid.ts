@@ -48,7 +48,7 @@ export class Grid extends View {
         x = 0
         y += h + this.ygap
         h = 0
-        height = y - this.ygap
+        height = y
       }
 
       grid.set(child, { x, y })
