@@ -18,7 +18,9 @@ const panel = await Panel.create(
   <PanelView title={'Font Maker'}>
     <panedyb>
       <view background={0x222222ff} draw={makeStripeDrawer()}>
-
+        <grid children={Array(20).keys().map(i =>
+          <label text={i.toString()} />
+        ).toArray()} />
       </view>
       <border padding={2}>
         <groupy align='a' gap={4}>

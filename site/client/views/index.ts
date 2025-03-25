@@ -1,6 +1,7 @@
 import { Border } from "./border.js"
 import { Button } from "./button.js"
 import { Center } from "./center.js"
+import { Grid } from "./grid.js"
 import { Group, GroupX, GroupY } from "./group.js"
 import { ImageView } from "./image.js"
 import { Label } from "./label.js"
@@ -16,15 +17,16 @@ export const primitives = {
 
   view: View,
 
+  image: ImageView,
+  label: Label,
+  button: Button,
+  textarea: Textarea,
+
+  grid: Grid,
   border: Border,
   margin: Margin,
   center: Center,
   scroll: Scroll,
-
-  label: Label,
-  image: ImageView,
-  button: Button,
-  textarea: Textarea,
 
   group: Group,
   groupx: GroupX,
