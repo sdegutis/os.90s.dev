@@ -4,7 +4,7 @@ import { View } from "./view.js"
 export class Grid extends View {
 
   cols = Infinity
-  flow = true
+  flow = false
   xgap = 0
   ygap = 0
 

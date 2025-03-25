@@ -20,16 +20,15 @@ const zoom = $(2)
 const panel = await Panel.create(
   <PanelView title={'Font Maker'}>
     <panedyb>
-      <margin padding={2} paddingColor={0x000099ff} background={0x222222ff}>
-        {/* <view> */}
-
-        <grid flow draw={makeStripeDrawer()} background={0x99000099} children={Array(20).keys().map(i =>
-          <border background={0x99000099} padding={2}>
-            <label background={0x00990099} text={i.toString()} />
-          </border>
-        ).toArray()} />
-        {/* </view> */}
-      </margin>
+      <scroll draw={makeStripeDrawer()} background={0x99000099}>
+        <border padding={3}>
+          <grid xgap={3} ygap={3} cols={3} children={Array(20).keys().map(i =>
+            <border background={0x99000099} padding={2}>
+              <label background={0x00990099} text={i.toString()} />
+            </border>
+          ).toArray()} />
+        </border>
+      </scroll>
       <border padding={2}>
         <groupy align='a' gap={4}>
           <label text={SAMPLE_TEXT} />
