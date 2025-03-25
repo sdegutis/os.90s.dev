@@ -1,10 +1,12 @@
 import { Panel } from "../client/core/panel.js"
 import { dragMove } from "../client/util/drag.js"
 import { PanelView } from "../client/util/panelview.js"
+import { debounce } from "../client/util/throttle.js"
 import { pointEquals } from "../client/util/types.js"
 import { View } from "../client/views/view.js"
 import { Bitmap } from "../shared/bitmap.js"
 import { Cursor } from "../shared/cursor.js"
+import { crt34, Font } from "../shared/font.js"
 import { $, multiplex, Ref } from "../shared/ref.js"
 
 const SAMPLE_TEXT = [
@@ -22,38 +24,81 @@ const height = $(4)
 const zoom = $(8)
 const current = $(' ')
 
+const font = $(crt34)
+
 zoom.intercept(n => Math.max(1, n))
 
 const CHARSET = Array(96).keys().map(i => String.fromCharCode(i + 32)).toArray()
+
+const sheet: Record<string, boolean>[] = []
+
+const rebuild = debounce(() => {
+  let fontsrc = `#ffffffff\n\n`
+
+  const grid: boolean[] = []
+
+  for (let i = 0; i < 16 * 6; i++) {
+    const char = sheet[i]
+
+    const sy = Math.floor(i / 16) * width.val * 16 * height.val
+    const sx = (i % 16) * width.val
+
+    for (let y = 0; y < height.val; y++) {
+      for (let x = 0; x < width.val; x++) {
+        const oy = y * width.val * 16
+        const on = char[`${x},${y}`]
+        grid[(sy + oy) + sx + x] = on
+      }
+    }
+  }
+
+  const row = width.val * 16
+  for (let i = 0; i < 16 * 6 * width.val * height.val; i++) {
+    fontsrc += grid[i] ? '1' : '0'
+    fontsrc += i % row === row - 1 ? '\n' : ' '
+  }
+
+  font.val = new Font(fontsrc)
+})
 
 const panel = await Panel.create(
   <PanelView title={'Font Maker'} size={$({ w: 500, h: 300 })}>
     <panedyb>
       <scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <border padding={zoom}>
-          <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map(ch =>
-            <CharView char={ch} zoom={zoom} width={width} height={height} hover={ch => current.val = ch} />
+          <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map((ch, index) =>
+            <CharView
+              drew={spots => {
+                sheet[index] = spots
+                rebuild()
+              }}
+              char={ch}
+              zoom={zoom}
+              width={width}
+              height={height}
+              hover={ch => current.val = ch}
+            />
           )} />
         </border>
       </scroll>
       <border padding={2} canMouse onWheel={(x, y) => zoom.val += -y / 100}>
         <groupy align='a' gap={4}>
-          <label text={SAMPLE_TEXT} />
+          <label text={SAMPLE_TEXT} font={font} />
           <groupx gap={7}>
             <groupx gap={2}>
               <label textColor={0xffffff33} text='width' />
-              <label textColor={0xffff00cc} text={width.adapt(n => n.toString())} />
-              <Slider val={width} min={1} max={10} />
+              <label textColor={0xffff00cc} text={width.adapt(n => n.toString().padStart(2, ' '))} />
+              <Slider val={width} min={1} max={12} />
             </groupx>
             <groupx gap={2}>
               <label textColor={0xffffff33} text='height' />
-              <label textColor={0xffff00cc} text={height.adapt(n => n.toString())} />
-              <Slider val={height} min={1} max={10} />
+              <label textColor={0xffff00cc} text={height.adapt(n => n.toString().padStart(2, ' '))} />
+              <Slider val={height} min={1} max={12} />
             </groupx>
             <groupx gap={2}>
               <label textColor={0xffffff33} text='zoom' />
-              <label textColor={0xffff00cc} text={zoom.adapt(n => n.toString())} />
-              <Slider val={zoom} min={1} max={10} />
+              <label textColor={0xffff00cc} text={zoom.adapt(n => n.toString().padStart(2, ' '))} />
+              <Slider val={zoom} min={1} max={12} />
             </groupx>
             <groupx gap={2}>
               <label textColor={0xffffff33} text='hover' />
@@ -96,7 +141,8 @@ function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number 
 }
 
 function CharView(
-  { char, width, height, zoom, hover }: {
+  { char, width, height, zoom, hover, drew }: {
+    drew: (spots: Record<string, boolean>) => void,
     hover: (ch: string) => void,
     char: string,
     zoom: Ref<number>,
@@ -105,49 +151,21 @@ function CharView(
   }
 ) {
   const spots: Record<string, boolean> = Object.create(null)
+  const notifyDrew = () => drew(spots)
+
+  notifyDrew()
+  width.watch(notifyDrew)
+  height.watch(notifyDrew)
 
   const view = <view
-
     canMouse
     background={0x00000033}
-
     onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE); hover(char) }}
     onMouseExit={function () { this.panel?.popCursor(Cursor.NONE) }}
-
-    draw={function (ctx, px, py) {
-      View.prototype.draw.call(this, ctx, px, py)
-
-      ctx.fillStyle = '#fff'
-      for (let x = 0; x < width.val; x++) {
-        for (let y = 0; y < height.val; y++) {
-          const key = `${x},${y}`
-          const on = spots[key]
-          if (on) {
-            ctx.fillRect(
-              px + x * zoom.val,
-              py + y * zoom.val,
-              zoom.val,
-              zoom.val
-            )
-          }
-        }
-      }
-
-      if (this.hovered) {
-        const xy = {
-          x: Math.floor(this.mouse.x / zoom.val) * zoom.val,
-          y: Math.floor(this.mouse.y / zoom.val) * zoom.val,
-        }
-        ctx.fillStyle = '#00f9'
-        ctx.fillRect(px + xy.x, py + xy.y, zoom.val, zoom.val)
-      }
-    }}
-
     size={multiplex([width, height, zoom], () => ({
       w: width.val * zoom.val,
       h: height.val * zoom.val,
     }))}
-
   />
 
   const $spot = multiplex([view.$.mouse, zoom], () => {
@@ -164,9 +182,37 @@ function CharView(
 
   view.onMouseDown = function (b) {
     const on = b === 0
-    spots[$key.val] = on
-    this.onMouseMove = () => spots[$key.val] = on
-    this.onMouseUp = () => delete this.onMouseMove
+    const draw = () => {
+      spots[$key.val] = on
+      notifyDrew()
+    }
+    draw()
+    this.onMouseUp = $key.watch(draw)
+  }
+
+  view.draw = function (ctx, px, py) {
+    View.prototype.draw.call(this, ctx, px, py)
+
+    ctx.fillStyle = '#fff'
+    for (let x = 0; x < width.val; x++) {
+      for (let y = 0; y < height.val; y++) {
+        const key = `${x},${y}`
+        const on = spots[key]
+        if (on) {
+          ctx.fillRect(
+            px + x * zoom.val,
+            py + y * zoom.val,
+            zoom.val,
+            zoom.val
+          )
+        }
+      }
+    }
+
+    if (this.hovered) {
+      ctx.fillStyle = '#00f9'
+      ctx.fillRect(px + $spot.val.x * zoom.val, py + $spot.val.y * zoom.val, zoom.val, zoom.val)
+    }
   }
 
   return (
