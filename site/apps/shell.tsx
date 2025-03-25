@@ -1,6 +1,8 @@
 import { Panel } from "../client/core/panel.js"
 import { program } from "../client/core/prog.js"
+import { showDialog } from "../client/util/dialog.js"
 import { showMenu } from "../client/util/menu.js"
+import { showPrompt } from "../client/util/prompt.js"
 import type { View } from "../client/views/view.js"
 import { $ } from "../shared/ref.js"
 
@@ -30,9 +32,9 @@ function Clock() {
       showMenu(this.panel!.absmouse, [
         { text: '320 x 180', onClick: () => { program.resize(320, 180) } },
         { text: '640 x 360', onClick: () => { program.resize(320 * 2, 180 * 2) } },
-        { text: 'test3', onClick: () => { console.log('test3') } },
         '-',
-        { text: 'test4', onClick: () => { console.log('test4') } },
+        { text: 'test dialog', onClick: () => { showDialog('testing dialog box') } },
+        { text: 'test prompt', onClick: () => { showPrompt('testing prompt') } },
       ])
       return
     }
