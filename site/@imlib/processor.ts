@@ -10,7 +10,14 @@ const ext = (s: string) => s.match(/\.([^\/]+)$/)?.[1] ?? ''
 
 export default (({ inFiles, outFiles }) => {
   const files = [...inFiles].filter(f => !['/@imlib/processor.js'].includes(f.path))
-  const paths = files.map(f => f.path).filter(s => !s.endsWith('.d.js'))
+
+  const sysdata = JSON.stringify(Object.fromEntries(files
+    .filter(f => f.path.startsWith('/server/data'))
+    .map(f => [f.path.slice('/server/data/'.length), tostring(f.content)])
+  ), null, 2)
+  files.push({ path: '/server/fs/data.js', content: `export const files = ${sysdata}` })
+
+  const paths = files.map(f => f.path).filter(s => !s.startsWith('/server/data'))
 
   const datas = (paths
     .filter(s => !['js', 'html'].includes(ext(s)))
