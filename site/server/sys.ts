@@ -164,19 +164,6 @@ export class Sys {
 
 }
 
-// const defaultCursor = Cursor.fromString(`
-// offx=1
-// offy=1
-// ===
-// #000000ff
-// #ffffffff
-
-// 1 1 1 1
-// 1 2 2 1
-// 1 2 1 1
-// 1 1 1 0
-// `.trimStart())
-
 const defaultCursor = Cursor.fromString(`
 offx=1
 offy=1
@@ -184,12 +171,25 @@ offy=1
 #000000ff
 #ffffffff
 
-1 1 1 1 1 1
-1 2 2 2 2 1
-1 2 2 2 2 1
-1 2 2 1 1 1
-1 2 2 1 0 0
-1 1 1 1 0 0
+1 1 1 1
+1 2 2 1
+1 2 1 1
+1 1 1 0
 `.trimStart())
+
+// const defaultCursor = Cursor.fromString(`
+// offx=1
+// offy=1
+// ===
+// #000000ff
+// #ffffffff
+
+// 1 1 1 1 1 1
+// 1 2 2 2 2 1
+// 1 2 2 2 2 1
+// 1 2 2 1 1 1
+// 1 2 2 1 0 0
+// 1 1 1 1 0 0
+// `.trimStart())
 
 let cursor = defaultCursor
