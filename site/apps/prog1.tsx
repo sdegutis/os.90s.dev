@@ -36,16 +36,16 @@ const panel = await Panel.create(
           <label text={SAMPLE_TEXT} />
           <groupx gap={7}>
             <groupx gap={2}>
-              <label text='width' textColor={0xffffff33} />
-              <label passthrough={false} text={width.adapt(n => n.toString())} onMouseDown={b => width.val += (b === 0 ? 1 : -1)} />
+              <label textColor={0xffffff33} text='width' />
+              <label textColor={0xffff00cc} text={width.adapt(n => n.toString())} />
             </groupx>
             <groupx gap={2}>
-              <label text='height' textColor={0xffffff33} />
-              <label passthrough={false} text={height.adapt(n => n.toString())} onMouseDown={b => height.val += (b === 0 ? 1 : -1)} />
+              <label textColor={0xffffff33} text='height' />
+              <label textColor={0xffff00cc} text={height.adapt(n => n.toString())} />
             </groupx>
             <groupx gap={2}>
-              <label text='zoom' textColor={0xffffff33} />
-              <label passthrough={false} text={zoom.adapt(n => n.toString())} onMouseDown={b => zoom.val += (b === 0 ? 1 : -1)} />
+              <label textColor={0xffffff33} text='zoom' />
+              <label textColor={0xffff00cc} text={zoom.adapt(n => n.toString())} />
             </groupx>
           </groupx>
         </groupy>
