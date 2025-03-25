@@ -22,7 +22,7 @@ const CHARSET = Array(96).keys().map(i => String.fromCharCode(i + 32)).toArray()
 const panel = await Panel.create(
   <PanelView title={'Font Maker'}>
     <panedyb>
-      <scroll draw={makeStripeDrawer()} background={0xffffff11}>
+      <scroll draw={makeStripeDrawer()} background={0xffffff11} onWheel={(x, y) => zoom.val += -y / 100}>
         <border padding={zoom}>
           <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map(ch =>
             <border background={0xffffff11} padding={1}>
