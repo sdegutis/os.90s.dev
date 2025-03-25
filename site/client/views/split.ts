@@ -87,7 +87,7 @@ export class Split extends View {
       if (max <= 0) max += this.size[dw] - 1
 
       return Math.max(min, Math.min(pos, max))
-    })
+    }, [this.$.min, this.$.max])
 
     this.resizer = SplitDivider.make({ split: this })
     this.children = [...this.children, this.resizer]

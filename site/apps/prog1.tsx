@@ -24,34 +24,37 @@ const CHARSET = Array(96).keys().map(i => String.fromCharCode(i + 32)).toArray()
 
 const panel = await Panel.create(
   <PanelView title={'Font Maker'}>
-    <panedyb>
-      <scroll draw={makeStripeDrawer()} background={0xffffff11}>
-        <border padding={zoom}>
-          <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map(ch =>
-            <CharView char={ch} zoom={zoom} width={width} height={height} />
-          )} />
+    <splitxa min={zoom.adapt(z => z * 5)}>
+      <button><label text={'asfdasd'} /></button>
+      <panedyb>
+        <scroll draw={makeStripeDrawer()} background={0xffffff11}>
+          <border padding={zoom}>
+            <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map(ch =>
+              <CharView char={ch} zoom={zoom} width={width} height={height} />
+            )} />
+          </border>
+        </scroll>
+        <border padding={2} passthrough={false} onWheel={(x, y) => zoom.val += -y / 100}>
+          <groupy align='a' gap={4}>
+            <label text={SAMPLE_TEXT} />
+            <groupx gap={7}>
+              <groupx gap={2}>
+                <label textColor={0xffffff33} text='width' />
+                <label textColor={0xffff00cc} text={width.adapt(n => n.toString())} />
+              </groupx>
+              <groupx gap={2}>
+                <label textColor={0xffffff33} text='height' />
+                <label textColor={0xffff00cc} text={height.adapt(n => n.toString())} />
+              </groupx>
+              <groupx gap={2}>
+                <label textColor={0xffffff33} text='zoom' />
+                <label textColor={0xffff00cc} text={zoom.adapt(n => n.toString())} />
+              </groupx>
+            </groupx>
+          </groupy>
         </border>
-      </scroll>
-      <border padding={2} passthrough={false} onWheel={(x, y) => zoom.val += -y / 100}>
-        <groupy align='a' gap={4}>
-          <label text={SAMPLE_TEXT} />
-          <groupx gap={7}>
-            <groupx gap={2}>
-              <label textColor={0xffffff33} text='width' />
-              <label textColor={0xffff00cc} text={width.adapt(n => n.toString())} />
-            </groupx>
-            <groupx gap={2}>
-              <label textColor={0xffffff33} text='height' />
-              <label textColor={0xffff00cc} text={height.adapt(n => n.toString())} />
-            </groupx>
-            <groupx gap={2}>
-              <label textColor={0xffffff33} text='zoom' />
-              <label textColor={0xffff00cc} text={zoom.adapt(n => n.toString())} />
-            </groupx>
-          </groupx>
-        </groupy>
-      </border>
-    </panedyb>
+      </panedyb>
+    </splitxa>
   </PanelView>
 )
 

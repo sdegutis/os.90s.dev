@@ -27,9 +27,12 @@ export class Ref<T> {
     return this.listener.watch(([data, old]) => fn(data, old))
   }
 
-  intercept(fn: (data: T) => T) {
+  intercept(fn: (data: T) => T, deps: Ref<any>[] = []) {
     this.interceptors.add(fn)
     this.val = fn(this.val)
+    multiplex(deps, () => {
+      this.val = fn(this.val)
+    })
     return () => this.interceptors.delete(fn)
   }
 
