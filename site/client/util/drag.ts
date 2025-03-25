@@ -1,8 +1,8 @@
 import type { Ref } from "../../shared/ref.js"
 import type { Point, Size } from "./types.js"
 
-export function dragMove(anchor: Ref<Point>, o: { point: Point }) {
-  const start = o.point
+export function dragMove(anchor: Ref<Point>, o: Ref<Point>) {
+  const start = o.val
   const offx = anchor.val.x - start.x
   const offy = anchor.val.y - start.y
   return anchor.watch(() => {
@@ -10,7 +10,7 @@ export function dragMove(anchor: Ref<Point>, o: { point: Point }) {
     const diffy = anchor.val.y - start.y
     const x = start.x + diffx - offx
     const y = start.y + diffy - offy
-    o.point = { x, y }
+    o.val = { x, y }
   })
 }
 

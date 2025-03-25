@@ -1,4 +1,4 @@
-import { multiplex } from "../../shared/ref.js"
+import { $, multiplex } from "../../shared/ref.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { PanedXB, PanedYB } from "./paned.js"
@@ -89,12 +89,13 @@ export class Scroll extends View {
         if (b !== 0) return
         this.panel?.pushCursor(cursor)
         const view = this
-        const done = dragMove(this.panel!.$mouse, {
-          get point() { return bar.point },
-          set point(p: { x: number, y: number }) {
-            const per = p[xy] / (track.size[wh] - bar.size[wh])
-            view[scroll] = per * (view.content.size[wh] - view.area.size[wh])
-          }
+
+        const $point = $(bar.point)
+        const done = dragMove(this.panel!.$mouse, $point)
+
+        $point.watch(p => {
+          const per = p[xy] / (track.size[wh] - bar.size[wh])
+          view[scroll] = per * (view.content.size[wh] - view.area.size[wh])
         })
 
         bar.onMouseUp = () => {

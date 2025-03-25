@@ -35,7 +35,7 @@ export function PanelView(data: {
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
 
   function titleBarMouseDown(this: SpacedX, button: number) {
-    this.onMouseUp = dragMove(panel.$absmouse, panel)
+    this.onMouseUp = dragMove(panel.$absmouse, panel.$point)
   }
 
   function minw() { /* panel.min() */ }

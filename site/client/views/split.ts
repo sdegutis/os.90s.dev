@@ -1,3 +1,4 @@
+import { $ } from "../../shared/ref.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { View } from "./view.js"
@@ -34,20 +35,15 @@ class SplitDivider extends View {
     const split = this.split
     const dx = split.dir
     const dw = dx === 'x' ? 'w' : 'h'
-
     const sticka = split.stick === 'a'
-    const p = sticka ? split.pos : split.size[dw] - split.pos
-
-    const b = {
-      get point() { return { x: p, y: p } },
-      set point(p: { x: number, y: number }) {
-        split.pos = sticka ? p[dx] : split.size[dw] - p[dx]
-      }
-    }
 
     this.pressed = true
 
-    const done = dragMove(this.panel!.$mouse, b)
+    const p = sticka ? split.pos : split.size[dw] - split.pos
+    const $b = $({ x: p, y: p })
+    $b.watch(p => split.pos = sticka ? p[dx] : split.size[dw] - p[dx])
+
+    const done = dragMove(this.panel!.$mouse, $b)
     this.onMouseUp = () => {
       done()
       this.panel?.popCursor(this.cursor)
