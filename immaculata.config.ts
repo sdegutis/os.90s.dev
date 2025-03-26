@@ -23,7 +23,7 @@ export default (({ inFiles, outFiles }) => {
 
   const sysdata = JSON.stringify(Object.fromEntries(files
     .filter(f => f.path.startsWith('/server/data'))
-    .map(f => [f.path.slice('/server/data/'.length), tostring(f.content)])
+    .map(f => [f.path.slice('/server/data/'.length), f.content.toString()])
   ), null, 2)
   files.push({ path: '/server/fs/data.js', content: `export const files = ${sysdata}` })
 
@@ -49,18 +49,12 @@ export default (({ inFiles, outFiles }) => {
 
   for (const file of files) {
     for (let { path, content } of processFile(file)) {
-      if (path.endsWith('.js')) content = minify(`/** ${copyright} */\n` + tostring(content))
-      if (path.endsWith('.html')) content = `<!-- ${copyright} -->\n` + insert(tostring(content))
+      if (path.endsWith('.js')) content = minify(`/** ${copyright} */\n` + content.toString())
+      if (path.endsWith('.html')) content = `<!-- ${copyright} -->\n` + insert(content.toString())
       outFiles.set(path, content)
     }
   }
 }) as SiteProcessor
-
-const dec = new TextDecoder()
-
-function tostring(str: string | Uint8Array) {
-  return typeof str === 'string' ? str : dec.decode(str)
-}
 
 function minify(js: string) {
   return swc.minifySync(js, { module: true }).code
