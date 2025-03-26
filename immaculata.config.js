@@ -1,6 +1,6 @@
 import * as swc from '@swc/core'
 import fs from 'fs'
-import { processFile, type SiteProcessor } from "immaculata"
+import { processFile } from "immaculata"
 
 const swc1 = fs.readFileSync('node_modules/@swc/wasm-web/wasm.js')
 const swc2 = fs.readFileSync('node_modules/@swc/wasm-web/wasm_bg.wasm')
@@ -11,7 +11,7 @@ const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5">
   <path d="M1 0 L3 2 1 4 Z" fill="#19f" />
 </svg>`
 
-const ext = (s: string) => s.match(/\.([^\/]+)$/)?.[1] ?? ''
+const ext = (s) => s.match(/\.([^\/]+)$/)?.[1] ?? ''
 
 export const jsxPathBrowser = '/jsx.ts'
 
@@ -43,7 +43,7 @@ export default (({ inFiles, outFiles }) => {
   const headers = [...datas, ...modules, iconlink, hmr]
   const toinsert = headers.map(s => `  ${s}`).join('\n')
 
-  function insert(s: string) {
+  function insert(s) {
     return s.replace('<head>', `<head>\n${toinsert}`)
   }
 
@@ -54,8 +54,8 @@ export default (({ inFiles, outFiles }) => {
       outFiles.set(path, content)
     }
   }
-}) as SiteProcessor
+})
 
-function minify(js: string) {
+function minify(js) {
   return swc.minifySync(js, { module: true }).code
 }
