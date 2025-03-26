@@ -100,6 +100,9 @@ const rectsmodule = device.createShaderModule({
     }
 
     @fragment fn fs(input: Output) -> @location(0) vec4f {
+      if (input.col.a < 0.01) {
+        discard;
+      }
       return input.col;
     }
   `,
@@ -137,7 +140,7 @@ const randint = (min: number, max: number) => Math.floor(Math.random() * (max - 
 
 const rectgroups = Array(100).keys().map(() => {
 
-  const numrects = 1
+  const numrects = 10000
 
   const rectsData = new Int32Array(numrects * 5)
 
