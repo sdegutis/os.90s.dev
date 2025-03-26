@@ -43,27 +43,45 @@ type Handlers<T extends EventMap<T>> = { [K in keyof T]: Handler<T[K]> }
 
 export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
 
+  cid = 0
   port
   handlers
+  waiters = new Map<number, (data: any) => void>()
 
   constructor(port: Worker | Window | MessagePort, handlers: Handlers<In>) {
     this.port = port
     this.handlers = handlers
 
     port.onmessage = (msg) => {
-      const name = msg.data.pop() as keyof In
-      // const fn = handlers[name]
-      // fn.apply(undefined, msg.data)
+      const args = msg.data as any[]
+      const cid = args.pop() as number
+
+      if (cid < 0) {
+        this.waiters.get(-cid)?.(args)
+        this.waiters.delete(-cid)
+        return
+      }
+
+      if (cid > 0) args.unshift((data: any[], transfer: Transferable[]) => {
+        port.postMessage([...data, -cid], { transfer })
+      })
+
+      const name = args.pop() as keyof In
+      const fn = handlers[name]
+      fn.apply(undefined, args)
     }
   }
 
   send<K extends keyof Out>(name: K, data: Parameters<Out[K]>, transfer?: Transferable[]) {
-    this.port.postMessage([...data, name], transfer ? { transfer } : undefined)
+    this.port.postMessage([...data, name, 0], transfer ? { transfer } : undefined)
   }
 
-  call<K extends keyof Out>(name: K, data: Parameters<Out[K]>, transfer?: Transferable[]): ReturnType<Out[K]> {
-    this.port.postMessage([...data, name], transfer ? { transfer } : undefined)
-    return new Promise(r => { }) as any
+  call<K extends keyof Out>(name: K, data: Parameters<Out[K]>, transfer?: Transferable[]) {
+    const p = Promise.withResolvers<Awaited<ReturnType<Out[K]>>>()
+    const cid = ++this.cid
+    this.waiters.set(cid, p.resolve)
+    this.port.postMessage([...data, name, cid], transfer ? { transfer } : undefined)
+    return p.promise
   }
 
 }
