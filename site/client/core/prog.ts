@@ -18,7 +18,7 @@ export class Program {
   get size() { return this.$size.val }
   set size(s: Size) { this.$size.val = s }
 
-  async init() {
+  async init(path: string) {
     this.rpc.send('init', [])
     const [id, w, h, keymap] = await this.rpc.once('init')
     this.pid = id
@@ -44,23 +44,14 @@ export class Program {
       this.rpc.send('pong', [n % 2 === 0 ? n + 2 : n + 1])
     })
 
-
-    const url = new URLSearchParams(location.search)
-    const apppath = url.get('app')
-
-    if (!apppath) {
-      console.log('no given query str')
-    }
-    else {
-      this.rpc.send('getfile', [apppath])
-      this.rpc.once('gotfile').then(([file]) => {
-        if (!file) {
-          console.log('no such app file')
-          return
-        }
-        exec(file)
-      })
-    }
+    this.rpc.send('getfile', [path])
+    this.rpc.once('gotfile').then(([file]) => {
+      if (!file) {
+        console.log('no such app file')
+        return
+      }
+      exec(file)
+    })
   }
 
   get focusedPanel() {
