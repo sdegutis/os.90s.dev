@@ -15,15 +15,14 @@ class FS {
     this.addDrive('sys', new SysDrive())
   }
 
-  userDrivesMounted = new Promise<void>(async resolve => {
+  async init() {
     await this.addDrive('user', new UserDrive())
 
     this.mounts = await opendb<{ drive: string, dir: FileSystemDirectoryHandle }>('mounts', 'drive')
     for (const { drive, dir } of await this.mounts.all()) {
       await this.addDrive(drive, new MountedDrive(dir))
     }
-    resolve()
-  })
+  }
 
   async mount(drive: string, folder: FileSystemDirectoryHandle) {
     this.mounts.set({ drive, dir: folder })
@@ -76,10 +75,10 @@ class FS {
         const name = m.slice(subpath.length)
         const type = v.type
 
-        if (v.type === 'folder')
+        if (type === 'folder')
           return { name, type }
         else
-          return { name, type, content: v }
+          return { name, type, content: v.content }
       })
       .filter(e => e !== null)
       .toArray()
@@ -149,3 +148,4 @@ function normalize(content: string) {
 }
 
 export const fs = new FS()
+await fs.init()

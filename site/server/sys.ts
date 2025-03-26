@@ -195,4 +195,6 @@ offy=1
 
 let cursor = defaultCursor
 
+console.log(fs.drives())
+console.log(fs.list('sys/'))
 console.log(fs.get('sys/crt34.font'))
