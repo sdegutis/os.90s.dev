@@ -23,7 +23,7 @@ export class Sys {
   constructor(width: number, height: number) {
     this.$size = $({ w: width, h: height })
 
-    const { canvas, ctx } = setupCanvas(this.$size)
+    const { $point, $scale, canvas, ctx } = setupCanvas(this.$size)
     this.ctx = ctx
 
     showLoadingScreen(ctx)
@@ -47,6 +47,15 @@ export class Sys {
       Process.all.forEach(p => p.rpc.send('keyup', [e.key]))
       this.redrawAllPanels()
     }
+
+    // document.onmousemove = (e) => {
+    //   // console.log($point.val)
+
+    //   console.log(
+    //     Math.round((e.offsetX - $point.val.x) / $scale.val),
+    //     Math.round((e.offsetY - $point.val.y) / $scale.val),
+    //   )
+    // }
 
     canvas.onmousemove = (e) => {
       const x = Math.min(this.size.w - 1, e.offsetX)

@@ -1,4 +1,4 @@
-import type { Ref } from "../../shared/ref.js"
+import { $, type Ref } from "../../shared/ref.js"
 
 export function setupCanvas(size: Ref<{ readonly w: number, readonly h: number }>) {
 
@@ -17,6 +17,15 @@ export function setupCanvas(size: Ref<{ readonly w: number, readonly h: number }
   canvas.tabIndex = 1
   canvas.focus()
 
+  const $point = $({ x: 0, y: 0 })
+  const updatePoint = () => {
+    const rect = canvas.getBoundingClientRect()
+    console.log(rect)
+    $point.val = { x: Math.round(rect.x), y: Math.round(rect.y) }
+  }
+
+  const $scale = $(1)
+
   function resize() {
     const rect = canvas.parentElement!.getBoundingClientRect()
     let w = size.val.w, h = size.val.h, s = 1
@@ -24,6 +33,8 @@ export function setupCanvas(size: Ref<{ readonly w: number, readonly h: number }
       (w += size.val.w) <= rect.width &&
       (h += size.val.h) <= rect.height) s++
     canvas.style.transform = `scale(${s})`
+    $scale.val = s
+    updatePoint()
   }
 
   size.watch(s => {
@@ -35,6 +46,6 @@ export function setupCanvas(size: Ref<{ readonly w: number, readonly h: number }
   new ResizeObserver(resize).observe(canvas.parentElement!)
 
   const ctx = canvas.getContext('2d')!
-  return { ctx, canvas }
+  return { ctx, canvas, $point, $scale }
 
 }
