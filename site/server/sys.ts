@@ -3,6 +3,8 @@ import { $ } from "../shared/ref.js"
 import { Panel } from "./panel.js"
 import { Process } from "./process.js"
 import { setupCanvas } from "./util/canvas.js"
+import { DrawingContext } from "/shared/drawing.js"
+import { crt34 } from "/shared/font.js"
 
 export class Sys {
 
@@ -23,6 +25,8 @@ export class Sys {
 
     const { canvas, ctx } = setupCanvas(this.$size)
     this.ctx = ctx
+
+    showLoadingScreen(ctx)
 
     canvas.oncontextmenu = (e) => {
       e.preventDefault()
@@ -177,19 +181,29 @@ offy=1
 1 1 1 0
 `.trimStart())
 
-// const defaultCursor = Cursor.fromString(`
-// offx=1
-// offy=1
-// ===
-// #000000ff
-// #ffffffff
-
-// 1 1 1 1 1 1
-// 1 2 2 2 2 1
-// 1 2 2 2 2 1
-// 1 2 2 1 1 1
-// 1 2 2 1 0 0
-// 1 1 1 1 0 0
-// `.trimStart())
-
 let cursor = defaultCursor
+
+function showLoadingScreen(ctx2: CanvasRenderingContext2D) {
+  const w = ctx2.canvas.width
+  const h = ctx2.canvas.height
+
+  const ctx = new DrawingContext(w, h)
+
+  ctx.fillRect(0, 0, w, h, 0x333333ff)
+
+  const font = crt34
+  const str = 'loading...'
+  const size = font.calcSize(str)
+
+  const px = Math.floor(w / 2 - size.w / 2)
+  const py = Math.floor(h / 2 - size.h / 2)
+
+  ctx.fillRect(px - 3, py - 3, size.w + 6, size.h + 6, 0x333333ff)
+
+  font.print(ctx, px + 1, py + 1, 0x000000ff, str)
+  font.print(ctx, px, py, 0xffffffff, str)
+
+  const img = ctx.canvas.transferToImageBitmap()
+
+  ctx2.drawImage(img, 0, 0)
+}
