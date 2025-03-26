@@ -28,34 +28,44 @@ export class Process {
     absurl.searchParams.set('app', 'sys' + path)
     this.worker = new Worker(absurl, { type: 'module' })
 
-    const rpc = wRPC<ServerProgram, ClientProgram>(this.worker)
-    this.rpc = rpc
+    const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
 
-    rpc.listen('terminate', () => {
-      this.terminate()
-    })
+      init: (reply) => {
+        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap]], [])
+      },
 
-    rpc.listen('resize', (w, h) => {
-      sys.resize(w, h)
-    })
+      newpanel: (reply, ord, x, y, w, h) => {
+        const chan = new MessageChannel()
+        const p = new Panel({ x, y, w, h }, this, chan.port1, ord, sys)
+        reply([p.id, p.x, p.y, chan.port2], [chan.port2])
 
-    rpc.listen('getfile', (path) => {
-      const content = fs.get(path)
-      rpc.send('gotfile', [content])
-    })
+        this.panels.add(p)
 
-    rpc.once('init').then(() => {
-      rpc.send('init', [this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap]])
+        p.didAdjust.watch(() => sys.redrawAllPanels())
+        p.didRedraw.watch(() => sys.redrawAllPanels())
+      },
+
+      getfile: (reply, path) => {
+        const content = fs.get(path)
+        reply([content], [])
+      },
+
+      terminate: () => {
+        this.terminate()
+      },
+
+      resize: (w, h) => {
+        sys.resize(w, h)
+      },
+
     })
 
     this.heartbeat = setInterval(async () => {
       const n = Math.ceil(Math.random() * 1000)
       const expected = n % 2 === 0 ? n + 2 : n + 1
 
-      rpc.send('ping', [n])
-
       const got = await Promise.race([
-        rpc.once('pong').then(([n]) => n),
+        rpc.call('ping', [n]).then(([n]) => n),
         new Promise((r) => setTimeout(r, 1000))
       ])
 
@@ -74,17 +84,6 @@ export class Process {
         }
       }
     }, 3000)
-
-    rpc.listen('newpanel', (ord, x, y, w, h) => {
-      const chan = new MessageChannel()
-      const p = new Panel({ x, y, w, h }, this, chan.port1, ord, sys)
-      rpc.send('newpanel', [p.id, p.x, p.y, chan.port2], [chan.port2])
-
-      this.panels.add(p)
-
-      p.didAdjust.watch(() => sys.redrawAllPanels())
-      p.didRedraw.watch(() => sys.redrawAllPanels())
-    })
   }
 
   focus(panel: Panel) {

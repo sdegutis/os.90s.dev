@@ -33,7 +33,6 @@ export class Panel {
   constructor(rect: Rect, proc: Process, port: MessagePort, pos: PanelOrdering, sys: Sys) {
     this.proc = proc
     this.port = port
-    this.rpc = wRPC<ServerPanel, ClientPanel>(port)
     this.pos = pos
 
     this.x = rect.x
@@ -62,30 +61,34 @@ export class Panel {
       this.y = Math.round(sys.size.h / 2 - this.h / 2)
     }
 
-    this.rpc.listen('focus', () => {
-      this.proc.focus(this)
-    })
+    this.rpc = new wRPC<ServerPanel, ClientPanel>(port, {
 
-    this.rpc.listen('close', () => {
-      proc.closePanel(this)
-    })
+      adjust: (x, y, w, h) => {
+        this.x = x
+        this.y = y
+        this.w = w
+        this.h = h
+        this.didAdjust.dispatch()
+      },
 
-    this.rpc.listen('cursor', (cstr) => {
-      proc.useCursor(cstr ? Cursor.fromString(cstr) : null)
-    })
+      blit: (img) => {
+        this.img?.close()
+        this.img = img
+        this.didRedraw.dispatch()
+      },
 
-    this.rpc.listen('adjust', (x, y, w, h) => {
-      this.x = x
-      this.y = y
-      this.w = w
-      this.h = h
-      this.didAdjust.dispatch()
-    })
+      close: () => {
+        proc.closePanel(this)
+      },
 
-    this.rpc.listen('blit', (img) => {
-      this.img?.close()
-      this.img = img
-      this.didRedraw.dispatch()
+      focus: () => {
+        this.proc.focus(this)
+      },
+
+      cursor: (cstr) => {
+        proc.useCursor(cstr ? Cursor.fromString(cstr) : null)
+      },
+
     })
 
   }

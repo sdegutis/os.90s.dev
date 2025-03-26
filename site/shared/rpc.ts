@@ -1,26 +1,18 @@
-import { Listener } from "./listener.js"
-
 export type PanelOrdering = 'normal' | 'bottom' | 'top'
 
 export interface ServerProgram {
-  init(): void
-  newpanel(ord: PanelOrdering, x: number, y: number, w: number, h: number): void
+  init(): Promise<[id: number, w: number, h: number, keymap: string[]]>
+  newpanel(ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, x: number, y: number, port: MessagePort]>
   terminate(): void
   resize(w: number, h: number): void
-  pong(n: number): void
-
-  getfile(path: string): void
+  getfile(path: string): Promise<[content: string | undefined]>
 }
 
 export interface ClientProgram {
-  init(id: number, w: number, h: number, keymap: string[]): void
   resized(w: number, h: number): void
-  ping(n: number): void
+  ping(n: number): Promise<[n: number]>
   keydown(key: string): void
   keyup(key: string): void
-  newpanel(id: number, x: number, y: number, port: MessagePort): void
-
-  gotfile(content: string | undefined): void
 }
 
 export interface ServerPanel {
@@ -43,39 +35,35 @@ export interface ClientPanel {
   needblit(): void
 }
 
-type EventMap<T> = { [K in keyof T]: (...args: any) => void }
+type EventMap<T> = { [K in keyof T]: (...args: any) => any }
 
-export function wRPC<In extends EventMap<In>, Out extends EventMap<Out>>(port: Worker | Window | MessagePort) {
-  const listeners = new Map<keyof In, Listener<Parameters<In[keyof In]>>>()
+type Reply<A> = (data: A, ts: Transferable[]) => void
+type Handler<T extends (...args: any) => any> = T extends (...args: infer A) => Promise<infer R> ? (reply: Reply<R>, ...args: A) => void : T
+type Handlers<T extends EventMap<T>> = { [K in keyof T]: Handler<T[K]> }
 
-  port.onmessage = (msg) => {
-    const name = msg.data.pop() as keyof In
-    const listener = listeners.get(name)
-    if (!listener) {
-      console.log('missed message', name, msg.data)
-      return
+export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
+
+  port
+  handlers
+
+  constructor(port: Worker | Window | MessagePort, handlers: Handlers<In>) {
+    this.port = port
+    this.handlers = handlers
+
+    port.onmessage = (msg) => {
+      const name = msg.data.pop() as keyof In
+      // const fn = handlers[name]
+      // fn.apply(undefined, msg.data)
     }
-    listener.dispatch(msg.data as Parameters<In[keyof In]>)
   }
 
-  function send<K extends keyof Out>(name: K, data: Parameters<Out[K]>, transfer?: Transferable[]) {
-    port.postMessage([...data, name], transfer ? { transfer } : undefined)
+  send<K extends keyof Out>(name: K, data: Parameters<Out[K]>, transfer?: Transferable[]) {
+    this.port.postMessage([...data, name], transfer ? { transfer } : undefined)
   }
 
-  function listen<K extends keyof In>(name: K, fn: (...args: Parameters<In[K]>) => void) {
-    let listener = listeners.get(name)
-    if (!listener) listeners.set(name, listener = new Listener())
-    return listener.watch(data => fn(...data))
+  call<K extends keyof Out>(name: K, data: Parameters<Out[K]>, transfer?: Transferable[]): ReturnType<Out[K]> {
+    this.port.postMessage([...data, name], transfer ? { transfer } : undefined)
+    return new Promise(r => { }) as any
   }
 
-  function once<K extends keyof In>(name: K) {
-    return new Promise<Parameters<In[K]>>(resolve => {
-      const done = listen(name, (...args: Parameters<In[K]>) => {
-        done()
-        resolve(args)
-      })
-    })
-  }
-
-  return { send, listen, once }
 }

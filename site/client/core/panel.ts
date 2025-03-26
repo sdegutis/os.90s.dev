@@ -78,75 +78,77 @@ export class Panel {
       this.checkUnderMouse()
     })
 
-    this.rpc = wRPC<ClientPanel, ServerPanel>(port)
+    this.rpc = new wRPC<ClientPanel, ServerPanel>(port, {
 
-    this.rpc.listen('needblit', () => {
-      this.blit()
-    })
+      focus: () => {
+        this.isFocused = true
+        this.root.onPanelFocus?.()
+        this.focused?.onFocus?.()
+      },
 
-    this.rpc.listen('focus', () => {
-      this.isFocused = true
-      this.root.onPanelFocus?.()
-      this.focused?.onFocus?.()
-    })
+      blur: () => {
+        this.isFocused = false
+        this.root.onPanelBlur?.()
+        this.focused?.onBlur?.()
+      },
 
-    this.rpc.listen('blur', () => {
-      this.isFocused = false
-      this.root.onPanelBlur?.()
-      this.focused?.onBlur?.()
-    })
+      mouseentered: () => {
+        // unused for now
+      },
 
-    this.rpc.listen('mouseentered', () => {
-      // unused for now
-    })
-
-    this.rpc.listen('mouseexited', () => {
-      for (const view of this.hoveredTree) {
-        view.onMouseExit?.()
-        view.hovered = false
-      }
-      if (this.hovered) this.hovered.hovered = false
-      this.hovered = null
-      this.hoveredTree.clear()
-    })
-
-    this.rpc.listen('mousedown', (b) => {
-      this.clicking = this.hovered
-      if (this.clicking) this.clicking.pressed = true
-      this.hovered?.onMouseDown?.(b)
-
-      let node: View | null = this.hovered
-      while (node) {
-        if (node.canMouse && this.focusView(node)) {
-          return
+      mouseexited: () => {
+        for (const view of this.hoveredTree) {
+          view.onMouseExit?.()
+          view.hovered = false
         }
-        node = node.parent
-      }
-    })
+        if (this.hovered) this.hovered.hovered = false
+        this.hovered = null
+        this.hoveredTree.clear()
+      },
 
-    this.rpc.listen('mousemoved', (x, y) => {
-      this.absmouse = { x, y }
-      this.checkUnderMouse()
+      mousemoved: (x, y) => {
+        this.absmouse = { x, y }
+        this.checkUnderMouse()
 
-      const sendto = this.clicking ?? this.hovered
-      sendto?.onMouseMove?.(this.mouse)
-    })
+        const sendto = this.clicking ?? this.hovered
+        sendto?.onMouseMove?.(this.mouse)
+      },
 
-    this.rpc.listen('mouseup', () => {
-      this.clicking?.onMouseUp?.()
-      if (this.clicking) this.clicking.pressed = false
-      this.clicking = null
-    })
+      mousedown: (b) => {
+        this.clicking = this.hovered
+        if (this.clicking) this.clicking.pressed = true
+        this.hovered?.onMouseDown?.(b)
 
-    this.rpc.listen('wheel', (x, y) => {
-      let node: View | null = this.hovered
-      while (node) {
-        if (node.onWheel) {
-          node.onWheel(x, y)
-          return
+        let node: View | null = this.hovered
+        while (node) {
+          if (node.canMouse && this.focusView(node)) {
+            return
+          }
+          node = node.parent
         }
-        node = node.parent
-      }
+      },
+
+      mouseup: () => {
+        this.clicking?.onMouseUp?.()
+        if (this.clicking) this.clicking.pressed = false
+        this.clicking = null
+      },
+
+      wheel: (x, y) => {
+        let node: View | null = this.hovered
+        while (node) {
+          if (node.onWheel) {
+            node.onWheel(x, y)
+            return
+          }
+          node = node.parent
+        }
+      },
+
+      needblit: () => {
+        this.blit()
+      },
+
     })
 
     this.root = root

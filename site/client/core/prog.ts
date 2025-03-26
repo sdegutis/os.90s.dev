@@ -6,7 +6,28 @@ import { Panel } from "./panel.js"
 
 class Program {
 
-  private rpc = wRPC<ClientProgram, ServerProgram>(self)
+  private rpc = new wRPC<ClientProgram, ServerProgram>(self, {
+
+    resized: (w, h) => {
+      this.size = { w, h }
+    },
+
+    ping: (reply, n) => {
+      reply([n % 2 === 0 ? n + 2 : n + 1], [])
+    },
+
+    keydown: (key) => {
+      this.keymap.add(key)
+      this.focusedPanel?.onKeyDown(key)
+    },
+
+    keyup: (key) => {
+      this.keymap.delete(key)
+      this.focusedPanel?.onKeyUp(key)
+    },
+
+  })
+
   pid = 0
 
   panels = new Set<Panel>()
@@ -19,39 +40,19 @@ class Program {
   set size(s: Size) { this.$size.val = s }
 
   async init(path: string) {
-    this.rpc.send('init', [])
-    const [id, w, h, keymap] = await this.rpc.once('init')
+
+    const [id, w, h, keymap] = await this.rpc.call('init', [])
     this.pid = id
     this.size = { w, h }
 
     keymap.forEach(k => this.keymap.add(k))
 
-    this.rpc.listen('resized', (w, h) => {
-      this.size = { w, h }
-    })
-
-    this.rpc.listen('keydown', (key) => {
-      this.keymap.add(key)
-      this.focusedPanel?.onKeyDown(key)
-    })
-
-    this.rpc.listen('keyup', (key) => {
-      this.keymap.delete(key)
-      this.focusedPanel?.onKeyUp(key)
-    })
-
-    this.rpc.listen('ping', (n) => {
-      this.rpc.send('pong', [n % 2 === 0 ? n + 2 : n + 1])
-    })
-
-    this.rpc.send('getfile', [path])
-    this.rpc.once('gotfile').then(([file]) => {
-      if (!file) {
-        console.log('no such app file')
-        return
-      }
-      exec(file)
-    })
+    const [file] = await this.rpc.call('getfile', [path])
+    if (!file) {
+      console.log('no such app file')
+      return
+    }
+    exec(file)
   }
 
   get focusedPanel() {
@@ -70,8 +71,7 @@ class Program {
 
     const root = config.view
 
-    this.rpc.send('newpanel', [order, point.val.x, point.val.y, root.size.w, root.size.h])
-    const [id, x, y, port] = await this.rpc.once('newpanel')
+    const [id, x, y, port] = await this.rpc.call('newpanel', [order, point.val.x, point.val.y, root.size.w, root.size.h])
 
     point.val = { x, y }
     const panel = new Panel(this.keymap, port, id, point, root.$.size, config.view)
