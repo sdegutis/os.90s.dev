@@ -185,9 +185,9 @@ offy=1
 
 let cursor = defaultCursor
 
-function showLoadingScreen(ctx2: CanvasRenderingContext2D) {
-  const w = ctx2.canvas.width
-  const h = ctx2.canvas.height
+function showLoadingScreen(out: CanvasRenderingContext2D) {
+  const w = out.canvas.width
+  const h = out.canvas.height
 
   const ctx = new DrawingContext(w, h)
 
@@ -207,5 +207,5 @@ function showLoadingScreen(ctx2: CanvasRenderingContext2D) {
 
   const img = ctx.canvas.transferToImageBitmap()
 
-  ctx2.drawImage(img, 0, 0)
+  out.drawImage(img, 0, 0)
 }
