@@ -1,3 +1,4 @@
+import * as swc from '@swc/core'
 import fs from 'fs'
 import { processFile, type SiteProcessor } from "immaculata"
 
@@ -40,7 +41,7 @@ export default (({ inFiles, outFiles }) => {
 
   for (const file of files) {
     for (let { path, content } of processFile(file)) {
-      if (path.endsWith('.js')) content = `/** ${copyright} */\n` + tostring(content)
+      if (path.endsWith('.js')) content = minify(`/** ${copyright} */\n` + tostring(content))
       if (path.endsWith('.html')) content = `<!-- ${copyright} -->\n` + insert(tostring(content))
       outFiles.set(path, content)
     }
@@ -51,4 +52,8 @@ const dec = new TextDecoder()
 
 function tostring(str: string | Uint8Array) {
   return typeof str === 'string' ? str : dec.decode(str)
+}
+
+function minify(js: string) {
+  return swc.minifySync(js, { module: true }).code
 }

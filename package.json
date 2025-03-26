@@ -7,6 +7,7 @@
     "watch": "tsc --erasableSyntaxOnly --watch"
   },
   "devDependencies": {
+    "@swc/core": "^1.11.13",
     "@swc/wasm-web": "^1.11.13",
     "@types/node": "^22.13.13",
     "@types/wicg-file-system-access": "^2023.10.5",
