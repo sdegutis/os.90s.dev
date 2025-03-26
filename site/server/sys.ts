@@ -35,6 +35,7 @@ export class Sys {
     }
 
     document.onkeydown = (e) => {
+      if (e.target !== canvas) return
       if (e.key.match(/^F\d{1,2}$/)) return
       e.preventDefault()
 
