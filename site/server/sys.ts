@@ -29,7 +29,9 @@ export class Sys {
     showLoadingScreen(ctx)
 
     canvas.oncontextmenu = (e) => {
-      e.preventDefault()
+      if (e.target === canvas) {
+        e.preventDefault()
+      }
     }
 
     document.onkeydown = (e) => {
@@ -70,7 +72,6 @@ export class Sys {
     }
 
     document.onmousedown = (e) => {
-      if (e.target !== canvas) return
       if (!this.hovered) return
 
       if (this.hovered.proc.dead && e.button === 2) {
