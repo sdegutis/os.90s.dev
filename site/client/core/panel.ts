@@ -35,8 +35,7 @@ export class Panel {
   didClose = new Listener()
   isFocused = false
 
-  readonly canvas = new OffscreenCanvas(0, 0)
-  readonly ctx = new DrawingContext(this.canvas.getContext('2d')!)
+  readonly ctx = new DrawingContext()
 
   private hoveredTree = new Set<View>()
   private hovered: View | null = null
@@ -64,13 +63,13 @@ export class Panel {
       y: this.absmouse.y - this.point.y,
     }))
 
-    this.canvas.width = size.val.w
-    this.canvas.height = size.val.h
+    this.ctx.canvas.width = size.val.w
+    this.ctx.canvas.height = size.val.h
 
     size.watch((size) => {
       this.rpc.send('adjust', [this.point.x, this.point.y, size.w, size.h])
-      this.canvas.width = size.w
-      this.canvas.height = size.h
+      this.ctx.canvas.width = size.w
+      this.ctx.canvas.height = size.h
       this.blit()
     })
 
@@ -319,7 +318,7 @@ export class Panel {
 
   blit() {
     this.redrawRoot()
-    const bmp = this.canvas.transferToImageBitmap()
+    const bmp = this.ctx.canvas.transferToImageBitmap()
     this.rpc.send('blit', [bmp], [bmp])
   }
 

@@ -2,10 +2,12 @@ import { colorFor } from "./colors.js"
 
 export class DrawingContext {
 
-  private ctx: OffscreenCanvasRenderingContext2D
+  public canvas
+  private ctx
 
-  constructor(ctx: OffscreenCanvasRenderingContext2D) {
-    this.ctx = ctx
+  constructor(w = 0, h = 0) {
+    this.canvas = new OffscreenCanvas(w, h)
+    this.ctx = this.canvas.getContext('2d')!
   }
 
   fillRect(x: number, y: number, w: number, h: number, c: number) {
@@ -29,7 +31,7 @@ export class DrawingContext {
     this.ctx.restore()
   }
 
-  drawImage(canvas: OffscreenCanvas, x: number, y: number) {
+  drawImage(canvas: OffscreenCanvas | ImageBitmap, x: number, y: number) {
     this.ctx.drawImage(canvas, x, y)
   }
 

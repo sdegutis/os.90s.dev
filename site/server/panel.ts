@@ -1,4 +1,6 @@
+import { DrawingContext } from "../client/util/drawing.js"
 import { Cursor } from "../shared/cursor.js"
+import { crt34 } from "../shared/font.js"
 import { Listener } from "../shared/listener.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../shared/rpc.js"
 import type { Process } from "./process.js"
@@ -104,24 +106,25 @@ export class Panel {
   }
 
   showSpinner() {
-    const canvas = new OffscreenCanvas(this.w, this.h)
-    const ctx = canvas.getContext('2d')!
+    const ctx = new DrawingContext(this.w, this.h)
+
     if (this.img) ctx.drawImage(this.img, 0, 0)
 
-    ctx.fillStyle = '#fff3'
-    ctx.fillRect(0, 0, this.w, this.h)
+    ctx.fillRect(0, 0, this.w, this.h, 0xffffff33)
 
-    // const font = crt34
-    // const str = 'app not responding\nfix the problem or\nrightclick to quit'
-    // const size = font.calcSize(str)
+    const font = crt34
+    const str = 'app not responding\nfix the problem or\nrightclick to quit'
+    const size = font.calcSize(str)
 
-    // const px = Math.floor(this.w / 2 - size.w / 2)
-    // const py = Math.floor(this.h / 2 - size.h / 2)
+    const px = Math.floor(this.w / 2 - size.w / 2)
+    const py = Math.floor(this.h / 2 - size.h / 2)
 
-    // font.print(ctx, px + 1, py + 1, 0x000000ff, str)
-    // font.print(ctx, px, py, 0xffffffff, str)
+    ctx.fillRect(px - 3, py - 3, size.w + 6, size.h + 6, 0x333333ff)
 
-    this.img = canvas.transferToImageBitmap()
+    font.print(ctx, px + 1, py + 1, 0x000000ff, str)
+    font.print(ctx, px, py, 0xffffffff, str)
+
+    this.img = ctx.canvas.transferToImageBitmap()
   }
 
   hideSpinner() {
