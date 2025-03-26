@@ -25,9 +25,6 @@ export class View extends Dynamic {
   selected: boolean = false
 
   background: number = 0x00000000
-  hoverBackground: number = 0x00000000
-  pressBackground: number = 0x00000000
-  selectedBackground: number = 0x00000000
 
   panelOffset: Point = { x: 0, y: 0 }
   mouse: Point = { x: 0, y: 0 }
@@ -95,9 +92,6 @@ export class View extends Dynamic {
     this.$.pressed.watch(() => this.needsRedraw())
     this.$.selected.watch(() => this.needsRedraw())
     this.$.background.watch(() => this.needsRedraw())
-    this.$.hoverBackground.watch(() => this.needsRedraw())
-    this.$.selectedBackground.watch(() => this.needsRedraw())
-    this.$.pressBackground.watch(() => this.needsRedraw())
 
     this.$.children.watch(() => {
       for (const child of this.children) {
@@ -121,16 +115,6 @@ export class View extends Dynamic {
 
   draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
     this.drawBackground(ctx, px, py, this.background)
-
-    if (this.selected) {
-      this.drawBackground(ctx, px, py, this.selectedBackground)
-    }
-    else if (this.pressed) {
-      this.drawBackground(ctx, px, py, this.pressBackground)
-    }
-    else if (this.hovered) {
-      this.drawBackground(ctx, px, py, this.hoverBackground)
-    }
   }
 
   protected childResized = debounce(() => {

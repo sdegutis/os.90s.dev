@@ -1,6 +1,7 @@
 import { $, multiplex } from "../../shared/ref.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
+import { Button } from "./button.js"
 import { PanedXB, PanedYB } from "./paned.js"
 import { View } from "./view.js"
 
@@ -14,8 +15,8 @@ export class Scroll extends View {
   content!: View
   area = View.make({})
 
-  barv = View.make({ size: { w: 3, h: 0 }, canMouse: true, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
-  barh = View.make({ size: { w: 0, h: 3 }, canMouse: true, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barv = Button.make({ adjust: () => { }, size: { w: 3, h: 0 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barh = Button.make({ adjust: () => { }, size: { w: 0, h: 3 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
 
   trackv = View.make({ background: 0x00000033, children: [this.barv] })
   trackh = View.make({ background: 0x00000033, children: [this.barh] })
