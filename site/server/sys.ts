@@ -1,8 +1,8 @@
 import { Cursor } from "../shared/cursor.js"
 import { $ } from "../shared/ref.js"
-import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 import { Process } from "./process.js"
+import { setupCanvas } from "./util/canvas.js"
 
 export class Sys {
 

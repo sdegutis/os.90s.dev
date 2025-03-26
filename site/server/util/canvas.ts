@@ -1,4 +1,4 @@
-import type { Ref } from "../shared/ref.js"
+import type { Ref } from "../../shared/ref.js"
 
 export function setupCanvas(size: Ref<{ readonly w: number, readonly h: number }>) {
 
