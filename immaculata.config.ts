@@ -13,8 +13,10 @@ const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5">
 
 const ext = (s: string) => s.match(/\.([^\/]+)$/)?.[1] ?? ''
 
+export const jsxPathBrowser = '/jsx.ts'
+
 export default (({ inFiles, outFiles }) => {
-  const files = [...inFiles].filter(f => !['/@imlib/processor.js'].includes(f.path))
+  const files = [...inFiles]
 
   files.push({ path: '/swc/wasm.js', content: swc1 })
   files.push({ path: '/swc/wasm_bg.wasm', content: swc2 })

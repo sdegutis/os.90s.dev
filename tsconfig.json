@@ -15,7 +15,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "jsx": "react-native",
-    "rootDir": "site",
+    "rootDir": ".",
     // "noEmit": true,
     "declaration": true,
     "emitDeclarationOnly": true,
@@ -42,5 +42,10 @@
   },
   "exclude": [
     "types.d.ts"
+  ],
+  "include": [
+    "immaculata.config.js",
+    "site/**/*.ts",
+    "site/**/*.tsx",
   ]
 }
