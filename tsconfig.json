@@ -16,7 +16,10 @@
     "module": "ESNext",
     "jsx": "react-native",
     "rootDir": "site",
-    "noEmit": true,
+    // "noEmit": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outFile": "types.d.ts",
     "moduleResolution": "Node",
     "paths": {
       "/*": [
@@ -24,7 +27,7 @@
       ]
     },
     "forceConsistentCasingInFileNames": true,
-    "verbatimModuleSyntax": true,
+    // "verbatimModuleSyntax": true,
     "strict": true,
     "noImplicitAny": true,
     // "downlevelIteration": true,
@@ -36,5 +39,8 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     // "skipLibCheck": true,
-  }
+  },
+  "exclude": [
+    "types.d.ts"
+  ]
 }
