@@ -184,11 +184,15 @@ function drawrects(pass: GPURenderPassEncoder) {
 
   for (const group of rectgroups) {
 
+    pass.setScissorRect(20, 20, 320 - 40, 180 - 40)
+
     // group.update()
 
     pass.setPipeline(rectspipeline)
     pass.setBindGroup(0, group.bindgroup)
     pass.draw(6, group.numrects)
+
+    pass.setScissorRect(0, 0, 320, 180)
   }
 
 
