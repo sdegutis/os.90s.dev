@@ -1,4 +1,8 @@
+import fs from 'fs'
 import { processFile, type SiteProcessor } from "immaculata"
+
+const swc1 = fs.readFileSync('node_modules/@swc/wasm-web/wasm.js')
+const swc2 = fs.readFileSync('node_modules/@swc/wasm-web/wasm_bg.wasm')
 
 const copyright = `Copyright ©️ ${new Date().getFullYear()} Novo Cantico LLC. All rights reserved.`
 
@@ -11,10 +15,13 @@ const ext = (s: string) => s.match(/\.([^\/]+)$/)?.[1] ?? ''
 export default (({ inFiles, outFiles }) => {
   const files = [...inFiles].filter(f => !['/@imlib/processor.js'].includes(f.path))
 
+  files.push({ path: '/swc/wasm.js', content: swc1 })
+  files.push({ path: '/swc/wasm_bg.wasm', content: swc2 })
+
   const paths = files.map(f => f.path)
 
   const datas = (paths
-    .filter(s => !['js', 'html'].includes(ext(s)))
+    .filter(s => !['js', 'html', 'wasm'].includes(ext(s)))
     .map(s => `<link rel="preload" as="fetch" href="${s.replace(/\.js$/, '')}" crossorigin="anonymous" />`))
 
   const modules = (paths

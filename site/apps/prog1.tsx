@@ -1,4 +1,5 @@
 import { Panel } from "../client/core/panel.js"
+import { testCompile } from "../client/util/compile.js"
 import { PanelView } from "../client/util/panelview.js"
 import { $ } from "../shared/ref.js"
 
@@ -25,3 +26,5 @@ const panel = await Panel.create(
 )
 
 panel.focusPanel()
+
+testCompile()

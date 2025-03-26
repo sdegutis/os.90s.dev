@@ -8,7 +8,8 @@
     "types": [
       "immaculata/runtime.d.ts",
       "@types/wicg-file-system-access",
-      "@webgpu/types"
+      "@webgpu/types",
+      "node"
     ],
     "moduleDetection": "force",
     "target": "ESNext",

@@ -1,4 +1,4 @@
-import initSwc, { transformSync } from 'https://esm.sh/@swc/wasm-web'
+import initSwc, { transformSync } from "../../swc/wasm.js"
 
 await initSwc()
 
