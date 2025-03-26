@@ -35,7 +35,7 @@ export interface ClientPanel {
   needblit(): void
 }
 
-type EventMap<T> = { [K in keyof T]: (...args: any) => any }
+type EventMap<T> = { [K in keyof T]: (...args: any) => void }
 
 type Reply<A> = (data: A, ts: Transferable[]) => void
 type Handler<T extends (...args: any) => any> = T extends (...args: infer A) => Promise<infer R> ? (reply: Reply<R>, ...args: A) => void : T
