@@ -1,4 +1,4 @@
-import { colorFor } from "./colors.js"
+import { colorFor } from "../client/util/colors.js"
 
 export class DrawingContext {
 

@@ -1,5 +1,5 @@
+import type { DrawingContext } from "../../shared/drawing.js"
 import { crt34, Font } from "../../shared/font.js"
-import type { DrawingContext } from "../util/drawing.js"
 import { Scroll } from "./scroll.js"
 import { View } from "./view.js"
 

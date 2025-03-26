@@ -1,7 +1,7 @@
+import type { DrawingContext } from "../../shared/drawing.js"
 import { $ } from "../../shared/ref.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
-import type { DrawingContext } from "../util/drawing.js"
 import { View } from "./view.js"
 
 class SplitDivider extends View {

@@ -1,5 +1,5 @@
 import type { Bitmap } from "../../shared/bitmap.js"
-import type { DrawingContext } from "../util/drawing.js"
+import type { DrawingContext } from "../../shared/drawing.js"
 import { View } from "./view.js"
 
 export class ImageView extends View {

@@ -1,5 +1,5 @@
-import { DrawingContext } from "../client/util/drawing.js"
 import { Cursor } from "../shared/cursor.js"
+import { DrawingContext } from "../shared/drawing.js"
 import { crt34 } from "../shared/font.js"
 import { Listener } from "../shared/listener.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../shared/rpc.js"

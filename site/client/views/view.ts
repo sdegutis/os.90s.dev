@@ -1,6 +1,6 @@
+import type { DrawingContext } from "../../shared/drawing.js"
 import { multiplex } from "../../shared/ref.js"
 import type { Panel } from "../core/panel.js"
-import type { DrawingContext } from "../util/drawing.js"
 import { Dynamic } from "../util/dyn.js"
 import { debounce } from "../util/throttle.js"
 import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../util/types.js"
