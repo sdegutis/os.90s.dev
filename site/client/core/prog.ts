@@ -1,6 +1,6 @@
 import { $, type Ref } from "../../shared/ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "../../shared/rpc.js"
-import { compile } from "../../swc/vm.js"
+import { exec } from "../../swc/vm.js"
 import type { Point, Size } from "../util/types.js"
 import { Panel } from "./panel.js"
 
@@ -58,24 +58,7 @@ export class Program {
           console.log('no such app file')
           return
         }
-        const code = compile(file)
-
-        const SystemJs = {
-          register: async (deps: string[], fn: () => {
-            setters: ((dep: any) => void)[],
-            execute: () => Promise<any>,
-          }) => {
-            const imps = await Promise.all(deps.map(dep => import(dep)))
-            const { setters, execute } = fn()
-            for (let i = 0; i < imps.length; i++) {
-              setters[i](imps[i])
-            }
-            await execute()
-          }
-        }
-
-        const fn = new Function('System', code)
-        fn(SystemJs)
+        exec(file)
       })
     }
   }

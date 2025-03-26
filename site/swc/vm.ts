@@ -2,7 +2,12 @@ import initSwc, { transformSync } from "./wasm.js"
 
 await initSwc()
 
-export function compile(tsx: string) {
+export async function exec(tsx: string) {
+  const fn = new Function('System', compile(tsx))
+  fn(sysjs)
+}
+
+function compile(tsx: string) {
   return transformSync(tsx, {
     isModule: true,
     module: {
@@ -18,4 +23,18 @@ export function compile(tsx: string) {
       }
     }
   }).code
+}
+
+const sysjs = {
+  register: async (deps: string[], fn: () => {
+    setters: ((dep: any) => void)[],
+    execute: () => Promise<any>,
+  }) => {
+    const imps = await Promise.all(deps.map(dep => import(dep)))
+    const { setters, execute } = fn()
+    for (let i = 0; i < imps.length; i++) {
+      setters[i](imps[i])
+    }
+    await execute()
+  }
 }
