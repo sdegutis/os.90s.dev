@@ -1,6 +1,7 @@
 import { $, type Ref } from "../../shared/ref.js"
+import { Size } from "/client/util/types.js"
 
-export function setupCanvas(size: Ref<{ readonly w: number, readonly h: number }>) {
+export function setupCanvas(size: Ref<Size>) {
 
   const canvas = document.createElement('canvas')
 
