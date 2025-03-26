@@ -2,6 +2,7 @@ import { $, type Ref } from "../../shared/ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "../../shared/rpc.js"
 import type { Point, Size } from "../util/types.js"
 import { Panel } from "./panel.js"
+import { compile } from "/swc/compile.js"
 
 export class Program {
 
@@ -42,6 +43,41 @@ export class Program {
     this.rpc.listen('ping', (n) => {
       this.rpc.send('pong', [n % 2 === 0 ? n + 2 : n + 1])
     })
+
+
+    const url = new URLSearchParams(location.search)
+    const apppath = url.get('app')
+
+    if (!apppath) {
+      console.log('no given query str')
+    }
+    else {
+      this.rpc.send('getfile', [apppath])
+      this.rpc.once('gotfile').then(([file]) => {
+        if (!file) {
+          console.log('no such app file')
+          return
+        }
+        const code = compile(file)
+
+        const SystemJs = {
+          register: async (deps: string[], fn: () => {
+            setters: ((dep: any) => void)[],
+            execute: () => Promise<any>,
+          }) => {
+            const imps = await Promise.all(deps.map(dep => import(dep)))
+            const { setters, execute } = fn()
+            for (let i = 0; i < imps.length; i++) {
+              setters[i](imps[i])
+            }
+            await execute()
+          }
+        }
+
+        const fn = new Function('System', code)
+        fn(SystemJs)
+      })
+    }
   }
 
   get focusedPanel() {
@@ -89,4 +125,3 @@ export class Program {
 }
 
 export const program = new Program()
-await program.init()

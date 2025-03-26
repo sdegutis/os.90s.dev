@@ -8,6 +8,8 @@ export interface ServerProgram {
   terminate(): void
   resize(w: number, h: number): void
   pong(n: number): void
+
+  getfile(path: string): void
 }
 
 export interface ClientProgram {
@@ -17,6 +19,8 @@ export interface ClientProgram {
   keydown(key: string): void
   keyup(key: string): void
   newpanel(id: number, x: number, y: number, port: MessagePort): void
+
+  gotfile(content: string | undefined): void
 }
 
 export interface ServerPanel {

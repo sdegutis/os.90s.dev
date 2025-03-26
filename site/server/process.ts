@@ -1,5 +1,6 @@
 import type { Cursor } from '../shared/cursor.js'
 import { wRPC, type ClientProgram, type ServerProgram } from '../shared/rpc.js'
+import { fs } from './fs/fs.js'
 import { Panel } from './panel.js'
 import type { Sys } from './sys.js'
 
@@ -23,7 +24,8 @@ export class Process {
 
     this.sys = sys
 
-    const absurl = new URL(path, import.meta.url)
+    const absurl = new URL('exec.js', import.meta.url)
+    absurl.searchParams.set('app', 'sys' + path)
     this.worker = new Worker(absurl, { type: 'module' })
 
     const rpc = wRPC<ServerProgram, ClientProgram>(this.worker)
@@ -35,6 +37,11 @@ export class Process {
 
     rpc.listen('resize', (w, h) => {
       sys.resize(w, h)
+    })
+
+    rpc.listen('getfile', (path) => {
+      const content = fs.get(path)
+      rpc.send('gotfile', [content])
     })
 
     rpc.once('init').then(() => {

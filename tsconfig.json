@@ -18,6 +18,11 @@
     "rootDir": "site",
     "noEmit": true,
     "moduleResolution": "Node",
+    "paths": {
+      "/*": [
+        "./site/*"
+      ]
+    },
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true,
     "strict": true,
