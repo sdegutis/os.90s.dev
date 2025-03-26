@@ -1,3 +1,4 @@
+import type { DrawingContext } from "../util/drawing.js"
 import { Border } from "./border.js"
 
 export class Button extends Border {
@@ -29,7 +30,7 @@ export class Button extends Border {
     this.pressed = false
   }
 
-  override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+  override draw(ctx: DrawingContext, px: number, py: number): void {
     super.draw(ctx, px, py)
 
     if (this.selected) {

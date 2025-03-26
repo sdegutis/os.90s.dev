@@ -1,5 +1,4 @@
 import { Cursor } from "../shared/cursor.js"
-import { crt34 } from "../shared/font.js"
 import { Listener } from "../shared/listener.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../shared/rpc.js"
 import type { Process } from "./process.js"
@@ -112,15 +111,15 @@ export class Panel {
     ctx.fillStyle = '#fff3'
     ctx.fillRect(0, 0, this.w, this.h)
 
-    const font = crt34
-    const str = 'app not responding\nfix the problem or\nrightclick to quit'
-    const size = font.calcSize(str)
+    // const font = crt34
+    // const str = 'app not responding\nfix the problem or\nrightclick to quit'
+    // const size = font.calcSize(str)
 
-    const px = Math.floor(this.w / 2 - size.w / 2)
-    const py = Math.floor(this.h / 2 - size.h / 2)
+    // const px = Math.floor(this.w / 2 - size.w / 2)
+    // const py = Math.floor(this.h / 2 - size.h / 2)
 
-    font.print(ctx, px + 1, py + 1, 0x000000ff, str)
-    font.print(ctx, px, py, 0xffffffff, str)
+    // font.print(ctx, px + 1, py + 1, 0x000000ff, str)
+    // font.print(ctx, px, py, 0xffffffff, str)
 
     this.img = canvas.transferToImageBitmap()
   }

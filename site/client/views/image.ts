@@ -1,4 +1,5 @@
 import type { Bitmap } from "../../shared/bitmap.js"
+import type { DrawingContext } from "../util/drawing.js"
 import { View } from "./view.js"
 
 export class ImageView extends View {
@@ -17,7 +18,7 @@ export class ImageView extends View {
     }
   }
 
-  override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+  override draw(ctx: DrawingContext, px: number, py: number): void {
     super.draw(ctx, px, py)
 
     if (!this.bitmap) return

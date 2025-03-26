@@ -1,4 +1,4 @@
-import { colorFor } from "../util/colors.js"
+import type { DrawingContext } from "../util/drawing.js"
 import { View } from "./view.js"
 
 export class Margin extends View {
@@ -28,19 +28,19 @@ export class Margin extends View {
     }
   }
 
-  override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+  override draw(ctx: DrawingContext, px: number, py: number): void {
     super.draw(ctx, px, py)
-    this.drawBorder(ctx, px, py, colorFor(this.paddingColor))
+    this.drawBorder(ctx, px, py, this.paddingColor)
   }
 
-  protected drawBorder(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, col: string) {
-    ctx.strokeStyle = col
+  protected drawBorder(ctx: DrawingContext, px: number, py: number, col: number) {
     for (let i = 0; i < this.padding; i++) {
       ctx.strokeRect(
-        px + i + .5,
-        py + i + .5,
-        this.size.w - i * 2 - 1,
-        this.size.h - i * 2 - 1,
+        px + i,
+        py + i,
+        this.size.w - i * 2,
+        this.size.h - i * 2,
+        col,
       )
     }
   }

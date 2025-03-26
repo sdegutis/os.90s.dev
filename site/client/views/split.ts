@@ -1,6 +1,7 @@
 import { $ } from "../../shared/ref.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
+import type { DrawingContext } from "../util/drawing.js"
 import { View } from "./view.js"
 
 class SplitDivider extends View {
@@ -13,7 +14,7 @@ class SplitDivider extends View {
     return this.split.dir === 'x' ? xresize : yresize
   }
 
-  override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+  override draw(ctx: DrawingContext, px: number, py: number): void {
     if (this.pressed) {
       this.drawBackground(ctx, px, py, this.split.dividerColorPressed)
     }

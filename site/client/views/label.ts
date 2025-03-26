@@ -1,4 +1,5 @@
 import { crt34, Font } from "../../shared/font.js"
+import type { DrawingContext } from "../util/drawing.js"
 import { View } from "./view.js"
 
 export class Label extends View {
@@ -18,7 +19,7 @@ export class Label extends View {
     this.size = this.font.calcSize(this.text)
   }
 
-  override draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+  override draw(ctx: DrawingContext, px: number, py: number): void {
     super.draw(ctx, px, py)
     this.font.print(ctx, px, py, this.textColor, this.text)
   }

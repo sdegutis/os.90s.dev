@@ -208,7 +208,6 @@ function CharView(
   view.draw = function (ctx, px, py) {
     View.prototype.draw.call(this, ctx, px, py)
 
-    ctx.fillStyle = '#fff'
     for (let x = 0; x < width.val; x++) {
       for (let y = 0; y < height.val; y++) {
         const key = `${x},${y}`
@@ -218,15 +217,15 @@ function CharView(
             px + x * zoom.val,
             py + y * zoom.val,
             zoom.val,
-            zoom.val
+            zoom.val,
+            0xffffffff
           )
         }
       }
     }
 
     if (this.hovered) {
-      ctx.fillStyle = '#00f9'
-      ctx.fillRect(px + $spot.val.x * zoom.val, py + $spot.val.y * zoom.val, zoom.val, zoom.val)
+      ctx.fillRect(px + $spot.val.x * zoom.val, py + $spot.val.y * zoom.val, zoom.val, zoom.val, 0x0000ff99)
     }
   }
 
@@ -243,12 +242,10 @@ function makeStripeDrawer(w = 4, h = 3) {
   return function (this: View, ...[ctx, px, py]: Parameters<View['draw']>) {
     this.drawBackground(ctx, px, py, this.background)
 
-    ctx.fillStyle = '#ffffff04'
-
     let off = 0
     for (let y = 0; y < this.size.h; y++) {
       for (let x = 0; x < this.size.w; x += w) {
-        ctx.fillRect(px + x + off, py + y, 1, 1)
+        ctx.fillRect(px + x + off, py + y, 1, 1, 0xffffff04)
       }
       if (y % h === (h - 1)) off = (off + 1) % w
     }

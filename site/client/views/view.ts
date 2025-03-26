@@ -1,6 +1,6 @@
 import { multiplex } from "../../shared/ref.js"
 import type { Panel } from "../core/panel.js"
-import { colorFor } from "../util/colors.js"
+import type { DrawingContext } from "../util/drawing.js"
 import { Dynamic } from "../util/dyn.js"
 import { debounce } from "../util/throttle.js"
 import { arrayEquals, pointEquals, sizeEquals, type Point, type Size } from "../util/types.js"
@@ -113,7 +113,7 @@ export class View extends Dynamic {
     this.$.size.equals = sizeEquals
   }
 
-  draw(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number): void {
+  draw(ctx: DrawingContext, px: number, py: number): void {
     this.drawBackground(ctx, px, py, this.background)
   }
 
@@ -122,9 +122,8 @@ export class View extends Dynamic {
     this.layout?.()
   })
 
-  protected drawBackground(ctx: OffscreenCanvasRenderingContext2D, px: number, py: number, bg: number) {
-    ctx.fillStyle = colorFor(bg)
-    ctx.fillRect(px, py, this.size.w, this.size.h)
+  protected drawBackground(ctx: DrawingContext, px: number, py: number, bg: number) {
+    ctx.fillRect(px, py, this.size.w, this.size.h, bg)
   }
 
   focus() {

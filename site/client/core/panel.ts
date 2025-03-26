@@ -2,6 +2,7 @@ import type { Cursor } from "../../shared/cursor.js"
 import { Listener } from "../../shared/listener.js"
 import { $, multiplex, type Ref } from "../../shared/ref.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../../shared/rpc.js"
+import { DrawingContext } from "../util/drawing.js"
 import { debounce } from "../util/throttle.js"
 import type { Point, Size } from "../util/types.js"
 import type { View } from "../views/view.js"
@@ -35,7 +36,7 @@ export class Panel {
   isFocused = false
 
   readonly canvas = new OffscreenCanvas(0, 0)
-  readonly ctx = this.canvas.getContext('2d')!
+  readonly ctx = new DrawingContext(this.canvas.getContext('2d')!)
 
   private hoveredTree = new Set<View>()
   private hovered: View | null = null
@@ -272,10 +273,7 @@ export class Panel {
     node.draw(this.ctx, x, y)
 
     for (const child of node.children) {
-      this.ctx.save()
-      this.ctx.beginPath()
-      this.ctx.rect(x + child.point.x, y + child.point.y, child.size.w, child.size.h)
-      this.ctx.clip()
+      this.ctx.clip(x + child.point.x, y + child.point.y, child.size.w, child.size.h)
 
       child.panelOffset = {
         x: x + child.point.x,
@@ -284,7 +282,7 @@ export class Panel {
 
       this.drawTree(child, child.panelOffset.x, child.panelOffset.y)
 
-      this.ctx.restore()
+      this.ctx.unclip()
     }
   }
 

@@ -135,9 +135,9 @@ const rectspipeline = device.createRenderPipeline({
 
 const randint = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min
 
-const rectgroups = Array(1).keys().map(() => {
+const rectgroups = Array(100).keys().map(() => {
 
-  const numrects = 1000
+  const numrects = 1
 
   const rectsData = new Int32Array(numrects * 5)
 
@@ -157,16 +157,18 @@ const rectgroups = Array(1).keys().map(() => {
 
   update()
 
+  const rect = { x: 0, y: 0, w: 0, h: 0 }
+
   for (let i = 0; i < numrects; i++) {
     // rectsData[(i * 5) + 0] = 1
     // rectsData[(i * 5) + 1] = 3
     // rectsData[(i * 5) + 2] = 1
     // rectsData[(i * 5) + 3] = 3
     // rectsData[(i * 5) + 4] = 0xff000033
-    rectsData[(i * 5) + 0] = randint(0, 320 - 10)
-    rectsData[(i * 5) + 1] = randint(1, 320 / 10)
-    rectsData[(i * 5) + 2] = randint(0, 180 - 10)
-    rectsData[(i * 5) + 3] = randint(1, 180 / 10)
+    rectsData[(i * 5) + 0] = rect.x = randint(0, 320 - 10)
+    rectsData[(i * 5) + 1] = rect.w = Math.min(320 - rect.x, randint(1, 320 / 10))
+    rectsData[(i * 5) + 2] = rect.y = randint(0, 180 - 10)
+    rectsData[(i * 5) + 3] = rect.h = Math.min(180 - rect.y, randint(1, 180 / 10))
     rectsData[(i * 5) + 4] = randint(0, 0xffffffff)
   }
 
@@ -176,7 +178,7 @@ const rectgroups = Array(1).keys().map(() => {
 
   }
 
-  return { bindgroup, numrects, update }
+  return { bindgroup, numrects, update, rect }
 
 }).toArray()
 
@@ -184,7 +186,8 @@ function drawrects(pass: GPURenderPassEncoder) {
 
   for (const group of rectgroups) {
 
-    pass.setScissorRect(20, 20, 320 - 40, 180 - 40)
+    pass.setScissorRect(group.rect.x, group.rect.y, group.rect.w, group.rect.h)
+    // pass.setScissorRect(randint(20, 40), randint(20, 40), randint(50, 320 - 40), randint(50, 180 - 40))
 
     // group.update()
 
@@ -192,7 +195,7 @@ function drawrects(pass: GPURenderPassEncoder) {
     pass.setBindGroup(0, group.bindgroup)
     pass.draw(6, group.numrects)
 
-    pass.setScissorRect(0, 0, 320, 180)
+    // pass.setScissorRect(0, 0, 320, 180)
   }
 
 
@@ -804,9 +807,9 @@ function render() {
   })
 
   drawrects(pass)
-  drawboxes(pass)
-  drawpoints(pass)
-  drawmouse(pass)
+  // drawboxes(pass)
+  // drawpoints(pass)
+  // drawmouse(pass)
 
   // pass.setPipeline(pline)
   // pass.setBindGroup(0, tbind)

@@ -1,4 +1,5 @@
 import { crt34, Font } from "../../shared/font.js"
+import type { DrawingContext } from "../util/drawing.js"
 import { Scroll } from "./scroll.js"
 import { View } from "./view.js"
 
@@ -96,7 +97,7 @@ export class Textarea extends View {
     this.adjustTextLabel()
   }
 
-  private drawTextLabel(ctx: OffscreenCanvasRenderingContext2D, panx: number, pany: number) {
+  private drawTextLabel(ctx: DrawingContext, panx: number, pany: number) {
     for (let y = 0; y < this.lines.length; y++) {
       const line = this.lines[y]
       const py = y * this.font.ch + y * this.font.ygap + this.font.ygap / 2

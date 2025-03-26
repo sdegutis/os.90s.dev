@@ -1,3 +1,4 @@
+import type { DrawingContext } from "../client/util/drawing.js"
 import { Bitmap } from "./bitmap.js"
 
 export class Font {
@@ -14,7 +15,7 @@ export class Font {
     this.ch = this.spr.height / 6
   }
 
-  print(ctx: OffscreenCanvasRenderingContext2D, x: number, y: number, c: number, text: string) {
+  print(ctx: DrawingContext, x: number, y: number, c: number, text: string) {
     let posx = 0
     let posy = 0
 
@@ -35,7 +36,7 @@ export class Font {
       const px = x + (posx * (this.cw + this.xgap))
       const py = y + (posy * (this.ch + this.ygap))
 
-      ctx.drawImage(this.spr.canvas, sx, sy, this.cw, this.ch, px, py, this.cw, this.ch)
+      ctx.drawImagePortion(this.spr.canvas, sx, sy, this.cw, this.ch, px, py, this.cw, this.ch)
 
       posx++
     }
