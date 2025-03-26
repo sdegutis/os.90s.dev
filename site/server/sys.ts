@@ -1,6 +1,7 @@
 import { Cursor } from "../shared/cursor.js"
 import { $ } from "../shared/ref.js"
 import { setupCanvas } from "./canvas.js"
+import { fs } from "./fs/fs.js"
 import { Panel } from "./panel.js"
 import { Process } from "./process.js"
 
@@ -193,3 +194,5 @@ offy=1
 // `.trimStart())
 
 let cursor = defaultCursor
+
+console.log(fs.get('sys/crt34.font'))

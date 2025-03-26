@@ -19,7 +19,13 @@ export default (({ inFiles, outFiles }) => {
   files.push({ path: '/swc/wasm.js', content: swc1 })
   files.push({ path: '/swc/wasm_bg.wasm', content: swc2 })
 
-  const paths = files.map(f => f.path)
+  const sysdata = JSON.stringify(Object.fromEntries(files
+    .filter(f => f.path.startsWith('/server/data'))
+    .map(f => [f.path.slice('/server/data/'.length), tostring(f.content)])
+  ), null, 2)
+  files.push({ path: '/server/fs/data.js', content: `export const files = ${sysdata}` })
+
+  const paths = files.map(f => f.path).filter(s => !s.startsWith('/server/data'))
 
   const datas = (paths
     .filter(s => !['js', 'html', 'wasm'].includes(ext(s)))
