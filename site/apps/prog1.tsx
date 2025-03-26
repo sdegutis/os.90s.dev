@@ -7,12 +7,14 @@ this is a long string
 it has multiple lines
 hmm
 it is not colorful yet...
-`.trimStart()
+`.trim()
 
 const panel = await Panel.create(
   <PanelView title={'Writer'} size={$({ w: 100, h: 70 })}>
     <scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
-      <label text={TEST} />
+      <border padding={2}>
+        <label text={TEST} />
+      </border>
     </scroll>
   </PanelView>
 )
