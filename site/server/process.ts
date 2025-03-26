@@ -31,7 +31,7 @@ export class Process {
     const rpc = wRPC<ServerProgram, ClientProgram>(this.worker)
     this.rpc = rpc
 
-    rpc.once('terminate').then(() => {
+    rpc.listen('terminate', () => {
       this.terminate()
     })
 

@@ -66,7 +66,7 @@ export class Panel {
       this.proc.focus(this)
     })
 
-    this.rpc.once('close').then(() => {
+    this.rpc.listen('close', () => {
       proc.closePanel(this)
     })
 
