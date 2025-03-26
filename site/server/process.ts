@@ -73,7 +73,7 @@ export class Process {
           sys.redrawAllPanels()
         }
       }
-    }, 300)
+    }, 3000)
 
     rpc.listen('newpanel', (ord, x, y, w, h) => {
       const chan = new MessageChannel()
