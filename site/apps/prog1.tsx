@@ -1,7 +1,7 @@
 import { Panel } from "../client/core/panel.js"
-import { testCompile } from "../client/util/compile.js"
 import { PanelView } from "../client/util/panelview.js"
 import { $ } from "../shared/ref.js"
+import { testCompile } from "../swc/compile.js"
 
 const TEST = `
 this is a long string
