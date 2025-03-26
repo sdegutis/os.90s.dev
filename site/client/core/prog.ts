@@ -4,7 +4,7 @@ import type { Point, Size } from "../../shared/types.js"
 import { exec } from "../../swc/vm.js"
 import { Panel } from "./panel.js"
 
-export class Program {
+class Program {
 
   private rpc = wRPC<ClientProgram, ServerProgram>(self)
   pid = 0
