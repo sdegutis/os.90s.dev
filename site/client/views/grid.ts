@@ -1,4 +1,4 @@
-import type { Point } from "../util/types.js"
+import type { Point } from "../../shared/types.js"
 import { View } from "./view.js"
 
 export class Grid extends View {

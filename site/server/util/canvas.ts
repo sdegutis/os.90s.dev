@@ -1,5 +1,5 @@
 import { $, type Ref } from "../../shared/ref.js"
-import { Size } from "/client/util/types.js"
+import { Size } from "../../shared/types.js"
 
 export function setupCanvas(size: Ref<Size>) {
 
