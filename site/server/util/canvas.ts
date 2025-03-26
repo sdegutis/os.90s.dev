@@ -20,7 +20,6 @@ export function setupCanvas(size: Ref<{ readonly w: number, readonly h: number }
   const $point = $({ x: 0, y: 0 })
   const updatePoint = () => {
     const rect = canvas.getBoundingClientRect()
-    console.log(rect)
     $point.val = { x: Math.round(rect.x), y: Math.round(rect.y) }
   }
 

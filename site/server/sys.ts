@@ -28,11 +28,11 @@ export class Sys {
 
     showLoadingScreen(ctx)
 
-    canvas.oncontextmenu = (e) => {
+    document.oncontextmenu = (e) => {
       e.preventDefault()
     }
 
-    canvas.onkeydown = (e) => {
+    document.onkeydown = (e) => {
       if (e.key.match(/^F\d{1,2}$/)) return
       e.preventDefault()
 
@@ -42,24 +42,20 @@ export class Sys {
       this.redrawAllPanels()
     }
 
-    canvas.onkeyup = (e) => {
+    document.onkeyup = (e) => {
       this.keymap.delete(e.key)
       Process.all.forEach(p => p.rpc.send('keyup', [e.key]))
       this.redrawAllPanels()
     }
 
-    // document.onmousemove = (e) => {
-    //   // console.log($point.val)
+    document.onmousemove = (e) => {
+      let x = e.offsetX
+      let y = e.offsetY
 
-    //   console.log(
-    //     Math.round((e.offsetX - $point.val.x) / $scale.val),
-    //     Math.round((e.offsetY - $point.val.y) / $scale.val),
-    //   )
-    // }
-
-    canvas.onmousemove = (e) => {
-      const x = Math.min(this.size.w - 1, e.offsetX)
-      const y = Math.min(this.size.h - 1, e.offsetY)
+      if (e.target !== canvas) {
+        x = Math.round((e.offsetX - $point.val.x) / $scale.val)
+        y = Math.round((e.offsetY - $point.val.y) / $scale.val)
+      }
 
       if (x === this.mouse.x && y === this.mouse.y) return
       this.mouse.x = x
@@ -73,7 +69,7 @@ export class Sys {
       this.redrawAllPanels()
     }
 
-    canvas.onmousedown = (e) => {
+    document.onmousedown = (e) => {
       if (!this.hovered) return
 
       if (this.hovered.proc.dead && e.button === 2) {
@@ -88,13 +84,13 @@ export class Sys {
       this.redrawAllPanels()
     }
 
-    canvas.onmouseup = (e) => {
+    document.onmouseup = (e) => {
       this.clicking?.rpc.send('mouseup', [])
       this.clicking = null
       this.redrawAllPanels()
     }
 
-    canvas.onwheel = (e) => {
+    document.onwheel = (e) => {
       this.hovered?.rpc.send('wheel', [e.deltaX, e.deltaY])
       this.redrawAllPanels()
     }
