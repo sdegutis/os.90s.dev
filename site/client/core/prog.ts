@@ -2,7 +2,6 @@ import { Panel } from "/client/core/panel.js"
 import { $, Ref } from "/client/core/ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "/client/core/rpc.js"
 import type { Point, Size } from "/client/core/types.js"
-import { exec } from "/swc/vm.js"
 
 class Program {
 
@@ -39,20 +38,12 @@ class Program {
   get size() { return this.$size.val }
   set size(s: Size) { this.$size.val = s }
 
-  async init(path: string) {
-
+  async init() {
     const [id, w, h, keymap] = await this.rpc.call('init', [])
     this.pid = id
     this.size = { w, h }
 
     keymap.forEach(k => this.keymap.add(k))
-
-    const [file] = await this.rpc.call('getfile', [path])
-    if (!file) {
-      console.log('no such app file')
-      return
-    }
-    exec(file)
   }
 
   get focusedPanel() {
@@ -105,7 +96,8 @@ class Program {
   }
 
   async getfile(path: string) {
-    return await this.rpc.call('getfile', [path])
+    const [contents] = await this.rpc.call('getfile', [path])
+    return contents
   }
 
   async mount(name: string) {
@@ -119,3 +111,4 @@ class Program {
 }
 
 export const program = new Program()
+await program.init()

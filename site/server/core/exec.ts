@@ -1,6 +1,10 @@
 import { program } from "/client/core/prog.js"
+import { exec } from "/swc/vm.js"
 
-const url = new URLSearchParams(location.search)
-const app = url.get('app')
-if (!app) throw new Error(`Can't exec path`)
-await program.init(app)
+const path = new URLSearchParams(location.search).get('app')
+if (!path) throw new Error(`Can't exec path`)
+
+const file = await program.getfile(path)
+if (!file) throw new Error('no such app file: ' + path)
+
+exec(file)
