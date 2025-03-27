@@ -6,8 +6,8 @@ export class Font {
   spr: Bitmap
   cw: number
   ch: number
-  xgap = 1
-  ygap = 2
+  xgap = 0
+  ygap = 0
 
   constructor(data: string) {
     this.spr = Bitmap.fromString(data)
