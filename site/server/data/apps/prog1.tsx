@@ -11,16 +11,11 @@ it is not colorful yet...
 
 const panel = await Panel.create(
   <PanelView title={$('test prog 1')} size={$({ w: 100, h: 70 })}>
-    <splitya>
-      <view>
-        <button padding={2}><label text={'hmm'} /></button>
-      </view>
-      <scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
-        <border padding={2}>
-          <label text={TEST} />
-        </border>
-      </scroll>
-    </splitya>
+    <center>
+      <button padding={2}>
+        <label text={'onclick'} />
+      </button>
+    </center>
   </PanelView>
 )
 

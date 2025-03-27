@@ -62,7 +62,7 @@ export function PanelView(data: {
       }}
       onPanelFocus={() => focused.val = true}
       onPanelBlur={() => focused.val = false}
-      background={0x070707ff}
+      background={0x111111ff}
     >
       <panedya gap={-1}>
 
@@ -89,7 +89,9 @@ export function PanelView(data: {
         </spacedx>
 
         <margin padding={1}>
-          {data.children}
+          <margin background={0x222222ff}>
+            {data.children}
+          </margin>
         </margin>
 
       </panedya>
