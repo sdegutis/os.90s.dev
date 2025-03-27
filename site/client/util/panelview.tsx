@@ -52,7 +52,7 @@ export function PanelView(data: {
       presented={p => panel = p}
       onPanelFocus={() => focused.val = true}
       onPanelBlur={() => focused.val = false}
-      background={0x070707dd}
+      background={0x070707ff}
     >
       <panedya gap={-1}>
 
