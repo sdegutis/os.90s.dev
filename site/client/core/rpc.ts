@@ -1,6 +1,8 @@
-import type { DriveItem } from "/server/fs/drive.js"
-
 export type PanelOrdering = 'normal' | 'bottom' | 'top'
+
+export type FileItem = { type: 'file', name: string, content: string }
+export type FolderItem = { type: 'folder', name: string }
+export type FsItem = FileItem | FolderItem
 
 export interface ServerProgram {
   init(): Promise<[id: number, w: number, h: number, keymap: string[]]>
@@ -10,7 +12,7 @@ export interface ServerProgram {
 
   listdrives(): Promise<string[]>
   getfile(path: string): Promise<[content: string | undefined]>
-  listdir(path: string): Promise<DriveItem[]>
+  listdir(path: string): Promise<FsItem[]>
 }
 
 export interface ClientProgram {

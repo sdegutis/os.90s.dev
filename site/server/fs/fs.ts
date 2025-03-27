@@ -1,4 +1,5 @@
 import { Listener } from "/client/core/listener.js"
+import type { FileItem, FolderItem, FsItem } from "/client/core/rpc.js"
 import type { Drive, DriveNotificationType } from "/server/fs/drive.js"
 import { MountedDrive } from "/server/fs/mountfs.js"
 import { SysDrive } from "/server/fs/sysfs.js"
@@ -63,7 +64,7 @@ class FS {
     await drive.rmdir(subpath)
   }
 
-  list(path: string) {
+  list(path: string): FsItem[] {
     const [drive, subpath] = this.prepare(path)
     const r = new RegExp(`^${subpath}[^/]+?/?$`)
     return (drive.items
@@ -76,9 +77,9 @@ class FS {
         const type = v.type
 
         if (type === 'folder')
-          return { name, type }
+          return { name, type } as FolderItem
         else
-          return { name, type, content: v.content }
+          return { name, type, content: v.content } as FileItem
       })
       .filter(e => e !== null)
       .toArray()
