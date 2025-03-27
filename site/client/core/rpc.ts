@@ -14,6 +14,7 @@ export interface ServerProgram {
   getfile(path: string): Promise<[content: string | undefined]>
   listdir(path: string): Promise<FsItem[]>
   mount(name: string): Promise<[]>
+  unmount(name: string): Promise<[]>
 }
 
 export interface ClientProgram {

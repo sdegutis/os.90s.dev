@@ -34,6 +34,7 @@ class FS {
   }
 
   unmount(drive: string) {
+    drive = drive.replace(/\/$/, '')
     this.mounts.del(drive)
     this.removeDrive(drive)
   }

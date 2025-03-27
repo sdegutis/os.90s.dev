@@ -71,6 +71,11 @@ export class Process {
         reply([], [])
       },
 
+      unmount: async (reply, name) => {
+        fs.unmount(name)
+        reply([], [])
+      },
+
     })
 
     this.heartbeat = setInterval(async () => {

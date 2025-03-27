@@ -112,6 +112,10 @@ class Program {
     await this.rpc.call('mount', [name])
   }
 
+  async unmount(name: string) {
+    await this.rpc.call('unmount', [name])
+  }
+
 }
 
 export const program = new Program()

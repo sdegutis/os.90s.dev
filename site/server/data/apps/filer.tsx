@@ -3,6 +3,7 @@ import { Panel } from "/client/core/panel.js"
 import { program } from "/client/core/prog.js"
 import { $ } from "/client/core/ref.js"
 import type { FileItem, FolderItem } from "/client/core/rpc.js"
+import { showMenu } from "/client/util/menu.js"
 import { PanelView } from "/client/util/panelview.js"
 import { showPrompt } from "/client/util/prompt.js"
 import type { View } from "/client/views/view.js"
@@ -14,7 +15,20 @@ refreshDrives()
 async function refreshDrives() {
   const drives = await program.listdrives('')
   $drives.val = drives.map(d =>
-    <button padding={2} onClick={() => showDir([d])}>
+    <button padding={2} onClick={(b) => {
+      const unmount = async () => {
+        await program.unmount(d)
+        refreshDrives()
+      }
+      if (b === 0) {
+        showDir([d])
+      }
+      else if (b === 2) {
+        showMenu(panel.absmouse, [
+          { text: 'unmount', onClick: unmount }
+        ])
+      }
+    }}>
       <label text={d} />
     </button>
   )
