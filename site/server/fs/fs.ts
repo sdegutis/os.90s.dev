@@ -1,10 +1,10 @@
+import { opendb } from "../../client/util/db.js"
 import { Listener } from "/client/core/listener.js"
 import type { FsItem } from "/client/core/rpc.js"
 import type { Drive, DriveNotificationType } from "/server/fs/drive.js"
 import { MountedDrive } from "/server/fs/mountfs.js"
 import { SysDrive } from "/server/fs/sysfs.js"
 import { UserDrive } from "/server/fs/userfs.js"
-import { opendb } from "/server/util/db.js"
 
 class FS {
 

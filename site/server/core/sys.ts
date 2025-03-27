@@ -5,8 +5,8 @@ import { DrawingContext } from "/client/core/drawing.js"
 import { Font } from "/client/core/font.js"
 import { Listener } from "/client/core/listener.js"
 import { $ } from "/client/core/ref.js"
+import { setupCanvas } from "/server/core/canvas.js"
 import { fs } from "/server/fs/fs.js"
-import { setupCanvas } from "/server/util/canvas.js"
 
 export class Sys {
 
