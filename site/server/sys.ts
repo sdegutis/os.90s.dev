@@ -1,10 +1,10 @@
+import { crt34 } from "../client/core/font.js"
 import { $ } from "../client/core/ref.js"
 import { Panel } from "/server/panel.js"
 import { Process } from "/server/process.js"
 import { setupCanvas } from "/server/util/canvas.js"
 import { Cursor } from "/shared/cursor.js"
 import { DrawingContext } from "/shared/drawing.js"
-import { crt34 } from "/shared/font.js"
 
 export class Sys {
 

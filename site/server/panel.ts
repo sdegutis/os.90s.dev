@@ -1,10 +1,10 @@
+import { crt34 } from "../client/core/font.js"
 import { Listener } from "../client/core/listener.js"
 import { ClientPanel, PanelOrdering, ServerPanel, wRPC } from "../client/core/rpc.js"
 import { Process } from "/server/process.js"
 import { Sys } from "/server/sys.js"
 import { Cursor } from "/shared/cursor.js"
 import { DrawingContext } from "/shared/drawing.js"
-import { crt34 } from "/shared/font.js"
 
 type Rect = { x: number, y: number, w: number, h: number }
 
