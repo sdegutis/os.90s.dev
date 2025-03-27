@@ -11,10 +11,14 @@ import { PanelView } from "/client/util/panelview.js"
 import { debounce } from "/client/util/throttle.js"
 import { View } from "/client/views/view.js"
 
-const openingPath = program.opts["file"]
-if (openingPath) {
-  const file = await program.getfile(openingPath)
-  console.log(file)
+const font = $(crt34)
+
+let filepath = program.opts["file"]
+if (filepath) {
+  const fontstr = await program.getfile(filepath)
+  if (fontstr) {
+    font.val = new Font(fontstr)
+  }
 }
 
 const SAMPLE_TEXT = [
@@ -27,16 +31,14 @@ const SAMPLE_TEXT = [
   `.,'!?-+/":;%*=_&#|\`$@~^\\`,
 ].join('\n')
 
-const width = $(3)
-const height = $(4)
+const width = $(font.val.cw)
+const height = $(font.val.ch)
 const zoom = $(2)
 const current = $(' ')
 
 const zoommin = 1
 const zoommax = 12
 zoom.intercept(n => Math.max(zoommin, Math.min(n, zoommax)))
-
-const font = $(crt34)
 
 zoom.intercept(n => Math.max(1, n))
 
