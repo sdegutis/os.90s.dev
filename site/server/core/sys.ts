@@ -98,11 +98,11 @@ export class Sys {
       this.redrawAllPanels()
     }
 
-    this.launch('sys/apps/shell.js')
+    this.launch('sys/apps/shell.js', {})
   }
 
-  launch(path: string) {
-    const proc = new Process(this, path)
+  launch(path: string, opts: Record<string, any>) {
+    const proc = new Process(this, path, opts)
     return proc.id
   }
 

@@ -19,13 +19,14 @@ export class Process {
   dead = false
   rpc
 
-  constructor(sys: Sys, path: string) {
+  constructor(sys: Sys, path: string, opts: Record<string, any>) {
     Process.all.set(this.id = ++Process.id, this)
 
     this.sys = sys
 
     const absurl = new URL('exec.js', import.meta.url)
     absurl.searchParams.set('app', path)
+    absurl.searchParams.set('opts', JSON.stringify(opts))
     this.worker = new Worker(absurl, { type: 'module' })
 
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
@@ -45,8 +46,8 @@ export class Process {
         p.didRedraw.watch(() => sys.redrawAllPanels())
       },
 
-      launch: (reply, path) => {
-        const pid = this.sys.launch(path)
+      launch: (reply, path, opts) => {
+        const pid = this.sys.launch(path, opts)
         reply([pid], [])
       },
 

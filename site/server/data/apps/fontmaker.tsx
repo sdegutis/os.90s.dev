@@ -2,6 +2,7 @@ import { Bitmap } from "/client/core/bitmap.js"
 import { Cursor } from "/client/core/cursor.js"
 import { crt34, Font } from "/client/core/font.js"
 import { Panel } from "/client/core/panel.js"
+import { program } from "/client/core/prog.js"
 import { $, multiplex, Ref } from "/client/core/ref.js"
 import { pointEquals } from "/client/core/types.js"
 import { dragMove } from "/client/util/drag.js"
@@ -9,6 +10,12 @@ import { showMenu } from "/client/util/menu.js"
 import { PanelView } from "/client/util/panelview.js"
 import { debounce } from "/client/util/throttle.js"
 import { View } from "/client/views/view.js"
+
+const openingPath = program.opts["file"]
+if (openingPath) {
+  const file = await program.getfile(openingPath)
+  console.log(file)
+}
 
 const SAMPLE_TEXT = [
   "how quickly daft jumping zebras vex!",
@@ -22,7 +29,7 @@ const SAMPLE_TEXT = [
 
 const width = $(3)
 const height = $(4)
-const zoom = $(8)
+const zoom = $(2)
 const current = $(' ')
 
 const zoommin = 1
@@ -77,7 +84,7 @@ function doMenu() {
 }
 
 const panel = await Panel.create(
-  <PanelView title={'Font Maker'} size={$({ w: 500, h: 300 })} showMenu={doMenu}>
+  <PanelView title={'Font Maker'} size={$({ w: 240, h: 140 })} showMenu={doMenu}>
     <panedyb>
       <scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <border padding={zoom}>

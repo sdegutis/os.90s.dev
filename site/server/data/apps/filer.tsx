@@ -126,4 +126,7 @@ async function handleFile(path: string) {
   if (path.endsWith('.js')) {
     await program.launch(path)
   }
+  else if (path.endsWith('.font')) {
+    await program.launch('sys/apps/fontmaker.js', path)
+  }
 }

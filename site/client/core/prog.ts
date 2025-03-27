@@ -28,6 +28,7 @@ class Program {
   })
 
   pid = 0
+  opts: Record<string, any> = {}
 
   panels = new Set<Panel>()
   exitsOnLastPanelClose = true
@@ -112,8 +113,8 @@ class Program {
     await this.rpc.call('unmount', [name])
   }
 
-  async launch(path: string) {
-    const [pid] = await this.rpc.call('launch', [path])
+  async launch(path: string, file?: string) {
+    const [pid] = await this.rpc.call('launch', [path, { file }])
     return pid
   }
 
