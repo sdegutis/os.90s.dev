@@ -5,6 +5,7 @@ import { $, Ref } from "/client/core/ref.js"
 import { sys } from "/client/core/sys.js"
 import type { Size } from "/client/core/types.js"
 import { dragMove, dragResize } from "/client/util/drag.js"
+import { showMenu, type MenuItem } from "/client/util/menu.js"
 import type { ImageView } from "/client/views/image.js"
 import type { SpacedX } from "/client/views/spaced.js"
 import type { View } from "/client/views/view.js"
@@ -25,9 +26,10 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
 ]))
 
 export function PanelView(data: {
-  title: string | Ref<string>, children: View,
+  title: Ref<string>,
+  children: View,
   size?: Ref<Size>,
-  showMenu?: () => void,
+  menuItems?: () => MenuItem[],
 }) {
 
   const size = data.size ?? $({ w: 200, h: 150 })
@@ -60,7 +62,10 @@ export function PanelView(data: {
         <spacedx canMouse onMouseDown={titleBarMouseDown}>
           <border>
             <groupx gap={1}>
-              <button onClick={() => data.showMenu?.()} padding={2}><image bitmap={mnuImage} /></button>
+              <button onClick={() => {
+                const items = data.menuItems?.()
+                if (items?.length) showMenu(items)
+              }} padding={2}><image bitmap={mnuImage} /></button>
               <label text={data.title} />
             </groupx>
           </border>

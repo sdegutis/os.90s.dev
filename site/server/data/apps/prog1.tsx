@@ -10,7 +10,7 @@ it is not colorful yet...
 `.trim()
 
 const panel = await Panel.create(
-  <PanelView title={'Writer'} size={$({ w: 100, h: 70 })}>
+  <PanelView title={$('test prog 1')} size={$({ w: 100, h: 70 })}>
     <splitya>
       <view>
         <button padding={2}><label text={'hmm'} /></button>

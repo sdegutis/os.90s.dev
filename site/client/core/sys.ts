@@ -70,7 +70,6 @@ class Sys {
     program.pid = id
     this.size = { w, h }
     this.$font = $(new Font(fontstr))
-
     keymap.forEach(k => this.keymap.add(k))
   }
 

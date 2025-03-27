@@ -6,7 +6,6 @@ import { Panel } from "/client/core/panel.js"
 import { $, multiplex, Ref } from "/client/core/ref.js"
 import { pointEquals } from "/client/core/types.js"
 import { dragMove } from "/client/util/drag.js"
-import { showMenu } from "/client/util/menu.js"
 import { PanelView } from "/client/util/panelview.js"
 import { showPrompt } from "/client/util/prompt.js"
 import { debounce } from "/client/util/throttle.js"
@@ -14,9 +13,9 @@ import { View } from "/client/views/view.js"
 
 const font = $(sys.font)
 
-let filepath = program.opts["file"]
-if (filepath) {
-  const fontstr = await sys.getfile(filepath)
+const filepath = $(program.opts["file"])
+if (filepath.val) {
+  const fontstr = await sys.getfile(filepath.val)
   if (fontstr) {
     font.val = new Font(fontstr)
   }
@@ -96,7 +95,7 @@ const rebuild = debounce(rebuildNow)
 rebuildNow()
 
 function doMenu() {
-  showMenu([
+  return [
     {
       text: 'load file',
       onClick: async () => {
@@ -110,21 +109,31 @@ function doMenu() {
       onClick: async () => {
         const path = await showPrompt('file path?')
         if (!path) return
-        filepath = path
-        sys.putfile(filepath, fontsrc)
+        filepath.val = path
+        sys.putfile(filepath.val, fontsrc)
       }
     },
     {
       text: 'save',
       onClick: async () => {
-        sys.putfile(filepath, fontsrc)
+        sys.putfile(filepath.val, fontsrc)
       }
     },
-  ])
+  ]
+}
+
+function FilePanelView({ filepath, title, ...data }: Parameters<typeof PanelView>[0] & {
+  filepath: Ref<string | undefined>,
+}) {
+  const filetitle = multiplex([filepath, title], () => {
+    return `${title.val}: ${filepath.val ?? '[no file]'}`
+  })
+
+  return <PanelView title={filetitle} {...data} />
 }
 
 const panel = await Panel.create(
-  <PanelView title={'Font Maker'} size={$({ w: 240, h: 140 })} showMenu={doMenu}>
+  <FilePanelView filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })} menuItems={doMenu}>
     <panedyb>
       <scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <border padding={zoom}>
@@ -146,6 +155,7 @@ const panel = await Panel.create(
       </scroll>
       <border padding={2} canMouse onWheel={(x, y) => zoom.val += -y / 100}>
         <groupy align='a' gap={4}>
+          <textarea autofocus font={font} text={'sample text goes here (you can type in it)'} />
           <label text={SAMPLE_TEXT} font={font} />
           <groupx gap={7}>
             <groupx gap={2}>
@@ -171,7 +181,7 @@ const panel = await Panel.create(
         </groupy>
       </border>
     </panedyb>
-  </PanelView>
+  </FilePanelView>
 )
 
 function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number }) {

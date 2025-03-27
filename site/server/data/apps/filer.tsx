@@ -37,7 +37,7 @@ const $entries = $<View[]>([])
 const $breadcrumbs = $<View[]>([])
 
 const panel = await Panel.create(
-  <PanelView title={'Filer'} size={$({ w: 150, h: 120 })}>
+  <PanelView title={$('filer')} size={$({ w: 150, h: 120 })}>
     <splitxa pos={50}>
       <panedyb>
         <view>
