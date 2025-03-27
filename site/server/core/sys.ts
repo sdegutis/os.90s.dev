@@ -97,6 +97,12 @@ export class Sys {
       this.hovered?.rpc.send('wheel', [e.deltaX, e.deltaY])
       this.redrawAllPanels()
     }
+
+    this.launch('/apps/shell.js')
+  }
+
+  launch(path: string) {
+    new Process(this, path)
   }
 
   resize(w: number, h: number) {
