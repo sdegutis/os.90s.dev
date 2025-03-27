@@ -1,14 +1,13 @@
 import { sys } from "../core/sys.js"
 import { Panel } from "/client/core/panel.js"
 import { $ } from "/client/core/ref.js"
-import type { Point } from "/client/core/types.js"
 
 export type MenuItem = { text: string, onClick(): void } | '-'
 
 const borderColor = 0x444444ff
 const bgColor = 0x333333ff
 
-export async function showMenu(from: Point, items: MenuItem[]) {
+export async function showMenu(items: MenuItem[], from = sys.mouse) {
   const group = (
     <groupy gap={0} align={'+'}>
       {items.flatMap(item => {

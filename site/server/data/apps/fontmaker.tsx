@@ -96,7 +96,7 @@ const rebuild = debounce(rebuildNow)
 rebuildNow()
 
 function doMenu() {
-  showMenu(sys.mouse, [
+  showMenu([
     {
       text: 'load file',
       onClick: async () => {

@@ -29,7 +29,7 @@ function Clock() {
 
   function toggle(this: View, b: number) {
     if (b === 2) {
-      showMenu(sys.mouse, [
+      showMenu([
         { text: '320 x 180', onClick: () => { sys.resize(320, 180) } },
         { text: '640 x 360', onClick: () => { sys.resize(320 * 2, 180 * 2) } },
         '-',
