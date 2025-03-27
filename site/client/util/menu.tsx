@@ -5,8 +5,8 @@ import type { Point } from "/client/core/types.js"
 
 export type MenuItem = { text: string, onClick(): void } | '-'
 
-const borderColor = 0xffffff11
-const bgColor = 0x222222bb
+const borderColor = 0x444444ff
+const bgColor = 0x333333ff
 
 export async function showMenu(from: Point, items: MenuItem[]) {
   const group = (
