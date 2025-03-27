@@ -60,9 +60,11 @@ for (let i = 0; i < CHARSET.length; i++) {
 
 
 let fontsrc = ''
+rebuildNow()
+const rebuild = debounce(rebuildNow)
 
-const rebuildNow = () => {
-  let fontsrc = `#ffffffff\n\n`
+function rebuildNow() {
+  fontsrc = `#ffffffff\n\n`
 
   const grid: boolean[] = []
 
@@ -90,9 +92,6 @@ const rebuildNow = () => {
   font.val = new Font(fontsrc)
 }
 
-const rebuild = debounce(rebuildNow)
-
-rebuildNow()
 
 const panel = await Panel.create(
   <FilePanelView filedata={() => fontsrc} filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })}>
