@@ -48,8 +48,8 @@ export class Font {
       if (line.length > cols) cols = line.length
     }
     return {
-      w: (cols * this.cw) + (cols - 1),
-      h: (rows * this.ch) + (rows - 1),
+      w: cols * this.cw,
+      h: rows * this.ch,
     }
   }
 
