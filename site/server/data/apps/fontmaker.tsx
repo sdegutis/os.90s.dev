@@ -144,7 +144,7 @@ function FilePanelView({
   const keyHandler = (key: string) => {
     if (key === 'o' && panel.isKeyDown('Control')) { load(); return true }
     if (key === 's' && panel.isKeyDown('Control')) { save(); return true }
-    if (key === 's' && panel.isKeyDown('Control') && panel.isKeyDown('Shift')) { saveAs(); return true }
+    if (key === 'S' && panel.isKeyDown('Control')) { saveAs(); return true }
     return onKeyDown?.(key) ?? false
   }
 
