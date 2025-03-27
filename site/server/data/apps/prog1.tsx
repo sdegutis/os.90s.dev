@@ -10,12 +10,10 @@ it is not colorful yet...
 `.trim()
 
 const panel = await Panel.create(
-  <PanelView title={$('test prog 1')} size={$({ w: 100, h: 70 })}>
-    <center>
-      <button padding={2}>
-        <label text={'onclick'} />
-      </button>
-    </center>
+  <PanelView title={$('FONT MAKER 1 font maker 2')} size={$({ w: 100, h: 70 })}>
+    <scroll>
+      <textarea text={TEST} />
+    </scroll>
   </PanelView>
 )
 
