@@ -1,12 +1,12 @@
 import { $, multiplex, Ref } from "./ref.js"
 import { ClientPanel, PanelOrdering, ServerPanel, wRPC } from "./rpc.js"
+import { Point, Size } from "./types.js"
 import { program } from "/client/core/prog.js"
 import { debounce } from "/client/util/throttle.js"
 import { View } from "/client/views/view.js"
 import { Cursor } from "/shared/cursor.js"
 import { DrawingContext } from "/shared/drawing.js"
 import { Listener } from "/shared/listener.js"
-import { Point, Size } from "/shared/types.js"
 
 export class Panel {
 

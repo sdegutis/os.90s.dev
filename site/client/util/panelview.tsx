@@ -1,4 +1,5 @@
 import { $, Ref } from "../core/ref.js"
+import { Size } from "../core/types.js"
 import { Panel } from "/client/core/panel.js"
 import { dragMove, dragResize } from "/client/util/drag.js"
 import { ImageView } from "/client/views/image.js"
@@ -6,7 +7,6 @@ import { SpacedX } from "/client/views/spaced.js"
 import { View } from "/client/views/view.js"
 import { Bitmap } from "/shared/bitmap.js"
 import { Cursor } from "/shared/cursor.js"
-import { Size } from "/shared/types.js"
 
 const minImage = new Bitmap([0xffffff33], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
 const maxImage = new Bitmap([0xffffff33], 4, [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1,])

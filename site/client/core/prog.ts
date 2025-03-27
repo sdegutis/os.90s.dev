@@ -1,7 +1,7 @@
 import { $, Ref } from "./ref.js"
 import { ClientProgram, PanelOrdering, ServerProgram, wRPC } from "./rpc.js"
+import { Point, Size } from "./types.js"
 import { Panel } from "/client/core/panel.js"
-import { Point, Size } from "/shared/types.js"
 import { exec } from "/swc/vm.js"
 
 class Program {
