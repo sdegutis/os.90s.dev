@@ -15,14 +15,14 @@ async function refreshDrives() {
   const drives = await program.listdrives('')
   $drives.val = drives.map(d =>
     <button padding={2} onClick={(b) => {
-      const unmount = async () => {
-        await program.unmount(d)
-        refreshDrives()
-      }
       if (b === 0) {
         showDir([d])
       }
       else if (b === 2) {
+        const unmount = async () => {
+          await program.unmount(d)
+          refreshDrives()
+        }
         showMenu(panel.absmouse, [
           { text: 'unmount', onClick: unmount }
         ])
