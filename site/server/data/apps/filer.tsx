@@ -124,7 +124,6 @@ async function mount() {
 
 async function handleFile(path: string) {
   if (path.endsWith('.js')) {
-    const pid = await program.launch(path)
-    console.log(pid)
+    await program.launch(path)
   }
 }

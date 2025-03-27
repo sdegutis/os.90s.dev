@@ -6,7 +6,7 @@ export interface ServerProgram {
   init(): Promise<[id: number, w: number, h: number, keymap: string[]]>
   newpanel(ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, x: number, y: number, port: MessagePort]>
   launch(path: string): Promise<[number]>
-  terminate(): void
+  terminate(pid: number): void
   resize(w: number, h: number): void
 
   listdrives(): Promise<string[]>

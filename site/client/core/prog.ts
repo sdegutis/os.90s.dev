@@ -79,8 +79,12 @@ class Program {
   }
 
   terminate() {
-    this.rpc.send('terminate', [])
+    this.rpc.send('terminate', [this.pid])
     self.close()
+  }
+
+  endproc(pid: number) {
+    this.rpc.send('terminate', [pid])
   }
 
   resize(w: number, h: number) {
@@ -109,7 +113,8 @@ class Program {
   }
 
   async launch(path: string) {
-    return await this.rpc.call('launch', [path])
+    const [pid] = await this.rpc.call('launch', [path])
+    return pid
   }
 
 }

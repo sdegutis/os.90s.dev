@@ -50,8 +50,8 @@ export class Process {
         reply([pid], [])
       },
 
-      terminate: () => {
-        this.terminate()
+      terminate: (pid) => {
+        Process.all.get(pid)?.terminate()
       },
 
       resize: (w, h) => {
