@@ -1,5 +1,5 @@
+import { Bitmap } from "./bitmap.js"
 import { DrawingContext } from "./drawing.js"
-import { Bitmap } from "/shared/bitmap.js"
 
 export class Font {
 

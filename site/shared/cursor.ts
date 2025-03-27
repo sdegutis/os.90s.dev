@@ -1,4 +1,4 @@
-import { Bitmap } from "/shared/bitmap.js"
+import { Bitmap } from "../client/core/bitmap.js"
 
 export class Cursor {
 

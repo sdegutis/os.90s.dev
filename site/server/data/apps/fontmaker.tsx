@@ -1,3 +1,4 @@
+import { Bitmap } from "../../../client/core/bitmap.js"
 import { crt34, Font } from "../../../client/core/font.js"
 import { $, multiplex, Ref } from "../../../client/core/ref.js"
 import { pointEquals } from "../../../client/core/types.js"
@@ -7,7 +8,6 @@ import { showMenu } from "/client/util/menu.js"
 import { PanelView } from "/client/util/panelview.js"
 import { debounce } from "/client/util/throttle.js"
 import { View } from "/client/views/view.js"
-import { Bitmap } from "/shared/bitmap.js"
 import { Cursor } from "/shared/cursor.js"
 
 const SAMPLE_TEXT = [

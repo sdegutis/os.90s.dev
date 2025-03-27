@@ -1,6 +1,6 @@
+import { Bitmap } from "../core/bitmap.js"
 import { DrawingContext } from "../core/drawing.js"
 import { View } from "/client/views/view.js"
-import { Bitmap } from "/shared/bitmap.js"
 
 export class ImageView extends View {
 
