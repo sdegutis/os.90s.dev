@@ -15,6 +15,8 @@ export class Margin extends View {
   }
 
   override layout(): void {
+    if (this.size.w === 0 || this.size.h === 0) return
+
     const c = this.firstChild
     if (c) {
       c.point = {

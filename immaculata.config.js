@@ -59,3 +59,5 @@ export default (({ inFiles, outFiles }) => {
 function minify(js) {
   return swc.minifySync(js, { module: true }).code
 }
+
+console.log(process.env)

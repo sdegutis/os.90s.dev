@@ -58,13 +58,12 @@ export class Process {
         reply([content], [])
       },
 
+      listdrives: (reply) => {
+        reply(fs.drives(), [])
+      },
+
       listdir: (reply, path) => {
-        if (path === '') {
-          reply(fs.drives().map(name => ({ name, type: 'folder' })), [])
-        }
-        else {
-          reply(fs.list(path), [])
-        }
+        reply(fs.list(path), [])
       },
 
     })

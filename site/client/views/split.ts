@@ -74,6 +74,8 @@ export class Split extends View {
     this.$.size.watch(() => { this.layout(); this.needsRedraw() })
 
     this.$.pos.intercept((pos) => {
+      if (this.size.w === 0 || this.size.h === 0) return pos
+
       const dx = this.dir
       const dw = dx === 'x' ? 'w' : 'h'
 
@@ -84,7 +86,7 @@ export class Split extends View {
       if (max <= 0) max += this.size[dw] - 1
 
       return Math.max(min, Math.min(pos, max))
-    }, [this.$.min, this.$.max])
+    }, [this.$.min, this.$.max, this.$.size])
 
     this.resizer = SplitDivider.make({ split: this })
     this.children = [...this.children, this.resizer]

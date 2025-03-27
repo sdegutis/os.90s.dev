@@ -96,6 +96,10 @@ class Program {
     this.rpc.send('resize', [w, h])
   }
 
+  async listdrives(path: string) {
+    return await this.rpc.call('listdrives', [])
+  }
+
   async listdir(path: string) {
     return await this.rpc.call('listdir', [path])
   }

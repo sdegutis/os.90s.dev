@@ -8,8 +8,9 @@ export interface ServerProgram {
   terminate(): void
   resize(w: number, h: number): void
 
+  listdrives(): Promise<string[]>
   getfile(path: string): Promise<[content: string | undefined]>
-  listdir(path: string): Promise<DriveItem[]>,
+  listdir(path: string): Promise<DriveItem[]>
 }
 
 export interface ClientProgram {
