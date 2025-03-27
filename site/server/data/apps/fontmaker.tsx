@@ -94,55 +94,70 @@ const rebuild = debounce(rebuildNow)
 
 rebuildNow()
 
-function FilePanelView({ filepath, title, menuItems, ...data }: Parameters<typeof PanelView>[0] & {
+function FilePanelView({
+  filepath,
+  title,
+  menuItems,
+  onKeyDown,
+  ...data
+}: Parameters<typeof PanelView>[0] & {
   filepath: Ref<string | undefined>,
 }) {
+  async function load() {
+    const path = await showPrompt('file path?')
+    if (!path) return
+    sys.launch(program.opts["app"], path)
+  }
+
+  async function save() {
+    if (!filepath.val) filepath.val = await askFilePath()
+    if (!filepath.val) return
+    sys.putfile(filepath.val, fontsrc)
+  }
+
+  async function saveAs() {
+    const path = await askFilePath()
+    if (!path) return
+    filepath.val = path
+    sys.putfile(filepath.val, fontsrc)
+  }
+
+  async function askFilePath() {
+    return await showPrompt('file path?') ?? undefined
+  }
+
   const fileMenu = () => {
     const items = menuItems?.() ?? []
     if (items.length > 0) {
       items.push('-')
     }
 
-    async function askFilePath() {
-      return await showPrompt('file path?') ?? undefined
-    }
-
     items.push(
-      {
-        text: 'load...',
-        onClick: async () => {
-          const path = await showPrompt('file path?')
-          if (!path) return
-          sys.launch(program.opts["app"], path)
-        }
-      },
-      {
-        text: 'save as...',
-        onClick: async () => {
-          const path = await askFilePath()
-          if (!path) return
-          filepath.val = path
-          sys.putfile(filepath.val, fontsrc)
-        }
-      },
-      {
-        text: 'save',
-        onClick: async () => {
-          if (!filepath.val) filepath.val = await askFilePath()
-          if (!filepath.val) return
-          sys.putfile(filepath.val, fontsrc)
-        }
-      },
+      { text: 'load...', onClick: load },
+      { text: 'save as...', onClick: saveAs },
+      { text: 'save', onClick: save },
     )
 
     return items
+  }
+
+  const keyHandler = (key: string) => {
+    if (key === 'o' && panel.isKeyDown('Control')) { load(); return true }
+    if (key === 's' && panel.isKeyDown('Control')) { save(); return true }
+    if (key === 's' && panel.isKeyDown('Control') && panel.isKeyDown('Shift')) { saveAs(); return true }
+    return onKeyDown?.(key) ?? false
   }
 
   const filetitle = multiplex([filepath, title], () => {
     return `${title.val}: ${filepath.val ?? '[no file]'}`
   })
 
-  return <PanelView title={filetitle} {...data} menuItems={fileMenu} />
+  return <PanelView
+    {...data}
+    onKeyDown={keyHandler}
+    title={filetitle}
+    menuItems={fileMenu}
+  />
 }
 
 const panel = await Panel.create(

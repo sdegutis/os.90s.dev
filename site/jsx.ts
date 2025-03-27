@@ -11,7 +11,7 @@ type JsxAttrs<T> = {
     ? View | View[] | Ref<View[]>
 
     : T[K] extends ((...args: infer A) => infer R) | undefined
-    ? (this: T, ...args: A) => R
+    ? ((this: T, ...args: A) => R) | undefined
 
     : T[K] | Ref<T[K]>
 

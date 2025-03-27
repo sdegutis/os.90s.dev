@@ -29,6 +29,7 @@ export function PanelView(data: {
   title: Ref<string>,
   children: View,
   size?: Ref<Size>,
+  onKeyDown?: (key: string) => boolean,
   menuItems?: () => MenuItem[],
 }) {
 
@@ -49,6 +50,7 @@ export function PanelView(data: {
 
   return (
     <margin
+      onKeyDown={data.onKeyDown}
       paddingColor={borderColor}
       padding={1}
       size={size}
