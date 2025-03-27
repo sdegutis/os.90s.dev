@@ -25,7 +25,8 @@ export class Process {
   ready = Promise.withResolvers<void>()
 
   constructor(sys: Sys, path: string, opts: Record<string, any>) {
-    Process.all.set(this.id = ++Process.id, this)
+    this.id = ++Process.id
+    Process.all.set(this.id, this)
 
     this.sys = sys
 
@@ -37,6 +38,7 @@ export class Process {
 
       init: (reply) => {
         this.ready.resolve()
+        this.sys.procBegan.dispatch(this.id)
         const fontstr = fs.get('sys/data/crt34.font')!
         reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], fontstr])
       },
@@ -62,6 +64,18 @@ export class Process {
           }
         }
         reply([])
+      },
+
+      openipc: (reply, pid) => {
+        const proc = Process.all.get(pid)
+        if (!proc) {
+          reply([null])
+          return
+        }
+
+        const chan = new MessageChannel()
+        reply([chan.port1], [chan.port1])
+        proc.rpc.send('gotipc', [chan.port2], [chan.port2])
       },
 
       launch: async (reply, path, opts) => {
@@ -131,8 +145,6 @@ export class Process {
         }
       }
     }, 3000)
-
-    this.sys.procBegan.dispatch(this.id)
   }
 
   focus(panel: Panel) {

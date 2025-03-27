@@ -10,6 +10,7 @@ export interface ServerProgram {
 
   launch(path: string, opts: Record<string, any>): Promise<[number]>
   watchprocs(): Promise<[]>
+  openipc(pid: number): Promise<[MessagePort | null]>
 
   listdrives(): Promise<string[]>
   getfile(path: string): Promise<[content: string | undefined]>
@@ -28,6 +29,7 @@ export interface ClientProgram {
 
   procbegan(pid: number): void
   procended(pid: number): void
+  gotipc(port: MessagePort): void
 }
 
 export interface ServerPanel {

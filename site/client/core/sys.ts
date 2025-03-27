@@ -56,10 +56,15 @@ class Sys {
       this.procended.dispatch(pid)
     },
 
+    gotipc: (port) => {
+      this.ipcopened.dispatch(port)
+    },
+
   })
 
   procbegan = new Listener<number>()
   procended = new Listener<number>()
+  ipcopened = new Listener<MessagePort>()
 
   keymap = new Set<string>()
 
@@ -153,6 +158,11 @@ class Sys {
   async launch(path: string, file?: string) {
     const [pid] = await this.rpc.call('launch', [path, { file }])
     return pid
+  }
+
+  async openipc(pid: number) {
+    const [port] = await this.rpc.call('openipc', [pid])
+    return port
   }
 
 }
