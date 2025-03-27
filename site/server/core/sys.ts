@@ -98,11 +98,12 @@ export class Sys {
       this.redrawAllPanels()
     }
 
-    this.launch('/apps/shell.js')
+    this.launch('sys/apps/shell.js')
   }
 
   launch(path: string) {
-    new Process(this, path)
+    const proc = new Process(this, path)
+    return proc.id
   }
 
   resize(w: number, h: number) {

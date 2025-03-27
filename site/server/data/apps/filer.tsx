@@ -104,7 +104,7 @@ function FolderItem({ base, name }: { base: string[], name: string }) {
 
 function FileItem({ base, name }: { base: string[], name: string }) {
   return (
-    <button padding={2}>
+    <button padding={2} onClick={() => handleFile([...base, name].join(''))}>
       <groupx gap={2}>
         <border>
           <image bitmap={imgFile} />
@@ -120,4 +120,11 @@ async function mount() {
   if (!name) return
   await program.mount(name)
   refreshDrives()
+}
+
+async function handleFile(path: string) {
+  if (path.endsWith('.js')) {
+    const pid = await program.launch(path)
+    console.log(pid)
+  }
 }
