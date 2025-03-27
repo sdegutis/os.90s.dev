@@ -92,6 +92,7 @@ const panel = await Panel.create(
         <border padding={zoom}>
           <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map((ch, index) =>
             <CharView
+              initial={font.val.spr}
               drew={spots => {
                 sheet[index] = spots
                 rebuild()
@@ -165,7 +166,8 @@ function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number 
 }
 
 function CharView(
-  { char, width, height, zoom, hover, drew }: {
+  { char, width, height, zoom, hover, drew, initial }: {
+    initial: Bitmap,
     drew: (spots: Record<string, boolean>) => void,
     hover: (ch: string) => void,
     char: string,
@@ -175,8 +177,21 @@ function CharView(
   }
 ) {
   const spots: Record<string, boolean> = Object.create(null)
-  const notifyDrew = () => drew(spots)
 
+  const i = char.charCodeAt(0) - 32
+
+  const sy = Math.floor(i / 16) * width.val * 16 * height.val
+  const sx = (i % 16) * width.val
+
+  for (let y = 0; y < height.val; y++) {
+    for (let x = 0; x < width.val; x++) {
+      const oy = y * width.val * 16
+      spots[`${x},${y}`] = initial.pixels[(sy + oy) + sx + x] === 1
+    }
+  }
+
+
+  const notifyDrew = () => drew(spots)
   notifyDrew()
   width.watch(notifyDrew)
   height.watch(notifyDrew)

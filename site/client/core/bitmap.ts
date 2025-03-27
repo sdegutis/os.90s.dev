@@ -18,7 +18,7 @@ export class Bitmap {
   private ctx
 
   private colors
-  private pixels
+  pixels
 
   private lastcol?: number
 
