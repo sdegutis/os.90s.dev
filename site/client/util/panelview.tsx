@@ -69,9 +69,12 @@ export function PanelView(data: {
         <spacedx canMouse onMouseDown={titleBarMouseDown}>
           <border>
             <groupx gap={1}>
-              <button onClick={() => {
+              <button onClick={function () {
                 const items = data.menuItems?.()
-                if (items?.length) showMenu(items)
+                if (items?.length) showMenu(items, {
+                  x: this.panel!.point.x + this.panelOffset.x + this.point.x,
+                  y: this.panel!.point.y + this.panelOffset.y + this.point.y + this.size.h,
+                })
               }} padding={2}><image bitmap={mnuImage} /></button>
               <label text={data.title} />
             </groupx>
