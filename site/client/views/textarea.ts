@@ -1,11 +1,12 @@
 import type { DrawingContext } from "/client/core/drawing.js"
-import { type Font, crt34 } from "/client/core/font.js"
+import { type Font } from "/client/core/font.js"
+import { sys } from "/client/core/sys.js"
 import { Scroll } from "/client/views/scroll.js"
 import { View } from "/client/views/view.js"
 
 export class Textarea extends View {
 
-  font: Font = crt34
+  font: Font = sys.font
   color: number = 0xffffffff
 
   private label!: View

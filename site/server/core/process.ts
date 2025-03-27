@@ -11,7 +11,7 @@ export class Process {
 
   id
 
-  private sys: Sys
+  sys: Sys
   private worker
   private panels = new Set<Panel>()
 
@@ -31,7 +31,8 @@ export class Process {
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
 
       init: (reply) => {
-        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap]], [])
+        const fontstr = fs.get('sys/data/crt34.font')!
+        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], fontstr], [])
       },
 
       newpanel: (reply, ord, x, y, w, h) => {

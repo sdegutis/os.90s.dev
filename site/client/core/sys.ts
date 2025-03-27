@@ -1,3 +1,4 @@
+import { Font } from "/client/core/font.js"
 import { Panel } from "/client/core/panel.js"
 import { $, Ref } from "/client/core/ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "/client/core/rpc.js"
@@ -35,6 +36,10 @@ class Sys {
 
   keymap = new Set<string>()
 
+  $font!: Ref<Font>
+  get font() { return this.$font.val }
+  set font(f: Font) { this.$font.val = f }
+
   $size: Ref<Size> = $({ w: 0, h: 0 })
   get size() { return this.$size.val }
   set size(s: Size) { this.$size.val = s }
@@ -42,9 +47,10 @@ class Sys {
   async init() {
     this.opts = JSON.parse(new URLSearchParams(location.search).get('opts') ?? '{}')
 
-    const [id, w, h, keymap] = await this.rpc.call('init', [])
+    const [id, w, h, keymap, fontstr] = await this.rpc.call('init', [])
     this.pid = id
     this.size = { w, h }
+    this.$font = $(new Font(fontstr))
 
     keymap.forEach(k => this.keymap.add(k))
   }

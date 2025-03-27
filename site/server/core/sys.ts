@@ -2,8 +2,9 @@ import { Panel } from "./panel.js"
 import { Process } from "./process.js"
 import { Cursor } from "/client/core/cursor.js"
 import { DrawingContext } from "/client/core/drawing.js"
-import { crt34 } from "/client/core/font.js"
+import { Font } from "/client/core/font.js"
 import { $ } from "/client/core/ref.js"
+import { fs } from "/server/fs/fs.js"
 import { setupCanvas } from "/server/util/canvas.js"
 
 export class Sys {
@@ -17,16 +18,22 @@ export class Sys {
   clicking: Panel | null = null
   prevFocused: Panel | null = null
 
+  $font
+  get font() { return this.$font.val }
+
   $size
   get size() { return this.$size.val }
 
   constructor(width: number, height: number) {
     this.$size = $({ w: width, h: height })
 
+    const fontstr = fs.get('sys/data/crt34.font')!
+    this.$font = $(new Font(fontstr))
+
     const { $point, $scale, canvas, ctx } = setupCanvas(this.$size)
     this.ctx = ctx
 
-    showLoadingScreen(ctx)
+    this.showLoadingScreen(ctx)
 
     canvas.oncontextmenu = (e) => {
       if (e.target === canvas) {
@@ -184,6 +191,30 @@ export class Sys {
     this.redrawAllPanels()
   }
 
+  private showLoadingScreen(out: CanvasRenderingContext2D) {
+    const w = out.canvas.width
+    const h = out.canvas.height
+
+    const ctx = new DrawingContext(w, h)
+
+    ctx.fillRect(0, 0, w, h, 0x333333ff)
+
+    const str = 'loading...'
+    const size = this.font.calcSize(str)
+
+    const px = Math.floor(w / 2 - size.w / 2)
+    const py = Math.floor(h / 2 - size.h / 2)
+
+    ctx.fillRect(px - 3, py - 3, size.w + 6, size.h + 6, 0x333333ff)
+
+    this.font.print(ctx, px + 1, py + 1, 0x000000ff, str)
+    this.font.print(ctx, px, py, 0xffffffff, str)
+
+    const img = ctx.canvas.transferToImageBitmap()
+
+    out.drawImage(img, 0, 0)
+  }
+
 }
 
 const defaultCursor = Cursor.fromString(`
@@ -200,28 +231,3 @@ offy=1
 `.trimStart())
 
 let cursor = defaultCursor
-
-function showLoadingScreen(out: CanvasRenderingContext2D) {
-  const w = out.canvas.width
-  const h = out.canvas.height
-
-  const ctx = new DrawingContext(w, h)
-
-  ctx.fillRect(0, 0, w, h, 0x333333ff)
-
-  const font = crt34
-  const str = 'loading...'
-  const size = font.calcSize(str)
-
-  const px = Math.floor(w / 2 - size.w / 2)
-  const py = Math.floor(h / 2 - size.h / 2)
-
-  ctx.fillRect(px - 3, py - 3, size.w + 6, size.h + 6, 0x333333ff)
-
-  font.print(ctx, px + 1, py + 1, 0x000000ff, str)
-  font.print(ctx, px, py, 0xffffffff, str)
-
-  const img = ctx.canvas.transferToImageBitmap()
-
-  out.drawImage(img, 0, 0)
-}

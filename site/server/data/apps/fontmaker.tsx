@@ -1,7 +1,7 @@
 import { sys } from "../../../client/core/sys.js"
 import { Bitmap } from "/client/core/bitmap.js"
 import { Cursor } from "/client/core/cursor.js"
-import { crt34, Font } from "/client/core/font.js"
+import { Font } from "/client/core/font.js"
 import { Panel } from "/client/core/panel.js"
 import { $, multiplex, Ref } from "/client/core/ref.js"
 import { pointEquals } from "/client/core/types.js"
@@ -12,7 +12,7 @@ import { showPrompt } from "/client/util/prompt.js"
 import { debounce } from "/client/util/throttle.js"
 import { View } from "/client/views/view.js"
 
-const font = $(crt34)
+const font = $(sys.font)
 
 let filepath = sys.opts["file"]
 if (filepath) {
