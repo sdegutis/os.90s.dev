@@ -66,6 +66,11 @@ export class Process {
         reply(fs.list(path), [])
       },
 
+      mount: async (reply, name) => {
+        await fs.mount(name)
+        reply([], [])
+      },
+
     })
 
     this.heartbeat = setInterval(async () => {

@@ -1,5 +1,4 @@
 import { Panel } from "/client/core/panel.js"
-import { program } from "/client/core/prog.js"
 import { $ } from "/client/core/ref.js"
 import { PanelView } from "/client/util/panelview.js"
 
@@ -26,6 +25,3 @@ const panel = await Panel.create(
 )
 
 panel.focusPanel()
-
-console.log(await program.listdir('sys/'))
-console.log(await program.getfile('sys/crt34.font'))

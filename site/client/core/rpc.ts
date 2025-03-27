@@ -13,6 +13,7 @@ export interface ServerProgram {
   listdrives(): Promise<string[]>
   getfile(path: string): Promise<[content: string | undefined]>
   listdir(path: string): Promise<FsItem[]>
+  mount(name: string): Promise<[]>
 }
 
 export interface ClientProgram {

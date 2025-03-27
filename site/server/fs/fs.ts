@@ -25,7 +25,10 @@ class FS {
     }
   }
 
-  async mount(drive: string, folder: FileSystemDirectoryHandle) {
+  async mount(drive: string) {
+    const folder = await window.showDirectoryPicker()
+    await folder.requestPermission({ mode: 'readwrite' })
+
     this.mounts.set({ drive, dir: folder })
     await this.addDrive(drive, new MountedDrive(folder))
   }

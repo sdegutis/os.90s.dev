@@ -4,9 +4,21 @@ import { program } from "/client/core/prog.js"
 import { $ } from "/client/core/ref.js"
 import type { FileItem, FolderItem } from "/client/core/rpc.js"
 import { PanelView } from "/client/util/panelview.js"
+import { showPrompt } from "/client/util/prompt.js"
 import type { View } from "/client/views/view.js"
 
-const drives = await program.listdrives('')
+const $drives = $<View[]>([])
+
+refreshDrives()
+
+async function refreshDrives() {
+  const drives = await program.listdrives('')
+  $drives.val = drives.map(d =>
+    <button padding={2} onClick={() => showDir([d])}>
+      <label text={d} />
+    </button>
+  )
+}
 
 const $entries = $<View[]>([])
 const $breadcrumbs = $<View[]>([])
@@ -14,13 +26,16 @@ const $breadcrumbs = $<View[]>([])
 const panel = await Panel.create(
   <PanelView title={'Filer'} size={$({ w: 150, h: 120 })}>
     <splitxa pos={50}>
-      <view>
-        <groupy align={'+'} children={drives.map(d =>
-          <button padding={2} onClick={() => showDir([d])}>
-            <label text={d} />
+      <panedyb>
+        <view>
+          <groupy align={'+'} children={$drives} />
+        </view>
+        <groupx>
+          <button padding={2} onClick={mount}>
+            <label text={'mount'} />
           </button>
-        )} />
-      </view>
+        </groupx>
+      </panedyb>
       <panedya>
         <groupx children={$breadcrumbs} />
         <scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
@@ -85,4 +100,11 @@ function FileItem({ base, item }: { base: string[], item: FileItem }) {
       </groupx>
     </button>
   )
+}
+
+async function mount() {
+  const name = await showPrompt('drive name?')
+  if (!name) return
+  await program.mount(name)
+  refreshDrives()
 }

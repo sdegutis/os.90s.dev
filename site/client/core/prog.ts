@@ -108,6 +108,10 @@ class Program {
     return await this.rpc.call('getfile', [path])
   }
 
+  async mount(name: string) {
+    await this.rpc.call('mount', [name])
+  }
+
 }
 
 export const program = new Program()
