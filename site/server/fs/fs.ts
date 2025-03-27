@@ -1,5 +1,5 @@
 import { Listener } from "/client/core/listener.js"
-import type { FileItem, FolderItem, FsItem } from "/client/core/rpc.js"
+import type { FsItem } from "/client/core/rpc.js"
 import type { Drive, DriveNotificationType } from "/server/fs/drive.js"
 import { MountedDrive } from "/server/fs/mountfs.js"
 import { SysDrive } from "/server/fs/sysfs.js"
@@ -76,14 +76,7 @@ class FS {
       .map(([k, v]) => {
         const m = k.match(r)?.[0]
         if (!m) return null
-
-        const name = m.slice(subpath.length)
-        const type = v.type
-
-        if (type === 'folder')
-          return { name, type } as FolderItem
-        else
-          return { name, type, content: v.content } as FileItem
+        return { name: m.slice(subpath.length), type: v.type }
       })
       .filter(e => e !== null)
       .toArray()

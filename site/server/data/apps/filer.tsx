@@ -2,7 +2,6 @@ import { Bitmap } from "/client/core/bitmap.js"
 import { Panel } from "/client/core/panel.js"
 import { program } from "/client/core/prog.js"
 import { $ } from "/client/core/ref.js"
-import type { FileItem, FolderItem } from "/client/core/rpc.js"
 import { showMenu } from "/client/util/menu.js"
 import { PanelView } from "/client/util/panelview.js"
 import { showPrompt } from "/client/util/prompt.js"
@@ -82,35 +81,35 @@ async function showDir(full: string[]) {
 
   $entries.val = results.map(item =>
     item.type === 'folder'
-      ? <FolderItem base={full} item={item} />
-      : <FileItem base={full} item={item} />
+      ? <FolderItem base={full} name={item.name} />
+      : <FileItem base={full} name={item.name} />
   )
 }
 
 const imgFolder = new Bitmap([0x990000ff], 1, [1])
 const imgFile = new Bitmap([0x009900ff], 1, [1])
 
-function FolderItem({ base, item }: { base: string[], item: FolderItem }) {
+function FolderItem({ base, name }: { base: string[], name: string }) {
   return (
-    <button padding={2} onClick={() => showDir([...base, item.name])}>
+    <button padding={2} onClick={() => showDir([...base, name])}>
       <groupx gap={2}>
         <border>
           <image bitmap={imgFolder} />
         </border>
-        <label text={item.name} />
+        <label text={name} />
       </groupx>
     </button>
   )
 }
 
-function FileItem({ base, item }: { base: string[], item: FileItem }) {
+function FileItem({ base, name }: { base: string[], name: string }) {
   return (
     <button padding={2}>
       <groupx gap={2}>
         <border>
           <image bitmap={imgFile} />
         </border>
-        <label text={item.name} />
+        <label text={name} />
       </groupx>
     </button>
   )

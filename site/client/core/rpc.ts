@@ -1,8 +1,6 @@
 export type PanelOrdering = 'normal' | 'bottom' | 'top'
 
-export type FileItem = { type: 'file', name: string, content: string }
-export type FolderItem = { type: 'folder', name: string }
-export type FsItem = FileItem | FolderItem
+export type FsItem = { type: 'folder' | 'file', name: string }
 
 export interface ServerProgram {
   init(): Promise<[id: number, w: number, h: number, keymap: string[]]>
