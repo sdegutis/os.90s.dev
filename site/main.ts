@@ -1,5 +1,5 @@
-import { Process } from "/server/process.js"
-import { Sys } from "/server/sys.js"
+import { Process } from "./server/core/process.js"
+import { Sys } from "./server/core/sys.js"
 
 const sys = new Sys(320 * 1, 180 * 1)
 
