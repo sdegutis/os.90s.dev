@@ -6,8 +6,7 @@ import { Panel } from "/client/core/panel.js"
 import { $, multiplex, Ref } from "/client/core/ref.js"
 import { pointEquals } from "/client/core/types.js"
 import { dragMove } from "/client/util/drag.js"
-import { PanelView } from "/client/util/panelview.js"
-import { showPrompt } from "/client/util/prompt.js"
+import { FilePanelView } from "/client/util/panelview.js"
 import { debounce } from "/client/util/throttle.js"
 import { View } from "/client/views/view.js"
 
@@ -60,10 +59,10 @@ for (let i = 0; i < CHARSET.length; i++) {
 
 
 
-let fontsrc: string
+let fontsrc = $('')
 
 const rebuildNow = () => {
-  fontsrc = `#ffffffff\n\n`
+  let src = `#ffffffff\n\n`
 
   const grid: boolean[] = []
 
@@ -84,84 +83,20 @@ const rebuildNow = () => {
 
   const row = width.val * 16
   for (let i = 0; i < 16 * 6 * width.val * height.val; i++) {
-    fontsrc += grid[i] ? '1' : '0'
-    fontsrc += i % row === row - 1 ? '\n' : ' '
+    src += grid[i] ? '1' : '0'
+    src += i % row === row - 1 ? '\n' : ' '
   }
 
-  font.val = new Font(fontsrc)
+  font.val = new Font(src)
+  fontsrc.val = src
 }
+
 const rebuild = debounce(rebuildNow)
 
 rebuildNow()
 
-function FilePanelView({
-  filepath,
-  title,
-  menuItems,
-  onKeyDown,
-  ...data
-}: Parameters<typeof PanelView>[0] & {
-  filepath: Ref<string | undefined>,
-}) {
-  async function load() {
-    const path = await showPrompt('file path?')
-    if (!path) return
-    sys.launch(program.opts["app"], path)
-  }
-
-  async function save() {
-    if (!filepath.val) filepath.val = await askFilePath()
-    if (!filepath.val) return
-    sys.putfile(filepath.val, fontsrc)
-  }
-
-  async function saveAs() {
-    const path = await askFilePath()
-    if (!path) return
-    filepath.val = path
-    sys.putfile(filepath.val, fontsrc)
-  }
-
-  async function askFilePath() {
-    return await showPrompt('file path?') ?? undefined
-  }
-
-  const fileMenu = () => {
-    const items = menuItems?.() ?? []
-    if (items.length > 0) {
-      items.push('-')
-    }
-
-    items.push(
-      { text: 'load...', onClick: load },
-      { text: 'save as...', onClick: saveAs },
-      { text: 'save', onClick: save },
-    )
-
-    return items
-  }
-
-  const keyHandler = (key: string) => {
-    if (key === 'o' && panel.isKeyDown('Control')) { load(); return true }
-    if (key === 's' && panel.isKeyDown('Control')) { save(); return true }
-    if (key === 'S' && panel.isKeyDown('Control')) { saveAs(); return true }
-    return onKeyDown?.(key) ?? false
-  }
-
-  const filetitle = multiplex([filepath, title], () => {
-    return `${title.val}: ${filepath.val ?? '[no file]'}`
-  })
-
-  return <PanelView
-    {...data}
-    onKeyDown={keyHandler}
-    title={filetitle}
-    menuItems={fileMenu}
-  />
-}
-
 const panel = await Panel.create(
-  <FilePanelView filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })}>
+  <FilePanelView filedata={fontsrc} filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })}>
     <panedyb>
       <scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <border padding={zoom}>

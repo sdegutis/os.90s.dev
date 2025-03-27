@@ -1,11 +1,12 @@
 import { Bitmap } from "/client/core/bitmap.js"
 import { Cursor } from "/client/core/cursor.js"
 import type { Panel } from "/client/core/panel.js"
-import { $, Ref } from "/client/core/ref.js"
-import { sys } from "/client/core/sys.js"
+import { $, multiplex, Ref } from "/client/core/ref.js"
+import { program, sys } from "/client/core/sys.js"
 import type { Size } from "/client/core/types.js"
 import { dragMove, dragResize } from "/client/util/drag.js"
 import { showMenu, type MenuItem } from "/client/util/menu.js"
+import { showPrompt } from "/client/util/prompt.js"
 import type { ImageView } from "/client/views/image.js"
 import type { SpacedX } from "/client/views/spaced.js"
 import type { View } from "/client/views/view.js"
@@ -29,6 +30,7 @@ export function PanelView(data: {
   title: Ref<string>,
   children: View,
   size?: Ref<Size>,
+  presented?: (panel: Panel) => void,
   onKeyDown?: (key: string) => boolean,
   menuItems?: () => MenuItem[],
 }) {
@@ -54,7 +56,10 @@ export function PanelView(data: {
       paddingColor={borderColor}
       padding={1}
       size={size}
-      presented={p => panel = p}
+      presented={function (p) {
+        panel = p
+        data.presented?.(p)
+      }}
       onPanelFocus={() => focused.val = true}
       onPanelBlur={() => focused.val = false}
       background={0x070707ff}
@@ -124,4 +129,78 @@ function PanelResizer(data: { size: Ref<Size> }) {
     onMouseDown={resizerMouseDown}
   />
 
+}
+
+
+export function FilePanelView({
+  filepath,
+  filedata,
+  title,
+  menuItems,
+  onKeyDown,
+  presented,
+  ...data
+}: Parameters<typeof PanelView>[0] & {
+  filepath: Ref<string | undefined>,
+  filedata: Ref<string>,
+}) {
+  let panel: Panel
+
+  async function load() {
+    const path = await showPrompt('file path?')
+    if (!path) return
+    sys.launch(program.opts["app"], path)
+  }
+
+  async function save() {
+    if (!filepath.val) filepath.val = await askFilePath()
+    if (!filepath.val) return
+    sys.putfile(filepath.val, filedata.val)
+  }
+
+  async function saveAs() {
+    const path = await askFilePath()
+    if (!path) return
+    filepath.val = path
+    sys.putfile(filepath.val, filedata.val)
+  }
+
+  async function askFilePath() {
+    return await showPrompt('file path?') ?? undefined
+  }
+
+  const fileMenu = () => {
+    const items = menuItems?.() ?? []
+    if (items.length > 0) {
+      items.push('-')
+    }
+    items.push(
+      { text: 'load...', onClick: load },
+      { text: 'save as...', onClick: saveAs },
+      { text: 'save', onClick: save },
+    )
+    return items
+  }
+
+  const keyHandler = (key: string) => {
+    if (key === 'o' && panel.isKeyDown('Control')) { load(); return true }
+    if (key === 's' && panel.isKeyDown('Control')) { save(); return true }
+    if (key === 'S' && panel.isKeyDown('Control')) { saveAs(); return true }
+    return onKeyDown?.(key) ?? false
+  }
+
+  const filetitle = multiplex([filepath, title], () => {
+    return `${title.val}: ${filepath.val ?? '[no file]'}`
+  })
+
+  return <PanelView
+    {...data}
+    presented={p => {
+      panel = p
+      presented?.(p)
+    }}
+    onKeyDown={keyHandler}
+    title={filetitle}
+    menuItems={fileMenu}
+  />
 }
