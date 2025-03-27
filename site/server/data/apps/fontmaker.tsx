@@ -1,8 +1,8 @@
+import { sys } from "../../../client/core/sys.js"
 import { Bitmap } from "/client/core/bitmap.js"
 import { Cursor } from "/client/core/cursor.js"
 import { crt34, Font } from "/client/core/font.js"
 import { Panel } from "/client/core/panel.js"
-import { program } from "/client/core/prog.js"
 import { $, multiplex, Ref } from "/client/core/ref.js"
 import { pointEquals } from "/client/core/types.js"
 import { dragMove } from "/client/util/drag.js"
@@ -14,9 +14,9 @@ import { View } from "/client/views/view.js"
 
 const font = $(crt34)
 
-let filepath = program.opts["file"]
+let filepath = sys.opts["file"]
 if (filepath) {
-  const fontstr = await program.getfile(filepath)
+  const fontstr = await sys.getfile(filepath)
   if (fontstr) {
     font.val = new Font(fontstr)
   }
@@ -102,7 +102,7 @@ function doMenu() {
       onClick: async () => {
         const path = await showPrompt('file path?')
         if (!path) return
-        program.launch(program.opts["app"], path)
+        sys.launch(sys.opts["app"], path)
       }
     },
     {
@@ -111,13 +111,13 @@ function doMenu() {
         const path = await showPrompt('file path?')
         if (!path) return
         filepath = path
-        program.putfile(filepath, fontsrc)
+        sys.putfile(filepath, fontsrc)
       }
     },
     {
       text: 'save',
       onClick: async () => {
-        program.putfile(filepath, fontsrc)
+        sys.putfile(filepath, fontsrc)
       }
     },
   ])

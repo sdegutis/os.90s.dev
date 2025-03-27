@@ -1,5 +1,5 @@
+import { sys } from "../core/sys.js"
 import { Panel } from "/client/core/panel.js"
-import { program } from "/client/core/prog.js"
 import { $ } from "/client/core/ref.js"
 import type { Point } from "/client/core/types.js"
 
@@ -50,11 +50,11 @@ export async function showMenu(from: Point, items: MenuItem[]) {
     </border>
   )
 
-  if (from.y + root.size.h > program.size.h) {
+  if (from.y + root.size.h > sys.size.h) {
     from = { ...from, y: from.y - root.size.h }
   }
 
-  if (from.x + root.size.w > program.size.w) {
+  if (from.x + root.size.w > sys.size.w) {
     from = { ...from, x: from.x - root.size.w }
   }
 

@@ -3,7 +3,7 @@ import { $, Ref } from "/client/core/ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "/client/core/rpc.js"
 import type { Point, Size } from "/client/core/types.js"
 
-class Program {
+class Sys {
 
   private rpc = new wRPC<ClientProgram, ServerProgram>(self, {
 
@@ -126,5 +126,5 @@ class Program {
 
 }
 
-export const program = new Program()
-await program.init()
+export const sys = new Sys()
+await sys.init()

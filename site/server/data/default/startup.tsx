@@ -1,3 +1,3 @@
-import { program } from "/client/core/prog.js"
+import { sys } from "../../../client/core/sys.js"
 
-program.launch('sys/apps/filer.js')
+sys.launch('sys/apps/filer.js')

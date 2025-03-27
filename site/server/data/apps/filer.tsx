@@ -1,6 +1,6 @@
+import { sys } from "../../../client/core/sys.js"
 import { Bitmap } from "/client/core/bitmap.js"
 import { Panel } from "/client/core/panel.js"
-import { program } from "/client/core/prog.js"
 import { $ } from "/client/core/ref.js"
 import { showMenu } from "/client/util/menu.js"
 import { PanelView } from "/client/util/panelview.js"
@@ -12,7 +12,7 @@ const $drives = $<View[]>([])
 refreshDrives()
 
 async function refreshDrives() {
-  const drives = await program.listdrives('')
+  const drives = await sys.listdrives('')
   $drives.val = drives.map(d =>
     <button padding={2} onClick={(b) => {
       if (b === 0) {
@@ -20,7 +20,7 @@ async function refreshDrives() {
       }
       else if (b === 2) {
         const unmount = async () => {
-          await program.unmount(d)
+          await sys.unmount(d)
           refreshDrives()
         }
         showMenu(panel.absmouse, [
@@ -62,7 +62,7 @@ const panel = await Panel.create(
 panel.focusPanel()
 
 async function showDir(full: string[]) {
-  const results = await program.listdir(full.join(''))
+  const results = await sys.listdir(full.join(''))
 
   $breadcrumbs.val = full.map((part, idx) =>
     <button padding={2} onClick={() => showDir(full.slice(0, idx + 1))}>
@@ -118,15 +118,15 @@ function FileItem({ base, name }: { base: string[], name: string }) {
 async function mount() {
   const name = await showPrompt('drive name?')
   if (!name) return
-  await program.mount(name)
+  await sys.mount(name)
   refreshDrives()
 }
 
 async function handleFile(path: string) {
   if (path.endsWith('.js')) {
-    await program.launch(path)
+    await sys.launch(path)
   }
   else if (path.endsWith('.font')) {
-    await program.launch('sys/apps/fontmaker.js', path)
+    await sys.launch('sys/apps/fontmaker.js', path)
   }
 }

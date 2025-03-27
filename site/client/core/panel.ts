@@ -1,7 +1,7 @@
+import { sys } from "./sys.js"
 import type { Cursor } from "/client/core/cursor.js"
 import { DrawingContext } from "/client/core/drawing.js"
 import { Listener } from "/client/core/listener.js"
-import { program } from "/client/core/prog.js"
 import { type Ref, $, multiplex } from "/client/core/ref.js"
 import { type ClientPanel, type PanelOrdering, type ServerPanel, wRPC } from "/client/core/rpc.js"
 import type { Point, Size } from "/client/core/types.js"
@@ -46,7 +46,7 @@ export class Panel {
     order?: PanelOrdering,
     pos?: Ref<Point> | 'default' | 'center',
   }) {
-    return await program.makePanel({ view, ...config })
+    return await sys.makePanel({ view, ...config })
   }
 
   constructor(keymap: Set<string>, port: MessagePort, id: number, point: Ref<Point>, size: Ref<Size>, root: JSX.Element) {
