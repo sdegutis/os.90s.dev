@@ -11,6 +11,7 @@ export interface ServerProgram {
 
   listdrives(): Promise<string[]>
   getfile(path: string): Promise<[content: string | undefined]>
+  putfile(path: string, content: string): Promise<[]>
   listdir(path: string): Promise<FsItem[]>
   mount(name: string): Promise<[]>
   unmount(name: string): Promise<[]>

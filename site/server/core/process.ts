@@ -25,8 +25,7 @@ export class Process {
     this.sys = sys
 
     const absurl = new URL('exec.js', import.meta.url)
-    absurl.searchParams.set('app', path)
-    absurl.searchParams.set('opts', JSON.stringify(opts))
+    absurl.searchParams.set('opts', JSON.stringify({ ...opts, app: path }))
     this.worker = new Worker(absurl, { type: 'module' })
 
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
@@ -62,6 +61,11 @@ export class Process {
       getfile: (reply, path) => {
         const content = fs.get(path)
         reply([content], [])
+      },
+
+      putfile: (reply, path, content) => {
+        fs.put(path, content)
+        reply([], [])
       },
 
       listdrives: (reply) => {

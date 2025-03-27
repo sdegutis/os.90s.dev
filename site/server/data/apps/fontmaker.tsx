@@ -8,6 +8,7 @@ import { pointEquals } from "/client/core/types.js"
 import { dragMove } from "/client/util/drag.js"
 import { showMenu } from "/client/util/menu.js"
 import { PanelView } from "/client/util/panelview.js"
+import { showPrompt } from "/client/util/prompt.js"
 import { debounce } from "/client/util/throttle.js"
 import { View } from "/client/views/view.js"
 
@@ -40,14 +41,30 @@ const zoommin = 1
 const zoommax = 12
 zoom.intercept(n => Math.max(zoommin, Math.min(n, zoommax)))
 
-zoom.intercept(n => Math.max(1, n))
-
 const CHARSET = Array(96).keys().map(i => String.fromCharCode(i + 32)).toArray()
-
 const sheet: Record<string, boolean>[] = []
 
-const rebuild = debounce(() => {
-  let fontsrc = `#ffffffff\n\n`
+for (let i = 0; i < CHARSET.length; i++) {
+  const spots: Record<string, boolean> = Object.create(null)
+  sheet[i] = spots
+
+  const sy = Math.floor(i / 16) * width.val * 16 * height.val
+  const sx = (i % 16) * width.val
+
+  for (let y = 0; y < height.val; y++) {
+    for (let x = 0; x < width.val; x++) {
+      const oy = y * width.val * 16
+      spots[`${x},${y}`] = font.val.spr.pixels[(sy + oy) + sx + x] === 1
+    }
+  }
+}
+
+
+
+let fontsrc: string
+
+const rebuildNow = () => {
+  fontsrc = `#ffffffff\n\n`
 
   const grid: boolean[] = []
 
@@ -73,15 +90,36 @@ const rebuild = debounce(() => {
   }
 
   font.val = new Font(fontsrc)
-})
+}
+const rebuild = debounce(rebuildNow)
+
+rebuildNow()
 
 function doMenu() {
   showMenu(panel.absmouse, [
     {
-      text: 'load file', onClick: () => {
-
+      text: 'load file',
+      onClick: async () => {
+        const path = await showPrompt('file path?')
+        if (!path) return
+        program.launch(program.opts["app"], path)
       }
-    }
+    },
+    {
+      text: 'save as',
+      onClick: async () => {
+        const path = await showPrompt('file path?')
+        if (!path) return
+        filepath = path
+        program.putfile(filepath, fontsrc)
+      }
+    },
+    {
+      text: 'save',
+      onClick: async () => {
+        program.putfile(filepath, fontsrc)
+      }
+    },
   ])
 }
 
@@ -92,7 +130,7 @@ const panel = await Panel.create(
         <border padding={zoom}>
           <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map((ch, index) =>
             <CharView
-              initial={font.val.spr}
+              spots={sheet[index]}
               drew={spots => {
                 sheet[index] = spots
                 rebuild()
@@ -166,8 +204,8 @@ function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number 
 }
 
 function CharView(
-  { char, width, height, zoom, hover, drew, initial }: {
-    initial: Bitmap,
+  { char, width, height, zoom, hover, drew, spots }: {
+    spots: Record<string, boolean>,
     drew: (spots: Record<string, boolean>) => void,
     hover: (ch: string) => void,
     char: string,
@@ -176,21 +214,6 @@ function CharView(
     height: Ref<number>,
   }
 ) {
-  const spots: Record<string, boolean> = Object.create(null)
-
-  const i = char.charCodeAt(0) - 32
-
-  const sy = Math.floor(i / 16) * width.val * 16 * height.val
-  const sx = (i % 16) * width.val
-
-  for (let y = 0; y < height.val; y++) {
-    for (let x = 0; x < width.val; x++) {
-      const oy = y * width.val * 16
-      spots[`${x},${y}`] = initial.pixels[(sy + oy) + sx + x] === 1
-    }
-  }
-
-
   const notifyDrew = () => drew(spots)
   notifyDrew()
   width.watch(notifyDrew)

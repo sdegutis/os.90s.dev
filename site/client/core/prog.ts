@@ -40,6 +40,8 @@ class Program {
   set size(s: Size) { this.$size.val = s }
 
   async init() {
+    this.opts = JSON.parse(new URLSearchParams(location.search).get('opts') ?? '{}')
+
     const [id, w, h, keymap] = await this.rpc.call('init', [])
     this.pid = id
     this.size = { w, h }
@@ -103,6 +105,10 @@ class Program {
   async getfile(path: string) {
     const [contents] = await this.rpc.call('getfile', [path])
     return contents
+  }
+
+  async putfile(path: string, content: string) {
+    await this.rpc.call('putfile', [path, content])
   }
 
   async mount(name: string) {
