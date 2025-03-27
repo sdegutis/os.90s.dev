@@ -1,4 +1,4 @@
-import { colorFor } from "../client/util/colors.js"
+import { colorFor } from "./drawing.js"
 
 export class Bitmap {
 

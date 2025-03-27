@@ -1,5 +1,3 @@
-import { colorFor } from "../client/util/colors.js"
-
 export class DrawingContext {
 
   public canvas
@@ -39,4 +37,12 @@ export class DrawingContext {
     this.ctx.drawImage(canvas, sx, sy, sw, sh, dx, dy, dw, dh)
   }
 
+}
+
+const colors = new Map<number, string>()
+
+export function colorFor(col: number): string {
+  let color = colors.get(col)
+  if (!color) colors.set(col, color = '#' + col.toString(16).padStart(8, '0'))
+  return color
 }
