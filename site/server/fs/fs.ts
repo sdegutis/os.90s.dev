@@ -12,16 +12,29 @@ class FS {
   private _drives = new Map<string, Drive>()
   private watchers = new Map<string, Listener<DriveNotificationType>>()
 
-  constructor() {
-    this.addDrive('sys', new SysDrive())
-  }
-
   async init() {
+    this.addDrive('sys', new SysDrive())
     await this.addDrive('user', new UserDrive())
+
+    if (this.list('user/').length === 0) {
+      await this.copyTree('sys/default/', 'user/')
+    }
 
     this.mounts = await opendb<{ drive: string, dir: FileSystemDirectoryHandle }>('mounts', 'drive')
     for (const { drive, dir } of await this.mounts.all()) {
       await this.addDrive(drive, new MountedDrive(dir))
+    }
+  }
+
+  async copyTree(from: string, to: string) {
+    for (const item of this.list(from)) {
+      if (item.type === 'folder') {
+        await this.mkdirp(to + item.name)
+        await this.copyTree(from + item.name, to + item.name)
+      }
+      else {
+        this.put(to + item.name, this.get(from + item.name)!)
+      }
     }
   }
 

@@ -99,6 +99,7 @@ export class Sys {
     }
 
     this.launch('sys/apps/shell.js', {})
+    this.launch('user/startup.js', {})
   }
 
   launch(path: string, opts: Record<string, any>) {

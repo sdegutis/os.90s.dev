@@ -26,12 +26,14 @@ function compile(tsx: string) {
 }
 
 const sysjs = {
-  register: async (deps: string[], fn: () => {
+  register: async (deps: string[], fn: (exp: (k: string, v: any) => void, ctx: any) => {
     setters: ((dep: any) => void)[],
     execute: () => Promise<any>,
   }) => {
     const imps = await Promise.all(deps.map(dep => import(dep)))
-    const { setters, execute } = fn()
+    const { setters, execute } = fn((k, v) => {
+
+    }, {})
     for (let i = 0; i < imps.length; i++) {
       setters[i](imps[i])
     }
