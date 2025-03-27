@@ -145,7 +145,7 @@ export function FilePanelView({
   ...data
 }: Parameters<typeof PanelView>[0] & {
   filepath: Ref<string | undefined>,
-  filedata: Ref<string>,
+  filedata: () => string,
 }) {
   let panel: Panel
 
@@ -158,14 +158,14 @@ export function FilePanelView({
   async function save() {
     if (!filepath.val) filepath.val = await askFilePath()
     if (!filepath.val) return
-    sys.putfile(filepath.val, filedata.val)
+    sys.putfile(filepath.val, filedata())
   }
 
   async function saveAs() {
     const path = await askFilePath()
     if (!path) return
     filepath.val = path
-    sys.putfile(filepath.val, filedata.val)
+    sys.putfile(filepath.val, filedata())
   }
 
   async function askFilePath() {

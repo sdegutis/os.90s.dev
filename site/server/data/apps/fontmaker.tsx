@@ -59,10 +59,10 @@ for (let i = 0; i < CHARSET.length; i++) {
 
 
 
-let fontsrc = $('')
+let fontsrc = ''
 
 const rebuildNow = () => {
-  let src = `#ffffffff\n\n`
+  let fontsrc = `#ffffffff\n\n`
 
   const grid: boolean[] = []
 
@@ -83,12 +83,11 @@ const rebuildNow = () => {
 
   const row = width.val * 16
   for (let i = 0; i < 16 * 6 * width.val * height.val; i++) {
-    src += grid[i] ? '1' : '0'
-    src += i % row === row - 1 ? '\n' : ' '
+    fontsrc += grid[i] ? '1' : '0'
+    fontsrc += i % row === row - 1 ? '\n' : ' '
   }
 
-  font.val = new Font(src)
-  fontsrc.val = src
+  font.val = new Font(fontsrc)
 }
 
 const rebuild = debounce(rebuildNow)
@@ -96,7 +95,7 @@ const rebuild = debounce(rebuildNow)
 rebuildNow()
 
 const panel = await Panel.create(
-  <FilePanelView filedata={fontsrc} filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })}>
+  <FilePanelView filedata={() => fontsrc} filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })}>
     <panedyb>
       <scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <border padding={zoom}>
