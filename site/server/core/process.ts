@@ -1,6 +1,7 @@
 import { Panel } from "./panel.js"
 import type { Sys } from "./sys.js"
 import type { Cursor } from "/client/core/cursor.js"
+import type { ListenerDone } from "/client/core/listener.js"
 import { wRPC, type ClientProgram, type ServerProgram } from "/client/core/rpc.js"
 import { fs } from "/server/fs/fs.js"
 
@@ -19,6 +20,10 @@ export class Process {
   dead = false
   rpc
 
+  procwatchers: ListenerDone | undefined
+
+  ready = Promise.withResolvers<void>()
+
   constructor(sys: Sys, path: string, opts: Record<string, any>) {
     Process.all.set(this.id = ++Process.id, this)
 
@@ -31,6 +36,7 @@ export class Process {
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
 
       init: (reply) => {
+        this.ready.resolve()
         const fontstr = fs.get('sys/data/crt34.font')!
         reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], fontstr], [])
       },
@@ -46,8 +52,20 @@ export class Process {
         p.didRedraw.watch(() => sys.redrawAllPanels())
       },
 
-      launch: (reply, path, opts) => {
-        const pid = this.sys.launch(path, opts)
+      watchprocs: (reply) => {
+        if (!this.procwatchers) {
+          const watcher1 = sys.procBegan.watch((pid) => rpc.send('procbegan', [pid]))
+          const watcher2 = sys.procEnded.watch((pid) => rpc.send('procended', [pid]))
+          this.procwatchers = () => {
+            watcher1()
+            watcher2()
+          }
+        }
+        reply([], [])
+      },
+
+      launch: async (reply, path, opts) => {
+        const pid = await this.sys.launch(path, opts)
         reply([pid], [])
       },
 
@@ -113,6 +131,8 @@ export class Process {
         }
       }
     }, 3000)
+
+    this.sys.procBegan.dispatch(this.id)
   }
 
   focus(panel: Panel) {
@@ -129,6 +149,8 @@ export class Process {
     for (const panel of this.panels) {
       this.closePanel(panel)
     }
+    this.sys.procEnded.dispatch(this.id)
+    this.procwatchers?.()
   }
 
   closePanel(panel: Panel) {

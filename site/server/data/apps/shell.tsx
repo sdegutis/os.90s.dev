@@ -6,8 +6,14 @@ import { showMenu } from "/client/util/menu.js"
 import { showPrompt } from "/client/util/prompt.js"
 import type { View } from "/client/views/view.js"
 
+sys.procbegan.watch(pid => console.log('started', pid))
+sys.procended.watch(pid => console.log('ended', pid))
+await sys.watchprocs()
+
+sys.launch('user/startup.js')
+
 const desktop = await Panel.create((
-  <view size={sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x333333ff} />
+  <view size={sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
 ), {
   order: 'bottom',
   pos: $({ x: 0, y: 0 }),

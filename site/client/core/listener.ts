@@ -1,3 +1,5 @@
+export type ListenerDone = () => void
+
 export class Listener<T = void, U = void> {
 
   private list = new Set<(data: T) => U>()
@@ -8,7 +10,7 @@ export class Listener<T = void, U = void> {
     }
   }
 
-  watch(fn: (data: T) => U) {
+  watch(fn: (data: T) => U): ListenerDone {
     this.list.add(fn)
     return () => { this.list.delete(fn) }
   }

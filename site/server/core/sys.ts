@@ -3,6 +3,7 @@ import { Process } from "./process.js"
 import { Cursor } from "/client/core/cursor.js"
 import { DrawingContext } from "/client/core/drawing.js"
 import { Font } from "/client/core/font.js"
+import { Listener } from "/client/core/listener.js"
 import { $ } from "/client/core/ref.js"
 import { fs } from "/server/fs/fs.js"
 import { setupCanvas } from "/server/util/canvas.js"
@@ -23,6 +24,9 @@ export class Sys {
 
   $size
   get size() { return this.$size.val }
+
+  procBegan = new Listener<number>()
+  procEnded = new Listener<number>()
 
   constructor(width: number, height: number) {
     this.$size = $({ w: width, h: height })
@@ -106,11 +110,11 @@ export class Sys {
     }
 
     this.launch('sys/apps/shell.js', {})
-    this.launch('user/startup.js', {})
   }
 
-  launch(path: string, opts: Record<string, any>) {
+  async launch(path: string, opts: Record<string, any>) {
     const proc = new Process(this, path, opts)
+    await proc.ready.promise
     return proc.id
   }
 

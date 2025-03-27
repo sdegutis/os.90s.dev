@@ -5,9 +5,11 @@ export type FsItem = { type: 'folder' | 'file', name: string }
 export interface ServerProgram {
   init(): Promise<[id: number, w: number, h: number, keymap: string[], font: string]>
   newpanel(ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, x: number, y: number, port: MessagePort]>
-  launch(path: string, opts: Record<string, any>): Promise<[number]>
   terminate(pid: number): void
   resize(w: number, h: number): void
+
+  launch(path: string, opts: Record<string, any>): Promise<[number]>
+  watchprocs(): Promise<[]>
 
   listdrives(): Promise<string[]>
   getfile(path: string): Promise<[content: string | undefined]>
@@ -18,10 +20,14 @@ export interface ServerProgram {
 }
 
 export interface ClientProgram {
-  resized(w: number, h: number): void
   ping(n: number): Promise<[n: number]>
+  resized(w: number, h: number): void
+
   keydown(key: string): void
   keyup(key: string): void
+
+  procbegan(pid: number): void
+  procended(pid: number): void
 }
 
 export interface ServerPanel {
