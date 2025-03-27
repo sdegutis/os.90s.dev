@@ -1,4 +1,4 @@
-import { $, Ref } from "/shared/ref.js"
+import { $, Ref } from "../../client/core/ref.js"
 import { Size } from "/shared/types.js"
 
 export function setupCanvas(size: Ref<Size>) {

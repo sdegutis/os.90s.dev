@@ -1,6 +1,6 @@
+import { $ } from "../core/ref.js"
 import { Panel } from "/client/core/panel.js"
 import { program } from "/client/core/prog.js"
-import { $ } from "/shared/ref.js"
 import { Point } from "/shared/types.js"
 
 export type MenuItem = { text: string, onClick(): void } | '-'

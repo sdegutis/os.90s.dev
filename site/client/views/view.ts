@@ -1,8 +1,8 @@
+import { multiplex } from "../core/ref.js"
 import { Panel } from "/client/core/panel.js"
 import { Dynamic } from "/client/util/dyn.js"
 import { debounce } from "/client/util/throttle.js"
 import { DrawingContext } from "/shared/drawing.js"
-import { multiplex } from "/shared/ref.js"
 import { Point, Size, arrayEquals, pointEquals, sizeEquals } from "/shared/types.js"
 
 export class View extends Dynamic {

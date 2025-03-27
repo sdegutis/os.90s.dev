@@ -1,4 +1,4 @@
-import { $, Ref } from "/shared/ref.js"
+import { $, Ref } from "../core/ref.js"
 
 export class Dynamic {
 

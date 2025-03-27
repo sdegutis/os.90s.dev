@@ -1,6 +1,6 @@
+import { $ } from "../../../client/core/ref.js"
 import { Panel } from "/client/core/panel.js"
 import { PanelView } from "/client/util/panelview.js"
-import { $ } from "/shared/ref.js"
 
 const TEST = `
 this is a long string

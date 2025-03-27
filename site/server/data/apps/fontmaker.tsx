@@ -1,3 +1,4 @@
+import { $, multiplex, Ref } from "../../../client/core/ref.js"
 import { Panel } from "/client/core/panel.js"
 import { dragMove } from "/client/util/drag.js"
 import { showMenu } from "/client/util/menu.js"
@@ -7,7 +8,6 @@ import { View } from "/client/views/view.js"
 import { Bitmap } from "/shared/bitmap.js"
 import { Cursor } from "/shared/cursor.js"
 import { crt34, Font } from "/shared/font.js"
-import { $, multiplex, Ref } from "/shared/ref.js"
 import { pointEquals } from "/shared/types.js"
 
 const SAMPLE_TEXT = [

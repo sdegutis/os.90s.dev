@@ -1,7 +1,7 @@
+import { multiplex } from "../core/ref.js"
 import { Panel } from "/client/core/panel.js"
 import { dragMove } from "/client/util/drag.js"
 import { Textarea } from "/client/views/textarea.js"
-import { multiplex } from "/shared/ref.js"
 
 export async function showPrompt(text: string) {
   const result = Promise.withResolvers<string | null>()
