@@ -4,6 +4,27 @@ import { $, Ref } from "/client/core/ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "/client/core/rpc.js"
 import type { Point, Size } from "/client/core/types.js"
 
+class Program {
+
+  pid = 0
+  opts: Record<string, any> = {}
+
+  panels = new Set<Panel>()
+  exitsOnLastPanelClose = true
+
+  get focusedPanel() {
+    return [...this.panels].find(p => p.isFocused)
+  }
+
+  terminate() {
+    sys.endproc(this.pid)
+    self.close()
+  }
+
+}
+
+export const program = new Program()
+
 class Sys {
 
   private rpc = new wRPC<ClientProgram, ServerProgram>(self, {
@@ -18,21 +39,15 @@ class Sys {
 
     keydown: (key) => {
       this.keymap.add(key)
-      this.focusedPanel?.onKeyDown(key)
+      program.focusedPanel?.onKeyDown(key)
     },
 
     keyup: (key) => {
       this.keymap.delete(key)
-      this.focusedPanel?.onKeyUp(key)
+      program.focusedPanel?.onKeyUp(key)
     },
 
   })
-
-  pid = 0
-  opts: Record<string, any> = {}
-
-  panels = new Set<Panel>()
-  exitsOnLastPanelClose = true
 
   keymap = new Set<string>()
 
@@ -45,18 +60,14 @@ class Sys {
   set size(s: Size) { this.$size.val = s }
 
   async init() {
-    this.opts = JSON.parse(new URLSearchParams(location.search).get('opts') ?? '{}')
+    program.opts = JSON.parse(new URLSearchParams(location.search).get('opts') ?? '{}')
 
     const [id, w, h, keymap, fontstr] = await this.rpc.call('init', [])
-    this.pid = id
+    program.pid = id
     this.size = { w, h }
     this.$font = $(new Font(fontstr))
 
     keymap.forEach(k => this.keymap.add(k))
-  }
-
-  get focusedPanel() {
-    return [...this.panels].find(p => p.isFocused)
   }
 
   async makePanel(config: {
@@ -76,20 +87,15 @@ class Sys {
     point.val = { x, y }
     const panel = new Panel(this.keymap, port, id, point, root.$.size, config.view)
 
-    this.panels.add(panel)
+    program.panels.add(panel)
     panel.didClose.watch(() => {
-      this.panels.delete(panel)
-      if (this.panels.size === 0 && this.exitsOnLastPanelClose) {
-        this.terminate()
+      program.panels.delete(panel)
+      if (program.panels.size === 0 && program.exitsOnLastPanelClose) {
+        program.terminate()
       }
     })
 
     return panel
-  }
-
-  terminate() {
-    this.rpc.send('terminate', [this.pid])
-    self.close()
   }
 
   endproc(pid: number) {

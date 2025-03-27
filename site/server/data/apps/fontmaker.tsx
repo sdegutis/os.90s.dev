@@ -1,4 +1,4 @@
-import { sys } from "../../../client/core/sys.js"
+import { program, sys } from "../../../client/core/sys.js"
 import { Bitmap } from "/client/core/bitmap.js"
 import { Cursor } from "/client/core/cursor.js"
 import { Font } from "/client/core/font.js"
@@ -14,7 +14,7 @@ import { View } from "/client/views/view.js"
 
 const font = $(sys.font)
 
-let filepath = sys.opts["file"]
+let filepath = program.opts["file"]
 if (filepath) {
   const fontstr = await sys.getfile(filepath)
   if (fontstr) {
@@ -102,7 +102,7 @@ function doMenu() {
       onClick: async () => {
         const path = await showPrompt('file path?')
         if (!path) return
-        sys.launch(sys.opts["app"], path)
+        sys.launch(program.opts["app"], path)
       }
     },
     {

@@ -104,7 +104,11 @@ function FolderItem({ base, name }: { base: string[], name: string }) {
 
 function FileItem({ base, name }: { base: string[], name: string }) {
   return (
-    <button padding={2} onClick={() => handleFile([...base, name].join(''))}>
+    <button padding={2} onClick={(b) => {
+      const path = [...base, name].join('')
+      if (b === 0) handleFile(path)
+      else showMenuForFile(path)
+    }}>
       <groupx gap={2}>
         <border>
           <image bitmap={imgFile} />
@@ -129,4 +133,10 @@ async function handleFile(path: string) {
   else if (path.endsWith('.font')) {
     await sys.launch('sys/apps/fontmaker.js', path)
   }
+}
+
+async function showMenuForFile(path: string) {
+  showMenu(panel.absmouse, [
+    { text: 'edit', onClick: () => { sys.launch('sys/apps/writer.js', path) } },
+  ])
 }
