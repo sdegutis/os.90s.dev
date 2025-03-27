@@ -7,20 +7,20 @@ import { showPrompt } from "/client/util/prompt.js"
 import type { View } from "/client/views/view.js"
 
 const desktop = await Panel.create((
-  <view size={sys.$size.adapt(s => ({ ...s, h: s.h - 8 }))} background={0x333333ff} />
+  <view size={sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x333333ff} />
 ), {
   order: 'bottom',
   pos: $({ x: 0, y: 0 }),
 })
 
 const taskbar = await Panel.create((
-  <spacedx size={sys.$size.adapt(s => ({ ...s, h: 8 }))} background={0x000000dd}>
+  <spacedx size={sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x000000dd}>
     <groupx></groupx>
     <Clock />
   </spacedx>
 ), {
   order: 'top',
-  pos: sys.$size.adapt(s => ({ x: 0, y: s.h - 8 })),
+  pos: sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })),
 })
 
 function Clock() {
@@ -45,7 +45,7 @@ function Clock() {
 
   const udpateTime = () => {
     const d = new Date()
-    time.val = date ? d.toLocaleString() : d.toLocaleTimeString()
+    time.val = (date ? d.toLocaleString() : d.toLocaleTimeString()).toLowerCase()
   }
 
   setInterval(udpateTime, 1000)

@@ -23,6 +23,8 @@ export class Spaced extends View {
   }
 
   override layout(): void {
+    if (this.size.w === 0 || this.size.h === 0) return
+
     const max = this.size[this.dir === 'x' ? 'w' : 'h']
     let combinedWidths = 0
     for (let i = 0; i < this.children.length; i++) {
