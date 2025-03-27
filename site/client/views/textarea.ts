@@ -39,6 +39,9 @@ export class Textarea extends View {
 
   private colors: number[][] = []
 
+  xgap = 0
+  ygap = 0
+
   highlight() {
     this.colors.length = this.lines.length
     for (let i = 0; i < this.lines.length; i++) {
@@ -59,8 +62,8 @@ export class Textarea extends View {
       background: this.cursorColor,
       visible: false,
       size: {
-        w: this.font.cw + this.font.xgap,
-        h: this.font.ch + this.font.ygap,
+        w: this.font.cw + this.xgap,
+        h: this.font.ch + this.ygap,
       }
     })
 
@@ -86,8 +89,8 @@ export class Textarea extends View {
     let x = this.mouse.x - this.label.point.x
     let y = this.mouse.y - this.label.point.y
 
-    const row = Math.floor(y / (this.font.ch + this.font.ygap))
-    const col = Math.floor(x / (this.font.cw + this.font.xgap))
+    const row = Math.floor(y / (this.font.ch + this.ygap))
+    const col = Math.floor(x / (this.font.cw + this.xgap))
 
     this.row = Math.min(row, this.lines.length - 1)
     this.end = this.col = col
@@ -101,9 +104,9 @@ export class Textarea extends View {
   private drawTextLabel(ctx: DrawingContext, panx: number, pany: number) {
     for (let y = 0; y < this.lines.length; y++) {
       const line = this.lines[y]
-      const py = y * this.font.ch + y * this.font.ygap + this.font.ygap / 2
+      const py = y * this.font.ch + y * this.ygap + this.ygap / 2
       for (let x = 0; x < line.length; x++) {
-        const px = x * this.font.cw + x * this.font.xgap
+        const px = x * this.font.cw + x * this.xgap
         this.font.print(ctx, panx + px, pany + py, this.colors[y][x], line[x])
       }
     }
@@ -119,16 +122,16 @@ export class Textarea extends View {
     }
     cols++
     this.label.size = {
-      w: (cols * this.font.cw) + (cols * this.font.xgap),
-      h: (rows * this.font.ch) + (rows * this.font.ygap),
+      w: (cols * this.font.cw) + (cols * this.xgap),
+      h: (rows * this.font.ch) + (rows * this.ygap),
     }
     this.size = this.label.size
   }
 
   private reflectCursorPos() {
     this._cursor.point = {
-      x: this.col * (this.font.cw + this.font.xgap),
-      y: this.row * (this.font.ch + this.font.ygap),
+      x: this.col * (this.font.cw + this.xgap),
+      y: this.row * (this.font.ch + this.ygap),
     }
   }
 

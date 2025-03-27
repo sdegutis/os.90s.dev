@@ -6,8 +6,6 @@ export class Font {
   spr: Bitmap
   cw: number
   ch: number
-  xgap = 0
-  ygap = 0
 
   constructor(data: string) {
     this.spr = Bitmap.fromString(data)
@@ -33,8 +31,8 @@ export class Font {
       const sx = ci % 16 * this.cw
       const sy = Math.floor(ci / 16) * this.ch
 
-      const px = x + (posx * (this.cw + this.xgap))
-      const py = y + (posy * (this.ch + this.ygap))
+      const px = x + (posx * this.cw)
+      const py = y + (posy * this.ch)
 
       ctx.drawImagePortion(this.spr.canvas, sx, sy, this.cw, this.ch, px, py, this.cw, this.ch)
 
@@ -50,8 +48,8 @@ export class Font {
       if (line.length > cols) cols = line.length
     }
     return {
-      w: (cols * this.cw) + ((cols - 1) * this.xgap),
-      h: (rows * this.ch) + ((rows - 1) * this.ygap),
+      w: (cols * this.cw) + (cols - 1),
+      h: (rows * this.ch) + (rows - 1),
     }
   }
 
