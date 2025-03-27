@@ -1,4 +1,4 @@
-import { Size } from "../core/types.js"
+import type { Size } from "/client/core/types.js"
 import { View } from "/client/views/view.js"
 
 export class Group extends View {

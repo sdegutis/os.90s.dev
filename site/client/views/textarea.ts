@@ -1,5 +1,5 @@
-import { DrawingContext } from "../core/drawing.js"
-import { Font, crt34 } from "../core/font.js"
+import type { DrawingContext } from "/client/core/drawing.js"
+import { type Font, crt34 } from "/client/core/font.js"
 import { Scroll } from "/client/views/scroll.js"
 import { View } from "/client/views/view.js"
 

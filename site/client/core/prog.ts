@@ -1,7 +1,7 @@
-import { $, Ref } from "./ref.js"
-import { ClientProgram, PanelOrdering, ServerProgram, wRPC } from "./rpc.js"
-import { Point, Size } from "./types.js"
 import { Panel } from "/client/core/panel.js"
+import { $, Ref } from "/client/core/ref.js"
+import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "/client/core/rpc.js"
+import type { Point, Size } from "/client/core/types.js"
 import { exec } from "/swc/vm.js"
 
 class Program {

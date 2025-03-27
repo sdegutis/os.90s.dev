@@ -1,10 +1,10 @@
-import { DrawingContext } from "../client/core/drawing.js"
-import { crt34 } from "../client/core/font.js"
-import { $ } from "../client/core/ref.js"
+import { Cursor } from "/client/core/cursor.js"
+import { DrawingContext } from "/client/core/drawing.js"
+import { crt34 } from "/client/core/font.js"
+import { $ } from "/client/core/ref.js"
 import { Panel } from "/server/panel.js"
 import { Process } from "/server/process.js"
 import { setupCanvas } from "/server/util/canvas.js"
-import { Cursor } from "/shared/cursor.js"
 
 export class Sys {
 

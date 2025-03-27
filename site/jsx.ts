@@ -1,4 +1,4 @@
-import { Ref } from "./client/core/ref.js"
+import { Ref } from "/client/core/ref.js"
 import { primitives } from "/client/views/index.js"
 import { View } from "/client/views/view.js"
 

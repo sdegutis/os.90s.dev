@@ -1,5 +1,5 @@
-import { Listener } from "../../client/core/listener.js"
-import { Drive, DriveNotificationType } from "/server/fs/drive.js"
+import { Listener } from "/client/core/listener.js"
+import type { Drive, DriveNotificationType } from "/server/fs/drive.js"
 import { MountedDrive } from "/server/fs/mountfs.js"
 import { SysDrive } from "/server/fs/sysfs.js"
 import { UserDrive } from "/server/fs/userfs.js"

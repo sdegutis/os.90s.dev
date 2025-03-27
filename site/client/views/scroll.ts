@@ -1,4 +1,4 @@
-import { $, multiplex } from "../core/ref.js"
+import { $, multiplex } from "/client/core/ref.js"
 import { xresize, yresize } from "/client/util/cursors.js"
 import { dragMove } from "/client/util/drag.js"
 import { Button } from "/client/views/button.js"

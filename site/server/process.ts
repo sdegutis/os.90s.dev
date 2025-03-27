@@ -1,8 +1,8 @@
-import { ClientProgram, ServerProgram, wRPC } from "../client/core/rpc.js"
+import type { Cursor } from "/client/core/cursor.js"
+import { wRPC, type ClientProgram, type ServerProgram } from "/client/core/rpc.js"
 import { fs } from "/server/fs/fs.js"
 import { Panel } from "/server/panel.js"
-import { Sys } from "/server/sys.js"
-import { Cursor } from "/shared/cursor.js"
+import type { Sys } from "/server/sys.js"
 
 export class Process {
 

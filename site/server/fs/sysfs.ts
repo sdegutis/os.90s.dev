@@ -1,5 +1,5 @@
 import { files } from "/server/fs/data.js"
-import { Drive, DriveItem, DriveNotificationType } from "/server/fs/drive.js"
+import type { Drive, DriveItem, DriveNotificationType } from "/server/fs/drive.js"
 
 export class SysDrive implements Drive {
 

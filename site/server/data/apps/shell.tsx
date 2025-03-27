@@ -1,10 +1,10 @@
-import { $ } from "../../../client/core/ref.js"
 import { Panel } from "/client/core/panel.js"
 import { program } from "/client/core/prog.js"
+import { $ } from "/client/core/ref.js"
 import { showDialog } from "/client/util/dialog.js"
 import { showMenu } from "/client/util/menu.js"
 import { showPrompt } from "/client/util/prompt.js"
-import { View } from "/client/views/view.js"
+import type { View } from "/client/views/view.js"
 
 const desktop = await Panel.create((
   <view size={program.$size.adapt(s => ({ ...s, h: s.h - 8 }))} background={0x333333ff} />

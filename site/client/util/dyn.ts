@@ -1,4 +1,4 @@
-import { $, Ref } from "../core/ref.js"
+import { $, Ref } from "/client/core/ref.js"
 
 export class Dynamic {
 

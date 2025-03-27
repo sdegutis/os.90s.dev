@@ -1,7 +1,7 @@
-import { $ } from "../core/ref.js"
-import { Point } from "../core/types.js"
 import { Panel } from "/client/core/panel.js"
 import { program } from "/client/core/prog.js"
+import { $ } from "/client/core/ref.js"
+import type { Point } from "/client/core/types.js"
 
 export type MenuItem = { text: string, onClick(): void } | '-'
 

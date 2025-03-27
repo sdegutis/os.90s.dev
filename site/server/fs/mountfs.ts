@@ -1,4 +1,4 @@
-import { Drive, DriveFile, DriveFolder, DriveNotificationType } from "/server/fs/drive.js"
+import type { Drive, DriveFile, DriveFolder, DriveNotificationType } from "/server/fs/drive.js"
 
 type MountedFile = DriveFile & { handle: FileSystemFileHandle }
 type MountedFolder = DriveFolder & { handle: FileSystemDirectoryHandle }

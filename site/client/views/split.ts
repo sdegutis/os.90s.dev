@@ -1,5 +1,5 @@
-import { DrawingContext } from "../core/drawing.js"
-import { $ } from "../core/ref.js"
+import type { DrawingContext } from "/client/core/drawing.js"
+import { $ } from "/client/core/ref.js"
 import { xresize, yresize } from "/client/util/cursors.js"
 import { dragMove } from "/client/util/drag.js"
 import { View } from "/client/views/view.js"

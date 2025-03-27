@@ -1,5 +1,5 @@
-import { $ } from "../../../client/core/ref.js"
 import { Panel } from "/client/core/panel.js"
+import { $ } from "/client/core/ref.js"
 import { PanelView } from "/client/util/panelview.js"
 
 const TEST = `

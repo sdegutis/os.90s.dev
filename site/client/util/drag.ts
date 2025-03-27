@@ -1,5 +1,5 @@
-import { Ref } from "../core/ref.js"
-import { Point, Size } from "../core/types.js"
+import type { Ref } from "/client/core/ref.js"
+import type { Point, Size } from "/client/core/types.js"
 
 export function dragMove(anchor: Ref<Point>, o: Ref<Point>) {
   const start = o.val
