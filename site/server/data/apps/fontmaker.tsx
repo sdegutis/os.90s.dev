@@ -94,46 +94,59 @@ const rebuild = debounce(rebuildNow)
 
 rebuildNow()
 
-function doMenu() {
-  return [
-    {
-      text: 'load file',
-      onClick: async () => {
-        const path = await showPrompt('file path?')
-        if (!path) return
-        sys.launch(program.opts["app"], path)
-      }
-    },
-    {
-      text: 'save as',
-      onClick: async () => {
-        const path = await showPrompt('file path?')
-        if (!path) return
-        filepath.val = path
-        sys.putfile(filepath.val, fontsrc)
-      }
-    },
-    {
-      text: 'save',
-      onClick: async () => {
-        sys.putfile(filepath.val, fontsrc)
-      }
-    },
-  ]
-}
-
-function FilePanelView({ filepath, title, ...data }: Parameters<typeof PanelView>[0] & {
+function FilePanelView({ filepath, title, menuItems, ...data }: Parameters<typeof PanelView>[0] & {
   filepath: Ref<string | undefined>,
 }) {
+  const fileMenu = () => {
+    const items = menuItems?.() ?? []
+    if (items.length > 0) {
+      items.push('-')
+    }
+
+    async function askFilePath() {
+      return await showPrompt('file path?') ?? undefined
+    }
+
+    items.push(
+      {
+        text: 'load...',
+        onClick: async () => {
+          const path = await showPrompt('file path?')
+          if (!path) return
+          sys.launch(program.opts["app"], path)
+        }
+      },
+      {
+        text: 'save as...',
+        onClick: async () => {
+          const path = await askFilePath()
+          if (!path) return
+          filepath.val = path
+          sys.putfile(filepath.val, fontsrc)
+        }
+      },
+      {
+        text: 'save',
+        onClick: async () => {
+          if (!filepath.val) filepath.val = await askFilePath()
+          if (!filepath.val) return
+          sys.putfile(filepath.val, fontsrc)
+        }
+      },
+    )
+
+    return items
+  }
+
   const filetitle = multiplex([filepath, title], () => {
     return `${title.val}: ${filepath.val ?? '[no file]'}`
   })
 
-  return <PanelView title={filetitle} {...data} />
+  return <PanelView title={filetitle} {...data} menuItems={fileMenu} />
 }
 
 const panel = await Panel.create(
-  <FilePanelView filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })} menuItems={doMenu}>
+  <FilePanelView filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })}>
     <panedyb>
       <scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <border padding={zoom}>
