@@ -35,7 +35,7 @@ class Sys {
     },
 
     ping: (reply, n) => {
-      reply([n % 2 === 0 ? n + 2 : n + 1], [])
+      reply([n % 2 === 0 ? n + 2 : n + 1])
     },
 
     keydown: (key) => {

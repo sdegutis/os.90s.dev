@@ -38,7 +38,7 @@ export class Process {
       init: (reply) => {
         this.ready.resolve()
         const fontstr = fs.get('sys/data/crt34.font')!
-        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], fontstr], [])
+        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], fontstr])
       },
 
       newpanel: (reply, ord, x, y, w, h) => {
@@ -61,12 +61,12 @@ export class Process {
             watcher2()
           }
         }
-        reply([], [])
+        reply([])
       },
 
       launch: async (reply, path, opts) => {
         const pid = await this.sys.launch(path, opts)
-        reply([pid], [])
+        reply([pid])
       },
 
       terminate: (pid) => {
@@ -79,30 +79,30 @@ export class Process {
 
       getfile: (reply, path) => {
         const content = fs.get(path)
-        reply([content], [])
+        reply([content])
       },
 
       putfile: (reply, path, content) => {
         fs.put(path, content)
-        reply([], [])
+        reply([])
       },
 
       listdrives: (reply) => {
-        reply(fs.drives(), [])
+        reply(fs.drives())
       },
 
       listdir: (reply, path) => {
-        reply(fs.list(path), [])
+        reply(fs.list(path))
       },
 
       mount: async (reply, name) => {
         await fs.mount(name)
-        reply([], [])
+        reply([])
       },
 
       unmount: async (reply, name) => {
         fs.unmount(name)
-        reply([], [])
+        reply([])
       },
 
     })

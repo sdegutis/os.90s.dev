@@ -52,7 +52,7 @@ export interface ClientPanel {
 
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }
 
-type Reply<A> = (data: A, ts: Transferable[]) => void
+type Reply<A> = (data: A, ts?: Transferable[]) => void
 type Handler<T extends (...args: any) => any> = T extends (...args: infer A) => Promise<infer R> ? (reply: Reply<R>, ...args: A) => void : T
 type Handlers<T extends EventMap<T>> = { [K in keyof T]: Handler<T[K]> }
 
@@ -77,8 +77,8 @@ export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
         return
       }
 
-      if (cid > 0) args.unshift((data: any[], transfer: Transferable[]) => {
-        port.postMessage([...data, -cid], { transfer })
+      if (cid > 0) args.unshift((data: any[], transfer?: Transferable[]) => {
+        port.postMessage([...data, -cid], transfer ? { transfer } : undefined)
       })
 
       const name = args.pop() as keyof In
