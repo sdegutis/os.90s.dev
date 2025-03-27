@@ -1,6 +1,6 @@
+import { DrawingContext } from "../core/drawing.js"
 import { Font, crt34 } from "../core/font.js"
 import { View } from "/client/views/view.js"
-import { DrawingContext } from "/shared/drawing.js"
 
 export class Label extends View {
 

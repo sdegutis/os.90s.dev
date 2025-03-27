@@ -1,7 +1,7 @@
+import { DrawingContext } from "../core/drawing.js"
 import { Font, crt34 } from "../core/font.js"
 import { Scroll } from "/client/views/scroll.js"
 import { View } from "/client/views/view.js"
-import { DrawingContext } from "/shared/drawing.js"
 
 export class Textarea extends View {
 

@@ -1,5 +1,5 @@
+import { DrawingContext } from "../core/drawing.js"
 import { View } from "/client/views/view.js"
-import { DrawingContext } from "/shared/drawing.js"
 
 export class Margin extends View {
 
