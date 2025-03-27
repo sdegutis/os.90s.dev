@@ -34,7 +34,11 @@ async function showDir(base: string[], dir: string) {
   const results = await program.listdir(full.join(''))
 
   if (results.length === 0) {
-    $entries.val = [<label text={'[empty]'} textColor={0xffffff77} />]
+    $entries.val = [
+      <border padding={2}>
+        <label text={'[empty]'} textColor={0xffffff77} />
+      </border>
+    ]
     return
   }
 
@@ -46,7 +50,7 @@ async function showDir(base: string[], dir: string) {
 }
 
 const imgFolder = new Bitmap([0x990000ff], 1, [1])
-const imgFile = new Bitmap([0x990000ff], 1, [1])
+const imgFile = new Bitmap([0x009900ff], 1, [1])
 
 function FolderItem({ base, item }: { base: string[], item: FolderItem }) {
   return (
