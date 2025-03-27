@@ -1,4 +1,3 @@
-import { pointEquals } from "../../../shared/types.js"
 import { Panel } from "/client/core/panel.js"
 import { dragMove } from "/client/util/drag.js"
 import { showMenu } from "/client/util/menu.js"
@@ -9,6 +8,7 @@ import { Bitmap } from "/shared/bitmap.js"
 import { Cursor } from "/shared/cursor.js"
 import { crt34, Font } from "/shared/font.js"
 import { $, multiplex, Ref } from "/shared/ref.js"
+import { pointEquals } from "/shared/types.js"
 
 const SAMPLE_TEXT = [
   "how quickly daft jumping zebras vex!",

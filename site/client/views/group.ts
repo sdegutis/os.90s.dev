@@ -1,5 +1,5 @@
-import type { Size } from "../../shared/types.js"
-import { View } from "./view.js"
+import { View } from "/client/views/view.js"
+import { Size } from "/shared/types.js"
 
 export class Group extends View {
 

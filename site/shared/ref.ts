@@ -1,4 +1,4 @@
-import { Listener } from "./listener.js"
+import { Listener } from "/shared/listener.js"
 
 export type Equals<T> = (a: T, b: T) => boolean
 

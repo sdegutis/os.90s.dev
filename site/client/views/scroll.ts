@@ -1,9 +1,9 @@
-import { $, multiplex } from "../../shared/ref.js"
-import { xresize, yresize } from "../util/cursors.js"
-import { dragMove } from "../util/drag.js"
-import { Button } from "./button.js"
-import { PanedXB, PanedYB } from "./paned.js"
-import { View } from "./view.js"
+import { xresize, yresize } from "/client/util/cursors.js"
+import { dragMove } from "/client/util/drag.js"
+import { Button } from "/client/views/button.js"
+import { PanedXB, PanedYB } from "/client/views/paned.js"
+import { View } from "/client/views/view.js"
+import { $, multiplex } from "/shared/ref.js"
 
 export class Scroll extends View {
 

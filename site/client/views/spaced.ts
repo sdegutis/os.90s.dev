@@ -1,4 +1,4 @@
-import { View } from "./view.js"
+import { View } from "/client/views/view.js"
 
 export class Spaced extends View {
 

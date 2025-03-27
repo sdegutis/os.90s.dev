@@ -1,4 +1,4 @@
-import initSwc, { transformSync } from "./wasm.js"
+import initSwc, { transformSync } from "/swc/wasm.js"
 
 await initSwc()
 

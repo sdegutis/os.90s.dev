@@ -1,5 +1,5 @@
-import { Panel } from "../core/panel.js"
-import { dragMove } from "./drag.js"
+import { Panel } from "/client/core/panel.js"
+import { dragMove } from "/client/util/drag.js"
 
 export async function showDialog(text: string) {
   const result = Promise.withResolvers<boolean>()

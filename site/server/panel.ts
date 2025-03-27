@@ -1,10 +1,10 @@
-import { Cursor } from "../shared/cursor.js"
-import { DrawingContext } from "../shared/drawing.js"
-import { crt34 } from "../shared/font.js"
-import { Listener } from "../shared/listener.js"
-import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../shared/rpc.js"
-import type { Process } from "./process.js"
-import type { Sys } from "./sys.js"
+import { Process } from "/server/process.js"
+import { Sys } from "/server/sys.js"
+import { Cursor } from "/shared/cursor.js"
+import { DrawingContext } from "/shared/drawing.js"
+import { crt34 } from "/shared/font.js"
+import { Listener } from "/shared/listener.js"
+import { ClientPanel, PanelOrdering, ServerPanel, wRPC } from "/shared/rpc.js"
 
 type Rect = { x: number, y: number, w: number, h: number }
 

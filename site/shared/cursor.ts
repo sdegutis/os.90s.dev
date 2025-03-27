@@ -1,5 +1,5 @@
-import { Bitmap } from "./bitmap.js"
-import { DataFile } from "./datafile.js"
+import { Bitmap } from "/shared/bitmap.js"
+import { DataFile } from "/shared/datafile.js"
 
 export class Cursor {
 

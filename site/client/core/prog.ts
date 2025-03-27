@@ -1,8 +1,8 @@
-import { $, type Ref } from "../../shared/ref.js"
-import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "../../shared/rpc.js"
-import type { Point, Size } from "../../shared/types.js"
-import { exec } from "../../swc/vm.js"
-import { Panel } from "./panel.js"
+import { Panel } from "/client/core/panel.js"
+import { $, Ref } from "/shared/ref.js"
+import { ClientProgram, PanelOrdering, ServerProgram, wRPC } from "/shared/rpc.js"
+import { Point, Size } from "/shared/types.js"
+import { exec } from "/swc/vm.js"
 
 class Program {
 

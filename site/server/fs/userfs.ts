@@ -1,5 +1,5 @@
-import { opendb } from "../util/db.js"
-import type { Drive, DriveItem, DriveNotificationType } from "./drive.js"
+import { Drive, DriveItem, DriveNotificationType } from "/server/fs/drive.js"
+import { opendb } from "/server/util/db.js"
 
 export class UserDrive implements Drive {
 

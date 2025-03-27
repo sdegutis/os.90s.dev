@@ -3,7 +3,7 @@ import { program } from "/client/core/prog.js"
 import { showDialog } from "/client/util/dialog.js"
 import { showMenu } from "/client/util/menu.js"
 import { showPrompt } from "/client/util/prompt.js"
-import type { View } from "/client/views/view.js"
+import { View } from "/client/views/view.js"
 import { $ } from "/shared/ref.js"
 
 const desktop = await Panel.create((
