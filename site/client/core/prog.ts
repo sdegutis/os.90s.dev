@@ -1,6 +1,6 @@
+import { ClientProgram, PanelOrdering, ServerProgram, wRPC } from "./rpc.js"
 import { Panel } from "/client/core/panel.js"
 import { $, Ref } from "/shared/ref.js"
-import { ClientProgram, PanelOrdering, ServerProgram, wRPC } from "/shared/rpc.js"
 import { Point, Size } from "/shared/types.js"
 import { exec } from "/swc/vm.js"
 
