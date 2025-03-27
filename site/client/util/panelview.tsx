@@ -2,6 +2,7 @@ import { Bitmap } from "/client/core/bitmap.js"
 import { Cursor } from "/client/core/cursor.js"
 import type { Panel } from "/client/core/panel.js"
 import { $, Ref } from "/client/core/ref.js"
+import { sys } from "/client/core/sys.js"
 import type { Size } from "/client/core/types.js"
 import { dragMove, dragResize } from "/client/util/drag.js"
 import type { ImageView } from "/client/views/image.js"
@@ -37,7 +38,7 @@ export function PanelView(data: {
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
 
   function titleBarMouseDown(this: SpacedX, button: number) {
-    this.onMouseUp = dragMove(panel.$absmouse, panel.$point)
+    this.onMouseUp = dragMove(sys.$mouse, panel.$point)
   }
 
   function minw() { /* panel.min() */ }

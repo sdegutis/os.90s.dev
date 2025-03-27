@@ -2,7 +2,7 @@ import { sys } from "./sys.js"
 import type { Cursor } from "/client/core/cursor.js"
 import { DrawingContext } from "/client/core/drawing.js"
 import { Listener } from "/client/core/listener.js"
-import { type Ref, $, multiplex } from "/client/core/ref.js"
+import { type Ref, multiplex } from "/client/core/ref.js"
 import { type ClientPanel, type PanelOrdering, type ServerPanel, wRPC } from "/client/core/rpc.js"
 import type { Point, Size } from "/client/core/types.js"
 import { debounce } from "/client/util/throttle.js"
@@ -19,10 +19,6 @@ export class Panel {
   readonly $size: Ref<Size>
   get size() { return this.$size.val }
   set size(s: Size) { this.$size.val = s }
-
-  readonly $absmouse: Ref<Point> = $({ x: 0, y: 0 })
-  get absmouse() { return this.$absmouse.val }
-  set absmouse(p: Point) { this.$absmouse.val = p }
 
   readonly $mouse: Ref<Point>
   get mouse() { return this.$mouse.val }
@@ -58,9 +54,9 @@ export class Panel {
     this.$point = point
     this.$size = size
 
-    this.$mouse = multiplex([this.$absmouse, this.$point], () => ({
-      x: this.absmouse.x - this.point.x,
-      y: this.absmouse.y - this.point.y,
+    this.$mouse = multiplex([sys.$mouse, this.$point], () => ({
+      x: sys.mouse.x - this.point.x,
+      y: sys.mouse.y - this.point.y,
     }))
 
     this.ctx.canvas.width = size.val.w
@@ -107,7 +103,7 @@ export class Panel {
       },
 
       mousemoved: (x, y) => {
-        this.absmouse = { x, y }
+        sys.mouse = { x, y }
         this.checkUnderMouse()
 
         const sendto = this.clicking ?? this.hovered

@@ -1,5 +1,6 @@
 import { Panel } from "/client/core/panel.js"
 import { multiplex } from "/client/core/ref.js"
+import { sys } from "/client/core/sys.js"
 import { dragMove } from "/client/util/drag.js"
 import type { Textarea } from "/client/views/textarea.js"
 
@@ -47,7 +48,7 @@ export async function showPrompt(text: string) {
       return true
     }}
     onMouseDown={function (b) {
-      this.onMouseUp = dragMove(panel.$absmouse, panel.$point)
+      this.onMouseUp = dragMove(sys.$mouse, panel.$point)
     }}
     background={0x000000cc} padding={1} paddingColor={0x005599ff}>
     <border padding={3}>

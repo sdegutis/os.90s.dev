@@ -23,7 +23,7 @@ async function refreshDrives() {
           await sys.unmount(d)
           refreshDrives()
         }
-        showMenu(panel.absmouse, [
+        showMenu(sys.mouse, [
           { text: 'unmount', onClick: unmount }
         ])
       }
@@ -136,7 +136,7 @@ async function handleFile(path: string) {
 }
 
 async function showMenuForFile(path: string) {
-  showMenu(panel.absmouse, [
+  showMenu(sys.mouse, [
     { text: 'edit', onClick: () => { sys.launch('sys/apps/writer.js', path) } },
   ])
 }

@@ -1,4 +1,5 @@
 import { Panel } from "/client/core/panel.js"
+import { sys } from "/client/core/sys.js"
 import { dragMove } from "/client/util/drag.js"
 
 export async function showDialog(text: string) {
@@ -17,7 +18,7 @@ export async function showDialog(text: string) {
       return true
     }}
     onMouseDown={function (b) {
-      this.onMouseUp = dragMove(panel.$absmouse, panel.$point)
+      this.onMouseUp = dragMove(sys.$mouse, panel.$point)
     }}
     background={0x000000cc} padding={1} paddingColor={0x005599ff}>
     <border padding={3}>

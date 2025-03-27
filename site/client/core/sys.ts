@@ -51,6 +51,10 @@ class Sys {
 
   keymap = new Set<string>()
 
+  readonly $mouse: Ref<Point> = $({ x: 0, y: 0 })
+  get mouse() { return this.$mouse.val }
+  set mouse(p: Point) { this.$mouse.val = p }
+
   $font!: Ref<Font>
   get font() { return this.$font.val }
   set font(f: Font) { this.$font.val = f }
