@@ -64,9 +64,9 @@ export function PanelView(data: {
       onPanelBlur={() => focused.val = false}
       background={0x111111ff}
     >
-      <panedya gap={-1}>
+      <panedya gap={-0}>
 
-        <spacedx canMouse onMouseDown={titleBarMouseDown}>
+        <spacedx canMouse onMouseDown={titleBarMouseDown} background={0x1199ff33}>
           <border>
             <groupx gap={1}>
               <button onClick={function () {
@@ -88,7 +88,7 @@ export function PanelView(data: {
           </border>
         </spacedx>
 
-        <margin padding={1}>
+        <margin padding={0}>
           <margin background={0x222222ff}>
             {data.children}
           </margin>
