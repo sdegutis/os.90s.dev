@@ -96,6 +96,14 @@ class Program {
     this.rpc.send('resize', [w, h])
   }
 
+  async listdir(path: string) {
+    return await this.rpc.call('listdir', [path])
+  }
+
+  async getfile(path: string) {
+    return await this.rpc.call('getfile', [path])
+  }
+
 }
 
 export const program = new Program()

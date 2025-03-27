@@ -45,17 +45,26 @@ export class Process {
         p.didRedraw.watch(() => sys.redrawAllPanels())
       },
 
-      getfile: (reply, path) => {
-        const content = fs.get(path)
-        reply([content], [])
-      },
-
       terminate: () => {
         this.terminate()
       },
 
       resize: (w, h) => {
         sys.resize(w, h)
+      },
+
+      getfile: (reply, path) => {
+        const content = fs.get(path)
+        reply([content], [])
+      },
+
+      listdir: (reply, path) => {
+        if (path === '') {
+          reply(fs.drives().map(name => ({ name, type: 'folder' })), [])
+        }
+        else {
+          reply(fs.list(path), [])
+        }
       },
 
     })

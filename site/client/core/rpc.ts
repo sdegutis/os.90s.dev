@@ -1,3 +1,5 @@
+import type { DriveItem } from "/server/fs/drive.js"
+
 export type PanelOrdering = 'normal' | 'bottom' | 'top'
 
 export interface ServerProgram {
@@ -5,7 +7,9 @@ export interface ServerProgram {
   newpanel(ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, x: number, y: number, port: MessagePort]>
   terminate(): void
   resize(w: number, h: number): void
+
   getfile(path: string): Promise<[content: string | undefined]>
+  listdir(path: string): Promise<DriveItem[]>,
 }
 
 export interface ClientProgram {
