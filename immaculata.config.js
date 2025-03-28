@@ -1,6 +1,42 @@
 import * as swc from '@swc/core'
 import fs from 'fs'
 import { processFile } from "immaculata"
+import * as babelparser from '@babel/parser'
+import _babeltraverser from '@babel/traverse'
+
+/** @type {typeof _babeltraverser} */
+const babeltraverser = _babeltraverser.default
+
+function getexports(allids, src) {
+  const node = babelparser.parse(src, {
+    sourceType: 'module',
+    plugins: ['typescript', 'jsx'],
+  })
+  const ids = []
+  babeltraverser(node, {
+    ExportNamedDeclaration: {
+      enter: (path) => {
+        if (path.node.exportKind === 'type') return
+        const d = path.node.declaration
+        if (d.type === 'VariableDeclaration') {
+          ids.push(...d.declarations.map(d => d.id.name))
+        }
+        else {
+          ids.push(d.id.name)
+        }
+      },
+    }
+  })
+
+  for (const id of ids) {
+    if (allids.has(id)) {
+      console.warn('dup export', id)
+    }
+    allids.add(id)
+  }
+
+  return ids
+}
 
 const swc1 = fs.readFileSync('node_modules/@swc/wasm-web/wasm.js')
 const swc2 = fs.readFileSync('node_modules/@swc/wasm-web/wasm_bg.wasm')
@@ -16,10 +52,21 @@ const ext = (s) => s.match(/\.([^\/]+)$/)?.[1] ?? ''
 export const jsxPathBrowser = '/jsx.ts'
 
 export default (({ inFiles, outFiles }) => {
+  const allids = new Set()
   const files = [...inFiles]
 
   files.push({ path: '/swc/wasm.js', content: swc1 })
   files.push({ path: '/swc/wasm_bg.wasm', content: swc2 })
+
+  const clientfiles = (files
+    .filter(f => f.path.startsWith('/client/'))
+    .map(f => {
+      const ids = getexports(allids, f.module.source)
+      return `import { ${ids.join(', ')} } from "${f.path}"`
+    })
+    .join('\n'))
+
+  files.push({ path: '/prelude.js', content: clientfiles })
 
   const sysdata = JSON.stringify(Object.fromEntries(files
     .filter(f => f.path.startsWith('/fs/sys'))

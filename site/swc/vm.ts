@@ -4,7 +4,7 @@ const ready = initSwc()
 
 export async function compile(tsx: string) {
   await ready
-  return transformSync(tsx, {
+  const transformed = transformSync(tsx, {
     isModule: true,
     jsc: {
       externalHelpers: false,
@@ -17,5 +17,6 @@ export async function compile(tsx: string) {
         },
       }
     }
-  }).code.replace('/@imlib/jsx-runtime', '/jsx.js')
+  }).code
+  return transformed.replace('/@imlib/jsx-runtime', '/jsx.js')
 }

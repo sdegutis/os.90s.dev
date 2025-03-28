@@ -1,11 +1,12 @@
-import { sys } from "../../../client/core/sys.js"
-import { Bitmap } from "/client/core/bitmap.js"
-import { Panel } from "/client/core/panel.js"
-import { $ } from "/client/core/ref.js"
-import { showMenu } from "/client/util/menu.js"
-import { PanelView } from "/client/util/panelview.js"
-import { showPrompt } from "/client/util/prompt.js"
-import type { View } from "/client/views/view.js"
+// @ts-nocheck
+// import { sys } from "../../../client/core/sys.js"
+// import { Bitmap } from "/client/core/bitmap.js"
+// import { Panel } from "/client/core/panel.js"
+// import { $ } from "/client/core/ref.js"
+// import { showMenu } from "/client/util/menu.js"
+// import { PanelView } from "/client/util/panelview.js"
+// import { showPrompt } from "/client/util/prompt.js"
+// import type { View } from "/client/views/view.js"
 
 const $drives = $<View[]>([])
 
