@@ -37,6 +37,7 @@
     // "skipLibCheck": true,
   },
   "exclude": [
-    "types.d.ts"
+    "types.d.ts",
+    "./**/*.d.ts"
   ]
 }
