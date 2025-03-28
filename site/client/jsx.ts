@@ -28,6 +28,7 @@ declare global {
     type Element = View
 
     type ElementType =
+      | string
       | (new (config?: any) => any)
       | ((data: any) => JSX.Element)
 
