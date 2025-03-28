@@ -1,6 +1,10 @@
 import { opendb } from "../../client/util/db.js"
 import type { Drive, DriveItem, DriveNotificationType } from "/server/fs/drive.js"
 
+export async function openUserDb() {
+  return await opendb<{ path: string, content?: string }>('idbfs', 'path')
+}
+
 export class UserDrive implements Drive {
 
   db!: Awaited<ReturnType<typeof opendb<{ path: string, content?: string }>>>
@@ -9,7 +13,7 @@ export class UserDrive implements Drive {
 
   async mount(notify: (type: DriveNotificationType, path: string) => void) {
     this.notify = notify
-    this.db = await opendb<{ path: string, content?: string }>('idbfs', 'path')
+    this.db = await openUserDb()
 
     for (const { path, content } of await this.db.all()) {
       if (path.endsWith('/')) {
