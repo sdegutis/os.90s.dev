@@ -83,10 +83,10 @@ function rebuildNow() {
 
 const panel = await Panel.create(
   <FilePanelView filedata={() => fontsrc} filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })}>
-    <panedyb>
-      <scroll draw={makeStripeDrawer()} background={0xffffff11}>
-        <border padding={zoom}>
-          <grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map((ch, index) =>
+    <PanedYB>
+      <Scroll draw={makeStripeDrawer()} background={0xffffff11}>
+        <Border padding={zoom}>
+          <Grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map((ch, index) =>
             <CharView
               spots={sheet[index]}
               drew={spots => {
@@ -100,36 +100,36 @@ const panel = await Panel.create(
               hover={ch => current.val = ch}
             />
           )} />
-        </border>
-      </scroll>
-      <border padding={2} canMouse onWheel={(x, y) => zoom.val += -y / 100}>
-        <groupy align='a' gap={4}>
-          <textarea autofocus font={font} text={'sample text goes here (you can type in it)'} />
-          <label text={SAMPLE_TEXT} font={font} />
-          <groupx gap={7}>
-            <groupx gap={2}>
-              <label textColor={0xffffff33} text='width' />
-              <label textColor={0xffff00cc} text={width.adapt(n => n.toString().padStart(2, ' '))} />
+        </Border>
+      </Scroll>
+      <Border padding={2} canMouse onWheel={(x, y) => zoom.val += -y / 100}>
+        <GroupY align='a' gap={4}>
+          <Textarea autofocus font={font} text={'sample text goes here (you can type in it)'} />
+          <Label text={SAMPLE_TEXT} font={font} />
+          <GroupX gap={7}>
+            <GroupX gap={2}>
+              <Label textColor={0xffffff33} text='width' />
+              <Label textColor={0xffff00cc} text={width.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={width} min={1} max={12} />
-            </groupx>
-            <groupx gap={2}>
-              <label textColor={0xffffff33} text='height' />
-              <label textColor={0xffff00cc} text={height.adapt(n => n.toString().padStart(2, ' '))} />
+            </GroupX>
+            <GroupX gap={2}>
+              <Label textColor={0xffffff33} text='height' />
+              <Label textColor={0xffff00cc} text={height.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={height} min={1} max={12} />
-            </groupx>
-            <groupx gap={2}>
-              <label textColor={0xffffff33} text='zoom' />
-              <label textColor={0xffff00cc} text={zoom.adapt(n => n.toString().padStart(2, ' '))} />
+            </GroupX>
+            <GroupX gap={2}>
+              <Label textColor={0xffffff33} text='zoom' />
+              <Label textColor={0xffff00cc} text={zoom.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={zoom} min={zoommin} max={zoommax} />
-            </groupx>
-            <groupx gap={2}>
-              <label textColor={0xffffff33} text='hover' />
-              <label textColor={0xffff00cc} text={current} />
-            </groupx>
-          </groupx>
-        </groupy>
-      </border>
-    </panedyb>
+            </GroupX>
+            <GroupX gap={2}>
+              <Label textColor={0xffffff33} text='hover' />
+              <Label textColor={0xffff00cc} text={current} />
+            </GroupX>
+          </GroupX>
+        </GroupY>
+      </Border>
+    </PanedYB>
   </FilePanelView>
 )
 
@@ -148,7 +148,7 @@ function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number 
   $per.intercept(per => Math.max(0, Math.min(per, 1)))
   $per.watch(per => val.val = Math.round(per * (max - min) + min))
 
-  const knob = <image bitmap={knobImage} point={$per.adapt(per => ({ x: Math.round(per * (w - kw)), y: 0 }))} />
+  const knob = <ImageView bitmap={knobImage} point={$per.adapt(per => ({ x: Math.round(per * (w - kw)), y: 0 }))} />
 
   const onMouseDown = function (this: View): void {
     const $movepoint = $(knob.point)
@@ -156,10 +156,10 @@ function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number 
     this.onMouseUp = dragMove(this.$.mouse, $movepoint)
   }
 
-  return <view canMouse size={{ w, h: 4 }} onMouseDown={onMouseDown}>
-    <view point={{ x: 0, y: 1 }} size={{ w, h: 1 }} background={0xffffff77} />
+  return <View canMouse size={{ w, h: 4 }} onMouseDown={onMouseDown}>
+    <View point={{ x: 0, y: 1 }} size={{ w, h: 1 }} background={0xffffff77} />
     {knob}
-  </view>
+  </View>
 }
 
 function CharView(
@@ -178,7 +178,7 @@ function CharView(
   width.watch(notifyDrew)
   height.watch(notifyDrew)
 
-  const view = <view
+  const view = <View
     canMouse
     background={0x00000033}
     onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE); hover(char) }}
@@ -236,9 +236,9 @@ function CharView(
   }
 
   return (
-    <border paddingColor={0xffffff11} padding={1}>
+    <Border paddingColor={0xffffff11} padding={1}>
       {view}
-    </border>
+    </Border>
   )
 }
 

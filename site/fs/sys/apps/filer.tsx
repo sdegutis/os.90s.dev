@@ -5,7 +5,7 @@ refreshDrives()
 async function refreshDrives() {
   const drives = await sys.listdrives('')
   $drives.val = drives.map(d =>
-    <button padding={2} onClick={(b) => {
+    <Button padding={2} onClick={(b) => {
       if (b === 0) {
         showDir([d])
       }
@@ -19,8 +19,8 @@ async function refreshDrives() {
         ])
       }
     }}>
-      <label text={d} />
-    </button>
+      <Label text={d} />
+    </Button>
   )
 }
 
@@ -29,24 +29,24 @@ const $breadcrumbs = $<View[]>([])
 
 const panel = await Panel.create(
   <PanelView title={$('filer')} size={$({ w: 150, h: 120 })}>
-    <splitxa pos={50}>
-      <panedyb>
-        <view>
-          <groupy align={'+'} children={$drives} />
-        </view>
-        <groupx>
-          <button padding={2} onClick={mount}>
-            <label text={'mount'} />
-          </button>
-        </groupx>
-      </panedyb>
-      <panedya>
-        <groupx children={$breadcrumbs} />
-        <scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
-          <groupy align={'+'} children={$entries} />
-        </scroll>
-      </panedya>
-    </splitxa>
+    <SplitXA pos={50}>
+      <PanedYB>
+        <View>
+          <GroupY align={'+'} children={$drives} />
+        </View>
+        <GroupX>
+          <Button padding={2} onClick={mount}>
+            <Label text={'mount'} />
+          </Button>
+        </GroupX>
+      </PanedYB>
+      <PanedYA>
+        <GroupX children={$breadcrumbs} />
+        <Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
+          <GroupY align={'+'} children={$entries} />
+        </Scroll>
+      </PanedYA>
+    </SplitXA>
   </PanelView>
 )
 
@@ -56,16 +56,16 @@ async function showDir(full: string[]) {
   const results = await sys.listdir(full.join(''))
 
   $breadcrumbs.val = full.map((part, idx) =>
-    <button padding={2} onClick={() => showDir(full.slice(0, idx + 1))}>
-      <label text={part} />
-    </button>
+    <Button padding={2} onClick={() => showDir(full.slice(0, idx + 1))}>
+      <Label text={part} />
+    </Button>
   )
 
   if (results.length === 0) {
     $entries.val = [
-      <border padding={2}>
-        <label text={'[empty]'} textColor={0xffffff77} />
-      </border>
+      <Border padding={2}>
+        <Label text={'[empty]'} textColor={0xffffff77} />
+      </Border>
     ]
     return
   }
@@ -82,31 +82,31 @@ const imgFile = new Bitmap([0x009900ff], 1, [1])
 
 function FolderItem({ base, name }: { base: string[], name: string }) {
   return (
-    <button padding={2} onClick={() => showDir([...base, name])}>
-      <groupx gap={2}>
-        <border>
-          <image bitmap={imgFolder} />
-        </border>
-        <label text={name} />
-      </groupx>
-    </button>
+    <Button padding={2} onClick={() => showDir([...base, name])}>
+      <GroupX gap={2}>
+        <Border>
+          <ImageView bitmap={imgFolder} />
+        </Border>
+        <Label text={name} />
+      </GroupX>
+    </Button>
   )
 }
 
 function FileItem({ base, name }: { base: string[], name: string }) {
   return (
-    <button padding={2} onClick={(b) => {
+    <Button padding={2} onClick={(b) => {
       const path = [...base, name].join('')
       if (b === 0) handleFile(path)
       else showMenuForFile(path)
     }}>
-      <groupx gap={2}>
-        <border>
-          <image bitmap={imgFile} />
-        </border>
-        <label text={name} />
-      </groupx>
-    </button>
+      <GroupX gap={2}>
+        <Border>
+          <ImageView bitmap={imgFile} />
+        </Border>
+        <Label text={name} />
+      </GroupX>
+    </Button>
   )
 }
 

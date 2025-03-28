@@ -9,17 +9,17 @@ await sys.watchprocs()
 sys.launch('user/startup.js')
 
 const desktop = await Panel.create((
-  <view size={sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
+  <View size={sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
 ), {
   order: 'bottom',
   pos: $({ x: 0, y: 0 }),
 })
 
 const taskbar = await Panel.create((
-  <spacedx size={sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x000000dd}>
-    <groupx></groupx>
+  <SpacedX size={sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x000000dd}>
+    <GroupX></GroupX>
     <Clock />
-  </spacedx>
+  </SpacedX>
 ), {
   order: 'top',
   pos: sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })),
@@ -54,8 +54,8 @@ function Clock() {
   udpateTime()
 
   return (
-    <button padding={2} canMouse onClick={toggle}>
-      <label text={time} />
-    </button>
+    <Button padding={2} canMouse onClick={toggle}>
+      <Label text={time} />
+    </Button>
   )
 }

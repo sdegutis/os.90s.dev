@@ -43,12 +43,15 @@ export const jsxs = createNode
 export const jsx = createNode
 
 function createNode(tag: any, data: Record<string, any>): JSX.Element {
-  if (typeof tag === 'function') {
-    return tag(data)
+  if (tag === View || tag.prototype instanceof View) {
+    if (data["children"] instanceof View) {
+      data["children"] = [data["children"]]
+    }
+    return tag.make(data)
   }
 
-  if (data["children"] instanceof View) {
-    data["children"] = [data["children"]]
+  if (typeof tag === 'function') {
+    return tag(data)
   }
 
   const ctor = primitives[tag as keyof typeof primitives]

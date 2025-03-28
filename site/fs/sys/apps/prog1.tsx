@@ -7,9 +7,9 @@ it is not colorful yet...
 
 const panel = await Panel.create(
   <PanelView title={$('FONT MAKER 1 font maker 2')} size={$({ w: 100, h: 70 })}>
-    <scroll>
-      <textarea text={TEST} />
-    </scroll>
+    <Scroll>
+      <Textarea text={TEST} />
+    </Scroll>
   </PanelView>
 )
 
