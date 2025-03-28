@@ -1,14 +1,14 @@
 import initSwc, { transformSync } from "/swc/wasm.js"
 
-await initSwc()
+const ready = initSwc()
 
-export function compile(tsx: string) {
+export async function compile(tsx: string) {
+  await ready
   return transformSync(tsx, {
     isModule: true,
-    module: {
-      type: 'es6'
-    },
     jsc: {
+      externalHelpers: false,
+      target: 'es2022',
       parser: { syntax: 'typescript', tsx: true },
       transform: {
         react: {
@@ -17,5 +17,5 @@ export function compile(tsx: string) {
         },
       }
     }
-  }).code
+  }).code.replace('/@imlib/jsx-runtime', '/jsx.js')
 }
