@@ -1,5 +1,5 @@
-import { compile } from "../../swc/vm.js"
-import { openUserDb } from "../fs/userfs.js"
+import { openUserDb } from "../server/fs/userfs.js"
+import { compile } from "./compile.js"
 
 const fsinit = openUserDb()
 
@@ -33,5 +33,5 @@ export async function handleRoute(url: URL, req: Request) {
   }
 
   console.log(url.pathname)
-  return new Response('heyllo orld')
+  return new Response('TEST')
 }

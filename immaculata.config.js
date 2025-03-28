@@ -68,8 +68,8 @@ export default (({ inFiles, outFiles }) => {
 
   files = files.filter(f => !f.path.endsWith('.tsbuildinfo') && !f.path.endsWith('tsconfig.json'))
 
-  files.push({ path: '/swc/wasm.js', content: swc1 })
-  files.push({ path: '/swc/wasm_bg.wasm', content: swc2 })
+  files.push({ path: '/sw/wasm.js', content: swc1 })
+  files.push({ path: '/sw/wasm_bg.wasm', content: swc2 })
 
   const exports = (files
     .filter(f => f.path.startsWith('/client/'))
