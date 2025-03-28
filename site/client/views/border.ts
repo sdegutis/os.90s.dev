@@ -1,4 +1,4 @@
-import { Margin } from "/client/views/margin.js"
+import { Margin } from "./margin.js"
 
 export class Border extends Margin {
 

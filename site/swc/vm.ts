@@ -1,4 +1,4 @@
-import initSwc, { transformSync } from "/swc/wasm.js"
+import initSwc, { transformSync } from "./wasm.js"
 
 const ready = initSwc()
 
@@ -18,5 +18,5 @@ export async function compile(tsx: string) {
       }
     }
   }).code
-  return transformed.replace('/@imlib/jsx-runtime', '/jsx.js')
+  return transformed.replace('/@imlib/jsx-runtime', '/client/jsx.js')
 }

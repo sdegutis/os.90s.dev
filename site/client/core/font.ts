@@ -1,5 +1,5 @@
-import { Bitmap } from "/client/core/bitmap.js"
-import type { DrawingContext } from "/client/core/drawing.js"
+import { Bitmap } from "./bitmap.js"
+import type { DrawingContext } from "./drawing.js"
 
 export class Font {
 

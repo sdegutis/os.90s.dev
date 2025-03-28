@@ -1,5 +1,5 @@
-import { $, type Ref } from "/client/core/ref.js"
-import type { Size } from "/client/core/types.js"
+import { $, Ref } from "../../client/core/ref.js"
+import type { Size } from "../../client/core/types.js"
 
 export function setupCanvas(size: Ref<Size>) {
 

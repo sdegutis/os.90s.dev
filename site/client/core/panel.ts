@@ -1,12 +1,12 @@
+import { debounce } from "../util/throttle.js"
+import type { View } from "../views/view.js"
+import type { Cursor } from "./cursor.js"
+import { DrawingContext } from "./drawing.js"
+import { Listener } from "./listener.js"
+import { type Ref, multiplex } from "./ref.js"
+import { type ClientPanel, type PanelOrdering, type ServerPanel, wRPC } from "./rpc.js"
 import { sys } from "./sys.js"
-import type { Cursor } from "/client/core/cursor.js"
-import { DrawingContext } from "/client/core/drawing.js"
-import { Listener } from "/client/core/listener.js"
-import { type Ref, multiplex } from "/client/core/ref.js"
-import { type ClientPanel, type PanelOrdering, type ServerPanel, wRPC } from "/client/core/rpc.js"
-import type { Point, Size } from "/client/core/types.js"
-import { debounce } from "/client/util/throttle.js"
-import type { View } from "/client/views/view.js"
+import type { Point, Size } from "./types.js"
 
 export class Panel {
 

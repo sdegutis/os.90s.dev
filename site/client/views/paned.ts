@@ -1,5 +1,5 @@
-import { debounce } from "/client/util/throttle.js"
-import { View } from "/client/views/view.js"
+import { debounce } from "../util/throttle.js"
+import { View } from "./view.js"
 
 export class Paned extends View {
 

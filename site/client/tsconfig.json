@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable",
+    ],
+    "types": [
+      "immaculata/runtime.d.ts",
+      "@types/wicg-file-system-access",
+      "@webgpu/types"
+    ],
+    "moduleDetection": "force",
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-native",
+    "rootDir": ".",
+    // "noEmit": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    // "outFile": "types.d.ts",
+    "outDir": "out",
+    "moduleResolution": "Node",
+    "forceConsistentCasingInFileNames": true,
+    // "verbatimModuleSyntax": true,
+    "strict": true,
+    "noImplicitAny": true,
+    // "downlevelIteration": true,
+    "exactOptionalPropertyTypes": true,
+    "esModuleInterop": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    // "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    // "skipLibCheck": true,
+  },
+  "exclude": [
+    "types.d.ts"
+  ]
+}

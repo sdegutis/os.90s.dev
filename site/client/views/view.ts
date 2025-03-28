@@ -1,9 +1,9 @@
-import type { DrawingContext } from "/client/core/drawing.js"
-import type { Panel } from "/client/core/panel.js"
-import { multiplex } from "/client/core/ref.js"
-import { type Point, type Size, arrayEquals, pointEquals, sizeEquals } from "/client/core/types.js"
-import { Dynamic } from "/client/util/dyn.js"
-import { debounce } from "/client/util/throttle.js"
+import type { DrawingContext } from "../core/drawing.js"
+import type { Panel } from "../core/panel.js"
+import { multiplex } from "../core/ref.js"
+import { type Point, type Size, arrayEquals, pointEquals, sizeEquals } from "../core/types.js"
+import { Dynamic } from "../util/dyn.js"
+import { debounce } from "../util/throttle.js"
 
 export class View extends Dynamic {
 

@@ -1,5 +1,5 @@
 import { opendb } from "../../client/util/db.js"
-import type { Drive, DriveItem, DriveNotificationType } from "/server/fs/drive.js"
+import type { Drive, DriveItem, DriveNotificationType } from "./drive.js"
 
 export async function openUserDb() {
   return await opendb<{ path: string, content?: string }>('idbfs', 'path')

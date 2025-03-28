@@ -1,9 +1,9 @@
-import { Font } from "/client/core/font.js"
-import { Listener } from "/client/core/listener.js"
-import { Panel } from "/client/core/panel.js"
-import { $, Ref } from "/client/core/ref.js"
-import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "/client/core/rpc.js"
-import type { Point, Size } from "/client/core/types.js"
+import { Font } from "./font.js"
+import { Listener } from "./listener.js"
+import { Panel } from "./panel.js"
+import { $, Ref } from "./ref.js"
+import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "./rpc.js"
+import type { Point, Size } from "./types.js"
 
 class Program {
 

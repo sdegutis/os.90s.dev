@@ -1,5 +1,5 @@
-import type { Point } from "/client/core/types.js"
-import { View } from "/client/views/view.js"
+import type { Point } from "../core/types.js"
+import { View } from "./view.js"
 
 export class Grid extends View {
 

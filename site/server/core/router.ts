@@ -1,5 +1,5 @@
-import { openUserDb } from "/server/fs/userfs.js"
-import { compile } from "/swc/vm.js"
+import { compile } from "../../swc/vm.js"
+import { openUserDb } from "../fs/userfs.js"
 
 const fsinit = openUserDb()
 

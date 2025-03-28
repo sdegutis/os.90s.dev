@@ -1,8 +1,8 @@
-import type { DrawingContext } from "/client/core/drawing.js"
-import { type Font } from "/client/core/font.js"
-import { sys } from "/client/core/sys.js"
-import { Scroll } from "/client/views/scroll.js"
-import { View } from "/client/views/view.js"
+import type { DrawingContext } from "../core/drawing.js"
+import { type Font } from "../core/font.js"
+import { sys } from "../core/sys.js"
+import { Scroll } from "./scroll.js"
+import { View } from "./view.js"
 
 export class Textarea extends View {
 

@@ -20,11 +20,6 @@
     "emitDeclarationOnly": true,
     "outFile": "types.d.ts",
     "moduleResolution": "Node",
-    "paths": {
-      "/*": [
-        "./site/*"
-      ]
-    },
     "forceConsistentCasingInFileNames": true,
     // "verbatimModuleSyntax": true,
     "strict": true,
@@ -40,6 +35,16 @@
     // "skipLibCheck": true,
   },
   "exclude": [
-    "types.d.ts"
+    "types.d.ts",
+    "site/fs/**/*",
+    "site/client/**/*",
+  ],
+  "references": [
+    {
+      "path": "site/fs"
+    },
+    {
+      "path": "site/client"
+    },
   ]
 }

@@ -1,6 +1,6 @@
+import { Panel } from "../core/panel.js"
+import { $ } from "../core/ref.js"
 import { sys } from "../core/sys.js"
-import { Panel } from "/client/core/panel.js"
-import { $ } from "/client/core/ref.js"
 
 export type MenuItem = { text: string, onClick(): void } | '-'
 

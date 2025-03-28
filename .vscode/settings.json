@@ -1,7 +1,7 @@
 {
   "typescript.preferences.importModuleSpecifierEnding": "js",
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  // "typescript.preferences.importModuleSpecifier": "non-relative",
+  // "typescript.preferences.preferTypeOnlyAutoImports": true,
   "task.allowAutomaticTasks": "on",
   "typescript.tsdk": "node_modules\\typescript\\lib",
   "emmet.showExpandedAbbreviation": "inMarkupAndStylesheetFilesOnly",

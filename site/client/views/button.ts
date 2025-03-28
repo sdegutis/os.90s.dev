@@ -1,5 +1,5 @@
-import type { DrawingContext } from "/client/core/drawing.js"
-import { Border } from "/client/views/border.js"
+import type { DrawingContext } from "../core/drawing.js"
+import { Border } from "./border.js"
 
 export class Button extends Border {
 

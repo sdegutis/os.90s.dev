@@ -49,11 +49,13 @@ const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5">
 
 const ext = (s) => s.match(/\.([^\/]+)$/)?.[1] ?? ''
 
-export const jsxPathBrowser = '/jsx.ts'
+export const jsxPathBrowser = '/client/jsx.ts'
 
 export default (({ inFiles, outFiles }) => {
   const allids = new Set()
-  const files = [...inFiles]
+  let files = [...inFiles]
+
+  files = files.filter(f => !f.path.endsWith('.tsbuildinfo') && !f.path.endsWith('tsconfig.json'))
 
   files.push({ path: '/swc/wasm.js', content: swc1 })
   files.push({ path: '/swc/wasm_bg.wasm', content: swc2 })

@@ -1,12 +1,12 @@
+import { Cursor } from "../../client/core/cursor.js"
+import { DrawingContext } from "../../client/core/drawing.js"
+import { Font } from "../../client/core/font.js"
+import { Listener } from "../../client/core/listener.js"
+import { $ } from "../../client/core/ref.js"
+import { fs } from "../fs/fs.js"
+import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 import { Process } from "./process.js"
-import { Cursor } from "/client/core/cursor.js"
-import { DrawingContext } from "/client/core/drawing.js"
-import { Font } from "/client/core/font.js"
-import { Listener } from "/client/core/listener.js"
-import { $ } from "/client/core/ref.js"
-import { setupCanvas } from "/server/core/canvas.js"
-import { fs } from "/server/fs/fs.js"
 
 export class Sys {
 

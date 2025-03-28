@@ -1,6 +1,6 @@
-import { Ref } from "/client/core/ref.js"
-import { primitives } from "/client/views/index.js"
-import { View } from "/client/views/view.js"
+import { Ref } from "./core/ref.js"
+import { primitives } from "./views/index.js"
+import { View } from "./views/view.js"
 
 type Primitives = typeof primitives
 

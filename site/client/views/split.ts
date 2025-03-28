@@ -1,8 +1,8 @@
-import type { DrawingContext } from "/client/core/drawing.js"
-import { $ } from "/client/core/ref.js"
-import { xresize, yresize } from "/client/util/cursors.js"
-import { dragMove } from "/client/util/drag.js"
-import { View } from "/client/views/view.js"
+import type { DrawingContext } from "../core/drawing.js"
+import { $ } from "../core/ref.js"
+import { xresize, yresize } from "../util/cursors.js"
+import { dragMove } from "../util/drag.js"
+import { View } from "./view.js"
 
 class SplitDivider extends View {
 
