@@ -23,7 +23,7 @@ export default (({ inFiles, outFiles }) => {
 
   const sysdata = JSON.stringify(Object.fromEntries(files
     .filter(f => f.path.startsWith('/fs/sys'))
-    .map(f => [f.path.slice('/fs/sys/'.length), f.content.toString()])
+    .map(f => [f.path.slice('/fs/sys/'.length), (f.module?.source ?? f.content).toString()])
   ), null, 2)
   files.push({ path: '/server/fs/data.js', content: `export const files = ${sysdata}` })
 
