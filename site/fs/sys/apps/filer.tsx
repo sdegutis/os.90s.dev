@@ -28,7 +28,7 @@ const $entries = $<View[]>([])
 const $breadcrumbs = $<View[]>([])
 
 const panel = await Panel.create(
-  <PanelView title={$('filer')} size={$({ w: 150, h: 120 })}>
+  <PanelView name="filer" title={$('filer')} size={$({ w: 150, h: 120 })}>
     <SplitXA pos={50}>
       <PanedYB>
         <View>

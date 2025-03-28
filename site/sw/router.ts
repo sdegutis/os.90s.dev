@@ -29,7 +29,7 @@ export async function handleRoute(url: URL, req: Request) {
   if (url.pathname.startsWith('/fs/user/')) {
     const key = url.pathname.slice('/fs/user/'.length)
     const res = await fs.get(key)
-    return await jsResponse(res.content ?? '')
+    return await jsResponse(res?.content ?? '')
   }
 
   console.log(url.pathname)

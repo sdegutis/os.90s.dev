@@ -3,7 +3,7 @@ import { Cursor } from "../core/cursor.js"
 import type { Panel } from "../core/panel.js"
 import { $, multiplex, Ref } from "../core/ref.js"
 import { program, sys } from "../core/sys.js"
-import type { Size } from "../core/types.js"
+import type { Point, Size } from "../core/types.js"
 import { Border } from "../views/border.js"
 import { Button } from "../views/button.js"
 import { GroupX } from "../views/group.js"
@@ -13,6 +13,7 @@ import { Margin } from "../views/margin.js"
 import { PanedYA } from "../views/paned.js"
 import { SpacedX } from "../views/spaced.js"
 import type { View } from "../views/view.js"
+import { opendb } from "./db.js"
 import { dragMove, dragResize } from "./drag.js"
 import { showMenu, type MenuItem } from "./menu.js"
 import { showPrompt } from "./prompt.js"
@@ -32,7 +33,11 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
   0, 1, 1, 1, 0,
 ]))
 
+
+const db = await opendb<{ panelname: string, point: Point, size: Size }>('panels', 'panelname')
+
 export function PanelView(data: {
+  name?: string,
   title: Ref<string>,
   children: View,
   size?: Ref<Size>,
@@ -62,9 +67,28 @@ export function PanelView(data: {
       paddingColor={borderColor}
       padding={1}
       size={size}
-      presented={function (p) {
+      presented={async function (p) {
         panel = p
         data.presented?.(p)
+
+        if (data.name) {
+          const prefs = await db.get(data.name)
+          if (prefs) {
+            panel.size = prefs.size
+            panel.point = prefs.point
+          }
+
+          function saveprefs() {
+            db.set({
+              panelname: data.name!,
+              point: panel.point,
+              size: panel.size,
+            })
+          }
+
+          panel.$size.watch(saveprefs)
+          panel.$point.watch(saveprefs)
+        }
       }}
       onPanelFocus={() => focused.val = true}
       onPanelBlur={() => focused.val = false}

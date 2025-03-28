@@ -82,7 +82,7 @@ function rebuildNow() {
 
 
 const panel = await Panel.create(
-  <FilePanelView filedata={() => fontsrc} filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })}>
+  <FilePanelView name="fontmaker" filedata={() => fontsrc} filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })}>
     <PanedYB>
       <Scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <Border padding={zoom}>

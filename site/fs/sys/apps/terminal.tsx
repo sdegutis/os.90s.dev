@@ -24,7 +24,7 @@ function submit() {
 }
 
 const panel = await Panel.create(
-  <PanelView title={$('terminal')} size={$({ w: 100, h: 70 })}>
+  <PanelView name="terminal" title={$('terminal')} size={$({ w: 100, h: 70 })}>
     <Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
       <GroupY align={'a'} children={$lines.adapt(ls => [...ls, textarea])} />
     </Scroll>
