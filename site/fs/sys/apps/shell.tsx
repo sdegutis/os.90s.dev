@@ -1,12 +1,3 @@
-// @ts-nocheck
-// import { sys } from "../../../client/core/sys.js"
-// import { Panel } from "/client/core/panel.js"
-// import { $ } from "/client/core/ref.js"
-// import { showDialog } from "/client/util/dialog.js"
-// import { showMenu } from "/client/util/menu.js"
-// import { showPrompt } from "/client/util/prompt.js"
-// import type { View } from "/client/views/view.js"
-
 sys.procbegan.watch(async pid => {
   const port = await sys.openipc(pid)
 

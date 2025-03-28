@@ -7,19 +7,18 @@
       "DOM.Iterable",
     ],
     "types": [
-      "immaculata/runtime.d.ts",
       "@types/wicg-file-system-access",
       "@webgpu/types"
     ],
+    "allowUmdGlobalAccess": true,
     "moduleDetection": "force",
     "target": "ESNext",
     "module": "ESNext",
     "jsx": "react-native",
     "rootDir": ".",
-    // "noEmit": true,
+    "noEmit": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outFile": "types.d.ts",
     "moduleResolution": "Node",
     "forceConsistentCasingInFileNames": true,
     // "verbatimModuleSyntax": true,
@@ -35,7 +34,17 @@
     "noPropertyAccessFromIndexSignature": true,
     // "skipLibCheck": true,
   },
+  "include": [
+    "./**/*.tsx",
+    "./**/*.ts",
+    "../../globals.d.ts",
+  ],
   "exclude": [
     "types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../client"
+    }
   ]
 }

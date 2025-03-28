@@ -1,10 +1,3 @@
-// @ts-nocheck
-// import { Panel } from "/client/core/panel.js"
-// import { $ } from "/client/core/ref.js"
-// import { program, sys } from "/client/core/sys.js"
-// import { FilePanelView } from "/client/util/panelview.js"
-// import type { Textarea } from "/client/views/textarea.js"
-
 let content = ''
 const $filepath = $(program.opts["file"])
 if ($filepath.val) content = await sys.getfile($filepath.val) ?? ''

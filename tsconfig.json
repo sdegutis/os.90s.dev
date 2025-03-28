@@ -41,9 +41,6 @@
   ],
   "references": [
     {
-      "path": "site/fs"
-    },
-    {
       "path": "site/client"
     },
   ]

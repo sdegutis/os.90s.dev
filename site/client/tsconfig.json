@@ -7,7 +7,6 @@
       "DOM.Iterable",
     ],
     "types": [
-      "immaculata/runtime.d.ts",
       "@types/wicg-file-system-access",
       "@webgpu/types"
     ],

@@ -1,8 +1,3 @@
-// @ts-nocheck
-// import { Panel } from "/client/core/panel.js"
-// import { $ } from "/client/core/ref.js"
-// import { PanelView } from "/client/util/panelview.js"
-
 const TEST = `
 this is a long string
 it has multiple lines

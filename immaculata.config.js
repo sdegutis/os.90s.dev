@@ -7,35 +7,47 @@ import _babeltraverser from '@babel/traverse'
 /** @type {typeof _babeltraverser} */
 const babeltraverser = _babeltraverser.default
 
-function getexports(allids, src) {
+function getexports(src) {
   const node = babelparser.parse(src, {
     sourceType: 'module',
     plugins: ['typescript', 'jsx'],
   })
-  const ids = []
+
+  const vars = []
+  const types = []
+
+  function addtype(d) {
+    if (d.id.name === 'wRPC') return
+    types.push({
+      name: d.id.name,
+      params: d.typeParameters?.params.map(p => p.name)
+    })
+  }
+
   babeltraverser(node, {
     ExportNamedDeclaration: {
       enter: (path) => {
-        if (path.node.exportKind === 'type') return
         const d = path.node.declaration
-        if (d.type === 'VariableDeclaration') {
-          ids.push(...d.declarations.map(d => d.id.name))
+        if (path.node.exportKind === 'type') {
+          addtype(d)
+          return
         }
-        else {
-          ids.push(d.id.name)
+
+        if (d.type === 'VariableDeclaration') {
+          vars.push(...d.declarations.map(d => d.id.name))
+        }
+        else if (d.type === 'ClassDeclaration') {
+          vars.push(d.id.name)
+          addtype(d)
+        }
+        else if (d.type === 'FunctionDeclaration') {
+          vars.push(d.id.name)
         }
       },
     }
   })
 
-  for (const id of ids) {
-    if (allids.has(id)) {
-      console.warn('dup export', id)
-    }
-    allids.add(id)
-  }
-
-  return ids
+  return { vars, types }
 }
 
 const swc1 = fs.readFileSync('node_modules/@swc/wasm-web/wasm.js')
@@ -52,7 +64,6 @@ const ext = (s) => s.match(/\.([^\/]+)$/)?.[1] ?? ''
 export const jsxPathBrowser = '/client/jsx.ts'
 
 export default (({ inFiles, outFiles }) => {
-  const allids = new Set()
   let files = [...inFiles]
 
   files = files.filter(f => !f.path.endsWith('.tsbuildinfo') && !f.path.endsWith('tsconfig.json'))
@@ -60,12 +71,35 @@ export default (({ inFiles, outFiles }) => {
   files.push({ path: '/swc/wasm.js', content: swc1 })
   files.push({ path: '/swc/wasm_bg.wasm', content: swc2 })
 
-  const clientfiles = (files
+  const exports = (files
     .filter(f => f.path.startsWith('/client/'))
     .map(f => {
-      const ids = getexports(allids, f.module.source)
-      return `import { ${ids.join(', ')} } from "${f.path}"`
-    })
+      const ids = getexports(f.module.source)
+      return { path: f.path, ids }
+    }))
+
+  fs.writeFileSync('./globals.d.ts', [
+    `export{}`,
+    `declare global {`,
+    exports.flatMap(exp => {
+      const vars = exp.ids.vars.map(id => {
+        return [`var ${id}: typeof import("./site${exp.path}").${id}`]
+      })
+      const types = exp.ids.types.map(type => {
+        let params = ''
+        if (type.params) params = `<${type.params.join(', ')}>`
+        return [`type ${type.name}${params} = import("./site${exp.path}").${type.name}${params}`]
+      })
+      return [
+        ...vars,
+        ...types,
+      ]
+    }).join('\n'),
+    `}`,
+  ].join('\n'))
+
+  const clientfiles = (exports
+    .map(exp => `import { ${exp.ids.vars.join(', ')} } from "${exp.path}"`)
     .join('\n'))
 
   files.push({ path: '/prelude.js', content: clientfiles })
