@@ -145,6 +145,7 @@ export default (({ inFiles, outFiles }) => {
 })
 
 function minify(js) {
+  return js
   if (!process.env.GITHUB_ENV) return js
   return swc.minifySync(js, { module: true }).code
 }
