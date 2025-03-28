@@ -30,8 +30,9 @@ export class Process {
 
     this.sys = sys
 
-    const absurl = new URL('exec.js', import.meta.url)
-    absurl.searchParams.set('opts', JSON.stringify({ ...opts, app: path }))
+    const appPath = '/fs/' + path
+    const absurl = new URL(appPath, import.meta.url)
+    absurl.searchParams.set('opts', JSON.stringify({ ...opts, app: appPath }))
     this.worker = new Worker(absurl, { type: 'module' })
 
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
