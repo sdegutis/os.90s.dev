@@ -16,7 +16,8 @@
     "module": "ESNext",
     "jsx": "react-native",
     "rootDir": ".",
-    "noEmit": true,
+    "noEmit": false,
+    "outDir": "out",
     "declaration": true,
     "emitDeclarationOnly": true,
     "moduleResolution": "Node",
@@ -40,7 +41,8 @@
     "../../globals.d.ts",
   ],
   "exclude": [
-    "types.d.ts"
+    "types.d.ts",
+    "out"
   ],
   "references": [
     {

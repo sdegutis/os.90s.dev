@@ -43,5 +43,8 @@
     {
       "path": "site/client"
     },
+    {
+      "path": "site/fs"
+    },
   ]
 }
