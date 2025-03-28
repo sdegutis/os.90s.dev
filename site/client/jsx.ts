@@ -4,7 +4,7 @@ import { View } from "./views/view.js"
 
 type Primitives = typeof primitives
 
-type JsxAttrs<T> = {
+export type JsxAttrs<T> = {
   [K in keyof T]?: (
 
     K extends 'children'
@@ -22,18 +22,16 @@ declare global {
 
   namespace JSX {
 
-    type DataFor<K extends keyof Primitives> = JsxAttrs<InstanceType<Primitives[K]>>
-
-    type IntrinsicElements = {
-      [K in keyof Primitives as K]: JsxAttrs<InstanceType<Primitives[K]>>
-    }
+    // type IntrinsicElements = {
+    //   [K in keyof Primitives as K]: JsxAttrs<InstanceType<Primitives[K]>>
+    // }
 
     type ElementChildrenAttribute = { children: any }
 
     type Element = View
 
     type ElementType =
-      | keyof IntrinsicElements
+      | (new (config?: any) => any)
       | ((data: any) => JSX.Element)
 
   }

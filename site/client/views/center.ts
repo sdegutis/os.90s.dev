@@ -1,6 +1,9 @@
+import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
 export class Center extends View {
+
+  constructor(config?: JsxAttrs<Center>) { super() }
 
   override layout(): void {
     for (const child of this.children) {

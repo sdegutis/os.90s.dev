@@ -1,7 +1,10 @@
 import type { Size } from "../core/types.js"
+import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
 export class Group extends View {
+
+  constructor(config?: JsxAttrs<Group>) { super() }
 
   gap: number = 0
   dir: 'x' | 'y' = 'x'
@@ -62,9 +65,11 @@ export class Group extends View {
 }
 
 export class GroupX extends Group {
+  constructor(config?: JsxAttrs<GroupX>) { super() }
   override dir = 'x' as const
 }
 
 export class GroupY extends Group {
+  constructor(config?: JsxAttrs<GroupY>) { super() }
   override dir = 'y' as const
 }

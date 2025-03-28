@@ -1,5 +1,6 @@
 import type { DrawingContext } from "../core/drawing.js"
 import { $ } from "../core/ref.js"
+import { JsxAttrs } from "../jsx.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { View } from "./view.js"
@@ -56,6 +57,8 @@ class SplitDivider extends View {
 }
 
 export class Split extends View {
+
+  constructor(config?: JsxAttrs<Split>) { super() }
 
   dividerColorHovered = 0xffffff11
   dividerColorPressed = 0x1177ffcc
@@ -134,21 +137,25 @@ export class Split extends View {
 }
 
 export class SplitXA extends Split {
+  constructor(config?: JsxAttrs<SplitXA>) { super() }
   override dir = 'x' as const
   override stick = 'a' as const
 }
 
 export class SplitYA extends Split {
+  constructor(config?: JsxAttrs<SplitYA>) { super() }
   override dir = 'y' as const
   override stick = 'a' as const
 }
 
 export class SplitXB extends Split {
+  constructor(config?: JsxAttrs<SplitXB>) { super() }
   override dir = 'x' as const
   override stick = 'b' as const
 }
 
 export class SplitYB extends Split {
+  constructor(config?: JsxAttrs<SplitYB>) { super() }
   override dir = 'y' as const
   override stick = 'b' as const
 }

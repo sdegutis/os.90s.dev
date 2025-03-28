@@ -1,6 +1,11 @@
 import { Panel } from "../core/panel.js"
 import { $ } from "../core/ref.js"
 import { sys } from "../core/sys.js"
+import { Border } from "../views/border.js"
+import { Button } from "../views/button.js"
+import { GroupY } from "../views/group.js"
+import { Label } from "../views/label.js"
+import { View } from "../views/view.js"
 
 export type MenuItem = { text: string, onClick(): void } | '-'
 
@@ -9,27 +14,27 @@ const bgColor = 0x333333ff
 
 export async function showMenu(items: MenuItem[], from = sys.mouse) {
   const group = (
-    <groupy gap={0} align={'+'}>
+    <GroupY gap={0} align={'+'}>
       {items.flatMap(item => {
         if (item === '-') {
           return [
-            <view size={{ w: 0, h: 1 }} />,
-            <view background={borderColor} size={{ w: 0, h: 1 }} />,
-            <view size={{ w: 0, h: 1 }} />,
+            <View size={{ w: 0, h: 1 }} />,
+            <View background={borderColor} size={{ w: 0, h: 1 }} />,
+            <View size={{ w: 0, h: 1 }} />,
           ]
         }
-        return <button padding={2} onClick={() => {
+        return <Button padding={2} onClick={() => {
           item.onClick()
           panel.close()
         }}>
-          <label text={item.text} />
-        </button>
+          <Label text={item.text} />
+        </Button>
       })}
-    </groupy>
+    </GroupY>
   )
 
   const root = (
-    <border
+    <Border
       onKeyDown={key => {
         if (key === 'Escape') panel.close()
         return true
@@ -43,10 +48,10 @@ export async function showMenu(items: MenuItem[], from = sys.mouse) {
       padding={1}
       background={bgColor}
     >
-      <border padding={1}>
+      <Border padding={1}>
         {group}
-      </border>
-    </border>
+      </Border>
+    </Border>
   )
 
   if (from.y + root.size.h > sys.size.h) {

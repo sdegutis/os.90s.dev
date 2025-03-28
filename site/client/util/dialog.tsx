@@ -1,11 +1,15 @@
 import { Panel } from "../core/panel.js"
 import { sys } from "../core/sys.js"
+import { Border } from "../views/border.js"
+import { Button } from "../views/button.js"
+import { GroupX, GroupY } from "../views/group.js"
+import { Label } from "../views/label.js"
 import { dragMove } from "./drag.js"
 
 export async function showDialog(text: string) {
   const result = Promise.withResolvers<boolean>()
 
-  const dialog = <border
+  const dialog = <Border
     canMouse
     onPanelBlur={() => {
       panel.focusPanel()
@@ -21,18 +25,18 @@ export async function showDialog(text: string) {
       this.onMouseUp = dragMove(sys.$mouse, panel.$point)
     }}
     background={0x000000cc} padding={1} paddingColor={0x005599ff}>
-    <border padding={3}>
-      <groupy align={'m'} gap={4}>
-        <border padding={2}>
-          <label text={text} />
-        </border>
-        <groupx gap={2}>
-          <button onClick={no} background={0x99000099} padding={2}><label text={'cancel'} /></button>
-          <button onClick={ok} background={0xffffff33} padding={2}><label text={'ok'} /></button>
-        </groupx>
-      </groupy>
-    </border>
-  </border>
+    <Border padding={3}>
+      <GroupY align={'m'} gap={4}>
+        <Border padding={2}>
+          <Label text={text} />
+        </Border>
+        <GroupX gap={2}>
+          <Button onClick={no} background={0x99000099} padding={2}><Label text={'cancel'} /></Button>
+          <Button onClick={ok} background={0xffffff33} padding={2}><Label text={'ok'} /></Button>
+        </GroupX>
+      </GroupY>
+    </Border>
+  </Border>
 
   const panel = await Panel.create(dialog, { pos: 'center' })
 

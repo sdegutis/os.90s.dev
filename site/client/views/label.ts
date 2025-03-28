@@ -1,9 +1,12 @@
 import type { DrawingContext } from "../core/drawing.js"
 import { type Font } from "../core/font.js"
 import { sys } from "../core/sys.js"
+import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
 export class Label extends View {
+
+  constructor(config?: JsxAttrs<Label>) { super() }
 
   textColor: number = 0xffffffff
   font: Font = sys.font

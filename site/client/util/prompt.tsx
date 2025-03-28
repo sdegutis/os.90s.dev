@@ -1,24 +1,27 @@
 import { Panel } from "../core/panel.js"
 import { multiplex } from "../core/ref.js"
 import { sys } from "../core/sys.js"
-import type { Textarea } from "../views/textarea.js"
+import { Border } from "../views/border.js"
+import { Button } from "../views/button.js"
+import { GroupX, GroupY } from "../views/group.js"
+import { Label } from "../views/label.js"
+import { Scroll } from "../views/scroll.js"
+import { Textarea } from "../views/textarea.js"
 import { dragMove } from "./drag.js"
 
 export async function showPrompt(text: string) {
   const result = Promise.withResolvers<string | null>()
 
-  const prompt = <label text={text} />
-  const textarea = <textarea multiline={false} /> as Textarea
-  const buttons = <groupx gap={2}>
-    <button onClick={no} background={0x99000099} padding={2}><label text={'cancel'} /></button>
-    <button onClick={ok} background={0xffffff33} padding={2}><label text={'ok'} /></button>
-  </groupx>
-
-  // prompt.$.
+  const prompt = <Label text={text} />
+  const textarea = <Textarea multiline={false} /> as Textarea
+  const buttons = <GroupX gap={2}>
+    <Button onClick={no} background={0x99000099} padding={2}><Label text={'cancel'} /></Button>
+    <Button onClick={ok} background={0xffffff33} padding={2}><Label text={'ok'} /></Button>
+  </GroupX>
 
   textarea.onEnter = ok
 
-  const scroll = <scroll
+  const scroll = <Scroll
     showh={false}
     showv={false}
     size={multiplex([
@@ -34,9 +37,9 @@ export async function showPrompt(text: string) {
     }}
   >
     {textarea}
-  </scroll>
+  </Scroll>
 
-  const dialog = <border
+  const dialog = <Border
     canMouse
     onPanelBlur={() => {
       panel.focusPanel()
@@ -51,18 +54,18 @@ export async function showPrompt(text: string) {
       this.onMouseUp = dragMove(sys.$mouse, panel.$point)
     }}
     background={0x000000cc} padding={1} paddingColor={0x005599ff}>
-    <border padding={3}>
-      <groupy align={'m'} gap={4}>
-        <border padding={2}>
+    <Border padding={3}>
+      <GroupY align={'m'} gap={4}>
+        <Border padding={2}>
           {prompt}
-        </border>
-        <border padding={2} background={0xffffff11}>
+        </Border>
+        <Border padding={2} background={0xffffff11}>
           {scroll}
-        </border>
+        </Border>
         {buttons}
-      </groupy>
-    </border>
-  </border>
+      </GroupY>
+    </Border>
+  </Border>
 
   const panel = await Panel.create(dialog, { pos: 'center' })
 

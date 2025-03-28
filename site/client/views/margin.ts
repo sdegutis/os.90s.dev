@@ -1,7 +1,10 @@
 import type { DrawingContext } from "../core/drawing.js"
+import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
 export class Margin extends View {
+
+  constructor(config?: JsxAttrs<Margin>) { super() }
 
   paddingColor: number = 0x00000000
   padding: number = 0

@@ -1,7 +1,10 @@
 import type { DrawingContext } from "../core/drawing.js"
+import { JsxAttrs } from "../jsx.js"
 import { Border } from "./border.js"
 
 export class Button extends Border {
+
+  constructor(config?: JsxAttrs<Button>) { super() }
 
   hoverBackground: number = 0xffffff22
   pressBackground: number = 0xffffff11

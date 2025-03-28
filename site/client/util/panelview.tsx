@@ -4,8 +4,14 @@ import type { Panel } from "../core/panel.js"
 import { $, multiplex, Ref } from "../core/ref.js"
 import { program, sys } from "../core/sys.js"
 import type { Size } from "../core/types.js"
-import type { ImageView } from "../views/image.js"
-import type { SpacedX } from "../views/spaced.js"
+import { Border } from "../views/border.js"
+import { Button } from "../views/button.js"
+import { GroupX } from "../views/group.js"
+import { ImageView } from "../views/image.js"
+import { Label } from "../views/label.js"
+import { Margin } from "../views/margin.js"
+import { PanedYA } from "../views/paned.js"
+import { SpacedX } from "../views/spaced.js"
 import type { View } from "../views/view.js"
 import { dragMove, dragResize } from "./drag.js"
 import { showMenu, type MenuItem } from "./menu.js"
@@ -51,7 +57,7 @@ export function PanelView(data: {
   function axew() { panel.close() }
 
   return (
-    <margin
+    <Margin
       onKeyDown={data.onKeyDown}
       paddingColor={borderColor}
       padding={1}
@@ -64,47 +70,47 @@ export function PanelView(data: {
       onPanelBlur={() => focused.val = false}
       background={0x111111ff}
     >
-      <panedya gap={-0}>
+      <PanedYA gap={-0}>
 
-        <spacedx canMouse onMouseDown={titleBarMouseDown} background={0x1199ff33}>
-          <border>
-            <groupx gap={1}>
-              <button onClick={function () {
+        <SpacedX canMouse onMouseDown={titleBarMouseDown} background={0x1199ff33}>
+          <Border>
+            <GroupX gap={1}>
+              <Button onClick={function () {
                 const items = data.menuItems?.()
                 if (items?.length) showMenu(items, {
                   x: this.panel!.point.x + this.panelOffset.x + this.point.x,
                   y: this.panel!.point.y + this.panelOffset.y + this.point.y + this.size.h,
                 })
-              }} padding={2}><image bitmap={mnuImage} /></button>
-              <label text={data.title} />
-            </groupx>
-          </border>
-          <border>
-            <groupx>
-              <button padding={2} onClick={minw}><image bitmap={minImage} /></button>
-              <button padding={2} onClick={maxw}><image bitmap={maxImage} /></button>
-              <CloseB padding={2} onClick={axew}><image bitmap={axeImage} /></CloseB>
-            </groupx>
-          </border>
-        </spacedx>
+              }} padding={2}><ImageView bitmap={mnuImage} /></Button>
+              <Label text={data.title} />
+            </GroupX>
+          </Border>
+          <Border>
+            <GroupX>
+              <Button padding={2} onClick={minw}><ImageView bitmap={minImage} /></Button>
+              <Button padding={2} onClick={maxw}><ImageView bitmap={maxImage} /></Button>
+              <CloseB padding={2} onClick={axew}><ImageView bitmap={axeImage} /></CloseB>
+            </GroupX>
+          </Border>
+        </SpacedX>
 
-        <margin padding={0}>
-          <margin background={0x222222ff}>
+        <Margin padding={0}>
+          <Margin background={0x222222ff}>
             {data.children}
-          </margin>
-        </margin>
+          </Margin>
+        </Margin>
 
-      </panedya>
+      </PanedYA>
 
       <PanelResizer size={size} />
 
-    </margin>
+    </Margin>
   )
 
 }
 
-function CloseB(data: JSX.DataFor<'button'>) {
-  return <button {...data} hoverBackground={0x99000055} pressBackground={0x44000099} />
+function CloseB(data: ConstructorParameters<typeof Button>[0]) {
+  return <Button {...data} hoverBackground={0x99000055} pressBackground={0x44000099} />
 }
 
 function PanelResizer(data: { size: Ref<Size> }) {
@@ -121,7 +127,7 @@ function PanelResizer(data: { size: Ref<Size> }) {
     }
   }
 
-  return <image
+  return <ImageView
     canMouse
     presented={p => panel = p}
     bitmap={adjImage}

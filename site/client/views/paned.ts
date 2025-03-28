@@ -1,7 +1,10 @@
+import { JsxAttrs } from "../jsx.js"
 import { debounce } from "../util/throttle.js"
 import { View } from "./view.js"
 
 export class Paned extends View {
+
+  constructor(config?: JsxAttrs<Paned>) { super() }
 
   gap: number = 0
   dir: 'x' | 'y' = 'x'
@@ -62,21 +65,25 @@ export class Paned extends View {
 }
 
 export class PanedXA extends Paned {
+  constructor(config?: JsxAttrs<PanedXA>) { super() }
   override dir = 'x' as const
   override vacuum = 'a' as const
 }
 
 export class PanedXB extends Paned {
+  constructor(config?: JsxAttrs<PanedXB>) { super() }
   override dir = 'x' as const
   override vacuum = 'b' as const
 }
 
 export class PanedYA extends Paned {
+  constructor(config?: JsxAttrs<PanedYA>) { super() }
   override dir = 'y' as const
   override vacuum = 'a' as const
 }
 
 export class PanedYB extends Paned {
+  constructor(config?: JsxAttrs<PanedYB>) { super() }
   override dir = 'y' as const
   override vacuum = 'b' as const
 }

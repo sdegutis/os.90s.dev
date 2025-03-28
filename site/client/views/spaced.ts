@@ -1,6 +1,9 @@
+import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
 export class Spaced extends View {
+
+  constructor(config?: JsxAttrs<Spaced>) { super() }
 
   dir: 'x' | 'y' = 'x'
 
@@ -53,9 +56,11 @@ export class Spaced extends View {
 }
 
 export class SpacedX extends Spaced {
+  constructor(config?: JsxAttrs<SpacedX>) { super() }
   override dir = 'x' as const
 }
 
 export class SpacedY extends Spaced {
+  constructor(config?: JsxAttrs<SpacedY>) { super() }
   override dir = 'y' as const
 }

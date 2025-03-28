@@ -2,10 +2,13 @@ import type { DrawingContext } from "../core/drawing.js"
 import type { Panel } from "../core/panel.js"
 import { multiplex } from "../core/ref.js"
 import { type Point, type Size, arrayEquals, pointEquals, sizeEquals } from "../core/types.js"
+import { JsxAttrs } from "../jsx.js"
 import { Dynamic } from "../util/dyn.js"
 import { debounce } from "../util/throttle.js"
 
 export class View extends Dynamic {
+
+  constructor(config?: JsxAttrs<View>) { super() }
 
   panel: Panel | null = null
 

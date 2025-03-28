@@ -1,8 +1,11 @@
 import type { Bitmap } from "../core/bitmap.js"
 import type { DrawingContext } from "../core/drawing.js"
+import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
 export class ImageView extends View {
+
+  constructor(config?: JsxAttrs<ImageView>) { super() }
 
   bitmap: Bitmap | null = null
 

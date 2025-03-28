@@ -1,7 +1,10 @@
 import type { Point } from "../core/types.js"
+import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
 export class Grid extends View {
+
+  constructor(config?: JsxAttrs<Grid>) { super() }
 
   cols = Infinity
   flow = false

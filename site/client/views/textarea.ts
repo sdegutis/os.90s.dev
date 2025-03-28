@@ -1,10 +1,13 @@
 import type { DrawingContext } from "../core/drawing.js"
 import { type Font } from "../core/font.js"
 import { sys } from "../core/sys.js"
+import { JsxAttrs } from "../jsx.js"
 import { Scroll } from "./scroll.js"
 import { View } from "./view.js"
 
 export class Textarea extends View {
+
+  constructor(config?: JsxAttrs<Textarea>) { super() }
 
   font: Font = sys.font
   color: number = 0xffffffff
