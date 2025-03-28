@@ -1,8 +1,5 @@
 import { Ref } from "./core/ref.js"
-import { primitives } from "./views/index.js"
 import { View } from "./views/view.js"
-
-type Primitives = typeof primitives
 
 export type JsxAttrs<T> = {
   [K in keyof T]?: (
@@ -22,9 +19,9 @@ declare global {
 
   namespace JSX {
 
-    // type IntrinsicElements = {
-    //   [K in keyof Primitives as K]: JsxAttrs<InstanceType<Primitives[K]>>
-    // }
+    type IntrinsicElements = {
+      [key: string]: any,
+    }
 
     type ElementChildrenAttribute = { children: any }
 
@@ -54,6 +51,5 @@ function createNode(tag: any, data: Record<string, any>): JSX.Element {
     return tag(data)
   }
 
-  const ctor = primitives[tag as keyof typeof primitives]
-  return ctor.make(data)
+  throw new Error('not ready for string tags yet')
 }
