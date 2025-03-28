@@ -50,6 +50,8 @@ const panel = await Panel.create(
   </PanelView>
 )
 
+showDir(['user/'])
+
 panel.focusPanel()
 
 async function showDir(full: string[]) {
