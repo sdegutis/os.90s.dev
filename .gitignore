@@ -2,3 +2,4 @@ node_modules
 types.d.ts
 *.tsbuildinfo
 /globals.d.ts
+/site/client/out/

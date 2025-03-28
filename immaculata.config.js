@@ -1,8 +1,8 @@
+import * as babelparser from '@babel/parser'
+import _babeltraverser from '@babel/traverse'
 import * as swc from '@swc/core'
 import fs from 'fs'
 import { processFile } from "immaculata"
-import * as babelparser from '@babel/parser'
-import _babeltraverser from '@babel/traverse'
 
 /** @type {typeof _babeltraverser} */
 const babeltraverser = _babeltraverser.default
