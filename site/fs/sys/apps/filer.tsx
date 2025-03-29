@@ -8,6 +8,13 @@ const $drives = api.$<api.View[]>([])
 
 refreshDrives()
 
+async function newFile() {
+  const name = await api.showPrompt('filename?')
+  const full = [...$dirs.val, name].join('')
+  await api.sys.putfile(full, '')
+  showDir()
+}
+
 async function refreshDrives() {
   const drives = await api.sys.listdrives('')
   $drives.val = drives.map(d =>
@@ -48,9 +55,16 @@ const panel = await api.Panel.create(
       </api.PanedYB>
       <api.PanedYA>
         <api.GroupX children={$breadcrumbs} />
-        <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
-          <api.GroupY align={'+'} children={$entries} />
-        </api.Scroll>
+        <api.PanedYB>
+          <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
+            <api.GroupY align={'+'} children={$entries} />
+          </api.Scroll>
+          <api.GroupX>
+            <api.Button padding={2} onClick={newFile}>
+              <api.Label text={'new file'} />
+            </api.Button>
+          </api.GroupX>
+        </api.PanedYB>
       </api.PanedYA>
     </api.SplitXA>
   </api.PanelView>
