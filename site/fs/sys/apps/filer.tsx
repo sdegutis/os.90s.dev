@@ -1,53 +1,55 @@
-const $drives = $<View[]>([])
+import * as api from '/api.js'
+
+const $drives = api.$<api.View[]>([])
 
 refreshDrives()
 
 async function refreshDrives() {
-  const drives = await sys.listdrives('')
+  const drives = await api.sys.listdrives('')
   $drives.val = drives.map(d =>
-    <Button padding={2} onClick={(b) => {
+    <api.Button padding={2} onClick={(b) => {
       if (b === 0) {
         showDir([d])
       }
       else if (b === 2) {
         const unmount = async () => {
-          await sys.unmount(d)
+          await api.sys.unmount(d)
           refreshDrives()
         }
-        showMenu([
+        api.showMenu([
           { text: 'unmount', onClick: unmount }
         ])
       }
     }}>
-      <Label text={d} />
-    </Button>
+      <api.Label text={d} />
+    </api.Button>
   )
 }
 
-const $entries = $<View[]>([])
-const $breadcrumbs = $<View[]>([])
+const $entries = api.$<api.View[]>([])
+const $breadcrumbs = api.$<api.View[]>([])
 
-const panel = await Panel.create(
-  <PanelView name="filer" title={$('filer')} size={$({ w: 150, h: 120 })}>
-    <SplitXA pos={50}>
-      <PanedYB>
-        <View>
-          <GroupY align={'+'} children={$drives} />
-        </View>
-        <GroupX>
-          <Button padding={2} onClick={mount}>
-            <Label text={'mount'} />
-          </Button>
-        </GroupX>
-      </PanedYB>
-      <PanedYA>
-        <GroupX children={$breadcrumbs} />
-        <Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
-          <GroupY align={'+'} children={$entries} />
-        </Scroll>
-      </PanedYA>
-    </SplitXA>
-  </PanelView>
+const panel = await api.Panel.create(
+  <api.PanelView name="filer" title={api.$('filer')} size={api.$({ w: 150, h: 120 })}>
+    <api.SplitXA pos={50}>
+      <api.PanedYB>
+        <api.View>
+          <api.GroupY align={'+'} children={$drives} />
+        </api.View>
+        <api.GroupX>
+          <api.Button padding={2} onClick={mount}>
+            <api.Label text={'mount'} />
+          </api.Button>
+        </api.GroupX>
+      </api.PanedYB>
+      <api.PanedYA>
+        <api.GroupX children={$breadcrumbs} />
+        <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
+          <api.GroupY align={'+'} children={$entries} />
+        </api.Scroll>
+      </api.PanedYA>
+    </api.SplitXA>
+  </api.PanelView>
 )
 
 showDir(['user/'])
@@ -55,19 +57,19 @@ showDir(['user/'])
 panel.focusPanel()
 
 async function showDir(full: string[]) {
-  const results = await sys.listdir(full.join(''))
+  const results = await api.sys.listdir(full.join(''))
 
   $breadcrumbs.val = full.map((part, idx) =>
-    <Button padding={2} onClick={() => showDir(full.slice(0, idx + 1))}>
-      <Label text={part} />
-    </Button>
+    <api.Button padding={2} onClick={() => showDir(full.slice(0, idx + 1))}>
+      <api.Label text={part} />
+    </api.Button>
   )
 
   if (results.length === 0) {
     $entries.val = [
-      <Border padding={2}>
-        <Label text={'[empty]'} textColor={0xffffff77} />
-      </Border>
+      <api.Border padding={2}>
+        <api.Label text={'[empty]'} textColor={0xffffff77} />
+      </api.Border>
     ]
     return
   }
@@ -79,57 +81,57 @@ async function showDir(full: string[]) {
   )
 }
 
-const imgFolder = new Bitmap([0x990000ff], 1, [1])
-const imgFile = new Bitmap([0x009900ff], 1, [1])
+const imgFolder = new api.Bitmap([0x990000ff], 1, [1])
+const imgFile = new api.Bitmap([0x009900ff], 1, [1])
 
 function FolderItem({ base, name }: { base: string[], name: string }) {
   return (
-    <Button padding={2} onClick={() => showDir([...base, name])}>
-      <GroupX gap={2}>
-        <Border>
-          <ImageView bitmap={imgFolder} />
-        </Border>
-        <Label text={name} />
-      </GroupX>
-    </Button>
+    <api.Button padding={2} onClick={() => showDir([...base, name])}>
+      <api.GroupX gap={2}>
+        <api.Border>
+          <api.ImageView bitmap={imgFolder} />
+        </api.Border>
+        <api.Label text={name} />
+      </api.GroupX>
+    </api.Button>
   )
 }
 
 function FileItem({ base, name }: { base: string[], name: string }) {
   return (
-    <Button padding={2} onClick={(b) => {
+    <api.Button padding={2} onClick={(b) => {
       const path = [...base, name].join('')
       if (b === 0) handleFile(path)
       else showMenuForFile(path)
     }}>
-      <GroupX gap={2}>
-        <Border>
-          <ImageView bitmap={imgFile} />
-        </Border>
-        <Label text={name} />
-      </GroupX>
-    </Button>
+      <api.GroupX gap={2}>
+        <api.Border>
+          <api.ImageView bitmap={imgFile} />
+        </api.Border>
+        <api.Label text={name} />
+      </api.GroupX>
+    </api.Button>
   )
 }
 
 async function mount() {
-  const name = await showPrompt('drive name?')
+  const name = await api.showPrompt('drive name?')
   if (!name) return
-  await sys.mount(name)
+  await api.sys.mount(name)
   refreshDrives()
 }
 
 async function handleFile(path: string) {
   if (path.endsWith('.js')) {
-    await sys.launch(path)
+    await api.sys.launch(path)
   }
   else if (path.endsWith('.font')) {
-    await sys.launch('sys/apps/fontmaker.js', path)
+    await api.sys.launch('sys/apps/fontmaker.js', path)
   }
 }
 
 async function showMenuForFile(path: string) {
-  showMenu([
-    { text: 'edit', onClick: () => { sys.launch('sys/apps/writer.js', path) } },
+  api.showMenu([
+    { text: 'edit', onClick: () => { api.sys.launch('sys/apps/writer.js', path) } },
   ])
 }

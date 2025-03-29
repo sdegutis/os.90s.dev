@@ -1,54 +1,5 @@
-import * as babelparser from '@babel/parser'
-import _babeltraverser from '@babel/traverse'
-import * as swc from '@swc/core'
 import fs from 'fs'
 import { processFile } from "immaculata"
-
-/** @type {typeof _babeltraverser} */
-const babeltraverser = _babeltraverser.default
-
-function getexports(src) {
-  const node = babelparser.parse(src, {
-    sourceType: 'module',
-    plugins: ['typescript', 'jsx'],
-  })
-
-  const vars = []
-  const types = []
-
-  function addtype(d) {
-    if (d.id.name === 'wRPC') return
-    types.push({
-      name: d.id.name,
-      params: d.typeParameters?.params.map(p => p.name)
-    })
-  }
-
-  babeltraverser(node, {
-    ExportNamedDeclaration: {
-      enter: (path) => {
-        const d = path.node.declaration
-        if (path.node.exportKind === 'type') {
-          addtype(d)
-          return
-        }
-
-        if (d.type === 'VariableDeclaration') {
-          vars.push(...d.declarations.map(d => d.id.name))
-        }
-        else if (d.type === 'ClassDeclaration') {
-          vars.push(d.id.name)
-          addtype(d)
-        }
-        else if (d.type === 'FunctionDeclaration') {
-          vars.push(d.id.name)
-        }
-      },
-    }
-  })
-
-  return { vars, types }
-}
 
 const swc1 = fs.readFileSync('node_modules/@swc/wasm-web/wasm.js')
 const swc2 = fs.readFileSync('node_modules/@swc/wasm-web/wasm_bg.wasm')
@@ -77,36 +28,11 @@ export default (({ inFiles, outFiles }) => {
 
   const exports = (files
     .filter(f => f.path.startsWith('/client/'))
-    .map(f => {
-      const ids = getexports(f.module.source)
-      return { path: f.path, ids }
-    }))
-
-  fs.writeFileSync('./site/api.d.ts', [
-    `export{}`,
-    `declare global {`,
-    exports.flatMap(exp => {
-      const vars = exp.ids.vars.map(id => {
-        return [`var ${id}: typeof import(".${exp.path}").${id}`]
-      })
-      const types = exp.ids.types.map(type => {
-        let params = ''
-        if (type.params) params = `<${type.params.join(', ')}>`
-        return [`type ${type.name}${params} = import(".${exp.path}").${type.name}${params}`]
-      })
-      return [
-        ...vars,
-        ...types,
-      ]
-    }).join('\n'),
-    `}`,
-  ].join('\n'))
-
-  const clientfiles = (exports
-    .map(exp => `import { ${exp.ids.vars.join(', ')} } from "${exp.path}"`)
+    .map(f => `export * from "${f.path}"`)
     .join('\n'))
 
-  files.push({ path: '/prelude.js', content: clientfiles })
+  fs.writeFileSync('./site/api.d.ts', exports)
+  files.push({ path: '/api.js', content: exports })
 
   const sysdata = JSON.stringify(Object.fromEntries(files
     .filter(f => f.path.startsWith('/fs/sys'))

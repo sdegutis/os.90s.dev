@@ -1,10 +1,12 @@
-const font = $(sys.font)
+import * as api from "/api.js"
 
-const filepath = $(program.opts["file"])
+const font = api.$(api.sys.font)
+
+const filepath = api.$(api.program.opts["file"])
 if (filepath.val) {
-  const fontstr = await sys.getfile(filepath.val)
+  const fontstr = await api.sys.getfile(filepath.val)
   if (fontstr) {
-    font.val = new Font(fontstr)
+    font.val = new api.Font(fontstr)
   }
 }
 
@@ -18,10 +20,10 @@ const SAMPLE_TEXT = [
   `.,'!?-+/":;%*=_&#|\`$@~^\\`,
 ].join('\n')
 
-const width = $(font.val.cw)
-const height = $(font.val.ch)
-const zoom = $(2)
-const current = $(' ')
+const width = api.$(font.val.cw)
+const height = api.$(font.val.ch)
+const zoom = api.$(2)
+const current = api.$(' ')
 
 const zoommin = 1
 const zoommax = 12
@@ -49,7 +51,7 @@ for (let i = 0; i < CHARSET.length; i++) {
 
 let fontsrc = ''
 rebuildNow()
-const rebuild = debounce(rebuildNow)
+const rebuild = api.debounce(rebuildNow)
 
 function rebuildNow() {
   fontsrc = `#ffffffff\n\n`
@@ -77,16 +79,16 @@ function rebuildNow() {
     fontsrc += i % row === row - 1 ? '\n' : ' '
   }
 
-  font.val = new Font(fontsrc)
+  font.val = new api.Font(fontsrc)
 }
 
 
-const panel = await Panel.create(
-  <FilePanelView name="fontmaker" filedata={() => fontsrc} filepath={filepath} title={$('font maker')} size={$({ w: 240, h: 140 })}>
-    <PanedYB>
-      <Scroll draw={makeStripeDrawer()} background={0xffffff11}>
-        <Border padding={zoom}>
-          <Grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map((ch, index) =>
+const panel = await api.Panel.create(
+  <api.FilePanelView name="fontmaker" filedata={() => fontsrc} filepath={filepath} title={api.$('font maker')} size={api.$({ w: 240, h: 140 })}>
+    <api.PanedYB>
+      <api.Scroll draw={makeStripeDrawer()} background={0xffffff11}>
+        <api.Border padding={zoom}>
+          <api.Grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map((ch, index) =>
             <CharView
               spots={sheet[index]}
               drew={spots => {
@@ -100,44 +102,44 @@ const panel = await Panel.create(
               hover={ch => current.val = ch}
             />
           )} />
-        </Border>
-      </Scroll>
-      <Border padding={2} canMouse onWheel={(x, y) => zoom.val += -y / 100}>
-        <GroupY align='a' gap={4}>
-          <Textarea autofocus font={font} text={'sample text goes here (you can type in it)'} />
-          <Label text={SAMPLE_TEXT} font={font} />
-          <GroupX gap={7}>
-            <GroupX gap={2}>
-              <Label textColor={0xffffff33} text='width' />
-              <Label textColor={0xffff00cc} text={width.adapt(n => n.toString().padStart(2, ' '))} />
+        </api.Border>
+      </api.Scroll>
+      <api.Border padding={2} canMouse onWheel={(x, y) => zoom.val += -y / 100}>
+        <api.GroupY align='a' gap={4}>
+          <api.Textarea autofocus font={font} text={'sample text goes here (you can type in it)'} />
+          <api.Label text={SAMPLE_TEXT} font={font} />
+          <api.GroupX gap={7}>
+            <api.GroupX gap={2}>
+              <api.Label textColor={0xffffff33} text='width' />
+              <api.Label textColor={0xffff00cc} text={width.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={width} min={1} max={12} />
-            </GroupX>
-            <GroupX gap={2}>
-              <Label textColor={0xffffff33} text='height' />
-              <Label textColor={0xffff00cc} text={height.adapt(n => n.toString().padStart(2, ' '))} />
+            </api.GroupX>
+            <api.GroupX gap={2}>
+              <api.Label textColor={0xffffff33} text='height' />
+              <api.Label textColor={0xffff00cc} text={height.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={height} min={1} max={12} />
-            </GroupX>
-            <GroupX gap={2}>
-              <Label textColor={0xffffff33} text='zoom' />
-              <Label textColor={0xffff00cc} text={zoom.adapt(n => n.toString().padStart(2, ' '))} />
+            </api.GroupX>
+            <api.GroupX gap={2}>
+              <api.Label textColor={0xffffff33} text='zoom' />
+              <api.Label textColor={0xffff00cc} text={zoom.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={zoom} min={zoommin} max={zoommax} />
-            </GroupX>
-            <GroupX gap={2}>
-              <Label textColor={0xffffff33} text='hover' />
-              <Label textColor={0xffff00cc} text={current} />
-            </GroupX>
-          </GroupX>
-        </GroupY>
-      </Border>
-    </PanedYB>
-  </FilePanelView>
+            </api.GroupX>
+            <api.GroupX gap={2}>
+              <api.Label textColor={0xffffff33} text='hover' />
+              <api.Label textColor={0xffff00cc} text={current} />
+            </api.GroupX>
+          </api.GroupX>
+        </api.GroupY>
+      </api.Border>
+    </api.PanedYB>
+  </api.FilePanelView>
 )
 
-function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number }) {
+function Slider({ val, min, max }: { val: api.Ref<number>, min: number, max: number }) {
   const w = 30
   const kw = 4
 
-  const knobImage = new Bitmap([0xffffff99], kw, [
+  const knobImage = new api.Bitmap([0xffffff99], kw, [
     0, 1, 1, 0,
     1, 1, 1, 1,
     1, 1, 1, 1,
@@ -148,18 +150,18 @@ function Slider({ val, min, max }: { val: Ref<number>, min: number, max: number 
   $per.intercept(per => Math.max(0, Math.min(per, 1)))
   $per.watch(per => val.val = Math.round(per * (max - min) + min))
 
-  const knob = <ImageView bitmap={knobImage} point={$per.adapt(per => ({ x: Math.round(per * (w - kw)), y: 0 }))} />
+  const knob = <api.ImageView bitmap={knobImage} point={$per.adapt(per => ({ x: Math.round(per * (w - kw)), y: 0 }))} />
 
-  const onMouseDown = function (this: View): void {
-    const $movepoint = $(knob.point)
+  const onMouseDown = function (this: api.View): void {
+    const $movepoint = api.$(knob.point)
     $movepoint.watch(p => $per.val = p.x / (w - kw))
-    this.onMouseUp = dragMove(this.$.mouse, $movepoint)
+    this.onMouseUp = api.dragMove(this.$.mouse, $movepoint)
   }
 
-  return <View canMouse size={{ w, h: 4 }} onMouseDown={onMouseDown}>
-    <View point={{ x: 0, y: 1 }} size={{ w, h: 1 }} background={0xffffff77} />
+  return <api.View canMouse size={{ w, h: 4 }} onMouseDown={onMouseDown}>
+    <api.View point={{ x: 0, y: 1 }} size={{ w, h: 1 }} background={0xffffff77} />
     {knob}
-  </View>
+  </api.View>
 }
 
 function CharView(
@@ -168,9 +170,9 @@ function CharView(
     drew: (spots: Record<string, boolean>) => void,
     hover: (ch: string) => void,
     char: string,
-    zoom: Ref<number>,
-    width: Ref<number>,
-    height: Ref<number>,
+    zoom: api.Ref<number>,
+    width: api.Ref<number>,
+    height: api.Ref<number>,
   }
 ) {
   const notifyDrew = () => drew(spots)
@@ -178,23 +180,23 @@ function CharView(
   width.watch(notifyDrew)
   height.watch(notifyDrew)
 
-  const view = <View
+  const view = <api.View
     canMouse
     background={0x00000033}
-    onMouseEnter={function () { this.panel?.pushCursor(Cursor.NONE); hover(char) }}
-    onMouseExit={function () { this.panel?.popCursor(Cursor.NONE) }}
-    size={multiplex([width, height, zoom], () => ({
+    onMouseEnter={function () { this.panel?.pushCursor(api.Cursor.NONE); hover(char) }}
+    onMouseExit={function () { this.panel?.popCursor(api.Cursor.NONE) }}
+    size={api.multiplex([width, height, zoom], () => ({
       w: width.val * zoom.val,
       h: height.val * zoom.val,
     }))}
   />
 
-  const $spot = multiplex([view.$.mouse, zoom], () => {
+  const $spot = api.multiplex([view.$.mouse, zoom], () => {
     const x = Math.floor(view.mouse.x / zoom.val)
     const y = Math.floor(view.mouse.y / zoom.val)
     return { x, y }
   })
-  $spot.equals = pointEquals
+  $spot.equals = api.pointEquals
 
   const $key = $spot.adapt(s => `${s.x},${s.y}`)
 
@@ -212,7 +214,7 @@ function CharView(
   }
 
   view.draw = function (ctx, px, py) {
-    View.prototype.draw.call(this, ctx, px, py)
+    api.View.prototype.draw.call(this, ctx, px, py)
 
     for (let x = 0; x < width.val; x++) {
       for (let y = 0; y < height.val; y++) {
@@ -236,16 +238,16 @@ function CharView(
   }
 
   return (
-    <Border paddingColor={0xffffff11} padding={1}>
+    <api.Border paddingColor={0xffffff11} padding={1}>
       {view}
-    </Border>
+    </api.Border>
   )
 }
 
 panel.focusPanel()
 
 function makeStripeDrawer(w = 4, h = 3) {
-  return function (this: View, ...[ctx, px, py]: Parameters<View['draw']>) {
+  return function (this: api.View, ...[ctx, px, py]: Parameters<api.View['draw']>) {
     this.drawBackground(ctx, px, py, this.background)
 
     let off = 0

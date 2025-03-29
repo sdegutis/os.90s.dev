@@ -11,8 +11,7 @@ const jsHeaders = {
 
 async function jsResponse(text: string) {
   const compiled = await compile(text)
-  const prelude = await fetch('/prelude.js').then(r => r.text())
-  return new Response((`${prelude}\n\n${compiled}`), jsHeaders)
+  return new Response(compiled, jsHeaders)
 }
 
 export async function handleRoute(url: URL, req: Request) {

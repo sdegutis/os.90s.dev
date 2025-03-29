@@ -18,6 +18,11 @@
     "rootDir": ".",
     "noEmit": false,
     "outDir": "out",
+    "paths": {
+      "/*": [
+        "../*"
+      ]
+    },
     "declaration": true,
     "emitDeclarationOnly": true,
     "moduleResolution": "Node",

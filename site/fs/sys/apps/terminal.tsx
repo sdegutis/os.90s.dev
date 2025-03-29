@@ -1,8 +1,10 @@
-const $lines = $<View[]>([])
-const textarea = <Textarea autofocus multiline={false} onEnter={submit} /> as Textarea
+import * as api from "/api.js"
+
+const $lines = api.$<api.View[]>([])
+const textarea = <api.Textarea autofocus multiline={false} onEnter={submit} /> as api.Textarea
 const context = {}
 
-function append(view: View) {
+function append(view: api.View) {
   $lines.val = [...$lines.val, view]
 }
 
@@ -10,25 +12,25 @@ function submit() {
   let toeval = textarea.text
   textarea.text = ''
 
-  append(<Label text={toeval} />)
+  append(<api.Label text={toeval} />)
 
   if (!toeval.match(/^(const|var|let)/)) toeval = `return ${toeval}`
   try {
     const fn = new Function(toeval)
     const res = fn.apply(context)
-    append(<Label text={'> ' + res} />)
+    append(<api.Label text={'> ' + res} />)
   }
   catch (e: any) {
-    append(<Label text={e.toString()} textColor={0x99000099} />)
+    append(<api.Label text={e.toString()} textColor={0x99000099} />)
   }
 }
 
-const panel = await Panel.create(
-  <PanelView name="terminal" title={$('terminal')} size={$({ w: 100, h: 70 })}>
-    <Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
-      <GroupY align={'a'} children={$lines.adapt(ls => [...ls, textarea])} />
-    </Scroll>
-  </PanelView>
+const panel = await api.Panel.create(
+  <api.PanelView name="terminal" title={api.$('terminal')} size={api.$({ w: 100, h: 70 })}>
+    <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
+      <api.GroupY align={'a'} children={$lines.adapt(ls => [...ls, textarea])} />
+    </api.Scroll>
+  </api.PanelView>
 )
 
 panel.focusPanel()

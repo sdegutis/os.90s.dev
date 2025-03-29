@@ -1,42 +1,44 @@
-sys.procbegan.watch(async pid => {
-  const port = await sys.openipc(pid)
+import * as api from "/api.js"
+
+api.sys.procbegan.watch(async pid => {
+  const port = await api.sys.openipc(pid)
 
 
 })
-sys.procended.watch(pid => console.log('ended', pid))
-await sys.watchprocs()
+api.sys.procended.watch(pid => console.log('ended', pid))
+await api.sys.watchprocs()
 
-sys.launch('user/startup.js')
+api.sys.launch('user/startup.js')
 
-const desktop = await Panel.create((
-  <View size={sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
+const desktop = await api.Panel.create((
+  <api.View size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
 ), {
   order: 'bottom',
-  pos: $({ x: 0, y: 0 }),
+  pos: api.$({ x: 0, y: 0 }),
 })
 
-const taskbar = await Panel.create((
-  <SpacedX size={sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x000000dd}>
-    <GroupX></GroupX>
+const taskbar = await api.Panel.create((
+  <api.SpacedX size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x000000dd}>
+    <api.GroupX></api.GroupX>
     <Clock />
-  </SpacedX>
+  </api.SpacedX>
 ), {
   order: 'top',
-  pos: sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })),
+  pos: api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })),
 })
 
 function Clock() {
   let date = false
-  let time = $('')
+  let time = api.$('')
 
-  function toggle(this: View, b: number) {
+  function toggle(this: api.View, b: number) {
     if (b === 2) {
-      showMenu([
-        { text: '320 x 180', onClick: () => { sys.resize(320, 180) } },
-        { text: '640 x 360', onClick: () => { sys.resize(320 * 2, 180 * 2) } },
+      api.showMenu([
+        { text: '320 x 180', onClick: () => { api.sys.resize(320, 180) } },
+        { text: '640 x 360', onClick: () => { api.sys.resize(320 * 2, 180 * 2) } },
         '-',
-        { text: 'test dialog', onClick: () => { showDialog('testing dialog box') } },
-        { text: 'test prompt', onClick: () => { showPrompt('testing prompt') } },
+        { text: 'test dialog', onClick: () => { api.showDialog('testing dialog box') } },
+        { text: 'test prompt', onClick: () => { api.showPrompt('testing prompt') } },
       ])
       return
     }
@@ -54,8 +56,8 @@ function Clock() {
   udpateTime()
 
   return (
-    <Button padding={2} canMouse onClick={toggle}>
-      <Label text={time} />
-    </Button>
+    <api.Button padding={2} canMouse onClick={toggle}>
+      <api.Label text={time} />
+    </api.Button>
   )
 }
