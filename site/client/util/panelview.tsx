@@ -48,13 +48,6 @@ export function PanelView(data: {
 
   const $size = data.size ?? $({ w: 200, h: 150 })
 
-  if (data.name) {
-    db.get(data.name).then((prefs) => {
-      if (prefs) { $size.val = prefs.size }
-      $size.watch((size => db.set({ panelname: data.name!, size })))
-    })
-  }
-
   let panel: Panel
 
   const focused = $(false)
@@ -77,6 +70,13 @@ export function PanelView(data: {
       presented={async function (p) {
         panel = p
         data.presented?.(p)
+
+        if (data.name) {
+          db.get(data.name).then((prefs) => {
+            if (prefs) { $size.val = prefs.size }
+            $size.watch((size => db.set({ panelname: data.name!, size })))
+          })
+        }
       }}
       onPanelFocus={() => focused.val = true}
       onPanelBlur={() => focused.val = false}
