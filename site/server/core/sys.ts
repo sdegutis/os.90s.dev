@@ -1,8 +1,9 @@
+import { Point } from "../../api.js"
 import { Cursor } from "../../client/core/cursor.js"
 import { DrawingContext } from "../../client/core/drawing.js"
 import { Font } from "../../client/core/font.js"
 import { Listener } from "../../client/core/listener.js"
-import { $ } from "../../client/core/ref.js"
+import { $, Ref } from "../../client/core/ref.js"
 import { fs } from "../fs/fs.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
@@ -37,7 +38,14 @@ export class Sys {
     const { $point, $scale, canvas, ctx } = setupCanvas(this.$size)
     this.ctx = ctx
 
-    this.showLoadingScreen(ctx)
+    this.showLoadingScreen()
+
+    this.installEventHandlers(canvas, $point, $scale)
+
+    this.launch('sys/apps/shell.js', {})
+  }
+
+  private installEventHandlers(canvas: HTMLCanvasElement, $point: Ref<Point>, $scale: Ref<number>) {
 
     document.onkeydown = (e) => {
       if (e.target !== canvas) return
@@ -103,7 +111,6 @@ export class Sys {
       this.redrawAllPanels()
     }
 
-    this.launch('sys/apps/shell.js', {})
   }
 
   async launch(path: string, opts: Record<string, any>) {
@@ -189,9 +196,9 @@ export class Sys {
     this.redrawAllPanels()
   }
 
-  private showLoadingScreen(out: CanvasRenderingContext2D) {
-    const w = out.canvas.width
-    const h = out.canvas.height
+  private showLoadingScreen() {
+    const w = this.ctx.canvas.width
+    const h = this.ctx.canvas.height
 
     const ctx = new DrawingContext(w, h)
 
@@ -210,7 +217,7 @@ export class Sys {
 
     const img = ctx.canvas.transferToImageBitmap()
 
-    out.drawImage(img, 0, 0)
+    this.ctx.drawImage(img, 0, 0)
   }
 
 }
