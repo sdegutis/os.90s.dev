@@ -1,13 +1,5 @@
 import * as api from "/api.js"
 
-api.sys.procbegan.watch(async pid => {
-  const port = await api.sys.openipc(pid)
-
-
-})
-api.sys.procended.watch(pid => console.log('ended', pid))
-await api.sys.watchprocs()
-
 api.sys.launch('user/startup.js')
 
 const desktop = await api.Panel.create((
