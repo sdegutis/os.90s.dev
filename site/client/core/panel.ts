@@ -256,10 +256,6 @@ export class Panel {
     return node
   }
 
-  redrawRoot() {
-    this.drawTree(this.root, 0, 0)
-  }
-
   private drawTree(
     node: View,
     x: number,
@@ -315,7 +311,7 @@ export class Panel {
   }
 
   blit() {
-    this.redrawRoot()
+    this.drawTree(this.root, 0, 0)
     const bmp = this.ctx.canvas.transferToImageBitmap()
     this.rpc.send('blit', [bmp], [bmp])
   }
