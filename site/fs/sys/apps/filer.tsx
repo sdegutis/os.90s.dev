@@ -58,7 +58,7 @@ const panel = await api.Panel.create(
         <api.GroupX children={$breadcrumbs} />
         <api.PanedYB>
           <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
-            <api.GroupY align={'+'} children={$entries} />
+            <api.GroupY gap={-2} align={'+'} children={$entries} />
           </api.Scroll>
           <api.GroupX background={0x00000033}>
             <api.Button padding={2} onClick={newFile}>
