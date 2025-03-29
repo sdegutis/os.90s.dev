@@ -67,8 +67,8 @@ export default (({ inFiles, outFiles }) => {
     }
 
     for (let { path, content } of processFile(file)) {
-      if (path.endsWith('.js')) content = minify(`/** ${copyright} */\n` + content.toString())
-      if (path.endsWith('.html')) content = `<!-- ${copyright} -->\n` + insert(content.toString())
+      // if (path.endsWith('.js')) content = minify(`/** ${copyright} */\n` + content.toString())
+      // if (path.endsWith('.html')) content = `<!-- ${copyright} -->\n` + insert(content.toString())
       outFiles.set(path, content)
     }
   }

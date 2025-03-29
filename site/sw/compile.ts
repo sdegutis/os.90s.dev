@@ -2,9 +2,11 @@ import initSwc, { transformSync } from "./wasm.js"
 
 const ready = initSwc()
 
-export async function compile(tsx: string) {
+export async function compile(url: URL, tsx: string) {
   await ready
   const transformed = transformSync(tsx, {
+    sourceMaps: 'inline',
+    filename: url.pathname,
     isModule: true,
     jsc: {
       externalHelpers: false,
