@@ -78,7 +78,7 @@ export default (({ inFiles, outFiles }) => {
       return { path: f.path, ids }
     }))
 
-  fs.writeFileSync('./site/globals.d.ts', [
+  fs.writeFileSync('./site/api.d.ts', [
     `export{}`,
     `declare global {`,
     exports.flatMap(exp => {
