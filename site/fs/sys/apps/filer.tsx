@@ -44,10 +44,10 @@ const panel = await api.Panel.create(
   <api.PanelView name="filer" title={api.$('filer')} size={api.$({ w: 150, h: 120 })}>
     <api.SplitXA pos={50}>
       <api.PanedYB>
-        <api.View>
+        <api.View background={0x00000077}>
           <api.GroupY align={'+'} children={$drives} />
         </api.View>
-        <api.GroupX>
+        <api.GroupX background={0x00000033}>
           <api.Button padding={2} onClick={mount}>
             <api.Label text={'mount'} />
           </api.Button>
@@ -59,7 +59,7 @@ const panel = await api.Panel.create(
           <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
             <api.GroupY align={'+'} children={$entries} />
           </api.Scroll>
-          <api.GroupX>
+          <api.GroupX background={0x00000033}>
             <api.Button padding={2} onClick={newFile}>
               <api.Label text={'new file'} />
             </api.Button>
