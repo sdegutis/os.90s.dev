@@ -13,6 +13,10 @@ export function setupCanvas(size: Ref<Size>) {
   canvas.style.outline = 'none'
   canvas.style.cursor = 'none'
 
+  canvas.oncontextmenu = (e) => {
+    if (e.target === canvas) e.preventDefault()
+  }
+
   document.body.replaceChildren(canvas)
 
   canvas.tabIndex = 1

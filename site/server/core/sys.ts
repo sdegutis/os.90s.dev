@@ -39,12 +39,6 @@ export class Sys {
 
     this.showLoadingScreen(ctx)
 
-    canvas.oncontextmenu = (e) => {
-      if (e.target === canvas) {
-        e.preventDefault()
-      }
-    }
-
     document.onkeydown = (e) => {
       if (e.target !== canvas) return
       if (e.key.match(/^F\d{1,2}$/)) return
