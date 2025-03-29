@@ -80,14 +80,16 @@ export class Group extends View {
 
 export class GroupX extends Group {
   constructor(config?: JsxAttrs<Group>) {
-    super(config)
+    super()
     this.dir = 'x'
+    this.setup(config)
   }
 }
 
 export class GroupY extends Group {
   constructor(config?: JsxAttrs<Group>) {
-    super(config)
+    super()
     this.dir = 'y'
+    this.setup(config)
   }
 }
