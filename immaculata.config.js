@@ -63,6 +63,10 @@ const ext = (s) => s.match(/\.([^\/]+)$/)?.[1] ?? ''
 
 export const jsxPathBrowser = '/client/jsx.ts'
 
+export const ignore = (str) => {
+  return str.endsWith('.tsbuildinfo') || str.endsWith('/site/api.d.ts')
+}
+
 export default (({ inFiles, outFiles }) => {
   let files = [...inFiles]
 
