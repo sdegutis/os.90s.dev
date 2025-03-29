@@ -42,6 +42,13 @@ export class Ref<T> {
     return r
   }
 
+  async adaptAsync<U>(fn: (data: T, old: T) => Promise<U>): Promise<Ref<U>> {
+    const init: U = await fn(this._val, this._val)
+    const r = $(init)
+    this.watch(async (data, old) => r.val = await fn(data, old))
+    return r
+  }
+
 }
 
 export const $ = <T>(val: T) => new Ref(val)

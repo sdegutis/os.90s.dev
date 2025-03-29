@@ -1,10 +1,39 @@
 import * as api from '/api.js'
 
+const imgFolder = new api.Bitmap([0x990000ff], 1, [1])
+const imgFile = new api.Bitmap([0x009900ff], 1, [1])
+
+const $drives = api.$<api.View[]>([])
+
 const $dirs = api.$(['user/'])
 $dirs.equals = api.arrayEquals
 
+const $breadcrumbs = $dirs.adapt(dirs =>
+  dirs.map((part, idx) =>
+    <api.Button padding={2} onClick={() => $dirs.val = dirs.slice(0, idx + 1)}>
+      <api.Label text={part} />
+    </api.Button>
+  )
+)
 
-const $drives = api.$<api.View[]>([])
+const $items = await $dirs.adaptAsync(dirs => api.sys.listdir(dirs.join('')))
+
+const EMPTY = <api.Border padding={2}>
+  <api.Label text={'[empty]'} textColor={0xffffff77} />
+</api.Border>
+
+const $entries = $items.adapt(items => {
+  if (items.length === 0) return [EMPTY]
+  return items.map(item =>
+    item.type === 'folder'
+      ? <FolderItem base={$dirs.val} name={item.name} />
+      : <FileItem base={$dirs.val} name={item.name} />
+  )
+})
+
+
+
+
 
 refreshDrives()
 
@@ -13,7 +42,7 @@ async function newFile() {
   if (!name) return
   const full = [...$dirs.val, name].join('')
   await api.sys.putfile(full, '')
-  showDir()
+  // $dirs.val = $dirs.val
 }
 
 async function refreshDrives() {
@@ -38,8 +67,8 @@ async function refreshDrives() {
   )
 }
 
-const $entries = api.$<api.View[]>([])
-const $breadcrumbs = api.$<api.View[]>([])
+
+
 
 const panel = await api.Panel.create(
   <api.PanelView name="filer" title={api.$('filer')} size={api.$({ w: 150, h: 120 })}>
@@ -72,40 +101,7 @@ const panel = await api.Panel.create(
 )
 
 
-$dirs.watch(showDir)
-showDir()
-
 panel.focusPanel()
-
-async function showDir() {
-  const full = $dirs.val
-
-  const items = await api.sys.listdir(full.join(''))
-
-  $breadcrumbs.val = full.map((part, idx) =>
-    <api.Button padding={2} onClick={() => $dirs.val = full.slice(0, idx + 1)}>
-      <api.Label text={part} />
-    </api.Button>
-  )
-
-  if (items.length === 0) {
-    $entries.val = [
-      <api.Border padding={2}>
-        <api.Label text={'[empty]'} textColor={0xffffff77} />
-      </api.Border>
-    ]
-    return
-  }
-
-  $entries.val = items.map(item =>
-    item.type === 'folder'
-      ? <FolderItem base={full} name={item.name} />
-      : <FileItem base={full} name={item.name} />
-  )
-}
-
-const imgFolder = new api.Bitmap([0x990000ff], 1, [1])
-const imgFile = new api.Bitmap([0x009900ff], 1, [1])
 
 function FolderItem({ base, name }: { base: string[], name: string }) {
   return (
