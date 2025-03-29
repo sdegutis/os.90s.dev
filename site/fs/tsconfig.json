@@ -19,8 +19,8 @@
     "noEmit": false,
     "outDir": "out",
     "paths": {
-      "/*": [
-        "../*"
+      "/api.js": [
+        "../api.js"
       ]
     },
     "declaration": true,

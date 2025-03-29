@@ -28,7 +28,7 @@ export default (({ inFiles, outFiles }) => {
 
   const exports = (files
     .filter(f => f.path.startsWith('/client/'))
-    .map(f => `export * from "${f.path}"`)
+    .map(f => `export * from ".${f.path}"`)
     .join('\n'))
 
   fs.writeFileSync('./site/api.d.ts', exports)
