@@ -90,8 +90,8 @@ export function PanelView(data: {
               <Button onClick={function () {
                 const items = data.menuItems?.()
                 if (items?.length) showMenu(items, {
-                  x: this.panel!.point.x + this.panelOffset.x + this.point.x,
-                  y: this.panel!.point.y + this.panelOffset.y + this.point.y + this.size.h,
+                  x: this.screenPoint.x,
+                  y: this.screenPoint.y + this.size.h,
                 })
               }} padding={2}><ImageView bitmap={mnuImage} /></Button>
               <Label $text={data.title} />

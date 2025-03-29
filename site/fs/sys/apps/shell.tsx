@@ -9,9 +9,23 @@ const desktop = await api.Panel.create((
   pos: api.$({ x: 0, y: 0 }),
 })
 
+async function showRun(this: api.Button) {
+  const sysApps = await api.sys.listdir('sys/apps/')
+  const userApps = await api.sys.listdir('user/apps/')
+  api.showMenu([
+    ...sysApps.map(app => ({ text: app.name, onClick: () => { api.sys.launch(`sys/apps/${app.name}`) } })),
+    '-',
+    ...userApps.map(app => ({ text: app.name, onClick: () => { api.sys.launch(`user/apps/${app.name}`) } })),
+  ], this.screenPoint)
+}
+
 const taskbar = await api.Panel.create((
   <api.SpacedX $size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x000000dd}>
-    <api.GroupX></api.GroupX>
+    <api.GroupX>
+      <api.Button padding={2} onClick={showRun}>
+        <api.Label text="run" />
+      </api.Button>
+    </api.GroupX>
     <Clock />
   </api.SpacedX>
 ), {

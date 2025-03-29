@@ -1,4 +1,4 @@
-import * as api from "/api.js"
+// import * as api from "/api.js"
+// api.sys.launch('sys/apps/terminal.js')
 
-api.sys.launch('sys/apps/filer.js')
-
+// console.log('hello world')

@@ -201,4 +201,11 @@ export class View {
   get firstChild(): View | undefined { return this.children[0] }
   get lastChild(): View | undefined { return this.children[this.children.length - 1] }
 
+  get screenPoint() {
+    return {
+      x: this.panel!.point.x + this.panelOffset.x + this.point.x,
+      y: this.panel!.point.y + this.panelOffset.y + this.point.y,
+    }
+  }
+
 }
