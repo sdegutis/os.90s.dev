@@ -1,20 +1,31 @@
 import type { DrawingContext } from "../core/drawing.js"
-import { JsxAttrs, View } from "./view.js"
+import { $ } from "../core/ref.js"
+import { JsxAttrs } from "../jsx.js"
+import { View } from "./view.js"
 
 export class Margin extends View {
 
-  constructor(config?: JsxAttrs<Margin>) { super() }
-
-  paddingColor: number = 0x00000000
-  padding: number = 0
+  constructor(config?: JsxAttrs<Margin>) {
+    super()
+    this.setup(config)
+  }
 
   override init(): void {
-    this.$.padding.watch(() => {
-      this.layout()
-    })
-    this.$.paddingColor.watch(() => this.needsRedraw())
+    super.init()
+
+    this.$paddingColor.watch(() => this.needsRedraw())
+
+    this.$padding.watch(() => this.layout())
     this.layout()
   }
+
+  $paddingColor = $<number>(0x00000000)
+  get paddingColor() { return this.$paddingColor.val }
+  set paddingColor(val) { this.$paddingColor.val = val }
+
+  $padding = $<number>(0)
+  get padding() { return this.$padding.val }
+  set padding(val) { this.$padding.val = val }
 
   override layout(): void {
     if (this.size.w === 0 || this.size.h === 0) return

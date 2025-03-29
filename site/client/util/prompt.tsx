@@ -24,10 +24,10 @@ export async function showPrompt(text: string) {
   const scroll = <Scroll
     showh={false}
     showv={false}
-    size={multiplex([
-      prompt.$.size,
-      textarea.$.size,
-      buttons.$.size,
+    $size={multiplex([
+      prompt.$size,
+      textarea.$size,
+      buttons.$size,
     ], () => ({
       w: Math.max(buttons.size.w, prompt.size.w) - 4,
       h: textarea.size.h,

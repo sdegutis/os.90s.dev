@@ -1,21 +1,60 @@
 import type { DrawingContext } from "../core/drawing.js"
 import { type Font } from "../core/font.js"
+import { $ } from "../core/ref.js"
 import { sys } from "../core/sys.js"
+import { JsxAttrs } from "../jsx.js"
 import { Scroll } from "./scroll.js"
-import { JsxAttrs, View } from "./view.js"
+import { View } from "./view.js"
 
 export class Textarea extends View {
 
-  constructor(config?: JsxAttrs<Textarea>) { super() }
+  constructor(config?: JsxAttrs<Textarea>) {
+    super()
+    this.canFocus = true
+    this.canMouse = true
+    this.setup(config)
+  }
 
-  font: Font = sys.font
-  color: number = 0xffffffff
+  override init(): void {
+    super.init()
+
+    this._cursor = new View({
+      onMouseDown: (...args) => this.onMouseDown(...args),
+      background: this.cursorColor,
+      visible: false,
+      size: {
+        w: this.font.cw + this.xgap,
+        h: this.font.ch + this.ygap,
+      }
+    })
+
+    this.label = new View({
+      canMouse: true,
+      adjust: () => this.adjustTextLabel(),
+      draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),
+      onMouseDown: (...args) => this.onMouseDown(...args),
+      children: [this._cursor]
+    })
+
+    this.children = [this.label]
+
+    this.reflectCursorPos()
+    this.adjustTextLabel()
+
+    this.$cursorColor.watch(c => this._cursor.background = c)
+  }
+
+  $font = $<Font>(sys.font)
+  get font() { return this.$font.val }
+  set font(val) { this.$font.val = val }
+
+  $color = $<number>(0xffffffff)
+  get color() { return this.$color.val }
+  set color(val) { this.$color.val = val }
+
 
   private label!: View
   private _cursor!: View
-
-  override canFocus: boolean = true
-  override canMouse: boolean = true
 
   private lines: string[] = ['']
 
@@ -33,7 +72,9 @@ export class Textarea extends View {
 
   highlightings: Record<string, [number, RegExp]> = {}
 
-  cursorColor = 0x0000FF99
+  $cursorColor = $(0x0000FF99)
+  get cursorColor() { return this.$cursorColor.val }
+  set cursorColor(val) { this.$cursorColor.val = val }
 
   private row = 0
   private col = 0
@@ -56,33 +97,6 @@ export class Textarea extends View {
         }
       }
     }
-  }
-
-  override init(): void {
-    this._cursor = View.make({
-      onMouseDown: (...args) => this.onMouseDown(...args),
-      background: this.cursorColor,
-      visible: false,
-      size: {
-        w: this.font.cw + this.xgap,
-        h: this.font.ch + this.ygap,
-      }
-    })
-
-    this.label = View.make({
-      canMouse: true,
-      adjust: () => this.adjustTextLabel(),
-      draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),
-      onMouseDown: (...args) => this.onMouseDown(...args),
-      children: [this._cursor]
-    })
-
-    this.children = [this.label]
-
-    this.reflectCursorPos()
-    this.adjustTextLabel()
-
-    this.$.cursorColor.watch(c => this._cursor.background = c)
   }
 
   override onMouseDown(button: number): void {

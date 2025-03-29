@@ -1,26 +1,45 @@
+import { $ } from "../core/ref.js"
 import type { Point } from "../core/types.js"
-import { JsxAttrs, View } from "./view.js"
+import { JsxAttrs } from "../jsx.js"
+import { View } from "./view.js"
 
 export class Grid extends View {
 
-  constructor(config?: JsxAttrs<Grid>) { super() }
-
-  cols = Infinity
-  flow = false
-  xgap = 0
-  ygap = 0
+  constructor(config?: JsxAttrs<Grid>) {
+    super()
+    this.setup(config)
+  }
 
   override init(): void {
+    super.init()
+
     const fixall = () => {
       this.adjust()
       this.layout()
     }
-    this.$.cols.watch(fixall)
-    this.$.flow.watch(fixall)
-    this.$.xgap.watch(fixall)
-    this.$.ygap.watch(fixall)
+
+    this.$cols.watch(fixall)
+    this.$flow.watch(fixall)
+    this.$xgap.watch(fixall)
+    this.$ygap.watch(fixall)
     fixall()
   }
+
+  $cols = $(Infinity)
+  get cols() { return this.$cols.val }
+  set cols(val) { this.$cols.val = val }
+
+  $flow = $(false)
+  get flow() { return this.$flow.val }
+  set flow(val) { this.$flow.val = val }
+
+  $xgap = $(0)
+  get xgap() { return this.$xgap.val }
+  set xgap(val) { this.$xgap.val = val }
+
+  $ygap = $(0)
+  get ygap() { return this.$ygap.val }
+  set ygap(val) { this.$ygap.val = val }
 
   override adopted(parent: View): void {
     this.adjust()

@@ -1,14 +1,21 @@
 import type { DrawingContext } from "../core/drawing.js"
 import { $ } from "../core/ref.js"
+import { JsxAttrs } from "../jsx.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
-import { JsxAttrs, View } from "./view.js"
+import { View } from "./view.js"
 
 class SplitDivider extends View {
 
+  constructor(config: JsxAttrs<SplitDivider>) {
+    super()
+    this.setup(config)
+
+    this.canMouse = true
+    this.pressed = false
+  }
+
   split!: Split
-  override canMouse: boolean = true
-  override pressed: boolean = false
 
   get cursor() {
     return this.split.dir === 'x' ? xresize : yresize
@@ -57,25 +64,19 @@ class SplitDivider extends View {
 
 export class Split extends View {
 
-  constructor(config?: JsxAttrs<Split>) { super() }
-
-  dividerColorHovered = 0xffffff11
-  dividerColorPressed = 0x1177ffcc
-
-  pos: number = 20
-  min: number = 10
-  max: number = -10
-  dir: 'x' | 'y' = 'y'
-  stick: 'a' | 'b' = 'a'
-
-  resizer?: SplitDivider
+  constructor(config?: JsxAttrs<Split>) {
+    super()
+    this.setup(config)
+  }
 
   override init(): void {
-    this.$.dir.watch(() => { this.layout(); this.needsRedraw() })
-    this.$.pos.watch(() => { this.layout(); this.needsRedraw() })
-    this.$.size.watch(() => { this.layout(); this.needsRedraw() })
+    super.init()
 
-    this.$.pos.intercept((pos) => {
+    this.$dir.watch(() => { this.layout(); this.needsRedraw() })
+    this.$pos.watch(() => { this.layout(); this.needsRedraw() })
+    this.$size.watch(() => { this.layout(); this.needsRedraw() })
+
+    this.$pos.intercept((pos) => {
       if (this.size.w === 0 || this.size.h === 0) return pos
 
       const dx = this.dir
@@ -88,11 +89,37 @@ export class Split extends View {
       if (max <= 0) max += this.size[dw] - 1
 
       return Math.max(min, Math.min(pos, max))
-    }, [this.$.min, this.$.max, this.$.size])
+    }, [this.$min, this.$max, this.$size])
 
-    this.resizer = SplitDivider.make({ split: this })
+    this.resizer = new SplitDivider({ split: this })
     this.children = [...this.children, this.resizer]
   }
+
+  dividerColorHovered = 0xffffff11
+  dividerColorPressed = 0x1177ffcc
+
+  $pos = $<number>(20)
+  get pos() { return this.$pos.val }
+  set pos(val) { this.$pos.val = val }
+
+  $min = $<number>(10)
+  get min() { return this.$min.val }
+  set min(val) { this.$min.val = val }
+
+  $max = $<number>(-10)
+  get max() { return this.$max.val }
+  set max(val) { this.$max.val = val }
+
+  $dir = $<'x' | 'y'>('y')
+  get dir() { return this.$dir.val }
+  set dir(val) { this.$dir.val = val }
+
+  $stick = $<'a' | 'b'>('a')
+  get stick() { return this.$stick.val }
+  set stick(val) { this.$stick.val = val }
+
+
+  resizer?: SplitDivider
 
   override layout(): void {
     const dx = this.dir
@@ -136,25 +163,33 @@ export class Split extends View {
 }
 
 export class SplitXA extends Split {
-  constructor(config?: JsxAttrs<SplitXA>) { super() }
-  override dir = 'x' as const
-  override stick = 'a' as const
+  constructor(config?: JsxAttrs<SplitXA>) {
+    super(config)
+    this.dir = 'x'
+    this.stick = 'a'
+  }
 }
 
 export class SplitYA extends Split {
-  constructor(config?: JsxAttrs<SplitYA>) { super() }
-  override dir = 'y' as const
-  override stick = 'a' as const
+  constructor(config?: JsxAttrs<SplitYA>) {
+    super(config)
+    this.dir = 'y'
+    this.stick = 'a'
+  }
 }
 
 export class SplitXB extends Split {
-  constructor(config?: JsxAttrs<SplitXB>) { super() }
-  override dir = 'x' as const
-  override stick = 'b' as const
+  constructor(config?: JsxAttrs<SplitXB>) {
+    super(config)
+    this.dir = 'x'
+    this.stick = 'b'
+  }
 }
 
 export class SplitYB extends Split {
-  constructor(config?: JsxAttrs<SplitYB>) { super() }
-  override dir = 'y' as const
-  override stick = 'b' as const
+  constructor(config?: JsxAttrs<SplitYB>) {
+    super(config)
+    this.dir = 'y'
+    this.stick = 'b'
+  }
 }

@@ -87,8 +87,8 @@ const panel = await api.Panel.create(
   <api.FilePanelView name="fontmaker" filedata={() => fontsrc} filepath={filepath} title={api.$('font maker')} size={api.$({ w: 240, h: 140 })}>
     <api.PanedYB>
       <api.Scroll draw={makeStripeDrawer()} background={0xffffff11}>
-        <api.Border padding={zoom}>
-          <api.Grid xgap={zoom} ygap={zoom} cols={16} children={CHARSET.map((ch, index) =>
+        <api.Border $padding={zoom}>
+          <api.Grid $xgap={zoom} $ygap={zoom} cols={16} children={CHARSET.map((ch, index) =>
             <CharView
               spots={sheet[index]}
               drew={spots => {
@@ -106,27 +106,27 @@ const panel = await api.Panel.create(
       </api.Scroll>
       <api.Border padding={2} canMouse onWheel={(x, y) => zoom.val += -y / 100}>
         <api.GroupY align='a' gap={4}>
-          <api.Textarea autofocus font={font} text={'sample text goes here (you can type in it)'} />
-          <api.Label text={SAMPLE_TEXT} font={font} />
+          <api.Textarea autofocus $font={font} text={'sample text goes here (you can type in it)'} />
+          <api.Label text={SAMPLE_TEXT} $font={font} />
           <api.GroupX gap={7}>
             <api.GroupX gap={2}>
               <api.Label textColor={0xffffff33} text='width' />
-              <api.Label textColor={0xffff00cc} text={width.adapt(n => n.toString().padStart(2, ' '))} />
+              <api.Label textColor={0xffff00cc} $text={width.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={width} min={1} max={12} />
             </api.GroupX>
             <api.GroupX gap={2}>
               <api.Label textColor={0xffffff33} text='height' />
-              <api.Label textColor={0xffff00cc} text={height.adapt(n => n.toString().padStart(2, ' '))} />
+              <api.Label textColor={0xffff00cc} $text={height.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={height} min={1} max={12} />
             </api.GroupX>
             <api.GroupX gap={2}>
               <api.Label textColor={0xffffff33} text='zoom' />
-              <api.Label textColor={0xffff00cc} text={zoom.adapt(n => n.toString().padStart(2, ' '))} />
+              <api.Label textColor={0xffff00cc} $text={zoom.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={zoom} min={zoommin} max={zoommax} />
             </api.GroupX>
             <api.GroupX gap={2}>
               <api.Label textColor={0xffffff33} text='hover' />
-              <api.Label textColor={0xffff00cc} text={current} />
+              <api.Label textColor={0xffff00cc} $text={current} />
             </api.GroupX>
           </api.GroupX>
         </api.GroupY>
@@ -150,12 +150,12 @@ function Slider({ val, min, max }: { val: api.Ref<number>, min: number, max: num
   $per.intercept(per => Math.max(0, Math.min(per, 1)))
   $per.watch(per => val.val = Math.round(per * (max - min) + min))
 
-  const knob = <api.ImageView bitmap={knobImage} point={$per.adapt(per => ({ x: Math.round(per * (w - kw)), y: 0 }))} />
+  const knob = <api.ImageView bitmap={knobImage} $point={$per.adapt(per => ({ x: Math.round(per * (w - kw)), y: 0 }))} />
 
   const onMouseDown = function (this: api.View): void {
     const $movepoint = api.$(knob.point)
     $movepoint.watch(p => $per.val = p.x / (w - kw))
-    this.onMouseUp = api.dragMove(this.$.mouse, $movepoint)
+    this.onMouseUp = api.dragMove(this.$mouse, $movepoint)
   }
 
   return <api.View canMouse size={{ w, h: 4 }} onMouseDown={onMouseDown}>
@@ -180,18 +180,18 @@ function CharView(
   width.watch(notifyDrew)
   height.watch(notifyDrew)
 
-  const view = <api.View
+  const view: api.View = <api.View
     canMouse
     background={0x00000033}
     onMouseEnter={function () { this.panel?.pushCursor(api.Cursor.NONE); hover(char) }}
     onMouseExit={function () { this.panel?.popCursor(api.Cursor.NONE) }}
-    size={api.multiplex([width, height, zoom], () => ({
+    $size={api.multiplex([width, height, zoom], () => ({
       w: width.val * zoom.val,
       h: height.val * zoom.val,
     }))}
   />
 
-  const $spot = api.multiplex([view.$.mouse, zoom], () => {
+  const $spot = api.multiplex([view.$mouse, zoom], () => {
     const x = Math.floor(view.mouse.x / zoom.val)
     const y = Math.floor(view.mouse.y / zoom.val)
     return { x, y }
@@ -200,7 +200,7 @@ function CharView(
 
   const $key = $spot.adapt(s => `${s.x},${s.y}`)
 
-  view.$.hovered.watch(() => view.needsRedraw())
+  view.$hovered.watch(() => view.needsRedraw())
   $spot.watch(() => view.needsRedraw())
 
   view.onMouseDown = function (b) {

@@ -3,14 +3,14 @@ import * as api from "/api.js"
 api.sys.launch('user/startup.js')
 
 const desktop = await api.Panel.create((
-  <api.View size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
+  <api.View $size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
 ), {
   order: 'bottom',
   pos: api.$({ x: 0, y: 0 }),
 })
 
 const taskbar = await api.Panel.create((
-  <api.SpacedX size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x000000dd}>
+  <api.SpacedX $size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x000000dd}>
     <api.GroupX></api.GroupX>
     <Clock />
   </api.SpacedX>
@@ -49,7 +49,7 @@ function Clock() {
 
   return (
     <api.Button padding={2} canMouse onClick={toggle}>
-      <api.Label text={time} />
+      <api.Label $text={time} />
     </api.Button>
   )
 }

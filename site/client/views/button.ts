@@ -1,25 +1,37 @@
 import type { DrawingContext } from "../core/drawing.js"
+import { $ } from "../core/ref.js"
+import { JsxAttrs } from "../jsx.js"
 import { Border } from "./border.js"
-import { JsxAttrs } from "./view.js"
 
 export class Button extends Border {
 
-  constructor(config?: JsxAttrs<Button>) { super() }
-
-  hoverBackground: number = 0xffffff22
-  pressBackground: number = 0xffffff11
-  selectedBackground: number = 0xffffff33
-
-  override canMouse = true
-
-  onClick?(button: number): void
+  constructor(config?: JsxAttrs<Button>) {
+    super()
+    this.canMouse = true
+    this.setup(config)
+  }
 
   override init(): void {
-    this.$.hoverBackground.watch(() => this.needsRedraw())
-    this.$.selectedBackground.watch(() => this.needsRedraw())
-    this.$.pressBackground.watch(() => this.needsRedraw())
+    super.init()
+    this.$hoverBackground.watch(() => this.needsRedraw())
+    this.$selectedBackground.watch(() => this.needsRedraw())
+    this.$pressBackground.watch(() => this.needsRedraw())
     this.adjust()
   }
+
+  $hoverBackground = $<number>(0xffffff22)
+  get hoverBackground() { return this.$hoverBackground.val }
+  set hoverBackground(val) { this.$hoverBackground.val = val }
+
+  $pressBackground = $<number>(0xffffff11)
+  get pressBackground() { return this.$pressBackground.val }
+  set pressBackground(val) { this.$pressBackground.val = val }
+
+  $selectedBackground = $<number>(0xffffff33)
+  get selectedBackground() { return this.$selectedBackground.val }
+  set selectedBackground(val) { this.$selectedBackground.val = val }
+
+  onClick?(button: number): void
 
   override onMouseDown(button: number): void {
     this.onMouseUp = () => {

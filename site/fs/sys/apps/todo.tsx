@@ -8,7 +8,7 @@ interface Item {
 const textfield = <api.Textarea autofocus multiline={false} onEnter={add} /> as api.Textarea
 
 const $items = api.$<Item[]>([])
-const $itemViews = $items.adapt(items => items.map(item => <ItemView item={item} />))
+const $itemViews = $items.adapt<api.View[]>(items => items.map(item => <ItemView item={item} />))
 
 const panel = await api.Panel.create(
   <api.PanelView name="todo" title={api.$('todo')} size={api.$({ w: 70, h: 50 })}>
@@ -19,7 +19,7 @@ const panel = await api.Panel.create(
       </api.GroupX>
       <api.PanedYB>
         <api.Scroll showh={false}>
-          <api.GroupY align={'a'} children={$itemViews} />
+          <api.GroupY align={'a'} $children={$itemViews} />
         </api.Scroll>
         <api.Border padding={2} background={0x00000033}>
           {textfield}

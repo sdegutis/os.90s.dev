@@ -1,17 +1,26 @@
-import { JsxAttrs, View } from "./view.js"
+import { $ } from "../core/ref.js"
+import { JsxAttrs } from "../jsx.js"
+import { View } from "./view.js"
 
 export class Spaced extends View {
 
-  constructor(config?: JsxAttrs<Spaced>) { super() }
-
-  dir: 'x' | 'y' = 'x'
+  constructor(config?: JsxAttrs<Spaced>) {
+    super()
+    this.setup(config)
+  }
 
   override init(): void {
-    this.$.dir.watch(() => this.adjust())
-    this.$.size.watch(() => this.layout())
+    super.init()
+
+    this.$dir.watch(() => this.adjust())
+    this.$size.watch(() => this.layout())
     this.adjust()
     this.layout()
   }
+
+  $dir = $<'x' | 'y'>('x')
+  get dir() { return this.$dir.val }
+  set dir(val) { this.$dir.val = val }
 
   override adjust(): void {
     const dh = this.dir === 'x' ? 'h' : 'w'
@@ -55,11 +64,15 @@ export class Spaced extends View {
 }
 
 export class SpacedX extends Spaced {
-  constructor(config?: JsxAttrs<SpacedX>) { super() }
-  override dir = 'x' as const
+  constructor(config?: JsxAttrs<SpacedX>) {
+    super(config)
+    this.dir = 'x'
+  }
 }
 
 export class SpacedY extends Spaced {
-  constructor(config?: JsxAttrs<SpacedY>) { super() }
-  override dir = 'y' as const
+  constructor(config?: JsxAttrs<SpacedY>) {
+    super(config)
+    this.dir = 'y'
+  }
 }

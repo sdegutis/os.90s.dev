@@ -1,41 +1,28 @@
 import { $, multiplex } from "../core/ref.js"
+import { JsxAttrs } from "../jsx.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { Button } from "./button.js"
 import { PanedXB, PanedYB } from "./paned.js"
-import { JsxAttrs, View } from "./view.js"
+import { View } from "./view.js"
 
 export class Scroll extends View {
 
-  constructor(config?: JsxAttrs<Scroll>) { super() }
-
-  scrollBy: number = 6
-
-  scrollx: number = 0
-  scrolly: number = 0
-
-  content!: View
-  area = View.make({})
-
-  barv = Button.make({ adjust: () => { }, size: { w: 3, h: 0 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
-  barh = Button.make({ adjust: () => { }, size: { w: 0, h: 3 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
-
-  trackv = View.make({ background: 0x00000033, children: [this.barv] })
-  trackh = View.make({ background: 0x00000033, children: [this.barh] })
-  corner = View.make({ background: 0x00000033, size: { w: 0, h: 3 } })
-
-  showh = true
-  showv = true
-
-  override canMouse: boolean = true
+  constructor(config?: JsxAttrs<Scroll>) {
+    super()
+    this.canMouse = true
+    this.setup(config)
+  }
 
   override init(): void {
+    super.init()
+
     this.content = this.children[0]
     this.area.children = [this.content]
 
-    const panea = PanedYB.make({ children: [this.area, this.trackh] })
-    const paneb = PanedYB.make({ children: [this.trackv, this.corner] })
-    this.children = [PanedXB.make({ children: [panea, paneb] })]
+    const panea = new PanedYB({ children: [this.area, this.trackh] })
+    const paneb = new PanedYB({ children: [this.trackv, this.corner] })
+    this.children = [new PanedXB({ children: [panea, paneb] })]
 
     const reflectTracksShown = () => {
       this.trackh.size = { w: 0, h: this.showh ? 3 : 0 }
@@ -44,12 +31,12 @@ export class Scroll extends View {
     }
 
     reflectTracksShown()
-    this.$.showh.watch(reflectTracksShown)
-    this.$.showv.watch(reflectTracksShown)
+    this.$showh.watch(reflectTracksShown)
+    this.$showv.watch(reflectTracksShown)
 
     const percent = multiplex([
-      this.area.$.size,
-      this.content.$.size,
+      this.area.$size,
+      this.content.$size,
     ], () => ({
       w: this.area.size.w / this.content.size.w,
       h: this.area.size.h / this.content.size.h,
@@ -57,8 +44,8 @@ export class Scroll extends View {
 
     multiplex([
       percent,
-      this.$.scrollx,
-      this.$.scrolly,
+      this.$scrollx,
+      this.$scrolly,
     ], () => {
       const as = this.area.size
 
@@ -108,12 +95,42 @@ export class Scroll extends View {
       }
     }
 
-    paneb.$.size.watch(() => this.constrainContent())
-    this.content.$.size.watch(() => this.constrainContent())
-    this.$.size.watch(() => this.constrainContent())
-    this.$.scrollx.watch(() => this.constrainContent())
-    this.$.scrolly.watch(() => this.constrainContent())
+    paneb.$size.watch(() => this.constrainContent())
+    this.content.$size.watch(() => this.constrainContent())
+    this.$size.watch(() => this.constrainContent())
+    this.$scrollx.watch(() => this.constrainContent())
+    this.$scrolly.watch(() => this.constrainContent())
   }
+
+  scrollBy: number = 6
+
+  $scrollx = $(0)
+  get scrollx() { return this.$scrollx.val }
+  set scrollx(val) { this.$scrollx.val = val }
+
+  $scrolly = $(0)
+  get scrolly() { return this.$scrolly.val }
+  set scrolly(val) { this.$scrolly.val = val }
+
+  $showh = $(true)
+  get showh() { return this.$showh.val }
+  set showh(val) { this.$showh.val = val }
+
+  $showv = $(true)
+  get showv() { return this.$showv.val }
+  set showv(val) { this.$showv.val = val }
+
+
+
+  content!: View
+  area = new View({})
+
+  barv = new Button({ adjust: () => { }, size: { w: 3, h: 0 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barh = new Button({ adjust: () => { }, size: { w: 0, h: 3 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+
+  trackv = new View({ background: 0x00000033, children: [this.barv] })
+  trackh = new View({ background: 0x00000033, children: [this.barh] })
+  corner = new View({ background: 0x00000033, size: { w: 0, h: 3 } })
 
   private constrainContent() {
     const scrollx = Math.floor(Math.max(0, Math.min(this.content.size.w - this.area.size.w, this.scrollx)))

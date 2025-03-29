@@ -1,17 +1,26 @@
 import type { Bitmap } from "../core/bitmap.js"
 import type { DrawingContext } from "../core/drawing.js"
-import { JsxAttrs, View } from "./view.js"
+import { $ } from "../core/ref.js"
+import { JsxAttrs } from "../jsx.js"
+import { View } from "./view.js"
 
 export class ImageView extends View {
 
-  constructor(config?: JsxAttrs<ImageView>) { super() }
-
-  bitmap: Bitmap | null = null
+  constructor(config?: JsxAttrs<ImageView>) {
+    super()
+    this.setup(config)
+  }
 
   override init(): void {
-    this.$.bitmap.watch(() => this.adjust())
+    super.init()
+
+    this.$bitmap.watch(() => this.adjust())
     this.adjust()
   }
+
+  $bitmap = $<Bitmap | null>(null)
+  get bitmap() { return this.$bitmap.val }
+  set bitmap(val) { this.$bitmap.val = val }
 
   override adjust(): void {
     this.size = {

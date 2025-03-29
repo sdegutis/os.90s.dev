@@ -1,14 +1,16 @@
+import { JsxAttrs } from "../jsx.js"
 import { Margin } from "./margin.js"
-import { JsxAttrs } from "./view.js"
 
 export class Border extends Margin {
 
-  constructor(config?: JsxAttrs<Border>) { super() }
+  constructor(config?: JsxAttrs<Border>) {
+    super()
+    this.setup(config)
+  }
 
   override init(): void {
-    this.$.padding.watch(() => {
-      this.adjust()
-    })
+    super.init()
+    this.$padding.watch(() => this.adjust())
     this.adjust()
   }
 

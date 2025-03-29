@@ -1,35 +1,157 @@
 import type { DrawingContext } from "../core/drawing.js"
 import type { Panel } from "../core/panel.js"
-import { multiplex, Ref } from "../core/ref.js"
+import { $, multiplex } from "../core/ref.js"
 import { type Point, type Size, arrayEquals, pointEquals, sizeEquals } from "../core/types.js"
-import { Dynamic } from "../util/dyn.js"
+import { JsxAttrs } from "../jsx.js"
 import { debounce } from "../util/throttle.js"
 
-export class View extends Dynamic {
+export class View {
 
-  constructor(config?: JsxAttrs<View>) { super() }
+  protected setup<T extends View>(config?: JsxAttrs<T>) {
+    if (!config) return
 
-  panel: Panel | null = null
+    const c = config as JsxAttrs<View>
+    if ('children' in c) {
+      if (!(c.children instanceof Array)) {
+        c.children = [c.children]
+      }
+    }
 
-  parent: View | null = null
-  children: readonly View[] = []
+    Object.assign(this, config)
 
-  point: Point = { x: 0, y: 0 }
-  size: Size = { w: 0, h: 0 }
+    this.init()
+  }
 
-  canFocus: boolean = false
-  canMouse: boolean = false
-  visible: boolean = true
-  autofocus: boolean = false
+  init() {
+    this.$parent.watch((parent) => {
+      if (parent) this.adopted?.(parent)
+    })
 
-  hovered: boolean = false
-  pressed: boolean = false
-  selected: boolean = false
+    this.$panel.watch((panel) => {
+      if (panel) {
+        multiplex([this.$panelOffset, panel.$mouse], () => {
+          this.mouse = {
+            x: panel.mouse.x - this.panelOffset.x,
+            y: panel.mouse.y - this.panelOffset.y,
+          }
+        })
 
-  background: number = 0x00000000
+        this.presented?.(panel)
 
-  panelOffset: Point = { x: 0, y: 0 }
-  mouse: Point = { x: 0, y: 0 }
+        if (this.autofocus) {
+          this.focus()
+        }
+      }
+    })
+
+    this.$size.watch(() => {
+      this.layout?.()
+      this.parent?.childResized()
+      this.panel?.needsMouseCheck()
+      this.needsRedraw()
+    })
+
+    this.$point.watch(() => {
+      this.panel?.needsMouseCheck()
+      this.needsRedraw()
+    })
+
+    this.$visible.watch(() => this.needsRedraw())
+    this.$hovered.watch(() => this.needsRedraw())
+    this.$pressed.watch(() => this.needsRedraw())
+    this.$selected.watch(() => this.needsRedraw())
+    this.$background.watch(() => this.needsRedraw())
+
+    this.$children.watch(() => {
+      for (const child of this.children) {
+        child.parent = this
+        this.panel?.adoptTree(child)
+      }
+      this.adjust?.()
+      this.layout?.()
+      this.needsRedraw()
+    })
+
+    for (const child of this.children) {
+      child.parent = this
+      this.panel?.adoptTree(child)
+    }
+
+    this.$children.equals = arrayEquals
+    this.$point.equals = pointEquals
+    this.$size.equals = sizeEquals
+  }
+
+  constructor(config?: JsxAttrs<View>) {
+    this.setup(config)
+  }
+
+  $panel = $<Panel | null>(null)
+  get panel() { return this.$panel.val }
+  set panel(val) { this.$panel.val = val }
+
+
+  $parent = $<View | null>(null)
+  get parent() { return this.$parent.val }
+  set parent(val) { this.$parent.val = val }
+
+  $children = $<View[]>([])
+  get children() { return this.$children.val }
+  set children(val) { this.$children.val = val }
+
+
+  $point = $<Point>({ x: 0, y: 0 })
+  get point() { return this.$point.val }
+  set point(val) { this.$point.val = val }
+
+  $size = $<Size>({ w: 0, h: 0 })
+  get size() { return this.$size.val }
+  set size(val) { this.$size.val = val }
+
+
+  $canFocus = $<boolean>(false)
+  get canFocus() { return this.$canFocus.val }
+  set canFocus(val) { this.$canFocus.val = val }
+
+  $canMouse = $<boolean>(false)
+  get canMouse() { return this.$canMouse.val }
+  set canMouse(val) { this.$canMouse.val = val }
+
+  $visible = $<boolean>(true)
+  get visible() { return this.$visible.val }
+  set visible(val) { this.$visible.val = val }
+
+  $autofocus = $<boolean>(false)
+  get autofocus() { return this.$autofocus.val }
+  set autofocus(val) { this.$autofocus.val = val }
+
+
+  $hovered = $<boolean>(false)
+  get hovered() { return this.$hovered.val }
+  set hovered(val) { this.$hovered.val = val }
+
+  $pressed = $<boolean>(false)
+  get pressed() { return this.$pressed.val }
+  set pressed(val) { this.$pressed.val = val }
+
+  $selected = $<boolean>(false)
+  get selected() { return this.$selected.val }
+  set selected(val) { this.$selected.val = val }
+
+
+  $background = $<number>(0x00000000)
+  get background() { return this.$background.val }
+  set background(val) { this.$background.val = val }
+
+
+  $panelOffset = $<Point>({ x: 0, y: 0 })
+  get panelOffset() { return this.$panelOffset.val }
+  set panelOffset(val) { this.$panelOffset.val = val }
+
+  $mouse = $<Point>({ x: 0, y: 0 })
+  get mouse() { return this.$mouse.val }
+  set mouse(val) { this.$mouse.val = val }
+
 
   onPanelFocus?(): void
   onPanelBlur?(): void
@@ -54,66 +176,6 @@ export class View extends Dynamic {
 
   adopted?(parent: View): void
   presented?(panel: Panel): void
-
-  override init(): void {
-    this.$.parent.watch((parent) => {
-      if (parent) this.adopted?.(parent)
-    })
-
-    this.$.panel.watch((panel) => {
-      if (panel) {
-        multiplex([this.$.panelOffset, panel.$mouse], () => {
-          this.mouse = {
-            x: panel.mouse.x - this.panelOffset.x,
-            y: panel.mouse.y - this.panelOffset.y,
-          }
-        })
-
-        this.presented?.(panel)
-
-        if (this.autofocus) {
-          this.focus()
-        }
-      }
-    })
-
-    this.$.size.watch(() => {
-      this.layout?.()
-      this.parent?.childResized()
-      this.panel?.needsMouseCheck()
-      this.needsRedraw()
-    })
-
-    this.$.point.watch(() => {
-      this.panel?.needsMouseCheck()
-      this.needsRedraw()
-    })
-
-    this.$.visible.watch(() => this.needsRedraw())
-    this.$.hovered.watch(() => this.needsRedraw())
-    this.$.pressed.watch(() => this.needsRedraw())
-    this.$.selected.watch(() => this.needsRedraw())
-    this.$.background.watch(() => this.needsRedraw())
-
-    this.$.children.watch(() => {
-      for (const child of this.children) {
-        child.parent = this
-        this.panel?.adoptTree(child)
-      }
-      this.adjust?.()
-      this.layout?.()
-      this.needsRedraw()
-    })
-
-    for (const child of this.children) {
-      child.parent = this
-      this.panel?.adoptTree(child)
-    }
-
-    this.$.children.equals = arrayEquals
-    this.$.point.equals = pointEquals
-    this.$.size.equals = sizeEquals
-  }
 
   draw(ctx: DrawingContext, px: number, py: number): void {
     this.drawBackground(ctx, px, py, this.background)
@@ -141,16 +203,8 @@ export class View extends Dynamic {
 
 }
 
-export type JsxAttrs<T> = {
-  [K in keyof T]?: (
-
-    K extends 'children'
-    ? View | View[] | Ref<View[]>
-
-    : T[K] extends ((...args: infer A) => infer R) | undefined
-    ? ((this: T, ...args: A) => R) | undefined
-
-    : T[K] | Ref<T[K]>
-
-  )
-}
+new View({
+  onMouseDown() {
+    this
+  }
+})

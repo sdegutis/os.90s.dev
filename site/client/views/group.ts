@@ -1,23 +1,38 @@
+import { $ } from "../core/ref.js"
 import type { Size } from "../core/types.js"
-import { JsxAttrs, View } from "./view.js"
+import { JsxAttrs } from "../jsx.js"
+import { View } from "./view.js"
 
 export class Group extends View {
 
-  constructor(config?: JsxAttrs<Group>) { super() }
-
-  gap: number = 0
-  dir: 'x' | 'y' = 'x'
-  align: 'a' | 'm' | 'z' | '+' = 'm'
+  constructor(config?: JsxAttrs<Group>) {
+    super()
+    this.setup(config)
+  }
 
   override init(): void {
-    this.$.gap.watch(() => this.adjust())
-    this.$.dir.watch(() => this.adjust())
-    this.$.align.watch(() => this.adjust())
-    this.$.children.watch(() => this.adjust())
-    this.$.children.watch(() => this.layout())
+    super.init()
+
+    this.$gap.watch(() => this.adjust())
+    this.$dir.watch(() => this.adjust())
+    this.$align.watch(() => this.adjust())
+    this.$children.watch(() => this.adjust())
+    this.$children.watch(() => this.layout())
     this.adjust()
     // this.layout()
   }
+
+  $gap = $<number>(0)
+  get gap() { return this.$gap.val }
+  set gap(val) { this.$gap.val = val }
+
+  $dir = $<'x' | 'y'>('x')
+  get dir() { return this.$dir.val }
+  set dir(val) { this.$dir.val = val }
+
+  $align = $<'a' | 'm' | 'z' | '+'>('m')
+  get align() { return this.$align.val }
+  set align(val) { this.$align.val = val }
 
   override adjust(): void {
     const dw = this.dir === 'x' ? 'w' : 'h'
@@ -64,11 +79,15 @@ export class Group extends View {
 }
 
 export class GroupX extends Group {
-  constructor(config?: JsxAttrs<GroupX>) { super() }
-  override dir = 'x' as const
+  constructor(config?: JsxAttrs<Group>) {
+    super(config)
+    this.dir = 'x'
+  }
 }
 
 export class GroupY extends Group {
-  constructor(config?: JsxAttrs<GroupY>) { super() }
-  override dir = 'y' as const
+  constructor(config?: JsxAttrs<Group>) {
+    super(config)
+    this.dir = 'y'
+  }
 }

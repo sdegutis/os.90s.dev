@@ -1,27 +1,42 @@
+import { $ } from "../core/ref.js"
+import { JsxAttrs } from "../jsx.js"
 import { debounce } from "../util/throttle.js"
-import { JsxAttrs, View } from "./view.js"
+import { View } from "./view.js"
 
 export class Paned extends View {
 
-  constructor(config?: JsxAttrs<Paned>) { super() }
-
-  gap: number = 0
-  dir: 'x' | 'y' = 'x'
-  vacuum: 'a' | 'b' = 'a'
+  constructor(config?: JsxAttrs<Paned>) {
+    super()
+    this.setup(config)
+  }
 
   override init(): void {
+    super.init()
+
     const relayout = debounce(() => {
       this.children.forEach(c => c.adjust?.())
       this.needsRedraw()
       this.layout()
     })
 
-    this.$.gap.watch(relayout)
-    this.$.dir.watch(relayout)
-    this.$.vacuum.watch(relayout)
+    this.$gap.watch(relayout)
+    this.$dir.watch(relayout)
+    this.$vacuum.watch(relayout)
 
     this.layout()
   }
+
+  $gap = $<number>(0)
+  get gap() { return this.$gap.val }
+  set gap(val) { this.$gap.val = val }
+
+  $dir = $<'x' | 'y'>('x')
+  get dir() { return this.$dir.val }
+  set dir(val) { this.$dir.val = val }
+
+  $vacuum = $<'a' | 'b'>('a')
+  get vacuum() { return this.$vacuum.val }
+  set vacuum(val) { this.$vacuum.val = val }
 
   override layout(): void {
     const [a, b] = this.children
@@ -64,25 +79,33 @@ export class Paned extends View {
 }
 
 export class PanedXA extends Paned {
-  constructor(config?: JsxAttrs<PanedXA>) { super() }
-  override dir = 'x' as const
-  override vacuum = 'a' as const
+  constructor(config?: JsxAttrs<PanedXA>) {
+    super(config)
+    this.dir = 'x'
+    this.vacuum = 'a'
+  }
 }
 
 export class PanedXB extends Paned {
-  constructor(config?: JsxAttrs<PanedXB>) { super() }
-  override dir = 'x' as const
-  override vacuum = 'b' as const
+  constructor(config?: JsxAttrs<PanedXB>) {
+    super(config)
+    this.dir = 'x'
+    this.vacuum = 'b'
+  }
 }
 
 export class PanedYA extends Paned {
-  constructor(config?: JsxAttrs<PanedYA>) { super() }
-  override dir = 'y' as const
-  override vacuum = 'a' as const
+  constructor(config?: JsxAttrs<PanedYA>) {
+    super(config)
+    this.dir = 'y'
+    this.vacuum = 'a'
+  }
 }
 
 export class PanedYB extends Paned {
-  constructor(config?: JsxAttrs<PanedYB>) { super() }
-  override dir = 'y' as const
-  override vacuum = 'b' as const
+  constructor(config?: JsxAttrs<PanedYB>) {
+    super(config)
+    this.dir = 'y'
+    this.vacuum = 'b'
+  }
 }
