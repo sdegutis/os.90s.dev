@@ -70,36 +70,49 @@ async function newFile() {
 
 const panel = await api.Panel.create(
   <api.PanelView name="filer" title={api.$('filer')} size={api.$({ w: 150, h: 120 })}>
-    <api.SplitXA pos={50}>
-      <api.PanedYB>
-        <api.View background={0x00000077}>
-          <api.GroupY align={'+'} children={$driveButtons} />
-        </api.View>
-        <api.GroupX background={0x00000033}>
-          <api.Button padding={2} onClick={mount}>
-            <api.Label text={'mount'} />
-          </api.Button>
-        </api.GroupX>
-      </api.PanedYB>
-      <api.PanedYA>
-        <api.GroupX children={$breadcrumbs} />
-        <api.PanedYB>
-          <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
-            <api.GroupY gap={-2} align={'+'} children={$itemButtons} />
-          </api.Scroll>
-          <api.GroupX background={0x00000033}>
-            <api.Button padding={2} onClick={newFile}>
-              <api.Label text={'new file'} />
-            </api.Button>
-          </api.GroupX>
-        </api.PanedYB>
-      </api.PanedYA>
+    <api.SplitXA pos={30}>
+      <Sidebar />
+      <Main />
     </api.SplitXA>
   </api.PanelView>
 )
 
-
 panel.focusPanel()
+
+function Main() {
+  return <api.PanedYA>
+
+    <api.GroupX children={$breadcrumbs} />
+
+    <api.PanedYB>
+      <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
+        <api.GroupY gap={-2} align={'+'} children={$itemButtons} />
+      </api.Scroll>
+      <api.GroupX background={0x00000033}>
+        <api.Button padding={2} onClick={newFile}>
+          <api.Label text={'new file'} />
+        </api.Button>
+      </api.GroupX>
+    </api.PanedYB>
+
+  </api.PanedYA>
+}
+
+function Sidebar() {
+  return <api.PanedYB>
+
+    <api.View background={0x00000077}>
+      <api.GroupY align={'+'} children={$driveButtons} />
+    </api.View>
+
+    <api.GroupX background={0x00000033}>
+      <api.Button padding={2} onClick={mount}>
+        <api.Label text={'mount'} />
+      </api.Button>
+    </api.GroupX>
+
+  </api.PanedYB>
+}
 
 function FolderItem({ base, name }: { base: string[], name: string }) {
   return (
