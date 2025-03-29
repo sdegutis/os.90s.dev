@@ -10,6 +10,7 @@ refreshDrives()
 
 async function newFile() {
   const name = await api.showPrompt('filename?')
+  if (!name) return
   const full = [...$dirs.val, name].join('')
   await api.sys.putfile(full, '')
   showDir()
