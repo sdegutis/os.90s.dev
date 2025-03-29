@@ -3,7 +3,7 @@ import { Cursor } from "../core/cursor.js"
 import type { Panel } from "../core/panel.js"
 import { $, multiplex, Ref } from "../core/ref.js"
 import { program, sys } from "../core/sys.js"
-import type { Point, Size } from "../core/types.js"
+import type { Size } from "../core/types.js"
 import { Border } from "../views/border.js"
 import { Button } from "../views/button.js"
 import { GroupX } from "../views/group.js"
@@ -34,7 +34,7 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
 ]))
 
 
-const db = await opendb<{ panelname: string, point: Point, size: Size }>('panels', 'panelname')
+const db = await opendb<{ panelname: string, size: Size }>('panels', 'panelname')
 
 export function PanelView(data: {
   name?: string,
@@ -47,6 +47,13 @@ export function PanelView(data: {
 }) {
 
   const size = data.size ?? $({ w: 200, h: 150 })
+
+  if (data.name) {
+    db.get(data.name).then((prefs) => {
+      if (prefs) { size.val = prefs.size }
+      size.watch((size => db.set({ panelname: data.name!, size })))
+    })
+  }
 
   let panel: Panel
 
@@ -70,25 +77,6 @@ export function PanelView(data: {
       presented={async function (p) {
         panel = p
         data.presented?.(p)
-
-        if (data.name) {
-          const prefs = await db.get(data.name)
-          if (prefs) {
-            panel.size = prefs.size
-            panel.point = prefs.point
-          }
-
-          function saveprefs() {
-            db.set({
-              panelname: data.name!,
-              point: panel.point,
-              size: panel.size,
-            })
-          }
-
-          panel.$size.watch(saveprefs)
-          panel.$point.watch(saveprefs)
-        }
       }}
       onPanelFocus={() => focused.val = true}
       onPanelBlur={() => focused.val = false}
