@@ -9,7 +9,8 @@ const EMPTY = <api.Border padding={2}>
 
 
 
-const $drives = await api.$(1).adaptAsync(() => api.sys.listdrives(''))
+const $drivesLoader = api.$(null)
+const $drives = await $drivesLoader.adaptAsync(() => api.sys.listdrives(''))
 
 const $driveButtons = $drives.adapt(drives => drives.map(d =>
   <api.Button padding={2} onClick={(b) => {
@@ -19,7 +20,7 @@ const $driveButtons = $drives.adapt(drives => drives.map(d =>
     else if (b === 2) {
       const unmount = async () => {
         await api.sys.unmount(d)
-        $drives.notify()
+        $drivesLoader.notify()
       }
       api.showMenu([
         { text: 'unmount', onClick: unmount }
@@ -134,7 +135,7 @@ async function mount() {
   const name = await api.showPrompt('drive name?')
   if (!name) return
   await api.sys.mount(name)
-  $drives.notify()
+  $drivesLoader.notify()
 }
 
 async function handleFile(path: string) {
