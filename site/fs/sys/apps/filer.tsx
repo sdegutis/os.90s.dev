@@ -1,5 +1,9 @@
 import * as api from '/api.js'
 
+const $dirs = api.$(['user/'])
+$dirs.equals = api.arrayEquals
+
+
 const $drives = api.$<api.View[]>([])
 
 refreshDrives()
@@ -9,7 +13,7 @@ async function refreshDrives() {
   $drives.val = drives.map(d =>
     <api.Button padding={2} onClick={(b) => {
       if (b === 0) {
-        showDir([d])
+        $dirs.val = [d]
       }
       else if (b === 2) {
         const unmount = async () => {
@@ -52,20 +56,24 @@ const panel = await api.Panel.create(
   </api.PanelView>
 )
 
-showDir(['user/'])
+
+$dirs.watch(showDir)
+showDir()
 
 panel.focusPanel()
 
-async function showDir(full: string[]) {
-  const results = await api.sys.listdir(full.join(''))
+async function showDir() {
+  const full = $dirs.val
+
+  const items = await api.sys.listdir(full.join(''))
 
   $breadcrumbs.val = full.map((part, idx) =>
-    <api.Button padding={2} onClick={() => showDir(full.slice(0, idx + 1))}>
+    <api.Button padding={2} onClick={() => $dirs.val = full.slice(0, idx + 1)}>
       <api.Label text={part} />
     </api.Button>
   )
 
-  if (results.length === 0) {
+  if (items.length === 0) {
     $entries.val = [
       <api.Border padding={2}>
         <api.Label text={'[empty]'} textColor={0xffffff77} />
@@ -74,7 +82,7 @@ async function showDir(full: string[]) {
     return
   }
 
-  $entries.val = results.map(item =>
+  $entries.val = items.map(item =>
     item.type === 'folder'
       ? <FolderItem base={full} name={item.name} />
       : <FileItem base={full} name={item.name} />
@@ -86,7 +94,7 @@ const imgFile = new api.Bitmap([0x009900ff], 1, [1])
 
 function FolderItem({ base, name }: { base: string[], name: string }) {
   return (
-    <api.Button padding={2} onClick={() => showDir([...base, name])}>
+    <api.Button padding={2} onClick={() => $dirs.val = [...base, name]}>
       <api.GroupX gap={2}>
         <api.Border>
           <api.ImageView bitmap={imgFolder} />
