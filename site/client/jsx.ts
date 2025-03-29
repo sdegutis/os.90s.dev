@@ -1,19 +1,4 @@
-import { Ref } from "./core/ref.js"
 import { View } from "./views/view.js"
-
-export type JsxAttrs<T> = {
-  [K in keyof T]?: (
-
-    K extends 'children'
-    ? View | View[] | Ref<View[]>
-
-    : T[K] extends ((...args: infer A) => infer R) | undefined
-    ? ((this: T, ...args: A) => R) | undefined
-
-    : T[K] | Ref<T[K]>
-
-  )
-}
 
 declare global {
 

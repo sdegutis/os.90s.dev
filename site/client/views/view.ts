@@ -1,8 +1,7 @@
 import type { DrawingContext } from "../core/drawing.js"
 import type { Panel } from "../core/panel.js"
-import { multiplex } from "../core/ref.js"
+import { multiplex, Ref } from "../core/ref.js"
 import { type Point, type Size, arrayEquals, pointEquals, sizeEquals } from "../core/types.js"
-import { JsxAttrs } from "../jsx.js"
 import { Dynamic } from "../util/dyn.js"
 import { debounce } from "../util/throttle.js"
 
@@ -140,4 +139,18 @@ export class View extends Dynamic {
   get firstChild(): View | undefined { return this.children[0] }
   get lastChild(): View | undefined { return this.children[this.children.length - 1] }
 
+}
+
+export type JsxAttrs<T> = {
+  [K in keyof T]?: (
+
+    K extends 'children'
+    ? View | View[] | Ref<View[]>
+
+    : T[K] extends ((...args: infer A) => infer R) | undefined
+    ? ((this: T, ...args: A) => R) | undefined
+
+    : T[K] | Ref<T[K]>
+
+  )
 }

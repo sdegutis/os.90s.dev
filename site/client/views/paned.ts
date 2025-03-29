@@ -1,6 +1,5 @@
-import { JsxAttrs } from "../jsx.js"
 import { debounce } from "../util/throttle.js"
-import { View } from "./view.js"
+import { JsxAttrs, View } from "./view.js"
 
 export class Paned extends View {
 

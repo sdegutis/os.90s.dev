@@ -1,10 +1,9 @@
 import { $, multiplex } from "../core/ref.js"
-import { JsxAttrs } from "../jsx.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { Button } from "./button.js"
 import { PanedXB, PanedYB } from "./paned.js"
-import { View } from "./view.js"
+import { JsxAttrs, View } from "./view.js"
 
 export class Scroll extends View {
 

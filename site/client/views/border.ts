@@ -1,5 +1,5 @@
-import { JsxAttrs } from "../jsx.js"
 import { Margin } from "./margin.js"
+import { JsxAttrs } from "./view.js"
 
 export class Border extends Margin {
 

@@ -1,9 +1,8 @@
 import type { DrawingContext } from "../core/drawing.js"
 import { $ } from "../core/ref.js"
-import { JsxAttrs } from "../jsx.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
-import { View } from "./view.js"
+import { JsxAttrs, View } from "./view.js"
 
 class SplitDivider extends View {
 
