@@ -10,14 +10,17 @@ export class Border extends Margin {
 
   override init(): void {
     super.init()
-    this.$padding.watch(() => this.adjust())
+    this.$up.watch(() => this.adjust())
+    this.$down.watch(() => this.adjust())
+    this.$left.watch(() => this.adjust())
+    this.$right.watch(() => this.adjust())
     this.adjust()
   }
 
   override adjust(): void {
     this.size = {
-      w: this.padding + (this.firstChild?.size.w ?? 0) + this.padding,
-      h: this.padding + (this.firstChild?.size.h ?? 0) + this.padding,
+      w: this.left + (this.firstChild?.size.w ?? 0) + this.right,
+      h: this.up + (this.firstChild?.size.h ?? 0) + this.down,
     }
     this.layout()
   }
@@ -26,8 +29,8 @@ export class Border extends Margin {
     const c = this.firstChild
     if (c) {
       c.point = {
-        x: this.padding,
-        y: this.padding,
+        x: this.left,
+        y: this.up,
       }
     }
   }

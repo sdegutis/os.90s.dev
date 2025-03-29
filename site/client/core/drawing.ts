@@ -13,11 +13,6 @@ export class DrawingContext {
     this.ctx.fillRect(x, y, w, h)
   }
 
-  strokeRect(x: number, y: number, w: number, h: number, c: number) {
-    this.ctx.strokeStyle = colorFor(c)
-    this.ctx.strokeRect(x + .5, y + .5, w - 1, h - 1)
-  }
-
   clip(x: number, y: number, w: number, h: number) {
     this.ctx.save()
     this.ctx.beginPath()
