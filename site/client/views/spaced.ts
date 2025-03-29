@@ -64,15 +64,17 @@ export class Spaced extends View {
 }
 
 export class SpacedX extends Spaced {
-  constructor(config?: JsxAttrs<SpacedX>) {
-    super(config)
+  constructor(config?: JsxAttrs<Spaced>) {
+    super()
     this.dir = 'x'
+    this.setup(config)
   }
 }
 
 export class SpacedY extends Spaced {
-  constructor(config?: JsxAttrs<SpacedY>) {
-    super(config)
+  constructor(config?: JsxAttrs<Spaced>) {
+    super()
     this.dir = 'y'
+    this.setup(config)
   }
 }

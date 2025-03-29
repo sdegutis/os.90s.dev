@@ -79,33 +79,37 @@ export class Paned extends View {
 }
 
 export class PanedXA extends Paned {
-  constructor(config?: JsxAttrs<PanedXA>) {
-    super(config)
+  constructor(config?: JsxAttrs<Paned>) {
+    super()
     this.dir = 'x'
     this.vacuum = 'a'
+    this.setup(config)
   }
 }
 
 export class PanedXB extends Paned {
-  constructor(config?: JsxAttrs<PanedXB>) {
-    super(config)
+  constructor(config?: JsxAttrs<Paned>) {
+    super()
     this.dir = 'x'
     this.vacuum = 'b'
+    this.setup(config)
   }
 }
 
 export class PanedYA extends Paned {
-  constructor(config?: JsxAttrs<PanedYA>) {
-    super(config)
+  constructor(config?: JsxAttrs<Paned>) {
+    super()
     this.dir = 'y'
     this.vacuum = 'a'
+    this.setup(config)
   }
 }
 
 export class PanedYB extends Paned {
-  constructor(config?: JsxAttrs<PanedYB>) {
-    super(config)
+  constructor(config?: JsxAttrs<Paned>) {
+    super()
     this.dir = 'y'
     this.vacuum = 'b'
+    this.setup(config)
   }
 }

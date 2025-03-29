@@ -163,33 +163,37 @@ export class Split extends View {
 }
 
 export class SplitXA extends Split {
-  constructor(config?: JsxAttrs<SplitXA>) {
-    super(config)
+  constructor(config?: JsxAttrs<Split>) {
+    super()
     this.dir = 'x'
     this.stick = 'a'
+    this.setup(config)
   }
 }
 
 export class SplitYA extends Split {
-  constructor(config?: JsxAttrs<SplitYA>) {
-    super(config)
+  constructor(config?: JsxAttrs<Split>) {
+    super()
     this.dir = 'y'
     this.stick = 'a'
+    this.setup(config)
   }
 }
 
 export class SplitXB extends Split {
-  constructor(config?: JsxAttrs<SplitXB>) {
-    super(config)
+  constructor(config?: JsxAttrs<Split>) {
+    super()
     this.dir = 'x'
     this.stick = 'b'
+    this.setup(config)
   }
 }
 
 export class SplitYB extends Split {
-  constructor(config?: JsxAttrs<SplitYB>) {
-    super(config)
+  constructor(config?: JsxAttrs<Split>) {
+    super()
     this.dir = 'y'
     this.stick = 'b'
+    this.setup(config)
   }
 }
