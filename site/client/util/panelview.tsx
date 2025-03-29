@@ -46,12 +46,12 @@ export function PanelView(data: {
   menuItems?: () => MenuItem[],
 }) {
 
-  const size = data.size ?? $({ w: 200, h: 150 })
+  const $size = data.size ?? $({ w: 200, h: 150 })
 
   if (data.name) {
     db.get(data.name).then((prefs) => {
-      if (prefs) { size.val = prefs.size }
-      size.watch((size => db.set({ panelname: data.name!, size })))
+      if (prefs) { $size.val = prefs.size }
+      $size.watch((size => db.set({ panelname: data.name!, size })))
     })
   }
 
@@ -73,7 +73,7 @@ export function PanelView(data: {
       onKeyDown={data.onKeyDown}
       $paddingColor={borderColor}
       padding={1}
-      $size={size}
+      $size={$size}
       presented={async function (p) {
         panel = p
         data.presented?.(p)
@@ -114,7 +114,7 @@ export function PanelView(data: {
 
       </PanedYA>
 
-      <PanelResizer size={size} />
+      <PanelResizer size={$size} />
 
     </Margin>
   )

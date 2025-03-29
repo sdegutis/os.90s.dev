@@ -38,31 +38,31 @@ export class Panel {
   private clicking: View | null = null
   private focused: View | null = null
 
-  static async create(view: JSX.Element, config?: {
+  static async create(view: View, config?: {
     order?: PanelOrdering,
     pos?: Ref<Point> | 'default' | 'center',
   }) {
     return await sys.makePanel({ view, ...config })
   }
 
-  constructor(keymap: Set<string>, port: MessagePort, id: number, point: Ref<Point>, size: Ref<Size>, root: JSX.Element) {
+  constructor(keymap: Set<string>, port: MessagePort, id: number, point: Ref<Point>, root: View) {
     Panel.all.set(id, this)
 
     this.id = id
     this.keymap = keymap
 
     this.$point = point
-    this.$size = size
+    this.$size = root.$size
 
     this.$mouse = multiplex([sys.$mouse, this.$point], () => ({
       x: sys.mouse.x - this.point.x,
       y: sys.mouse.y - this.point.y,
     }))
 
-    this.ctx.canvas.width = size.val.w
-    this.ctx.canvas.height = size.val.h
+    this.ctx.canvas.width = root.$size.val.w
+    this.ctx.canvas.height = root.$size.val.h
 
-    size.watch((size) => {
+    root.$size.watch((size) => {
       this.rpc.send('adjust', [this.point.x, this.point.y, size.w, size.h])
       this.ctx.canvas.width = size.w
       this.ctx.canvas.height = size.h

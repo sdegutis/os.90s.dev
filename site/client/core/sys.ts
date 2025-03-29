@@ -1,3 +1,4 @@
+import { View } from "../views/view.js"
 import { Font } from "./font.js"
 import { Listener } from "./listener.js"
 import { Panel } from "./panel.js"
@@ -93,7 +94,7 @@ class Sys {
   async makePanel(config: {
     order?: PanelOrdering,
     pos?: Ref<Point> | 'default' | 'center',
-    view: JSX.Element,
+    view: View,
   }) {
     const order = config.order ?? 'normal'
     const point = (!config.pos || config.pos === 'default') ? $({ x: -1, y: -1 }) :
@@ -101,11 +102,12 @@ class Sys {
         config.pos
 
     const root = config.view
+    const { w, h } = root.size
 
-    const [id, x, y, port] = await this.rpc.call('newpanel', [order, point.val.x, point.val.y, root.size.w, root.size.h])
+    const [id, x, y, port] = await this.rpc.call('newpanel', [order, point.val.x, point.val.y, w, h])
 
     point.val = { x, y }
-    const panel = new Panel(this.keymap, port, id, point, root.$size, config.view)
+    const panel = new Panel(this.keymap, port, id, point, root)
 
     program.panels.add(panel)
     panel.didClose.watch(() => {
