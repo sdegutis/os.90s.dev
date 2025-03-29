@@ -23,6 +23,10 @@ export class Ref<T> {
     this.listener.dispatch([val, old])
   }
 
+  notify() {
+    this.listener.dispatch([this.val, this.val])
+  }
+
   watch(fn: (data: T, old: T) => void) {
     return this.listener.watch(([data, old]) => fn(data, old))
   }

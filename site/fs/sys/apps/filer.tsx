@@ -1,9 +1,34 @@
 import * as api from '/api.js'
 
-const imgFolder = new api.Bitmap([0x990000ff], 1, [1])
-const imgFile = new api.Bitmap([0x009900ff], 1, [1])
+const IMG_FOLDER = new api.Bitmap([0x990000ff], 1, [1])
+const IMG_FILE = new api.Bitmap([0x009900ff], 1, [1])
 
-const $drives = api.$<api.View[]>([])
+const EMPTY = <api.Border padding={2}>
+  <api.Label text={'[empty]'} textColor={0xffffff77} />
+</api.Border>
+
+
+
+const $drives = await api.$(1).adaptAsync(() => api.sys.listdrives(''))
+
+const $driveButtons = $drives.adapt(drives => drives.map(d =>
+  <api.Button padding={2} onClick={(b) => {
+    if (b === 0) {
+      $dirs.val = [d]
+    }
+    else if (b === 2) {
+      const unmount = async () => {
+        await api.sys.unmount(d)
+        $drives.notify()
+      }
+      api.showMenu([
+        { text: 'unmount', onClick: unmount }
+      ])
+    }
+  }}>
+    <api.Label text={d} />
+  </api.Button>
+))
 
 const $dirs = api.$(['user/'])
 $dirs.equals = api.arrayEquals
@@ -18,11 +43,7 @@ const $breadcrumbs = $dirs.adapt(dirs =>
 
 const $items = await $dirs.adaptAsync(dirs => api.sys.listdir(dirs.join('')))
 
-const EMPTY = <api.Border padding={2}>
-  <api.Label text={'[empty]'} textColor={0xffffff77} />
-</api.Border>
-
-const $entries = $items.adapt(items => {
+const $itemButtons = $items.adapt(items => {
   if (items.length === 0) return [EMPTY]
   return items.map(item =>
     item.type === 'folder'
@@ -35,36 +56,12 @@ const $entries = $items.adapt(items => {
 
 
 
-refreshDrives()
-
 async function newFile() {
   const name = await api.showPrompt('filename?')
   if (!name) return
   const full = [...$dirs.val, name].join('')
   await api.sys.putfile(full, '')
-  // $dirs.val = $dirs.val
-}
-
-async function refreshDrives() {
-  const drives = await api.sys.listdrives('')
-  $drives.val = drives.map(d =>
-    <api.Button padding={2} onClick={(b) => {
-      if (b === 0) {
-        $dirs.val = [d]
-      }
-      else if (b === 2) {
-        const unmount = async () => {
-          await api.sys.unmount(d)
-          refreshDrives()
-        }
-        api.showMenu([
-          { text: 'unmount', onClick: unmount }
-        ])
-      }
-    }}>
-      <api.Label text={d} />
-    </api.Button>
-  )
+  $dirs.notify()
 }
 
 
@@ -75,7 +72,7 @@ const panel = await api.Panel.create(
     <api.SplitXA pos={50}>
       <api.PanedYB>
         <api.View background={0x00000077}>
-          <api.GroupY align={'+'} children={$drives} />
+          <api.GroupY align={'+'} children={$driveButtons} />
         </api.View>
         <api.GroupX background={0x00000033}>
           <api.Button padding={2} onClick={mount}>
@@ -87,7 +84,7 @@ const panel = await api.Panel.create(
         <api.GroupX children={$breadcrumbs} />
         <api.PanedYB>
           <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
-            <api.GroupY gap={-2} align={'+'} children={$entries} />
+            <api.GroupY gap={-2} align={'+'} children={$itemButtons} />
           </api.Scroll>
           <api.GroupX background={0x00000033}>
             <api.Button padding={2} onClick={newFile}>
@@ -108,7 +105,7 @@ function FolderItem({ base, name }: { base: string[], name: string }) {
     <api.Button padding={2} onClick={() => $dirs.val = [...base, name]}>
       <api.GroupX gap={2}>
         <api.Border>
-          <api.ImageView bitmap={imgFolder} />
+          <api.ImageView bitmap={IMG_FOLDER} />
         </api.Border>
         <api.Label text={name} />
       </api.GroupX>
@@ -125,7 +122,7 @@ function FileItem({ base, name }: { base: string[], name: string }) {
     }}>
       <api.GroupX gap={2}>
         <api.Border>
-          <api.ImageView bitmap={imgFile} />
+          <api.ImageView bitmap={IMG_FILE} />
         </api.Border>
         <api.Label text={name} />
       </api.GroupX>
@@ -137,7 +134,7 @@ async function mount() {
   const name = await api.showPrompt('drive name?')
   if (!name) return
   await api.sys.mount(name)
-  refreshDrives()
+  $drives.notify()
 }
 
 async function handleFile(path: string) {
