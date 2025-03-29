@@ -1,6 +1,6 @@
 node_modules
 types.d.ts
 *.tsbuildinfo
-/globals.d.ts
+/site/globals.d.ts
 /site/client/out/
 /site/fs/out/

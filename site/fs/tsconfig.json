@@ -38,7 +38,7 @@
   "include": [
     "./**/*.tsx",
     "./**/*.ts",
-    "../../globals.d.ts",
+    "../globals.d.ts",
   ],
   "exclude": [
     "types.d.ts",

@@ -78,17 +78,17 @@ export default (({ inFiles, outFiles }) => {
       return { path: f.path, ids }
     }))
 
-  fs.writeFileSync('./globals.d.ts', [
+  fs.writeFileSync('./site/globals.d.ts', [
     `export{}`,
     `declare global {`,
     exports.flatMap(exp => {
       const vars = exp.ids.vars.map(id => {
-        return [`var ${id}: typeof import("./site${exp.path}").${id}`]
+        return [`var ${id}: typeof import(".${exp.path}").${id}`]
       })
       const types = exp.ids.types.map(type => {
         let params = ''
         if (type.params) params = `<${type.params.join(', ')}>`
-        return [`type ${type.name}${params} = import("./site${exp.path}").${type.name}${params}`]
+        return [`type ${type.name}${params} = import(".${exp.path}").${type.name}${params}`]
       })
       return [
         ...vars,
