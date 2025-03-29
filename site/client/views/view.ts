@@ -7,6 +7,10 @@ import { debounce } from "../util/throttle.js"
 
 export class View {
 
+  constructor(config?: JsxAttrs<View>) {
+    this.setup(config)
+  }
+
   protected setup<T extends View>(config?: JsxAttrs<T>) {
     if (!config) return
 
@@ -80,10 +84,6 @@ export class View {
     this.$children.equals = arrayEquals
     this.$point.equals = pointEquals
     this.$size.equals = sizeEquals
-  }
-
-  constructor(config?: JsxAttrs<View>) {
-    this.setup(config)
   }
 
   $panel = $<Panel | null>(null)
@@ -202,9 +202,3 @@ export class View {
   get lastChild(): View | undefined { return this.children[this.children.length - 1] }
 
 }
-
-new View({
-  onMouseDown() {
-    this
-  }
-})
