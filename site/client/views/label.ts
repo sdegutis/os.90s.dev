@@ -37,9 +37,9 @@ export class Label extends View {
     this.size = this.font.calcSize(this.text)
   }
 
-  override draw(ctx: DrawingContext, px: number, py: number): void {
-    super.draw(ctx, px, py)
-    this.font.print(ctx, px, py, this.textColor, this.text)
+  override draw(ctx: DrawingContext): void {
+    super.draw(ctx)
+    this.font.print(ctx, 0, 0, this.textColor, this.text)
   }
 
 }

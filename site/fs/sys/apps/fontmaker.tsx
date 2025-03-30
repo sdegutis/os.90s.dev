@@ -213,8 +213,8 @@ function CharView(
     this.onMouseUp = $key.watch(draw)
   }
 
-  view.draw = function (ctx, px, py) {
-    api.View.prototype.draw.call(this, ctx, px, py)
+  view.draw = function (ctx) {
+    api.View.prototype.draw.call(this, ctx)
 
     for (let x = 0; x < width.val; x++) {
       for (let y = 0; y < height.val; y++) {
@@ -222,8 +222,8 @@ function CharView(
         const on = spots[key]
         if (on) {
           ctx.fillRect(
-            px + x * zoom.val,
-            py + y * zoom.val,
+            x * zoom.val,
+            y * zoom.val,
             zoom.val,
             zoom.val,
             0xffffffff
@@ -233,7 +233,7 @@ function CharView(
     }
 
     if (this.hovered) {
-      ctx.fillRect(px + $spot.val.x * zoom.val, py + $spot.val.y * zoom.val, zoom.val, zoom.val, 0x0000ff99)
+      ctx.fillRect($spot.val.x * zoom.val, $spot.val.y * zoom.val, zoom.val, zoom.val, 0x0000ff99)
     }
   }
 
@@ -247,13 +247,13 @@ function CharView(
 panel.focusPanel()
 
 function makeStripeDrawer(w = 4, h = 3) {
-  return function (this: api.View, ...[ctx, px, py]: Parameters<api.View['draw']>) {
-    this.drawBackground(ctx, px, py, this.background)
+  return function (this: api.View, ...[ctx]: Parameters<api.View['draw']>) {
+    this.drawBackground(ctx, this.background)
 
     let off = 0
     for (let y = 0; y < this.size.h; y++) {
       for (let x = 0; x < this.size.w; x += w) {
-        ctx.fillRect(px + x + off, py + y, 1, 1, 0xffffff04)
+        ctx.fillRect(x + off, y, 1, 1, 0xffffff04)
       }
       if (y % h === (h - 1)) off = (off + 1) % w
     }

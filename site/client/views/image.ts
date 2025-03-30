@@ -29,11 +29,11 @@ export class ImageView extends View {
     }
   }
 
-  override draw(ctx: DrawingContext, px: number, py: number): void {
-    super.draw(ctx, px, py)
+  override draw(ctx: DrawingContext): void {
+    super.draw(ctx)
 
     if (!this.bitmap) return
-    ctx.drawImage(this.bitmap.canvas, px, py)
+    ctx.drawImage(this.bitmap.canvas, 0, 0)
   }
 
 }

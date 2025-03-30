@@ -263,7 +263,7 @@ export class Panel {
   ) {
     if (!node.visible) return
 
-    node.draw(this.ctx, 0, 0)
+    node.draw(this.ctx)
 
     for (const child of node.children) {
       child.panelOffset = {

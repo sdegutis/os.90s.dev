@@ -81,12 +81,12 @@ export class Margin extends View {
     }
   }
 
-  override draw(ctx: DrawingContext, px: number, py: number): void {
-    super.draw(ctx, px, py)
-    this.drawBorder(ctx, px, py, this.paddingColor)
+  override draw(ctx: DrawingContext): void {
+    super.draw(ctx)
+    this.drawBorder(ctx, this.paddingColor)
   }
 
-  protected drawBorder(ctx: DrawingContext, px: number, py: number, col: number) {
+  protected drawBorder(ctx: DrawingContext, col: number) {
     if (this.left) { ctx.fillRect(0, this.up, this.left, this.size.h - this.up - this.down, col) }
     if (this.right) { ctx.fillRect(this.size.w - this.right, this.up, this.right, this.size.h - this.up - this.down, col) }
     if (this.up) { ctx.fillRect(this.left, 0, this.size.w - this.left - this.right, this.up, col,) }

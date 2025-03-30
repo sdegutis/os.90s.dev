@@ -177,8 +177,8 @@ export class View {
   adopted?(parent: View): void
   presented?(panel: Panel): void
 
-  draw(ctx: DrawingContext, px: number, py: number): void {
-    this.drawBackground(ctx, px, py, this.background)
+  draw(ctx: DrawingContext): void {
+    this.drawBackground(ctx, this.background)
   }
 
   protected childResized = debounce(() => {
@@ -186,8 +186,8 @@ export class View {
     this.layout?.()
   })
 
-  protected drawBackground(ctx: DrawingContext, px: number, py: number, bg: number) {
-    ctx.fillRect(px, py, this.size.w, this.size.h, bg)
+  protected drawBackground(ctx: DrawingContext, bg: number) {
+    ctx.fillRect(0, 0, this.size.w, this.size.h, bg)
   }
 
   focus() {

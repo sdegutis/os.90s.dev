@@ -21,12 +21,12 @@ class SplitDivider extends View {
     return this.split.dir === 'x' ? xresize : yresize
   }
 
-  override draw(ctx: DrawingContext, px: number, py: number): void {
+  override draw(ctx: DrawingContext): void {
     if (this.pressed) {
-      this.drawBackground(ctx, px, py, this.split.dividerColorPressed)
+      this.drawBackground(ctx, this.split.dividerColorPressed)
     }
     else if (this.hovered && this.split.min !== this.split.max) {
-      this.drawBackground(ctx, px, py, this.split.dividerColorHovered)
+      this.drawBackground(ctx, this.split.dividerColorHovered)
     }
   }
 

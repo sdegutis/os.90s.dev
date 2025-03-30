@@ -31,7 +31,7 @@ export class Textarea extends View {
     this.label = new View({
       canMouse: true,
       adjust: () => this.adjustTextLabel(),
-      draw: (ctx, px, py) => this.drawTextLabel(ctx, px, py),
+      draw: (ctx) => this.drawTextLabel(ctx),
       onMouseDown: (...args) => this.onMouseDown(...args),
       children: [this._cursor]
     })
@@ -117,13 +117,13 @@ export class Textarea extends View {
     this.adjustTextLabel()
   }
 
-  private drawTextLabel(ctx: DrawingContext, panx: number, pany: number) {
+  private drawTextLabel(ctx: DrawingContext) {
     for (let y = 0; y < this.lines.length; y++) {
       const line = this.lines[y]
       const py = y * this.font.ch + y * this.ygap + this.ygap / 2
       for (let x = 0; x < line.length; x++) {
         const px = x * this.font.cw + x * this.xgap
-        this.font.print(ctx, panx + px, pany + py, this.colors[y][x], line[x])
+        this.font.print(ctx, px, py, this.colors[y][x], line[x])
       }
     }
   }
