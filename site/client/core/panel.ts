@@ -263,19 +263,19 @@ export class Panel {
   ) {
     if (!node.visible) return
 
-    node.draw(this.ctx, x, y)
+    node.draw(this.ctx, 0, 0)
 
     for (const child of node.children) {
-      this.ctx.clip(x + child.point.x, y + child.point.y, child.size.w, child.size.h)
-
       child.panelOffset = {
         x: x + child.point.x,
         y: y + child.point.y,
       }
 
+      this.ctx.setClipport(child.panelOffset.x, child.panelOffset.y, child.size.w, child.size.h)
+
       this.drawTree(child, child.panelOffset.x, child.panelOffset.y)
 
-      this.ctx.unclip()
+      this.ctx.clearClipport()
     }
   }
 

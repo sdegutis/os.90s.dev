@@ -13,14 +13,16 @@ export class DrawingContext {
     this.ctx.fillRect(x, y, w, h)
   }
 
-  clip(x: number, y: number, w: number, h: number) {
+  setClipport(x: number, y: number, w: number, h: number) {
     this.ctx.save()
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0)
+    this.ctx.translate(x, y)
     this.ctx.beginPath()
-    this.ctx.rect(x, y, w, h)
+    this.ctx.rect(0, 0, w, h)
     this.ctx.clip()
   }
 
-  unclip() {
+  clearClipport() {
     this.ctx.restore()
   }
 
