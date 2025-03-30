@@ -1,4 +1,5 @@
 {
+  "extends": "./base.tsconfig.jsonc",
   "compilerOptions": {
     "lib": [ "ESNext", "DOM", "DOM.Iterable" ],
     "types": [
@@ -13,17 +14,7 @@
     "rootDir": ".",
     "noEmit": true,
     "moduleResolution": "Node",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "exactOptionalPropertyTypes": true,
-    "esModuleInterop": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "skipLibCheck": true,
   },
   "exclude": [
     "types.d.ts",
