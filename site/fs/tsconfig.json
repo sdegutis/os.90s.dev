@@ -1,15 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable",
-    ],
-    "types": [
-      "@types/wicg-file-system-access",
-      "@webgpu/types"
-    ],
+    "lib": [ "ESNext", "DOM", "DOM.Iterable" ],
     "allowUmdGlobalAccess": true,
     "moduleDetection": "force",
     "target": "ESNext",
@@ -19,26 +11,22 @@
     "noEmit": false,
     "outDir": "out",
     "paths": {
-      "/api.js": [
-        "../api.js"
-      ]
+      "/api.js": [ "../api.js" ],
     },
     "declaration": true,
     "emitDeclarationOnly": true,
     "moduleResolution": "Node",
     "forceConsistentCasingInFileNames": true,
-    // "verbatimModuleSyntax": true,
     "strict": true,
     "noImplicitAny": true,
-    // "downlevelIteration": true,
     "exactOptionalPropertyTypes": true,
     "esModuleInterop": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    // "noUncheckedIndexedAccess": true,
+    "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
-    // "skipLibCheck": true,
+    "skipLibCheck": true,
   },
   "include": [
     "./**/*.tsx",
@@ -47,11 +35,9 @@
   ],
   "exclude": [
     "types.d.ts",
-    "out"
+    "out",
   ],
   "references": [
-    {
-      "path": "../client"
-    }
-  ]
+    { "path": "../client" },
+  ],
 }

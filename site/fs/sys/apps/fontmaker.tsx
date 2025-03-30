@@ -59,7 +59,7 @@ function rebuildNow() {
   const grid: boolean[] = []
 
   for (let i = 0; i < 16 * 6; i++) {
-    const char = sheet[i]
+    const char = sheet[i]!
 
     const sy = Math.floor(i / 16) * width.val * 16 * height.val
     const sx = (i % 16) * width.val
@@ -67,7 +67,7 @@ function rebuildNow() {
     for (let y = 0; y < height.val; y++) {
       for (let x = 0; x < width.val; x++) {
         const oy = y * width.val * 16
-        const on = char[`${x},${y}`]
+        const on = char[`${x},${y}`]!
         grid[(sy + oy) + sx + x] = on
       }
     }
@@ -90,7 +90,7 @@ const panel = await api.Panel.create(
         <api.Border $padding={zoom}>
           <api.Grid $xgap={zoom} $ygap={zoom} cols={16} children={CHARSET.map((ch, index) =>
             <CharView
-              spots={sheet[index]}
+              spots={sheet[index]!}
               drew={spots => {
                 sheet[index] = spots
                 rebuild()

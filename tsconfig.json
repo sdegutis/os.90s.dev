@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable",
-    ],
+    "lib": [ "ESNext", "DOM", "DOM.Iterable" ],
     "types": [
       "immaculata/runtime.d.ts",
       "@types/wicg-file-system-access",
@@ -16,23 +12,18 @@
     "jsx": "react-native",
     "rootDir": ".",
     "noEmit": true,
-    // "declaration": true,
-    // "emitDeclarationOnly": true,
-    // "outFile": "types.d.ts",
     "moduleResolution": "Node",
     "forceConsistentCasingInFileNames": true,
-    // "verbatimModuleSyntax": true,
     "strict": true,
     "noImplicitAny": true,
-    // "downlevelIteration": true,
     "exactOptionalPropertyTypes": true,
     "esModuleInterop": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    // "noUncheckedIndexedAccess": true,
+    "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
-    // "skipLibCheck": true,
+    "skipLibCheck": true,
   },
   "exclude": [
     "types.d.ts",
@@ -40,11 +31,7 @@
     "site/client/**/*",
   ],
   "references": [
-    {
-      "path": "site/client"
-    },
-    {
-      "path": "site/fs"
-    },
-  ]
+    { "path": "site/client" },
+    { "path": "site/fs" },
+  ],
 }
