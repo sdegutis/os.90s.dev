@@ -1,6 +1,6 @@
 node_modules
 types.d.ts
 *.tsbuildinfo
-/site/api.d.ts
+/site/fs/api.d.ts
 /site/client/out/
 /site/fs/out/

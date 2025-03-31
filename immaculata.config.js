@@ -15,7 +15,7 @@ const ext = (s) => s.match(/\.([^\/]+)$/)?.[1] ?? ''
 export const jsxPathBrowser = '/client/jsx.ts'
 
 export const ignore = (str) => {
-  return str.endsWith('.tsbuildinfo') || str.endsWith('/site/api.d.ts')
+  return str.endsWith('.tsbuildinfo') || str.endsWith('/site/fs/api.d.ts')
 }
 
 export default (({ inFiles, outFiles }) => {
@@ -26,13 +26,18 @@ export default (({ inFiles, outFiles }) => {
   files.push({ path: '/sw/wasm.js', content: swc1 })
   files.push({ path: '/sw/wasm_bg.wasm', content: swc2 })
 
-  const exports = (files
+  fs.writeFileSync('./site/fs/api.d.ts', files
     .filter(f => f.path.startsWith('/client/'))
-    .map(f => `export * from ".${f.path}"`)
+    .map(f => `export * from "..${f.path}"`)
     .join('\n'))
 
-  fs.writeFileSync('./site/api.d.ts', exports)
-  files.push({ path: '/api.js', content: exports })
+  files.push({
+    path: '/api.js',
+    content: files
+      .filter(f => f.path.startsWith('/client/'))
+      .map(f => `export * from ".${f.path}"`)
+      .join('\n')
+  })
 
   const sysdata = JSON.stringify(Object.fromEntries(files
     .filter(f => f.path.startsWith('/fs/sys'))
