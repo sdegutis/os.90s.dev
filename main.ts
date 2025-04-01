@@ -22,19 +22,19 @@ function processSite() {
     files = files.filter(f => !f.path.endsWith('.d.ts'))
 
     files = files.map(file => {
-      if (file.path.startsWith('/fs/sys/') && file.path.match(/\.tsx?$/)) {
-        return {
-          content: file.content.toString(),
-          path: file.path.replace(/\.tsx?$/, '.js'),
-        }
+      if (!file.path.match(/\.tsx?$/)) return file
+
+      const path = file.path.replace(/\.tsx?$/, '.js')
+
+      let content = file.content.toString()
+      content = `// ${copyright}\n\n` + content
+
+      if (file.path.startsWith('/fs/sys/')) {
+        return { content, path }
       }
-      if (file.path.match(/\.tsx?$/)) {
-        return {
-          content: compile('', file.path, file.content.toString(), true),
-          path: file.path.replace(/\.tsx?$/, '.js'),
-        }
-      }
-      return file
+
+      content = compile('', file.path, content.toString(), true)
+      return { content, path }
     })
 
     files.push({ path: '/sw/wasm.js', content: swc1 })
@@ -78,7 +78,7 @@ function processSite() {
       if (file.path.endsWith('.html')) {
         return {
           path: file.path,
-          content: `<!-- ${copyright} -->\n` + insert(file.content.toString()),
+          content: `<!-- ${copyright} -->\n\n` + insert(file.content.toString()),
         }
       }
       return file
