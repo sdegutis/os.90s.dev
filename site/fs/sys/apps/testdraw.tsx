@@ -14,7 +14,7 @@ class MyView extends api.View {
   }
 
   override draw(ctx: api.DrawingContext): void {
-    for (let i = 0; i < 50000; i++) {
+    for (let i = 0; i < 10000; i++) {
       const x = rint(0, this.size.w / 2)
       const w = rint(10, this.size.w / 2)
       const y = rint(0, this.size.h / 2)
