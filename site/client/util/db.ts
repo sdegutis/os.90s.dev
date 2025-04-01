@@ -18,6 +18,6 @@ export async function opendb<T>(dbname: string, key: keyof T & string) {
     set: async (val: T) => run('readwrite', store => store.put(val)),
     get: async (key: string) => run<T | undefined>('readonly', store => store.get(key)),
     del: async (key: string) => run('readwrite', store => store.delete(key)),
-    off: () => db.close(),
+    end: () => db.close(),
   }
 }

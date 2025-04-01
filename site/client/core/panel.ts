@@ -7,6 +7,9 @@ import { type Ref, multiplex } from "./ref.js"
 import { type ClientPanel, type PanelOrdering, type ServerPanel, wRPC } from "./rpc.js"
 import { sys } from "./sys.js"
 import type { Point, Size } from "./types.js"
+import { opendb } from "/api.js"
+
+const db = await opendb<{ panelname: string, size: Size }>('panels', 'panelname')
 
 export class Panel {
 
@@ -38,10 +41,17 @@ export class Panel {
   private clicking: View | null = null
   private focused: View | null = null
 
-  static async create(view: View, config?: {
+  static async create(config: {
+    name?: string,
     order?: PanelOrdering,
     pos?: Ref<Point> | 'default' | 'center',
-  }) {
+  }, view: View) {
+    if (config.name) {
+      const prefs = await db.get(config.name)
+      if (prefs) { view.$size.val = prefs.size }
+      view.$size.watch((size => db.set({ panelname: config.name!, size })))
+    }
+
     return await sys.makePanel({ view, ...config })
   }
 

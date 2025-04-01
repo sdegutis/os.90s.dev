@@ -62,7 +62,7 @@ export async function showMenu(items: MenuItem[], from = sys.mouse) {
     from = { ...from, x: from.x - root.size.w }
   }
 
-  const panel = await Panel.create(root, { pos: $(from), order: 'top' })
+  const panel = await Panel.create({ pos: $(from), order: 'top' }, root)
 
   panel.focusPanel()
   root.focus()

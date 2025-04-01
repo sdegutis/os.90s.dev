@@ -68,8 +68,8 @@ async function newFile() {
 
 
 
-const panel = await api.Panel.create(
-  <api.PanelView name="filer" title={api.$('filer')} size={api.$({ w: 150, h: 120 })}>
+const panel = await api.Panel.create({ name: 'filer' },
+  <api.PanelView title={api.$('filer')} size={api.$({ w: 150, h: 120 })}>
     <api.SplitXA pos={30}>
       <Sidebar />
       <Main />

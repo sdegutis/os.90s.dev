@@ -13,7 +13,6 @@ import { Margin } from "../views/margin.js"
 import { PanedYA } from "../views/paned.js"
 import { SpacedX } from "../views/spaced.js"
 import type { View } from "../views/view.js"
-import { opendb } from "./db.js"
 import { dragMove, dragResize } from "./drag.js"
 import { showMenu, type MenuItem } from "./menu.js"
 import { showPrompt } from "./prompt.js"
@@ -33,11 +32,7 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
   0, 1, 1, 1, 0,
 ]))
 
-
-const db = await opendb<{ panelname: string, size: Size }>('panels', 'panelname')
-
 export function PanelView(data: {
-  name?: string,
   title: Ref<string>,
   children: View,
   size?: Ref<Size>,
@@ -70,13 +65,6 @@ export function PanelView(data: {
       presented={async function (p) {
         panel = p
         data.presented?.(p)
-
-        if (data.name) {
-          db.get(data.name).then((prefs) => {
-            if (prefs) { $size.val = prefs.size }
-            $size.watch((size => db.set({ panelname: data.name!, size })))
-          })
-        }
       }}
       onPanelFocus={() => focused.val = true}
       onPanelBlur={() => focused.val = false}

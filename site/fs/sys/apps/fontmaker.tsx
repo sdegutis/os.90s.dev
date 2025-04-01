@@ -83,8 +83,8 @@ function rebuildNow() {
 }
 
 
-const panel = await api.Panel.create(
-  <api.FilePanelView name="fontmaker" filedata={() => fontsrc} filepath={filepath} title={api.$('font maker')} size={api.$({ w: 240, h: 140 })}>
+const panel = await api.Panel.create({ name: "fontmaker" },
+  <api.FilePanelView filedata={() => fontsrc} filepath={filepath} title={api.$('font maker')} size={api.$({ w: 240, h: 140 })}>
     <api.PanedYB>
       <api.Scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <api.Border $padding={zoom}>

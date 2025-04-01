@@ -25,7 +25,7 @@ export async function handleRoute(url: URL, req: Request) {
     const key = url.pathname.slice('/fs/user/'.length)
     const fs = await openUserDb()
     const res = await fs.get(key)
-    fs.off()
+    fs.end()
     return await jsResponse(url, res?.content ?? '')
   }
 

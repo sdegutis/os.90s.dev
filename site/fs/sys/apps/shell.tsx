@@ -2,12 +2,12 @@ import * as api from "/api.js"
 
 api.sys.launch('user/startup.js')
 
-const desktop = await api.Panel.create((
-  <api.View $size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
-), {
+const desktop = await api.Panel.create({
   order: 'bottom',
   pos: api.$({ x: 0, y: 0 }),
-})
+}, (
+  <api.View $size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
+))
 
 async function showRun(this: api.Button) {
   const sysApps = await api.sys.listdir('sys/apps/')
@@ -19,7 +19,10 @@ async function showRun(this: api.Button) {
   ], this.screenPoint)
 }
 
-const taskbar = await api.Panel.create((
+const taskbar = await api.Panel.create({
+  order: 'top',
+  pos: api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })),
+}, (
   <api.SpacedX $size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x000000dd}>
     <api.GroupX>
       <api.Button padding={2} onClick={showRun}>
@@ -28,10 +31,7 @@ const taskbar = await api.Panel.create((
     </api.GroupX>
     <Clock />
   </api.SpacedX>
-), {
-  order: 'top',
-  pos: api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })),
-})
+))
 
 function Clock() {
   let date = false
