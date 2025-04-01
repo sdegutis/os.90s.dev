@@ -8,9 +8,10 @@
       "name": "Launch Program",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/node_modules/immaculata/out/cli.js",
+      "program": "${workspaceFolder}/main.ts",
       "args": [ "dev" ],
       "skipFiles": [ "<node_internals>/**" ],
+      "runtimeArgs": [ "--watch", "--disable-warning=ExperimentalWarning" ]
     }
   ]
 }

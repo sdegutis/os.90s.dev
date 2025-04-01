@@ -3,15 +3,17 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "generate": "immaculata generate",
-    "watch": "tsc --build --watch"
+    "generate": "main.ts generate",
+    "watch": "tsc --watch"
   },
+  "type": "module",
   "devDependencies": {
     "@swc/core": "^1.11.13",
     "@swc/wasm-web": "^1.11.13",
+    "@types/node": "^22.13.16",
     "@types/wicg-file-system-access": "^2023.10.5",
     "@webgpu/types": "^0.1.56",
-    "immaculata": "^0.0.8",
+    "immaculata": "^0.1.1",
     "typescript": "^5.8.2"
   },
   "dependencies": {
