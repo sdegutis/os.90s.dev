@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "generate": "main.ts generate",
+    "generate": "node main.ts generate",
     "watch": "tsc --watch"
   },
   "type": "module",
