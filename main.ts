@@ -40,18 +40,13 @@ function processSite() {
     files.push({ path: '/sw/wasm.js', content: swc1 })
     files.push({ path: '/sw/wasm_bg.wasm', content: swc2 })
 
-    fs.writeFileSync('./site/fs/api.d.ts', files
+    const exports = files
       .filter(f => f.path.startsWith('/client/'))
-      .map(f => `export * from "..${f.path}"`)
-      .join('\n'))
+      .map(f => `export * from ".${f.path}"`)
+      .join('\n')
 
-    files.push({
-      path: '/api.js',
-      content: files
-        .filter(f => f.path.startsWith('/client/'))
-        .map(f => `export * from ".${f.path}"`)
-        .join('\n')
-    })
+    fs.writeFileSync('./site/api.d.ts', exports)
+    files.push({ path: '/api.js', content: exports })
 
     const sysdata = JSON.stringify(Object.fromEntries(files
       .filter(f => f.path.startsWith('/fs/sys'))
@@ -104,7 +99,7 @@ if (process.argv[2] === 'dev') {
   }
 
   tree.watch({
-    ignored: (str) => str.endsWith('/site/fs/api.d.ts')
+    ignored: (str) => str.endsWith('/site/api.d.ts')
   }, (paths) => {
     console.log('paths changed')
     reprocess()
