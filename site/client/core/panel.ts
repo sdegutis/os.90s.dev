@@ -9,7 +9,7 @@ import { sys } from "./sys.js"
 import type { Point, Size } from "./types.js"
 import { opendb } from "/api.js"
 
-const db = await opendb<{ panelname: string, size: Size }>('panels', 'panelname')
+const panelnames = await opendb<{ panelname: string, size: Size }>('panels', 'panelname')
 
 export class Panel {
 
@@ -47,9 +47,9 @@ export class Panel {
     pos?: Ref<Point> | 'default' | 'center',
   }, view: View) {
     if (config.name) {
-      const prefs = await db.get(config.name)
+      const prefs = await panelnames.get(config.name)
       if (prefs) { view.$size.val = prefs.size }
-      view.$size.watch((size => db.set({ panelname: config.name!, size })))
+      view.$size.watch((size => panelnames.set({ panelname: config.name!, size })))
     }
 
     return await sys.makePanel({ view, ...config })
