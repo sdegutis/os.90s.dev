@@ -1,5 +1,4 @@
 {
-  "extends": "./base.tsconfig.jsonc",
   "compilerOptions": {
     "lib": [ "ESNext", "DOM", "DOM.Iterable" ],
     "types": [
@@ -13,15 +12,24 @@
     "rootDir": ".",
     "noEmit": true,
     "moduleResolution": "Node",
-    "noUncheckedIndexedAccess": true,
+    // "noUncheckedIndexedAccess": true,
+
+    "paths": {
+      "/api.js": [ "./site/fs/api.js" ],
+    },
+
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    // "noUnusedParameters": true,
+    // "noUnusedLocals": true,
+    "isolatedModules": true,
+    "exactOptionalPropertyTypes": true,
+    "esModuleInterop": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "skipLibCheck": true,
   },
-  "exclude": [
-    "types.d.ts",
-    "site/fs/**/*",
-    "site/client/**/*",
-  ],
-  "references": [
-    { "path": "site/client" },
-    { "path": "site/fs" },
-  ],
 }

@@ -1,6 +1,2 @@
 node_modules
-types.d.ts
-*.tsbuildinfo
 /site/fs/api.d.ts
-/site/client/out/
-/site/fs/out/
