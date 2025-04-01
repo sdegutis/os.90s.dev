@@ -32,16 +32,16 @@ export class Process {
 
     const appPath = '/fs/' + path
     const absurl = new URL(appPath, import.meta.url)
-    absurl.searchParams.set('opts', JSON.stringify({ ...opts, app: appPath }))
     this.worker = new Worker(absurl, { type: 'module' })
 
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
 
       init: (reply) => {
+        opts["app"] = appPath
         this.ready.resolve()
         this.sys.procBegan.dispatch(this.id)
         const fontstr = fs.get('sys/data/crt34.font')!
-        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], fontstr])
+        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], fontstr, opts])
       },
 
       newpanel: (reply, ord, x, y, w, h) => {

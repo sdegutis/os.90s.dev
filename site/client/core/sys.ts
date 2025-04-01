@@ -82,9 +82,8 @@ class Sys {
   set size(s: Size) { this.$size.val = s }
 
   async init() {
-    program.opts = JSON.parse(new URLSearchParams(location.search).get('opts') ?? '{}')
-
-    const [id, w, h, keymap, fontstr] = await this.rpc.call('init', [])
+    const [id, w, h, keymap, fontstr, opts] = await this.rpc.call('init', [])
+    program.opts = opts
     program.pid = id
     this.size = { w, h }
     this.$font = $(new Font(fontstr))
