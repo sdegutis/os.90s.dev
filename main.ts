@@ -59,7 +59,7 @@ function processSite() {
 }
 
 if (process.argv[2] === 'dev') {
-  const server = new immaculata.DevServer(8080)
+  const server = new immaculata.DevServer(8080, '/_reload')
   server.files = await processSite()
 
   tree.watch({
