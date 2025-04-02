@@ -90,19 +90,13 @@ function processSite() {
 
 if (process.argv[2] === 'dev') {
   const server = new immaculata.DevServer(8080)
-
-  reprocess()
-
-  function reprocess() {
-    server.files = processSite()
-    // immaculata.generateFiles(server.files, true)
-  }
+  server.files = processSite()
 
   tree.watch({
     ignored: (str) => str.endsWith('/site/api.d.ts')
   }, (paths) => {
     console.log('paths changed')
-    reprocess()
+    server.files = processSite()
     server.reload()
   })
 }
