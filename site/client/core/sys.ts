@@ -29,39 +29,7 @@ export const program = new Program()
 
 class Sys {
 
-  private rpc = new wRPC<ClientProgram, ServerProgram>(self, {
-
-    resized: (w, h) => {
-      this.size = { w, h }
-    },
-
-    ping: (reply, n) => {
-      reply([n % 2 === 0 ? n + 2 : n + 1])
-    },
-
-    keydown: (key) => {
-      this.keymap.add(key)
-      program.focusedPanel?.onKeyDown(key)
-    },
-
-    keyup: (key) => {
-      this.keymap.delete(key)
-      program.focusedPanel?.onKeyUp(key)
-    },
-
-    procbegan: (pid) => {
-      this.procbegan.dispatch(pid)
-    },
-
-    procended: (pid) => {
-      this.procended.dispatch(pid)
-    },
-
-    gotipc: (port) => {
-      this.ipcopened.dispatch(port)
-    },
-
-  })
+  private rpc!: wRPC<ClientProgram, ServerProgram>
 
   procbegan = new Listener<number>()
   procended = new Listener<number>()
@@ -81,7 +49,42 @@ class Sys {
   get size() { return this.$size.val }
   set size(s: Size) { this.$size.val = s }
 
-  async init() {
+  async init(port: Window | MessagePort) {
+
+    this.rpc = new wRPC(port, {
+
+      resized: (w, h) => {
+        this.size = { w, h }
+      },
+
+      ping: (reply, n) => {
+        reply([n % 2 === 0 ? n + 2 : n + 1])
+      },
+
+      keydown: (key) => {
+        this.keymap.add(key)
+        program.focusedPanel?.onKeyDown(key)
+      },
+
+      keyup: (key) => {
+        this.keymap.delete(key)
+        program.focusedPanel?.onKeyUp(key)
+      },
+
+      procbegan: (pid) => {
+        this.procbegan.dispatch(pid)
+      },
+
+      procended: (pid) => {
+        this.procended.dispatch(pid)
+      },
+
+      gotipc: (port) => {
+        this.ipcopened.dispatch(port)
+      },
+
+    })
+
     const [id, w, h, keymap, fontstr, opts] = await this.rpc.call('init', [])
     program.opts = opts
     program.pid = id
@@ -149,4 +152,4 @@ class Sys {
 }
 
 export const sys = new Sys()
-await sys.init()
+await sys.init(self)
