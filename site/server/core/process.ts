@@ -92,32 +92,9 @@ export class Process {
         sys.resize(w, h)
       },
 
-      getfile: (reply, path) => {
-        const content = fs.get(path)
-        reply([content])
-      },
-
-      putfile: (reply, path, content) => {
-        fs.put(path, content)
-        reply([])
-      },
-
-      listdrives: (reply) => {
-        reply(fs.drives())
-      },
-
-      listdir: (reply, path) => {
-        reply(fs.list(path))
-      },
-
-      mount: async (reply, name) => {
-        await fs.mount(name)
-        reply([])
-      },
-
-      unmount: async (reply, name) => {
-        fs.unmount(name)
-        reply([])
+      askdir: async (reply) => {
+        const folder = await self.showDirectoryPicker()
+        reply([folder], [])
       },
 
     })

@@ -131,31 +131,6 @@ class Sys {
     this.rpc.send('resize', [w, h])
   }
 
-  async listdrives(path: string) {
-    return await this.rpc.call('listdrives', [])
-  }
-
-  async listdir(path: string) {
-    return await this.rpc.call('listdir', [path])
-  }
-
-  async getfile(path: string) {
-    const [contents] = await this.rpc.call('getfile', [path])
-    return contents
-  }
-
-  async putfile(path: string, content: string) {
-    await this.rpc.call('putfile', [path, content])
-  }
-
-  async mount(name: string) {
-    await this.rpc.call('mount', [name])
-  }
-
-  async unmount(name: string) {
-    await this.rpc.call('unmount', [name])
-  }
-
   async launch(path: string, file?: string) {
     const [pid] = await this.rpc.call('launch', [path, { file }])
     return pid
@@ -164,6 +139,11 @@ class Sys {
   async openipc(pid: number) {
     const [port] = await this.rpc.call('openipc', [pid])
     return port
+  }
+
+  async askdir() {
+    const [dir] = await this.rpc.call('askdir', [])
+    return dir
   }
 
 }

@@ -10,8 +10,8 @@ const desktop = await api.Panel.create({
 ))
 
 async function showRun(this: api.Button) {
-  const sysApps = await api.sys.listdir('sys/apps/')
-  const userApps = await api.sys.listdir('user/apps/')
+  const sysApps = api.fs.list('sys/apps/')
+  const userApps = api.fs.list('user/apps/')
   api.showMenu([
     ...sysApps.map(app => ({ text: app.name, onClick: () => { api.sys.launch(`sys/apps/${app.name}`) } })),
     '-',

@@ -10,7 +10,7 @@ const EMPTY = <api.Border padding={2}>
 
 
 const $drivesLoader = api.$(null)
-const $drives = await $drivesLoader.adaptAsync(() => api.sys.listdrives(''))
+const $drives = $drivesLoader.adapt(() => api.fs.drives())
 
 const $driveButtons = $drives.adapt(drives => drives.map(d =>
   <api.Button padding={2} onClick={(b) => {
@@ -19,7 +19,7 @@ const $driveButtons = $drives.adapt(drives => drives.map(d =>
     }
     else if (b === 2) {
       const unmount = async () => {
-        await api.sys.unmount(d)
+        api.fs.unmount(d)
         $drivesLoader.notify()
       }
       api.showMenu([
@@ -42,7 +42,7 @@ const $breadcrumbs = $dirs.adapt(dirs =>
   )
 )
 
-const $items = await $dirs.adaptAsync(dirs => api.sys.listdir(dirs.join('')))
+const $items = $dirs.adapt(dirs => api.fs.list(dirs.join('')))
 
 const $itemButtons = $items.adapt(items => {
   if (items.length === 0) return [EMPTY]
@@ -61,7 +61,7 @@ async function newFile() {
   const name = await api.showPrompt('filename?')
   if (!name) return
   const full = [...$dirs.val, name].join('')
-  await api.sys.putfile(full, '')
+  api.fs.put(full, '')
   $dirs.notify()
 }
 
@@ -147,7 +147,11 @@ function FileItem({ base, name }: { base: string[], name: string }) {
 async function mount() {
   const name = await api.showPrompt('drive name?')
   if (!name) return
-  await api.sys.mount(name)
+
+  const dir = await api.sys.askdir()
+  if (!dir) return
+
+  await api.fs.mount(name, dir)
   $drivesLoader.notify()
 }
 

@@ -16,6 +16,7 @@ import type { View } from "../views/view.js"
 import { dragMove, dragResize } from "./drag.js"
 import { showMenu, type MenuItem } from "./menu.js"
 import { showPrompt } from "./prompt.js"
+import { fs } from "/api.js"
 
 
 const minImage = new Bitmap([0xffffff33], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
@@ -166,14 +167,14 @@ export function FilePanelView({
   async function save() {
     if (!filepath.val) filepath.val = await askFilePath()
     if (!filepath.val) return
-    sys.putfile(filepath.val, filedata())
+    fs.put(filepath.val, filedata())
   }
 
   async function saveAs() {
     const path = await askFilePath()
     if (!path) return
     filepath.val = path
-    sys.putfile(filepath.val, filedata())
+    fs.put(filepath.val, filedata())
   }
 
   async function askFilePath() {
