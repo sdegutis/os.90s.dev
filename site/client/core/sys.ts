@@ -152,3 +152,4 @@ class Sys {
 }
 
 export const sys = new Sys()
+await sys.init(self)

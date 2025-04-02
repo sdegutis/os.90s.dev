@@ -1,5 +1,4 @@
 import * as api from "/api.js"
-await api.sys.init(self)
 
 const rint = (min: number, max: number) => Math.round(Math.random() * (max - min)) + min
 

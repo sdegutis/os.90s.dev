@@ -1,5 +1,4 @@
 import * as api from "/api.js"
-await api.sys.init(self)
 
 const font = api.$(api.sys.font)
 

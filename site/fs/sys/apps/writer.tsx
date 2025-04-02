@@ -1,5 +1,4 @@
 import * as api from "/api.js"
-await api.sys.init(self)
 
 let content = ''
 const $filepath = api.$(api.program.opts["file"])
