@@ -53,6 +53,13 @@ type Reply<A> = (data: A, ts?: Transferable[]) => void
 type Handler<T extends (...args: any) => any> = T extends (...args: infer A) => Promise<infer R> ? (reply: Reply<R>, ...args: A) => void : T
 type Handlers<T extends EventMap<T>> = { [K in keyof T]: Handler<T[K]> }
 
+interface PortLike {
+
+  onmessage: ((msg: MessageEvent) => void) | null
+  postMessage(message: any, options?: StructuredSerializeOptions): void
+
+}
+
 export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
 
   cid = 0
@@ -60,7 +67,7 @@ export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
   handlers
   waiters = new Map<number, (data: any) => void>()
 
-  constructor(port: Worker | Window | MessagePort, handlers: Handlers<In>) {
+  constructor(port: PortLike, handlers: Handlers<In>) {
     this.port = port
     this.handlers = handlers
 
