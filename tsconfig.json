@@ -19,7 +19,7 @@
     // "noUncheckedIndexedAccess": true,
 
     "paths": {
-      "/api.js": [ "./site/api.js" ],
+      "/*": [ "./site/*" ],
     },
 
     "forceConsistentCasingInFileNames": true,

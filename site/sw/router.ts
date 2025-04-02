@@ -1,4 +1,4 @@
-import { openUserDb } from "../server/fs/userfs.js"
+import { openUserDb } from "../client/fs/userfs.js"
 import { compile } from "./compile.js"
 
 const jsHeaders = {

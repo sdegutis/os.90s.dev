@@ -1,7 +1,7 @@
 import type { Cursor } from "../../client/core/cursor.js"
 import type { ListenerDone } from "../../client/core/listener.js"
 import { wRPC, type ClientProgram, type ServerProgram } from "../../client/core/rpc.js"
-import { fs } from "../fs/fs.js"
+import { fs } from "../../client/fs/fs.js"
 import { Panel } from "./panel.js"
 import type { Sys } from "./sys.js"
 

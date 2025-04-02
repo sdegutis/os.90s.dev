@@ -42,7 +42,7 @@ function processSite() {
       .with('^/fs/sys')
       .all().map(f => [f.path.slice('/fs/sys/'.length), f.text])
     ), null, 2)
-    files.add('/server/fs/data.js', `export const files = ${sysdata}`)
+    files.add('/client/fs/data.js', `export const files = ${sysdata}`)
 
     const paths = files.without('^/fs/sys')
 
