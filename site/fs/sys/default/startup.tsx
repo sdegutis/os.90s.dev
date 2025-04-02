@@ -1,4 +1,5 @@
 import * as api from "/api.js"
+await api.sys.init(self)
 
 api.sys.launch('sys/apps/filer.js')
 api.sys.launch('sys/apps/fontmaker.js')

@@ -1,4 +1,5 @@
 import * as api from "/api.js"
+await api.sys.init(self)
 
 const $lines = api.$<api.View[]>([])
 const textarea = <api.Textarea autofocus multiline={false} onEnter={submit} /> as api.Textarea

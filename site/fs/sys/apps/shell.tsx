@@ -1,4 +1,5 @@
 import * as api from "/api.js"
+await api.sys.init(self)
 
 api.sys.launch('user/startup.js')
 
