@@ -66,7 +66,8 @@ if (process.argv[2] === 'dev') {
     ignored: (str) => str.endsWith('/site/api.d.ts')
   }, async (paths) => {
     console.log('paths changed')
-    server.files = await processSite()
+    try { server.files = await processSite() }
+    catch (e) { console.error(e) }
     server.reload()
   })
 }
