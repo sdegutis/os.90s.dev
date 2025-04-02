@@ -72,12 +72,12 @@ export class Panel {
     this.ctx.canvas.width = root.$size.val.w
     this.ctx.canvas.height = root.$size.val.h
 
-    root.$size.watch((size) => {
+    root.$size.watch(debounce((size) => {
       this.rpc.send('adjust', [this.point.x, this.point.y, size.w, size.h])
       this.ctx.canvas.width = size.w
       this.ctx.canvas.height = size.h
       this.blit()
-    })
+    }))
 
     point.watch((point) => {
       this.rpc.send('adjust', [point.x, point.y, this.size.w, this.size.h])
