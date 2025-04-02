@@ -65,7 +65,7 @@ if (process.argv[2] === 'dev') {
   tree.watch({
     ignored: (str) => str.endsWith('/site/api.d.ts')
   }, async (paths) => {
-    console.log('paths changed')
+    console.log('Reloaded.')
     try { server.files = await processSite() }
     catch (e) { console.error(e) }
     server.reload()
