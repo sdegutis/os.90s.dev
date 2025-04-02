@@ -101,6 +101,5 @@ if (process.argv[2] === 'dev') {
   })
 }
 else {
-  const map = processSite()
-  immaculata.generateFiles(map)
+  immaculata.generateFiles(processSite())
 }
