@@ -9,6 +9,15 @@ const EMPTY = <api.Border padding={2}>
 
 
 
+
+const button = (data: { action: () => void, text: string }) => {
+  return <api.Button padding={2} onClick={data.action}>
+    <api.Label text={data.text} />
+  </api.Button>
+}
+
+api.comps['button'] = button
+
 const $drivesLoader = api.$(null)
 const $drives = $drivesLoader.adapt(() => api.fs.drives())
 
@@ -107,9 +116,7 @@ function Main() {
         <api.GroupY gap={-2} align={'+'} $children={$itemButtons} />
       </api.Scroll>
       <api.GroupX background={0x00000033}>
-        <api.Button padding={2} onClick={newFile}>
-          <api.Label text={'new file'} />
-        </api.Button>
+        <button action={newFile} text='new file' />
       </api.GroupX>
     </api.PanedYB>
 

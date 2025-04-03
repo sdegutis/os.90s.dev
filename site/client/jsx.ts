@@ -1,3 +1,5 @@
+import { getComponent } from "./components.js"
+
 export type JsxAttrs<T> = {
   [K in keyof T]?: (
 
@@ -18,7 +20,7 @@ declare global {
     type Element = any
     type ElementType =
       | string
-      | (new (config: JsxAttrs<any>) => any)
+      | (new (data: JsxAttrs<any>) => JSX.Element)
       | ((data: any) => JSX.Element)
   }
 }
@@ -37,7 +39,10 @@ function createNode(tag: any, data: Record<string, any>): JSX.Element {
     }
   }
 
-  throw new Error('not ready for string tags yet')
+  const comp = getComponent(tag)
+  if (!comp) throw new Error(`Component "${tag}" not found`)
+
+  return comp(data)
 }
 
 function canConstruct(f: any) {
