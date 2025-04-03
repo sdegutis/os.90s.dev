@@ -158,4 +158,3 @@ function normalize(content: string) {
 }
 
 export const fs = new FS()
-await fs.init()

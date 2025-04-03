@@ -29,7 +29,12 @@ export class Sys {
   procBegan = new Listener<number>()
   procEnded = new Listener<number>()
 
-  constructor(width: number, height: number) {
+  static async init(w: number, h: number) {
+    await fs.init()
+    return new Sys(w, h)
+  }
+
+  private constructor(width: number, height: number) {
     this.$size = $({ w: width, h: height })
 
     const fontstr = fs.get('sys/data/crt34.font')!

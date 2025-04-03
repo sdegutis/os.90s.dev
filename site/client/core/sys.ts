@@ -1,3 +1,4 @@
+import { fs } from "../fs/fs.js"
 import { View } from "../views/view.js"
 import { Font } from "./font.js"
 import { Listener } from "./listener.js"
@@ -82,6 +83,7 @@ class Sys {
   set size(s: Size) { this.$size.val = s }
 
   async init() {
+    await fs.init()
     const [id, w, h, keymap, fontstr, opts] = await this.rpc.call('init', [])
     program.opts = opts
     program.pid = id
