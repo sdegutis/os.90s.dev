@@ -6,6 +6,7 @@ export async function compile(url: URL, tsx: string) {
   await ready
   const transformed = transformSync(tsx, {
     sourceMaps: 'inline',
+    minify: true,
     filename: url.pathname,
     isModule: true,
     jsc: {

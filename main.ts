@@ -1,6 +1,8 @@
 import * as fs from 'fs'
 import * as immaculata from 'immaculata'
 
+const isDev = process.argv[2] === 'dev'
+
 const swc1 = fs.readFileSync('node_modules/@swc/wasm-web/wasm.js')
 const swc2 = fs.readFileSync('node_modules/@swc/wasm-web/wasm_bg.wasm')
 
@@ -23,6 +25,7 @@ function processSite() {
     files.with(/\.tsx?$/).without('^/fs/sys/').do(file => {
       file.text = immaculata.compileWithSwc(file.text, opts => {
         opts.filename = file.path
+        opts.minify = true
         opts.jsc ??= {}
         opts.jsc.transform ??= {}
         opts.jsc.transform.react ??= {}
@@ -59,7 +62,7 @@ function processSite() {
   })
 }
 
-if (process.argv[2] === 'dev') {
+if (isDev) {
   const server = new immaculata.DevServer(8080, '/_reload')
   server.files = await processSite()
 
