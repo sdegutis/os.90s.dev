@@ -90,6 +90,12 @@ class Sys {
     this.size = { w, h }
     this.$font = $(new Font(fontstr))
     keymap.forEach(k => this.keymap.add(k))
+
+    fs.watchTree('sys/data/crt34.font', () => {
+      const fontstr = fs.get('sys/data/crt34.font')!
+      console.log(fontstr)
+      this.$font.val = new Font(fontstr)
+    })
   }
 
   async makePanel(config: {

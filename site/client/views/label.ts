@@ -1,5 +1,4 @@
 import type { DrawingContext } from "../core/drawing.js"
-import { type Font } from "../core/font.js"
 import { $ } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import { JsxAttrs } from "../jsx.js"
@@ -25,7 +24,7 @@ export class Label extends View {
   get textColor() { return this.$textColor.val }
   set textColor(val) { this.$textColor.val = val }
 
-  $font = $<Font>(sys.font)
+  $font = sys.$font
   get font() { return this.$font.val }
   set font(val) { this.$font.val = val }
 
