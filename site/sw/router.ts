@@ -1,4 +1,4 @@
-import { openUserDb } from "../client/fs/userfs.js"
+import { openUsrDb } from "../client/fs/usrfs.js"
 import { compile } from "./compile.js"
 
 const jsHeaders = {
@@ -21,9 +21,9 @@ export async function handleRoute(url: URL, req: Request) {
     return fetch(req)
   }
 
-  if (url.pathname.startsWith('/fs/user/')) {
-    const key = url.pathname.slice('/fs/user/'.length)
-    const fs = await openUserDb()
+  if (url.pathname.startsWith('/fs/usr/')) {
+    const key = url.pathname.slice('/fs/usr/'.length)
+    const fs = await openUsrDb()
     const res = await fs.get(key)
     fs.end()
     return await jsResponse(url, res?.content ?? '')

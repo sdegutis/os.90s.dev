@@ -1,6 +1,6 @@
 import * as api from "/api.js"
 
-api.sys.launch('user/startup.js')
+api.sys.launch('usr/startup.js')
 
 const desktop = await api.Panel.create({
   order: 'bottom',
@@ -11,11 +11,11 @@ const desktop = await api.Panel.create({
 
 async function showRun(this: api.Button) {
   const sysApps = api.fs.list('sys/apps/')
-  const userApps = api.fs.list('user/apps/')
+  const usrApps = api.fs.list('usr/apps/')
   api.showMenu([
     ...sysApps.map(app => ({ text: app.name, onClick: () => { api.sys.launch(`sys/apps/${app.name}`) } })),
     '-',
-    ...userApps.map(app => ({ text: app.name, onClick: () => { api.sys.launch(`user/apps/${app.name}`) } })),
+    ...usrApps.map(app => ({ text: app.name, onClick: () => { api.sys.launch(`usr/apps/${app.name}`) } })),
   ], this.screenPoint)
 }
 

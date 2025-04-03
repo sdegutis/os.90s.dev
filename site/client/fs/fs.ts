@@ -6,7 +6,7 @@ import { opendb } from "../../client/util/db.js"
 import type { Drive, DriveNotificationType } from "./drive.js"
 import { MountedDrive } from "./mountfs.js"
 import { SysDrive } from "./sysfs.js"
-import { UserDrive } from "./userfs.js"
+import { UsrDrive } from "./usrfs.js"
 
 class FS {
 
@@ -45,10 +45,10 @@ class FS {
     syncfs.postMessage({ type: 'init', id })
 
     this.addDrive('sys', new SysDrive())
-    await this.addDrive('user', new UserDrive())
+    await this.addDrive('usr', new UsrDrive())
 
-    if (this.list('user/').length === 0) {
-      await this.copyTree('sys/default/', 'user/')
+    if (this.list('usr/').length === 0) {
+      await this.copyTree('sys/default/', 'usr/')
     }
 
     this.mounts = await opendb<{ drive: string, dir: FileSystemDirectoryHandle }>('mounts', 'drive')
@@ -195,7 +195,7 @@ class FS {
   }
 
   private removeDrive(name: string) {
-    if (name === 'sys' || name === 'user') return
+    if (name === 'sys' || name === 'usr' || name === 'net') return
     const idx = this.$drives.val.indexOf(name + '/')
     if (idx !== -1) this.$drives.val = this.$drives.val.toSpliced(idx, 1)
     this._drives.get(name)?.unmount?.()

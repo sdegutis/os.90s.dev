@@ -45,7 +45,7 @@ const $driveButtons = api.fs.$drives.adapt(drives => drives.map(d =>
   </api.Button>
 ))
 
-const $dirs = $refresh.adapt(() => ['user/'])
+const $dirs = $refresh.adapt(() => ['usr/'])
 
 const $breadcrumbs = $dirs.adapt(dirs =>
   dirs.map((part, idx) =>
