@@ -49,6 +49,12 @@ export class Sys {
     this.installEventHandlers(canvas, $point, $scale)
 
     this.launch('sys/apps/shell.js', {})
+
+    if (location.pathname.startsWith('/run/')) {
+      const app = location.pathname.slice('/run/'.length)
+      console.log(location.pathname)
+      this.launch(app, {})
+    }
   }
 
   private installEventHandlers(canvas: HTMLCanvasElement, $point: Ref<Point>, $scale: Ref<number>) {
