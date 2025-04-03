@@ -195,9 +195,9 @@ export function FilePanelView({
   }
 
   const keyHandler = (key: string) => {
-    if (key === 'o' && panel.isKeyDown('Control')) { load(); return true }
-    if (key === 's' && panel.isKeyDown('Control')) { save(); return true }
-    if (key === 'S' && panel.isKeyDown('Control')) { saveAs(); return true }
+    if (key === 'o' && panel.isKeyDown('Control')) { load(); panel.endKeyRepeats(); return true }
+    if (key === 's' && panel.isKeyDown('Control')) { save(); panel.endKeyRepeats(); return true }
+    if (key === 'S' && panel.isKeyDown('Control')) { saveAs(); panel.endKeyRepeats(); return true }
     return onKeyDown?.(key) ?? false
   }
 
