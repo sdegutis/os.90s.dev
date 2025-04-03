@@ -27,7 +27,6 @@ class FS {
       }
 
       if (e.data.type === 'sync') {
-        console.log('shyncing in fs')
         syncing = true
         const { name, args } = e.data
         const fn = this[name as keyof this] as Function

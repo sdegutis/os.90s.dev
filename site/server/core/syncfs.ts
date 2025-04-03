@@ -18,7 +18,6 @@ self.onconnect = (e) => {
     }
 
     if (e.data.type === 'sync') {
-      console.log('shyncing in syncfs')
       clients
         .entries()
         .filter(([id, client]) => id !== e.data.id)
