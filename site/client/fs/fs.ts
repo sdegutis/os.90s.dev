@@ -12,7 +12,9 @@ class FS {
   private _drives = new Map<string, Drive>()
   private watchers = new Map<string, Listener<DriveNotificationType>>()
 
-  async init() {
+  async init(port: MessagePort) {
+    console.log(port, self)
+
     this.addDrive('sys', new SysDrive())
     await this.addDrive('user', new UserDrive())
 

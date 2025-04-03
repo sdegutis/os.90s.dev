@@ -30,7 +30,8 @@ export class Sys {
   procEnded = new Listener<number>()
 
   static async init(w: number, h: number) {
-    await fs.init()
+    const syncfs = new SharedWorker(import.meta.resolve('./syncfs.js'), { type: 'module' })
+    await fs.init(syncfs.port)
     return new Sys(w, h)
   }
 

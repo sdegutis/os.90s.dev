@@ -83,8 +83,8 @@ class Sys {
   set size(s: Size) { this.$size.val = s }
 
   async init() {
-    await fs.init()
-    const [id, w, h, keymap, fontstr, opts] = await this.rpc.call('init', [])
+    const [id, w, h, keymap, fontstr, opts, syncfs] = await this.rpc.call('init', [])
+    await fs.init(syncfs)
     program.opts = opts
     program.pid = id
     this.size = { w, h }

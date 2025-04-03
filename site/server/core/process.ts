@@ -37,11 +37,13 @@ export class Process {
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
 
       init: (reply) => {
+        const syncfs = new SharedWorker(import.meta.resolve('./syncfs.js'), { type: 'module' })
+
         opts["app"] = appPath
         this.ready.resolve()
         this.sys.procBegan.dispatch(this.id)
         const fontstr = fs.get('sys/data/crt34.font')!
-        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], fontstr, opts])
+        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], fontstr, opts, syncfs.port], [syncfs.port])
       },
 
       newpanel: (reply, ord, x, y, w, h) => {
