@@ -7,7 +7,7 @@ import { GroupY } from "../views/group.js"
 import { Label } from "../views/label.js"
 import { View } from "../views/view.js"
 
-export type MenuItem = { text: string, onClick(): void } | '-'
+export type MenuItem = { text: string, onClick(): void, disabled?: boolean } | '-'
 
 const borderColor = 0x444444ff
 const bgColor = 0x333333ff
@@ -24,6 +24,7 @@ export async function showMenu(items: MenuItem[], from = sys.mouse) {
           ]
         }
         return <Button padding={2} onClick={() => {
+          if (item.disabled) return
           item.onClick()
           panel.close()
         }}>

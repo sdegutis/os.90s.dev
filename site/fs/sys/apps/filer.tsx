@@ -80,12 +80,30 @@ const panel = await api.Panel.create({ name: 'filer' },
 panel.focusPanel()
 
 function Main() {
+
+  function mouseDownFileArea(b: number) {
+    if (b === 2) {
+      api.showMenu([
+        {
+          text: 'paste',
+          disabled: copying === undefined,
+          onClick: () => {
+            const curdir = $dirs.val.join('')
+            api.fs.cp(copying!, curdir)
+            copying = undefined
+            $dirs.notify()
+          }
+        },
+      ])
+    }
+  }
+
   return <api.PanedYA>
 
     <api.GroupX $children={$breadcrumbs} />
 
     <api.PanedYB>
-      <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
+      <api.Scroll background={0xffffff11} onMouseDown={mouseDownFileArea}>
         <api.GroupY gap={-2} align={'+'} $children={$itemButtons} />
       </api.Scroll>
       <api.GroupX background={0x00000033}>
@@ -168,13 +186,19 @@ async function handleFile(path: string) {
   }
 }
 
+let copying: string | undefined
+
 async function showMenuForFile(path: string) {
   api.showMenu([
     { text: 'edit', onClick: () => { api.sys.launch('sys/apps/writer.js', path) } },
     { text: 'delete', onClick: () => { api.fs.rm(path); $dirs.notify() } },
+    { text: 'copy', onClick: () => { copying = path } },
   ])
 }
 
 async function showMenuForFolder(path: string) {
-  api.showMenu([{ text: 'delete', onClick: () => { api.fs.rmdir(path); $dirs.notify() } },])
+  api.showMenu([
+    { text: 'delete', onClick: () => { api.fs.rmdir(path); $dirs.notify() } },
+    { text: 'copy', onClick: () => { copying = path } },
+  ])
 }

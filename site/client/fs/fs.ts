@@ -51,6 +51,27 @@ class FS {
     }
   }
 
+  async cp(from: string, to: string) {
+    this.syncfs('cp', [from, to])
+
+    const parts = from.split('/')
+
+    if (from.endsWith('/')) {
+      const last = parts.at(-2)
+      const dest = to + last
+      await this.mkdirp(dest)
+      await this.copyTree(from, dest + '/')
+    }
+    else {
+      const last = parts.at(-1)
+      const content = this.get(from)
+      if (!content) return
+      let dest = to + last
+      while (this.get(dest)) dest += '_'
+      await this.put(dest, content)
+    }
+  }
+
   async copyTree(from: string, to: string) {
     this.syncfs('copyTree', [from, to])
 

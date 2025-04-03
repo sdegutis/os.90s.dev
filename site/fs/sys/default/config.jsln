@@ -1,0 +1,2 @@
+sys.font="sys/data/crt34.font"
+user.startup[]="user/startup.js"
