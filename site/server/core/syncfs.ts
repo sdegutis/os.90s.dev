@@ -32,7 +32,6 @@ const INT = 1000
 setInterval(() => {
   for (const [id, client] of clients) {
     if (client.time < Date.now() - INT * 2) {
-      console.log('deleting')
       clients.delete(id)
     }
   }
