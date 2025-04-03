@@ -19,6 +19,9 @@ export class Process {
   dead = false
   rpc
 
+  path: string
+  file?: string
+
   procwatchers: ListenerDone | undefined
 
   ready = Promise.withResolvers<void>()
@@ -28,9 +31,10 @@ export class Process {
     Process.all.set(this.id, this)
 
     this.sys = sys
+    this.path = path
+    this.file = opts["file"]
 
-    const appPath = '/fs/' + path
-    const absurl = new URL(appPath, import.meta.url)
+    const absurl = new URL('/fs/' + path, import.meta.url)
     this.worker = new Worker(absurl, { type: 'module' })
 
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
@@ -38,7 +42,7 @@ export class Process {
       init: (reply) => {
         const syncfs = new SharedWorker(import.meta.resolve('./syncfs.js'), { type: 'module' })
 
-        opts["app"] = appPath
+        opts["app"] = path
         this.ready.resolve()
         this.sys.procBegan.dispatch(this.id)
         reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], opts, syncfs.port], [syncfs.port])
