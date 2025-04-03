@@ -1,7 +1,7 @@
-import { Cursor } from "../../client/core/cursor.js"
-import { DrawingContext } from "../../client/core/drawing.js"
-import { Listener } from "../../client/core/listener.js"
-import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../../client/core/rpc.js"
+import { Cursor } from "../client/core/cursor.js"
+import { DrawingContext } from "../client/core/drawing.js"
+import { Listener } from "../client/core/listener.js"
+import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../client/core/rpc.js"
 import type { Process } from "./process.js"
 import type { Sys } from "./sys.js"
 
