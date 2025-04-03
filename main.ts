@@ -38,7 +38,7 @@ function processSite() {
     files.add('/sw/wasm.js', swc1)
     files.add('/sw/wasm_bg.wasm', swc2)
 
-    const exports = files.with('^/client/').all().map(f => `export * from ".${f.path}"`).join('\n')
+    const exports = files.with('^/client/').paths().map(p => `export * from ".${p}"`).join('\n')
     fs.writeFileSync('./site/api.d.ts', exports)
     files.add('/api.js', exports)
 
