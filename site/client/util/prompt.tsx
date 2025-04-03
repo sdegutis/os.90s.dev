@@ -53,7 +53,7 @@ export async function showPrompt(text: string) {
     onMouseDown={function (b) {
       this.onMouseUp = dragMove(sys.$mouse, panel.$point)
     }}
-    background={0x000000cc} padding={1} paddingColor={0x005599ff}>
+    background={0x222222ff} padding={1} paddingColor={0x005599ff}>
     <Border padding={3}>
       <GroupY align={'m'} gap={4}>
         <Border padding={2}>
