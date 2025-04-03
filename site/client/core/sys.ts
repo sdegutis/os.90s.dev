@@ -83,18 +83,20 @@ class Sys {
   set size(s: Size) { this.$size.val = s }
 
   async init() {
-    const [id, w, h, keymap, fontstr, opts, syncfs] = await this.rpc.call('init', [])
+    const [id, w, h, keymap, opts, syncfs] = await this.rpc.call('init', [])
     await fs.init(syncfs, id)
     program.opts = opts
     program.pid = id
     this.size = { w, h }
-    this.$font = $(new Font(fontstr))
+
     keymap.forEach(k => this.keymap.add(k))
+
+    const fontstr = fs.get('sys/data/crt34.font')!
+    this.$font = $(new Font(fontstr))
 
     fs.watchTree('sys/data/crt34.font', () => {
       const fontstr = fs.get('sys/data/crt34.font')!
-      console.log(fontstr)
-      this.$font.val = new Font(fontstr)
+      this.font = new Font(fontstr)
     })
   }
 

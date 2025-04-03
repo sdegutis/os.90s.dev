@@ -1,7 +1,6 @@
 import type { Cursor } from "../../client/core/cursor.js"
 import type { ListenerDone } from "../../client/core/listener.js"
 import { wRPC, type ClientProgram, type ServerProgram } from "../../client/core/rpc.js"
-import { fs } from "../../client/fs/fs.js"
 import { Panel } from "./panel.js"
 import type { Sys } from "./sys.js"
 
@@ -42,8 +41,7 @@ export class Process {
         opts["app"] = appPath
         this.ready.resolve()
         this.sys.procBegan.dispatch(this.id)
-        const fontstr = fs.get('sys/data/crt34.font')!
-        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], fontstr, opts, syncfs.port], [syncfs.port])
+        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], opts, syncfs.port], [syncfs.port])
       },
 
       newpanel: (reply, ord, x, y, w, h) => {
