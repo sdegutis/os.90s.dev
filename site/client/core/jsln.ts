@@ -35,8 +35,16 @@ class JSLNParser {
 
   private buildkeys() {
     while (true) {
-      const key = this.somekey()
+      let key = this.somekey()
       this.skipspace()
+
+      if (this.ch() === '[' && this.peek() === ']') {
+        const array = this.current[key] ??= []
+        key = array.length
+        this.current = array
+        this.i++
+        this.i++
+      }
 
       if (this.ch() === '.') {
         this.current = this.current[key] ??= {}
@@ -137,6 +145,7 @@ class JSLNParser {
   private error(s: string): never { throw new SyntaxError(s) }
   private skipspace() { while (this.isspace()) this.i++ }
   private ch(): string | undefined { return this.array[this.i] }
+  private peek(): string | undefined { return this.array[this.i + 1] }
   private isend() { return this.ch() === undefined }
   private isnewline() { return this.ch()?.match(/[\r\n]/) }
   private isspace() { return this.ch()?.match(/[ \t]/) }
@@ -156,14 +165,9 @@ export class JSLN {
 }
 
 console.log(JSLN.parse(`
-foo.bar.qux=
-
-this is cool
-this is cool
-    asfthis is cool
-
-# yes
-bar='ye\\ns'
+foo[]=12
+foo[]=23
+foo[]=35
 `))
 
 // bar='hello😭world'
