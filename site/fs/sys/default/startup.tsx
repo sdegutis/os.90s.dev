@@ -6,3 +6,6 @@ api.sys.launch('sys/apps/terminal.js')
 api.sys.launch('sys/apps/todo.js')
 api.sys.launch('sys/apps/writer.js')
 // api.sys.launch('sys/apps/testdraw.js')
+
+
+api.program.terminate()
