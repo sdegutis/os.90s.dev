@@ -26,11 +26,11 @@ export class DrawingContext {
     this.ctx.restore()
   }
 
-  drawImage(canvas: OffscreenCanvas | ImageBitmap, x: number, y: number) {
+  drawImage(canvas: CanvasImageSource, x: number, y: number) {
     this.ctx.drawImage(canvas, x, y)
   }
 
-  drawImagePortion(canvas: OffscreenCanvas, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number) {
+  drawImagePortion(canvas: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number) {
     this.ctx.drawImage(canvas, sx, sy, sw, sh, dx, dy, dw, dh)
   }
 
