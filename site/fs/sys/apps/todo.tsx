@@ -45,13 +45,11 @@ function clear() {
 
 function inverse() {
   $items.val.forEach(it => it.done = !it.done)
-  $items.notify()
 }
 
 function ItemView({ item }: { item: Item }) {
   function toggleDone() {
     item.done = !item.done
-    $items.notify()
   }
 
   return (

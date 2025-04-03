@@ -18,30 +18,34 @@ const button = (data: { action: () => void, text: string }) => {
 
 api.comps['button'] = button
 
-const $drivesLoader = api.$(null)
-const $drives = $drivesLoader.adapt(() => api.fs.drives())
 
-const $driveButtons = $drives.adapt(drives => drives.map(d =>
+
+
+
+const $refresh = api.$(0)
+
+let $listeners: api.Ref<(() => void)[]>
+$listeners = api.fs.$drives.adapt(drives => {
+  $listeners?.val.forEach(done => done())
+  return drives.map(drive => api.fs.watchTree(drive, () => $refresh.val++))
+})
+
+
+const $driveButtons = api.fs.$drives.adapt(drives => drives.map(d =>
   <api.Button padding={2} onClick={(b) => {
     if (b === 0) {
       $dirs.val = [d]
     }
     else if (b === 2) {
-      const unmount = async () => {
-        api.fs.unmount(d)
-        $drivesLoader.notify()
-      }
-      api.showMenu([
-        { text: 'unmount', onClick: unmount }
-      ])
+      const unmount = () => api.fs.unmount(d)
+      api.showMenu([{ text: 'unmount', onClick: unmount }])
     }
   }}>
     <api.Label text={d} />
   </api.Button>
 ))
 
-const $dirs = api.$(['user/'])
-$dirs.equals = api.arrayEquals
+const $dirs = $refresh.adapt(() => ['user/'])
 
 const $breadcrumbs = $dirs.adapt(dirs =>
   dirs.map((part, idx) =>
@@ -71,7 +75,6 @@ async function newFile() {
   if (!name) return
   const full = [...$dirs.val, name].join('')
   api.fs.put(full, '')
-  $dirs.notify()
 }
 
 
@@ -100,7 +103,6 @@ function Main() {
             const curdir = $dirs.val.join('')
             api.fs.cp(copying!, curdir)
             copying = undefined
-            $dirs.notify()
           }
         },
       ])
@@ -181,7 +183,6 @@ async function mount() {
   if (!dir) return
 
   await api.fs.mount(name, dir)
-  $drivesLoader.notify()
 }
 
 async function handleFile(path: string) {
@@ -198,14 +199,14 @@ let copying: string | undefined
 async function showMenuForFile(path: string) {
   api.showMenu([
     { text: 'edit', onClick: () => { api.sys.launch('sys/apps/writer.js', path) } },
-    { text: 'delete', onClick: () => { api.fs.rm(path); $dirs.notify() } },
+    { text: 'delete', onClick: () => { api.fs.rm(path) } },
     { text: 'copy', onClick: () => { copying = path } },
   ])
 }
 
 async function showMenuForFolder(path: string) {
   api.showMenu([
-    { text: 'delete', onClick: () => { api.fs.rmdir(path); $dirs.notify() } },
+    { text: 'delete', onClick: () => { api.fs.rmdir(path) } },
     { text: 'copy', onClick: () => { copying = path } },
   ])
 }

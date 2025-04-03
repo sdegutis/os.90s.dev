@@ -1,5 +1,7 @@
 import { Listener } from "../../client/core/listener.js"
+import { $ } from "../../client/core/ref.js"
 import type { FsItem } from "../../client/core/rpc.js"
+import { arrayEquals } from "../../client/core/types.js"
 import { opendb } from "../../client/util/db.js"
 import type { Drive, DriveNotificationType } from "./drive.js"
 import { MountedDrive } from "./mountfs.js"
@@ -13,7 +15,11 @@ class FS {
   private watchers = new Map<string, Listener<DriveNotificationType>>()
   private syncfs!: (name: string, args: any[]) => void
 
+  public $drives = $<string[]>([])
+
   async init(syncfs: MessagePort, id: number) {
+    this.$drives.equals = arrayEquals
+
     let syncing = false
     this.syncfs = (name, args) => {
       if (syncing) return
@@ -103,10 +109,6 @@ class FS {
     this.removeDrive(drive)
   }
 
-  drives() {
-    return this._drives.keys().map(s => s + '/').toArray()
-  }
-
   async mkdirp(path: string) {
     this.syncfs('mkdirp', [path])
 
@@ -187,12 +189,15 @@ class FS {
   }
 
   private addDrive(name: string, drive: Drive) {
+    this.$drives.val = [...this.$drives.val, name + '/']
     this._drives.set(name, drive)
     return drive.mount((type, path) => this.notify(type, name + '/' + path))
   }
 
   private removeDrive(name: string) {
     if (name === 'sys' || name === 'user') return
+    const idx = this.$drives.val.indexOf(name + '/')
+    if (idx !== -1) this.$drives.val = this.$drives.val.toSpliced(idx, 1)
     this._drives.get(name)?.unmount?.()
     this._drives.delete(name)
   }
