@@ -11,9 +11,21 @@ class FS {
   private mounts!: Awaited<ReturnType<typeof opendb<{ drive: string, dir: FileSystemDirectoryHandle }>>>
   private _drives = new Map<string, Drive>()
   private watchers = new Map<string, Listener<DriveNotificationType>>()
+  private syncfs!: MessagePort
 
-  async init(port: MessagePort) {
-    console.log(port, self)
+  async init(syncfs: MessagePort, id: number) {
+    this.syncfs = syncfs
+
+    syncfs.postMessage({ type: 'init', id })
+
+    syncfs.onmessage = (e) => {
+      if (e.data.type === 'ping') {
+        syncfs.postMessage({ type: 'pong', id })
+        return
+      }
+
+      console.log('fs got msg', e.data)
+    }
 
     this.addDrive('sys', new SysDrive())
     await this.addDrive('user', new UserDrive())

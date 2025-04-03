@@ -31,7 +31,7 @@ export class Sys {
 
   static async init(w: number, h: number) {
     const syncfs = new SharedWorker(import.meta.resolve('./syncfs.js'), { type: 'module' })
-    await fs.init(syncfs.port)
+    await fs.init(syncfs.port, -1)
     return new Sys(w, h)
   }
 
