@@ -141,6 +141,10 @@ class Sys {
     this.rpc.send('resize', [w, h])
   }
 
+  noteCurrentFile(path: string) {
+    this.rpc.send('thisfile', [path])
+  }
+
   async launch(path: string, file?: string) {
     const [pid] = await this.rpc.call('launch', [path, { file }])
     return pid

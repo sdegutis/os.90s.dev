@@ -165,8 +165,7 @@ export function FilePanelView({
   }
 
   async function save() {
-    if (!filepath.val) filepath.val = await askFilePath()
-    if (!filepath.val) return
+    if (!filepath.val) return saveAs()
     fs.put(filepath.val, filedata())
   }
 
@@ -175,6 +174,7 @@ export function FilePanelView({
     if (!path) return
     filepath.val = path
     fs.put(filepath.val, filedata())
+    sys.noteCurrentFile(filepath.val)
   }
 
   async function askFilePath() {

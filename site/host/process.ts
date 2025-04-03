@@ -101,6 +101,11 @@ export class Process {
         reply([folder], [])
       },
 
+      thisfile: (file) => {
+        this.file = file
+        this.sys.reflectCurrentApp()
+      },
+
     })
 
     this.heartbeat = setInterval(async () => {

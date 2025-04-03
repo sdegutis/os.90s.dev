@@ -7,6 +7,7 @@ export interface ServerProgram {
   newpanel(ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, x: number, y: number, port: MessagePort]>
   terminate(pid: number): void
   resize(w: number, h: number): void
+  thisfile(path: string): void
 
   launch(path: string, opts: Record<string, any>): Promise<[number]>
   watchprocs(): Promise<[]>

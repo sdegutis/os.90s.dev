@@ -177,13 +177,18 @@ export class Sys {
       this.focused?.rpc.send('blur', [])
       this.focused = panel
       this.focused.rpc.send('focus', [])
-
-      const cur = this.focused.proc
-      let path = `/run/${cur.path}`
-      if (cur.file) path += '?file=' + cur.file
-      window.history.replaceState({}, '', path)
+      this.reflectCurrentApp()
     }
     panel.moveToFront()
+  }
+
+  reflectCurrentApp() {
+    if (!this.focused) return
+
+    const cur = this.focused.proc
+    let path = `/run/${cur.path}`
+    if (cur.file) path += '?file=' + cur.file
+    window.history.replaceState({}, '', path)
   }
 
   removePanel(panel: Panel) {
