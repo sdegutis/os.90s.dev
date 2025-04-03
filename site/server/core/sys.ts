@@ -53,7 +53,7 @@ export class Sys {
     if (location.pathname.startsWith('/run/')) {
       const app = location.pathname.slice('/run/'.length)
       console.log(location.pathname)
-      this.launch(app, {})
+      this.launch(app, Object.fromEntries(new URLSearchParams(location.search)))
     }
   }
 
