@@ -85,7 +85,7 @@ class JSLNParser {
     if (this.isend()) this.error(`Expected multiline value, got EOS`)
     const delim = this.toeol()
     const lines: string[] = []
-    while (true) {
+    while (!this.isend()) {
       const line = this.toeol()
       if (line === delim) break
       lines.push(line)
@@ -95,10 +95,7 @@ class JSLNParser {
 
   private toeol() {
     let start = this.i
-    while (!this.isnewline()) {
-      this.i++
-      if (this.isend()) this.error(`Expected multiline value, got EOS`)
-    }
+    while (!this.isnewline() && !this.isend()) this.i++
     this.i++
     return this.array.slice(start, this.i).join('')
   }
@@ -165,12 +162,17 @@ export class JSLN {
 }
 
 console.log(JSLN.parse(`
-foo[]=12
-foo[]=23
-foo[]=35
-`))
+colors[]=0xffffffff
+colors[]=0x99000099
+colors[]=0x000000ff
+bar='hello😭world'
+pixels=
+===
+1 1 1 0 1 1 1 0 1 1 0 0 0 1 1 0 0 1 0 0 1 0 1 0 1 0 1 0 1 1 1 0 0 1 0 0 0 1 0 0 1 0 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 1 0 0
+1 0 0 0 0 0 1 0 1 0 1 0 1 1 1 0 0 1 0 0 1 1 1 0 0 1 0 0 1 1 1 0 1 0 1 0 0 1 0 0 1 1 1 0 0 1 1 0 0 1 0 0 1 1 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2
+`.slice(1)))
 
-// bar='hello😭world'
 // console.log(JSLN.parse(`
 //   compilerOptions.lib[]="esnext"
 //   compilerOptions.lib[]="dom"
