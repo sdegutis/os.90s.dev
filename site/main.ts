@@ -5,5 +5,5 @@ await navigator.serviceWorker.ready
 
 await Sys.init(320, 180)
 
-console.log(location.href)
-console.log(location.pathname)
+// console.log(location.href)
+// console.log(location.pathname)
