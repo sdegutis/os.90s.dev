@@ -54,7 +54,7 @@ rebuildNow()
 const rebuild = api.debounce(rebuildNow)
 
 function rebuildNow() {
-  fontsrc = `#ffffffff\n\n`
+  fontsrc = `colors[]=0xffffffff\npixels=\n\n`
 
   const grid: boolean[] = []
 

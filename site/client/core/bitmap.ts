@@ -2,10 +2,8 @@ import { colorFor } from "./drawing.js"
 
 export class Bitmap {
 
-  static fromString(s: string) {
-    const [top, bottom] = s.split('\n\n')
-    const colors = top.split('\n').map(s => parseInt(s.slice(1), 16))
-    const lines = bottom.trim().split('\n').map(s => s.split(' ').map(s => parseInt(s, 16)))
+  static fromString(colors: number[], pstr: string) {
+    const lines = pstr.trim().split('\n').map(s => s.split(' ').map(s => parseInt(s, 16)))
     const pixels = lines.flatMap(c => c)
     return new Bitmap(colors, lines[0].length, pixels)
   }

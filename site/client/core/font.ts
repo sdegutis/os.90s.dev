@@ -1,5 +1,6 @@
 import { Bitmap } from "./bitmap.js"
 import type { DrawingContext } from "./drawing.js"
+import { JSLN } from "./jsln.js"
 
 export class Font {
 
@@ -8,7 +9,8 @@ export class Font {
   ch: number
 
   constructor(data: string) {
-    this.spr = Bitmap.fromString(data)
+    const o = JSLN.parse(data)
+    this.spr = Bitmap.fromString(o['colors'], o['pixels'])
     this.cw = this.spr.width / 16
     this.ch = this.spr.height / 6
   }

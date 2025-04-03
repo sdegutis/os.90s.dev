@@ -225,9 +225,9 @@ export class Sys {
 const defaultCursor = Cursor.fromString(`
 offx=1
 offy=1
-===
-#000000ff
-#ffffffff
+colors[]=0x000000ff
+colors[]=0xffffffff
+pixels=
 
 1 1 1 1
 1 2 2 1

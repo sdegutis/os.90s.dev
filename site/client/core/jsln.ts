@@ -29,7 +29,6 @@ class JSLNParser {
 
       this.current[key] = val
     }
-    console.log('done')
     return this.root
   }
 
@@ -58,7 +57,6 @@ class JSLNParser {
         return key
       }
       else {
-        console.log(this.array, this.i, this.array.slice(0, this.i))
         this.error(`Expected . or =, got ${this.ch()}`)
       }
     }
@@ -139,7 +137,7 @@ class JSLNParser {
     this.error(`Unknown escape: ${this.ch()}`)
   }
 
-  private error(s: string): never { throw new SyntaxError(s) }
+  private error(s: string): never { throw new SyntaxError(s + '\n\n' + this.array.slice(0, this.i).join('')) }
   private skipspace() { while (this.isspace()) this.i++ }
   private ch(): string | undefined { return this.array[this.i] }
   private peek(): string | undefined { return this.array[this.i + 1] }
@@ -159,7 +157,6 @@ class JSLNEncoder {
   constructor(o: Record<string, any>, stringifiers?: Record<string, (o: any) => string>) {
     this.root = o
     this.stringifiers = stringifiers
-    console.log(this.root)
   }
 
   stringify() {

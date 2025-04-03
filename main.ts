@@ -16,6 +16,10 @@ function processSite() {
 
     files.with(/\.d\.ts$/).remove()
 
+    files.with(/\.js$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
+    files.with(/\.tsx?$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
+    files.with(/\.html$/).do(file => { file.text = `<!-- ${copyright} -->\n\n` + file.text })
+
     files.with(/\.tsx?$/).without('^/fs/sys/').do(file => {
       file.text = immaculata.compileWithSwc(file.text, opts => {
         opts.filename = file.path
@@ -27,9 +31,6 @@ function processSite() {
     })
 
     files.with(/\.tsx?$/).do(file => { file.path = file.path.replace(/\.tsx?$/, '.js') })
-
-    files.with(/\.js$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
-    files.with(/\.html$/).do(file => { file.text = `<!-- ${copyright} -->\n\n` + file.text })
 
     files.add('/sw/wasm.js', swc1)
     files.add('/sw/wasm_bg.wasm', swc2)
