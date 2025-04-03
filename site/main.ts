@@ -1,4 +1,4 @@
-import { Sys } from "/server/sys.js"
+import { Sys } from "/host/sys.js"
 
 await navigator.serviceWorker.register('/sw.js', { type: 'module', updateViaCache: 'none' })
 await navigator.serviceWorker.ready
