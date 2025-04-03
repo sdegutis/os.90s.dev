@@ -177,6 +177,11 @@ export class Sys {
       this.focused?.rpc.send('blur', [])
       this.focused = panel
       this.focused.rpc.send('focus', [])
+
+      const cur = this.focused.proc
+      let path = `/run/${cur.path}`
+      if (cur.file) path += '?file=' + cur.file
+      window.history.replaceState({}, '', path)
     }
     panel.moveToFront()
   }
