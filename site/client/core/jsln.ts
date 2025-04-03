@@ -213,12 +213,6 @@ class JSLNEncoder {
   private multiline(o: string) {
     const lines = o.split('\n')
 
-    function* maybekey() {
-      let i = 0
-      do yield '='.repeat(i)
-      while (++i)
-    }
-
     const key = maybekey().find(key => !lines.includes(key))!
     lines.push(key)
     lines.unshift(key)
@@ -248,4 +242,10 @@ export class JSLN {
     return new JSLNEncoder(o, stringifiers).stringify()
   }
 
+}
+
+function* maybekey() {
+  let i = 0
+  do yield '='.repeat(i)
+  while (++i)
 }
