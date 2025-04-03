@@ -7,7 +7,7 @@ import { type Ref, multiplex } from "./ref.js"
 import { type ClientPanel, type PanelOrdering, type ServerPanel, wRPC } from "./rpc.js"
 import { sys } from "./sys.js"
 import type { Point, Size } from "./types.js"
-import { opendb } from "/api.js"
+import { JSLN, opendb } from "/api.js"
 
 const panelnames = await opendb<{ panelname: string, size: Size }>('panels', 'panelname')
 
@@ -317,7 +317,7 @@ export class Panel {
   }
 
   private setCursor(c: Cursor | null) {
-    this.rpc.send('cursor', [c?.toString() ?? ''])
+    this.rpc.send('cursor', [c ? JSLN.stringify(c) : ''])
   }
 
   blit() {

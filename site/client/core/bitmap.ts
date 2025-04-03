@@ -50,8 +50,8 @@ export class Bitmap {
     this.original.getContext('2d')!.drawImage(canvas, 0, 0)
   }
 
-  toString() {
-    const colors = this.colors.map(c => '#' + c.toString(16).padStart(8, '0'))
+  toJsln() {
+    const colors = this.colors.map(c => () => '0x' + c.toString(16).padStart(8, '0'))
     let lines: string[] = []
     let i = 0
     for (let y = 0; y < this.height; y++) {
@@ -61,7 +61,7 @@ export class Bitmap {
         lines.push(index.toString(16), space)
       }
     }
-    return colors.join('\n') + '\n\n' + lines.join('')
+    return { colors, pixels: lines.join('') }
   }
 
   colorize(col: number) {

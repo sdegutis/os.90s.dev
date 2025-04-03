@@ -177,31 +177,26 @@ class JSLNEncoder {
   }
 
   private pushval(o: any) {
-    if (typeof o === 'object') {
-      if (o instanceof Array) {
-        const lastkey = this.keys.pop() + '[]'
-        this.keys.push(lastkey)
-        const keys = [...this.keys]
-        for (const v of o) {
-          this.keys = keys
-          this.pushval(v)
-        }
-      }
-      else if (o === null) {
-        this.finishline('null')
-      }
-      else {
-        this.runobj(o)
+    if (o === null) return this.finishline('null')
+    if (o === true) return this.finishline('true')
+    if (o === false) return this.finishline('false')
+    if (typeof o === 'number') return this.finishline(o)
+    if (typeof o === 'string') return this.finishline(this.toqstr(o))
+    if (typeof o === 'function') return this.finishline(o())
+
+    if (typeof o !== 'object') throw new SyntaxError(`Can't stringify object: ${o}`)
+
+    if (o instanceof Array) {
+      const lastkey = this.keys.pop() + '[]'
+      this.keys.push(lastkey)
+      const keys = [...this.keys]
+      for (const v of o) {
+        this.keys = keys
+        this.pushval(v)
       }
     }
-    else if (typeof o === 'string') {
-      this.finishline(this.toqstr(o))
-    }
-    else if (typeof o === 'boolean') {
-      this.finishline(o ? 'true' : 'false')
-    }
-    else if (typeof o === 'number') {
-      this.finishline(o)
+    else {
+      this.runobj(o)
     }
   }
 
