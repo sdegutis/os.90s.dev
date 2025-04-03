@@ -173,25 +173,25 @@ pixels=
 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2
 `.slice(1)))
 
-// console.log(JSLN.parse(`
-//   compilerOptions.lib[]="esnext"
-//   compilerOptions.lib[]="dom"
-//   compilerOptions.lib[]="dom.iterable"
-//   compilerOptions.types[]="node"
-//   #comment
-// colors[]=0x000000ff
-// colors[]=0x0000007f
-// colors[]=0x00000001
-// colors[]=0x00000009
-// colors[]=0x00000010
-// colors[]=0x0000001f
-// colors[]=0x00000020
-// pixels = 
-// ===
-// yesfasdf
-// asdff
-// df
-// ===
-// compilerOptions.moduleDetection="force"
-// compilerOptions.paths."/api.js"[]="./site.api.js"
-// `.trimStart()))
+console.log(JSLN.parse(`
+  compilerOptions.lib[]="esnext"
+  compilerOptions.lib[]="dom"
+  compilerOptions.lib[]="dom.iterable"
+  compilerOptions.types[]="node"
+  #comment
+colors[]=0x000000ff
+colors[]=0x0000007f
+colors[]=0x00000001
+colors[]=0x00000009
+colors[]=0x00000010
+colors[]=0x0000001f
+colors[]=0x00000020
+pixels = 
+===
+yesfasdf
+asdff
+df
+===
+compilerOptions.moduleDetection="force"
+compilerOptions.paths."/api.js"[]="./site.api.js"
+`.slice(1)))
