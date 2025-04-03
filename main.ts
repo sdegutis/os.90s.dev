@@ -65,6 +65,7 @@ function processSite() {
 if (isDev) {
   const server = new immaculata.DevServer(8080, '/_reload')
   server.files = await processSite()
+  server.notFound = () => '/404.html'
 
   tree.watch({
     ignored: (str) => str.endsWith('/site/api.d.ts')
