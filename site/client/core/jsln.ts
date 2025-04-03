@@ -165,8 +165,13 @@ class JSLNEncoder {
   }
 
   private runobj(o: Record<string, any>) {
+    if ('toJsln' in o && typeof o["toJsln"] === 'function') {
+      o = o["toJsln"]()
+    }
+
+    const keys = [...this.keys]
     for (const [k, v] of Object.entries(o)) {
-      this.keys.push(this.tostr(k))
+      this.keys = [...keys, this.tostr(k)]
       this.pushval(v)
     }
   }
