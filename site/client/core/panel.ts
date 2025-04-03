@@ -201,22 +201,25 @@ export class Panel {
   }
 
   onKeyDown(key: string) {
-    this.sendKeyDown(key)
+    this.endKeyRepeats()
 
-    this.clearRepeater?.()
-    let repeater = setTimeout(() => {
-      repeater = setInterval(() => {
+    this.repeater = setTimeout(() => {
+      this.repeater = setInterval(() => {
         this.sendKeyDown(key)
       }, 50)
-      this.clearRepeater = () => clearInterval(repeater)
     }, 500)
-    this.clearRepeater = () => clearTimeout(repeater)
+
+    this.sendKeyDown(key)
   }
 
-  private clearRepeater?: () => void
+  endKeyRepeats() {
+    clearTimeout(this.repeater)
+  }
+
+  private repeater?: ReturnType<typeof setTimeout>
 
   onKeyUp(key: string) {
-    this.clearRepeater?.()
+    this.endKeyRepeats()
     this.focused?.onKeyUp?.(key)
   }
 
