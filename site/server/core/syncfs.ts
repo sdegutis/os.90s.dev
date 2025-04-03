@@ -3,7 +3,6 @@ const clients = new Map<number, {
   time: number,
 }>()
 
-
 self.onconnect = (e) => {
   const port = e.source as MessagePort
 
@@ -18,7 +17,14 @@ self.onconnect = (e) => {
       return
     }
 
-    console.log('syncfs got msg', e.data)
+    if (e.data.type === 'sync') {
+      console.log('shyncing in syncfs')
+      clients
+        .entries()
+        .filter(([id, client]) => id !== e.data.id)
+        .forEach(([id, client]) => client.port.postMessage(e.data))
+      return
+    }
   }
 }
 

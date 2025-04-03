@@ -11,12 +11,14 @@ class FS {
   private mounts!: Awaited<ReturnType<typeof opendb<{ drive: string, dir: FileSystemDirectoryHandle }>>>
   private _drives = new Map<string, Drive>()
   private watchers = new Map<string, Listener<DriveNotificationType>>()
-  private syncfs!: MessagePort
+  private syncfs!: (name: string, args: any[]) => void
 
   async init(syncfs: MessagePort, id: number) {
-    this.syncfs = syncfs
-
-    syncfs.postMessage({ type: 'init', id })
+    let syncing = false
+    this.syncfs = (name, args) => {
+      if (syncing) return
+      syncfs.postMessage({ type: 'sync', name, args, id })
+    }
 
     syncfs.onmessage = (e) => {
       if (e.data.type === 'ping') {
@@ -24,8 +26,18 @@ class FS {
         return
       }
 
-      console.log('fs got msg', e.data)
+      if (e.data.type === 'sync') {
+        console.log('shyncing in fs')
+        syncing = true
+        const { name, args } = e.data
+        const fn = this[name as keyof this] as Function
+        fn.apply(this, args)
+        syncing = false
+        return
+      }
     }
+
+    syncfs.postMessage({ type: 'init', id })
 
     this.addDrive('sys', new SysDrive())
     await this.addDrive('user', new UserDrive())
@@ -41,6 +53,8 @@ class FS {
   }
 
   async copyTree(from: string, to: string) {
+    this.syncfs('copyTree', [from, to])
+
     for (const item of this.list(from)) {
       if (item.type === 'folder') {
         await this.mkdirp(to + item.name)
@@ -53,6 +67,8 @@ class FS {
   }
 
   async mount(drive: string, folder: FileSystemDirectoryHandle) {
+    this.syncfs('mount', [drive, folder])
+
     await folder.requestPermission({ mode: 'readwrite' })
 
     this.mounts.set({ drive, dir: folder })
@@ -60,6 +76,8 @@ class FS {
   }
 
   unmount(drive: string) {
+    this.syncfs('unmount', [drive])
+
     drive = drive.replace(/\/$/, '')
     this.mounts.del(drive)
     this.removeDrive(drive)
@@ -70,6 +88,8 @@ class FS {
   }
 
   async mkdirp(path: string) {
+    this.syncfs('mkdirp', [path])
+
     if (path.endsWith('/')) path = path.replace(/\/+$/, '')
 
     const [drive, subpath] = this.prepare(path)
@@ -84,11 +104,13 @@ class FS {
   }
 
   async rm(path: string) {
+    this.syncfs('rm', [path])
     const [drive, subpath] = this.prepare(path)
     await drive.rmfile(subpath)
   }
 
   async rmdir(path: string) {
+    this.syncfs('rmdir', [path])
     if (!path.endsWith('/')) path += '/'
     const [drive, subpath] = this.prepare(path)
     await drive.rmdir(subpath)
@@ -117,6 +139,7 @@ class FS {
   }
 
   async put(filepath: string, content: string) {
+    this.syncfs('put', [filepath, content])
     const [drive, subpath] = this.prepare(filepath)
     await drive.putfile(subpath, normalize(content))
   }
