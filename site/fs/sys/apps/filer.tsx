@@ -116,7 +116,11 @@ function Sidebar() {
 
 function FolderItem({ base, name }: { base: string[], name: string }) {
   return (
-    <api.Button padding={2} onClick={() => $dirs.val = [...base, name]}>
+    <api.Button padding={2} onClick={(b) => {
+      const path = [...base, name]
+      if (b === 0) $dirs.val = path
+      else showMenuForFolder(path.join(''))
+    }}>
       <api.GroupX gap={2}>
         <api.Border>
           <api.ImageView bitmap={IMG_FOLDER} />
@@ -167,5 +171,10 @@ async function handleFile(path: string) {
 async function showMenuForFile(path: string) {
   api.showMenu([
     { text: 'edit', onClick: () => { api.sys.launch('sys/apps/writer.js', path) } },
+    { text: 'delete', onClick: () => { api.fs.rm(path); $dirs.notify() } },
   ])
+}
+
+async function showMenuForFolder(path: string) {
+  api.showMenu([{ text: 'delete', onClick: () => { api.fs.rmdir(path); $dirs.notify() } },])
 }
