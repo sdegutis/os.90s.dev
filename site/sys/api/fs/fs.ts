@@ -177,47 +177,6 @@ class FS {
   //   }
   // }
 
-  // async rm(path: string) {
-  //   this.syncfs('rm', [path])
-  //   const [drive, subpath] = this.prepare(path)
-  //   await drive.rmfile(subpath)
-  // }
-
-  // async rmdir(path: string) {
-  //   this.syncfs('rmdir', [path])
-  //   if (!path.endsWith('/')) path += '/'
-  //   const [drive, subpath] = this.prepare(path)
-  //   await drive.rmdir(subpath)
-  // }
-
-  // list(path: string): FsItem[] {
-  //   const [drive, subpath] = this.prepare(path)
-  //   const r = new RegExp(`^${subpath}[^/]+?/?$`)
-  //   return (drive.items
-  //     .entries()
-  //     .map(([k, v]) => {
-  //       const m = k.match(r)?.[0]
-  //       if (!m) return null
-  //       return { name: m.slice(subpath.length), type: v.type }
-  //     })
-  //     .filter(e => e !== null)
-  //     .toArray()
-  //     .sort(sortBy(e => (e.type === 'folder' ? 0 : 1) + e.name)))
-  // }
-
-  // get(path: string): string | undefined {
-  //   const [drive, subpath] = this.prepare(path)
-  //   const item = drive.items.get(subpath)
-  //   if (item?.type === 'file') return normalize(item.content)
-  //   return undefined
-  // }
-
-  // async put(filepath: string, content: string) {
-  //   this.syncfs('put', [filepath, content])
-  //   const [drive, subpath] = this.prepare(filepath)
-  //   await drive.putfile(subpath, normalize(content))
-  // }
-
   watchTree(path: string, fn: () => void) {
     let watcher = this.#watchers.get(path)
     if (!watcher) this.#watchers.set(path, watcher = new Listener())
