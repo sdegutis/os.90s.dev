@@ -68,13 +68,17 @@ class FS {
   async putDir(path: string): Promise<boolean> {
     if (!path.endsWith('/')) path += '/'
     const [drive, parts] = this.#split(path)
-    return drive.putDir(parts)
+    const success = await drive.putDir(parts)
+    if (success) this.#notify(path, 'putDir')
+    return success
   }
 
   async delDir(path: string): Promise<boolean> {
     if (!path.endsWith('/')) path += '/'
     const [drive, parts] = this.#split(path)
-    return drive.delDir(parts)
+    const success = await drive.delDir(parts)
+    if (success) this.#notify(path, 'delDir')
+    return success
   }
 
   async getFile(path: string): Promise<string | null> {
@@ -86,13 +90,21 @@ class FS {
   async putFile(path: string, content: string): Promise<boolean> {
     this.#checkfilepath(path)
     const [drive, parts] = this.#split(path)
-    return drive.putFile(parts, content)
+    const success = await drive.putFile(parts, content)
+    if (success) this.#notify(path, 'putFile')
+    return success
   }
 
   async delFile(path: string): Promise<boolean> {
     this.#checkfilepath(path)
     const [drive, parts] = this.#split(path)
-    return drive.delFile(parts)
+    const success = await drive.delFile(parts)
+    if (success) this.#notify(path, 'delFile')
+    return success
+  }
+
+  #notify(path: string, op: string) {
+
   }
 
   #checkfilepath(path: string) {
@@ -217,7 +229,7 @@ class FS {
   //   await drive.putfile(subpath, normalize(content))
   // }
 
-  // watchTree(path: string, fn: (type: DriveNotificationType) => void) {
+  // watchTree(path: string, fn: () => void) {
   //   let watcher = this.watchers.get(path)
   //   if (!watcher) this.watchers.set(path, watcher = new Listener())
   //   return watcher.watch(fn)
