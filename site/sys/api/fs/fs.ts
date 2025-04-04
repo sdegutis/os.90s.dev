@@ -7,52 +7,36 @@ class FS {
 
   #watchers = new Map<string, Listener<string>>()
   #drives = new Map<string, Drive>()
-  // private syncfs!: (name: string, args: any[]) => void
+  private syncfs!: (path: string, op: string) => void
 
   constructor() {
     this.#drives.set('sys', new SysDrive())
     this.#drives.set('usr', new UsrDrive())
-
-
   }
 
   async init(syncfs: MessagePort, id: number) {
+    let syncing = false
+    this.syncfs = (path, op) => {
+      if (syncing) return
+      syncfs.postMessage({ type: 'sync', path, op, id })
+    }
 
-    // let syncing = false
-    // this.syncfs = (name, args) => {
-    //   if (syncing) return
-    //   syncfs.postMessage({ type: 'sync', name, args, id })
-    // }
+    syncfs.onmessage = (e) => {
+      if (e.data.type === 'ping') {
+        syncfs.postMessage({ type: 'pong', id })
+        return
+      }
 
-    // syncfs.onmessage = (e) => {
-    //   if (e.data.type === 'ping') {
-    //     syncfs.postMessage({ type: 'pong', id })
-    //     return
-    //   }
+      if (e.data.type === 'sync') {
+        syncing = true
+        const { path, op } = e.data
+        this.#notify(path, op)
+        syncing = false
+        return
+      }
+    }
 
-    //   if (e.data.type === 'sync') {
-    //     syncing = true
-    //     const { name, args } = e.data
-    //     const fn = this[name as keyof this] as Function
-    //     fn.apply(this, args)
-    //     syncing = false
-    //     return
-    //   }
-    // }
-
-    // syncfs.postMessage({ type: 'init', id })
-
-    // this.addDrive('sys', new SysDrive())
-    // await this.addDrive('usr', new UsrDrive())
-
-    // if (this.list('usr/').length === 0) {
-    //   await this.copyTree('sys/default/', 'usr/')
-    // }
-
-    // this.mounts = await opendb<{ drive: string, dir: FileSystemDirectoryHandle }>('mounts', 'drive')
-    // for (const { drive, dir } of await this.mounts.all()) {
-    //   await this.addDrive(drive, new MountedDrive(dir))
-    // }
+    syncfs.postMessage({ type: 'init', id })
   }
 
   drives() {
@@ -104,6 +88,7 @@ class FS {
   }
 
   #notify(path: string, op: string) {
+    this.syncfs(path, op)
     for (const [p, w] of this.#watchers) {
       if (path.startsWith(p)) {
         w.dispatch(path)
