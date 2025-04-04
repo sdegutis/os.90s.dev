@@ -144,23 +144,6 @@ class FS {
   //   }
   // }
 
-  // async mount(drive: string, folder: FileSystemDirectoryHandle) {
-  //   this.syncfs('mount', [drive, folder])
-
-  //   await folder.requestPermission({ mode: 'readwrite' })
-
-  //   this.mounts.set({ drive, dir: folder })
-  //   await this.addDrive(drive, new MountedDrive(folder))
-  // }
-
-  // unmount(drive: string) {
-  //   this.syncfs('unmount', [drive])
-
-  //   drive = drive.replace(/\/$/, '')
-  //   this.mounts.del(drive)
-  //   this.removeDrive(drive)
-  // }
-
   // async mkdirp(path: string) {
   //   this.syncfs('mkdirp', [path])
 
@@ -182,21 +165,6 @@ class FS {
     if (!watcher) this.#watchers.set(path, watcher = new Listener())
     return watcher.watch(fn)
   }
-
-  // private addDrive(name: string, drive: Drive) {
-  //   this.$drives.val = [...this.$drives.val, name + '/']
-  //   this._drives.set(name, drive)
-  //   return drive.mount((type, path) => this.notify(type, name + '/' + path))
-  // }
-
-  // private removeDrive(name: string) {
-  //   if (name === 'sys' || name === 'usr' || name === 'net') return
-  //   const idx = this.$drives.val.indexOf(name + '/')
-  //   if (idx !== -1) this.$drives.val = this.$drives.val.toSpliced(idx, 1)
-  //   this._drives.get(name)?.unmount?.()
-  //   this._drives.delete(name)
-  // }
-
 
 }
 
