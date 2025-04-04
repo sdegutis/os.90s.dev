@@ -29,7 +29,7 @@ api.fs.watchTree('', () => $refresh.val++)
 const $drives = api.$<string[]>(api.fs.drives())
 
 
-const $driveButtons = $drives.adapt(drives => drives.map(d =>
+const $driveButtons = $drives.adapt(drives => drives.map(d => d + '/').map(d =>
   <api.Button padding={2} onClick={(b) => {
     if (b === 0) {
       $dirs.val = [d]
@@ -43,8 +43,8 @@ const $dirs = $refresh.adapt<string[]>(() => [])
 
 
 const initpath = api.program.opts['file'] as string
-$dirs.val = initpath?.split('/').slice(0, -1).map(p => p + '/') ?? ['usr']
-$dirs.watch(dirs => api.sys.noteCurrentFile(dirs.map(d => d + '/').join('')))
+$dirs.val = initpath?.split('/').slice(0, -1).map(p => p + '/') ?? ['usr/']
+$dirs.watch(dirs => api.sys.noteCurrentFile(dirs.join('')))
 
 
 
@@ -56,13 +56,13 @@ const $breadcrumbs = $dirs.adapt(dirs =>
   )
 )
 
-const $items = await $dirs.adaptAsync(dirs => api.fs.getDir(dirs.join('/')))
+const $items = await $dirs.adaptAsync(dirs => api.fs.getDir(dirs.join('')))
 
 const $itemButtons = $items.adapt(items => {
   if (items.length === 0) return [EMPTY]
   return items.map(name =>
     name.endsWith('/')
-      ? <FolderItem base={$dirs.val} name={name.slice(0, -1)} />
+      ? <FolderItem base={$dirs.val} name={name} />
       : <FileItem base={$dirs.val} name={name} />
   )
 })
