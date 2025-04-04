@@ -24,21 +24,23 @@ api.comps['button'] = button
 
 const $refresh = api.$(0)
 
-let $listeners: api.Ref<(() => void)[]>
-$listeners = api.fs.$drives.adapt(drives => {
-  $listeners?.val.forEach(done => done())
-  return drives.map(drive => api.fs.watchTree(drive, () => $refresh.val++))
-})
+// let $listeners: api.Ref<(() => void)[]>
+// $listeners = api.fs.$drives.adapt(drives => {
+//   $listeners?.val.forEach(done => done())
+//   return drives.map(drive => api.fs.watchTree(drive, () => $refresh.val++))
+// })
+
+const $drives = api.$<string[]>(api.fs.drives())
 
 
-const $driveButtons = api.fs.$drives.adapt(drives => drives.map(d =>
+const $driveButtons = $drives.adapt(drives => drives.map(d =>
   <api.Button padding={2} onClick={(b) => {
     if (b === 0) {
       $dirs.val = [d]
     }
     else if (b === 2) {
-      const unmount = () => api.fs.unmount(d)
-      api.showMenu([{ text: 'unmount', onClick: unmount }])
+      // const unmount = () => api.fs.unmount(d)
+      // api.showMenu([{ text: 'unmount', onClick: unmount }])
     }
   }}>
     <api.Label text={d} />
@@ -55,7 +57,7 @@ const $breadcrumbs = $dirs.adapt(dirs =>
   )
 )
 
-const $items = $dirs.adapt(dirs => api.fs.list(dirs.join('')))
+const $items = await $dirs.adaptAsync(dirs => api.fs.getDir(dirs.join('')))
 
 const $itemButtons = $items.adapt(items => {
   if (items.length === 0) return [EMPTY]
@@ -74,7 +76,7 @@ async function newFile() {
   const name = await api.showPrompt('filename?')
   if (!name) return
   const full = [...$dirs.val, name].join('')
-  api.fs.put(full, '')
+  await api.fs.putFile(full, '')
 }
 
 
@@ -101,7 +103,7 @@ function Main() {
           disabled: copying === undefined,
           onClick: () => {
             const curdir = $dirs.val.join('')
-            api.fs.cp(copying!, curdir)
+            // api.fs.cp(copying!, curdir)
             copying = undefined
           }
         },
@@ -182,7 +184,7 @@ async function mount() {
   const dir = await api.sys.askdir()
   if (!dir) return
 
-  await api.fs.mount(name, dir)
+  // await api.fs.mount(name, dir)
 }
 
 async function handleFile(path: string) {
@@ -199,14 +201,14 @@ let copying: string | undefined
 async function showMenuForFile(path: string) {
   api.showMenu([
     { text: 'edit', onClick: () => { api.sys.launch('sys/apps/writer.js', path) } },
-    { text: 'delete', onClick: () => { api.fs.rm(path) } },
+    { text: 'delete', onClick: () => { api.fs.delFile(path) } },
     { text: 'copy', onClick: () => { copying = path } },
   ])
 }
 
 async function showMenuForFolder(path: string) {
   api.showMenu([
-    { text: 'delete', onClick: () => { api.fs.rmdir(path) } },
+    { text: 'delete', onClick: () => { api.fs.delDir(path) } },
     { text: 'copy', onClick: () => { copying = path } },
   ])
 }

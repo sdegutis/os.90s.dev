@@ -4,7 +4,7 @@ const font = api.$(api.sys.font)
 
 const filepath = api.$(api.program.opts["file"])
 if (filepath.val) {
-  const fontstr = api.fs.get(filepath.val)
+  const fontstr = await api.fs.getFile(filepath.val)
   if (fontstr) {
     font.val = new api.Font(fontstr)
   }

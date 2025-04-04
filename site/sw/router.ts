@@ -1,4 +1,4 @@
-import { openUsrDb } from "../client/fs/usrfs.js"
+import { usrdb } from "../client/fs/usrfs.js"
 import { compile } from "./compile.js"
 
 const jsHeaders = {
@@ -23,9 +23,8 @@ export async function handleRoute(url: URL, req: Request) {
 
   if (url.pathname.startsWith('/fs/usr/')) {
     const key = url.pathname.slice('/fs/usr/'.length)
-    const fs = await openUsrDb()
+    const fs = await usrdb
     const res = await fs.get(key)
-    fs.end()
     return await jsResponse(url, res?.content ?? '')
   }
 

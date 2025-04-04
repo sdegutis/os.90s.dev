@@ -166,14 +166,14 @@ export function FilePanelView({
 
   async function save() {
     if (!filepath.val) return saveAs()
-    fs.put(filepath.val, filedata())
+    fs.putFile(filepath.val, filedata())
   }
 
   async function saveAs() {
     const path = await askFilePath()
     if (!path) return
     filepath.val = path
-    fs.put(filepath.val, filedata())
+    fs.putFile(filepath.val, filedata())
     sys.noteCurrentFile(filepath.val)
   }
 

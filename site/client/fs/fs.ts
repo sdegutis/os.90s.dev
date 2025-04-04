@@ -1,24 +1,22 @@
-import { Listener } from "../../client/core/listener.js"
-import { $ } from "../../client/core/ref.js"
-import type { FsItem } from "../../client/core/rpc.js"
-import { arrayEquals } from "../../client/core/types.js"
-import { opendb } from "../../client/util/db.js"
-import type { Drive, DriveNotificationType } from "./drive.js"
-import { MountedDrive } from "./mountfs.js"
+import { DirItem, Drive } from "./drive.js"
 import { SysDrive } from "./sysfs.js"
 import { UsrDrive } from "./usrfs.js"
 
 class FS {
 
-  private mounts!: Awaited<ReturnType<typeof opendb<{ drive: string, dir: FileSystemDirectoryHandle }>>>
-  private _drives = new Map<string, Drive>()
-  private watchers = new Map<string, Listener<DriveNotificationType>>()
-  private syncfs!: (name: string, args: any[]) => void
+  // private mounts!: Awaited<ReturnType<typeof opendb<{ drive: string, dir: FileSystemDirectoryHandle }>>>
+  // private _drives = new Map<string, Drive>()
+  // private watchers = new Map<string, Listener<DriveNotificationType>>()
+  // private syncfs!: (name: string, args: any[]) => void
 
-  public $drives = $<string[]>([])
+  #drives = new Map<string, Drive>()
+
+  constructor() {
+    this.#drives.set('sys', new SysDrive())
+    this.#drives.set('usr', new UsrDrive())
+  }
 
   async init(syncfs: MessagePort, id: number) {
-    this.$drives.equals = arrayEquals
 
     // let syncing = false
     // this.syncfs = (name, args) => {
@@ -44,179 +42,218 @@ class FS {
 
     // syncfs.postMessage({ type: 'init', id })
 
-    this.addDrive('sys', new SysDrive())
-    await this.addDrive('usr', new UsrDrive())
+    // this.addDrive('sys', new SysDrive())
+    // await this.addDrive('usr', new UsrDrive())
 
-    if (this.list('usr/').length === 0) {
-      await this.copyTree('sys/default/', 'usr/')
-    }
+    // if (this.list('usr/').length === 0) {
+    //   await this.copyTree('sys/default/', 'usr/')
+    // }
 
-    this.mounts = await opendb<{ drive: string, dir: FileSystemDirectoryHandle }>('mounts', 'drive')
-    for (const { drive, dir } of await this.mounts.all()) {
-      await this.addDrive(drive, new MountedDrive(dir))
-    }
+    // this.mounts = await opendb<{ drive: string, dir: FileSystemDirectoryHandle }>('mounts', 'drive')
+    // for (const { drive, dir } of await this.mounts.all()) {
+    //   await this.addDrive(drive, new MountedDrive(dir))
+    // }
   }
 
-  async cp(from: string, to: string) {
-    this.syncfs('cp', [from, to])
-
-    const parts = from.split('/')
-
-    if (from.endsWith('/')) {
-      const last = parts.at(-2)
-      const dest = to + last
-      await this.mkdirp(dest)
-      await this.copyTree(from, dest + '/')
-    }
-    else {
-      const last = parts.at(-1)
-      const content = this.get(from)
-      if (!content) return
-      let dest = to + last
-      while (this.get(dest)) dest += '_'
-      await this.put(dest, content)
-    }
+  drives() {
+    return this.#drives.keys().map(s => s + '/').toArray()
   }
 
-  async copyTree(from: string, to: string) {
-    this.syncfs('copyTree', [from, to])
-
-    for (const item of this.list(from)) {
-      if (item.type === 'folder') {
-        await this.mkdirp(to + item.name)
-        await this.copyTree(from + item.name, to + item.name)
-      }
-      else {
-        this.put(to + item.name, this.get(from + item.name)!)
-      }
-    }
-  }
-
-  async mount(drive: string, folder: FileSystemDirectoryHandle) {
-    this.syncfs('mount', [drive, folder])
-
-    await folder.requestPermission({ mode: 'readwrite' })
-
-    this.mounts.set({ drive, dir: folder })
-    await this.addDrive(drive, new MountedDrive(folder))
-  }
-
-  unmount(drive: string) {
-    this.syncfs('unmount', [drive])
-
-    drive = drive.replace(/\/$/, '')
-    this.mounts.del(drive)
-    this.removeDrive(drive)
-  }
-
-  async mkdirp(path: string) {
-    this.syncfs('mkdirp', [path])
-
-    if (path.endsWith('/')) path = path.replace(/\/+$/, '')
-
-    const [drive, subpath] = this.prepare(path)
-    const parts = subpath.split('/')
-
-    for (let i = 0; i < parts.length; i++) {
-      const dir = parts.slice(0, i + 1).join('/') + '/'
-      if (!drive.items.has(dir)) {
-        await drive.putdir(dir)
-      }
-    }
-  }
-
-  async rm(path: string) {
-    this.syncfs('rm', [path])
-    const [drive, subpath] = this.prepare(path)
-    await drive.rmfile(subpath)
-  }
-
-  async rmdir(path: string) {
-    this.syncfs('rmdir', [path])
+  async getDir(path: string): Promise<DirItem[]> {
     if (!path.endsWith('/')) path += '/'
-    const [drive, subpath] = this.prepare(path)
-    await drive.rmdir(subpath)
+    const [drive, parts] = this.#split(path)
+    return drive.getDir(parts)
   }
 
-  list(path: string): FsItem[] {
-    const [drive, subpath] = this.prepare(path)
-    const r = new RegExp(`^${subpath}[^/]+?/?$`)
-    return (drive.items
-      .entries()
-      .map(([k, v]) => {
-        const m = k.match(r)?.[0]
-        if (!m) return null
-        return { name: m.slice(subpath.length), type: v.type }
-      })
-      .filter(e => e !== null)
-      .toArray()
-      .sort(sortBy(e => (e.type === 'folder' ? 0 : 1) + e.name)))
+  async putDir(path: string): Promise<boolean> {
+    if (!path.endsWith('/')) path += '/'
+    const [drive, parts] = this.#split(path)
+    return drive.putDir(parts)
   }
 
-  get(path: string): string | undefined {
-    const [drive, subpath] = this.prepare(path)
-    const item = drive.items.get(subpath)
-    if (item?.type === 'file') return normalize(item.content)
-    return undefined
+  async delDir(path: string): Promise<boolean> {
+    if (!path.endsWith('/')) path += '/'
+    const [drive, parts] = this.#split(path)
+    return drive.delDir(parts)
   }
 
-  async put(filepath: string, content: string) {
-    this.syncfs('put', [filepath, content])
-    const [drive, subpath] = this.prepare(filepath)
-    await drive.putfile(subpath, normalize(content))
+  async getFile(path: string): Promise<string | null> {
+    this.#checkfilepath(path)
+    const [drive, parts] = this.#split(path)
+    return drive.getFile(parts)
   }
 
-  watchTree(path: string, fn: (type: DriveNotificationType) => void) {
-    let watcher = this.watchers.get(path)
-    if (!watcher) this.watchers.set(path, watcher = new Listener())
-    return watcher.watch(fn)
+  async putFile(path: string, content: string): Promise<boolean> {
+    this.#checkfilepath(path)
+    const [drive, parts] = this.#split(path)
+    return drive.putFile(parts, content)
   }
 
-
-  private prepare(fullpath: string) {
-    const parts = fullpath.split('/')
-    const drivename = parts.shift()!
-    const drive = this._drives.get(drivename)!
-    return [drive, parts.join('/')] as const
+  async delFile(path: string): Promise<boolean> {
+    this.#checkfilepath(path)
+    const [drive, parts] = this.#split(path)
+    return drive.delFile(parts)
   }
 
-  private notify(type: DriveNotificationType, path: string) {
-    for (const [p, w] of this.watchers) {
-      if (path.startsWith(p)) {
-        w.dispatch(type)
-      }
-    }
+  #checkfilepath(path: string) {
+    if (path.endsWith('/'))
+      throw new Error('Invalid file path: ' + path)
   }
 
-  private addDrive(name: string, drive: Drive) {
-    this.$drives.val = [...this.$drives.val, name + '/']
-    this._drives.set(name, drive)
-    return drive.mount((type, path) => this.notify(type, name + '/' + path))
+  #split(path: string): [Drive, string[]] {
+    const parts = path.split('/')
+    const drivename = parts.shift()
+    if (!drivename || !this.#drives.has(drivename))
+      throw new Error('No such drive for: ' + path)
+    return [this.#drives.get(drivename)!, parts]
   }
 
-  private removeDrive(name: string) {
-    if (name === 'sys' || name === 'usr' || name === 'net') return
-    const idx = this.$drives.val.indexOf(name + '/')
-    if (idx !== -1) this.$drives.val = this.$drives.val.toSpliced(idx, 1)
-    this._drives.get(name)?.unmount?.()
-    this._drives.delete(name)
-  }
+  // async cp(from: string, to: string) {
+  //   this.syncfs('cp', [from, to])
+
+  //   const parts = from.split('/')
+
+  //   if (from.endsWith('/')) {
+  //     const last = parts.at(-2)
+  //     const dest = to + last
+  //     await this.mkdirp(dest)
+  //     await this.copyTree(from, dest + '/')
+  //   }
+  //   else {
+  //     const last = parts.at(-1)
+  //     const content = this.get(from)
+  //     if (!content) return
+  //     let dest = to + last
+  //     while (this.get(dest)) dest += '_'
+  //     await this.put(dest, content)
+  //   }
+  // }
+
+  // async copyTree(from: string, to: string) {
+  //   this.syncfs('copyTree', [from, to])
+
+  //   for (const item of this.list(from)) {
+  //     if (item.type === 'folder') {
+  //       await this.mkdirp(to + item.name)
+  //       await this.copyTree(from + item.name, to + item.name)
+  //     }
+  //     else {
+  //       this.put(to + item.name, this.get(from + item.name)!)
+  //     }
+  //   }
+  // }
+
+  // async mount(drive: string, folder: FileSystemDirectoryHandle) {
+  //   this.syncfs('mount', [drive, folder])
+
+  //   await folder.requestPermission({ mode: 'readwrite' })
+
+  //   this.mounts.set({ drive, dir: folder })
+  //   await this.addDrive(drive, new MountedDrive(folder))
+  // }
+
+  // unmount(drive: string) {
+  //   this.syncfs('unmount', [drive])
+
+  //   drive = drive.replace(/\/$/, '')
+  //   this.mounts.del(drive)
+  //   this.removeDrive(drive)
+  // }
+
+  // async mkdirp(path: string) {
+  //   this.syncfs('mkdirp', [path])
+
+  //   if (path.endsWith('/')) path = path.replace(/\/+$/, '')
+
+  //   const [drive, subpath] = this.prepare(path)
+  //   const parts = subpath.split('/')
+
+  //   for (let i = 0; i < parts.length; i++) {
+  //     const dir = parts.slice(0, i + 1).join('/') + '/'
+  //     if (!drive.items.has(dir)) {
+  //       await drive.putdir(dir)
+  //     }
+  //   }
+  // }
+
+  // async rm(path: string) {
+  //   this.syncfs('rm', [path])
+  //   const [drive, subpath] = this.prepare(path)
+  //   await drive.rmfile(subpath)
+  // }
+
+  // async rmdir(path: string) {
+  //   this.syncfs('rmdir', [path])
+  //   if (!path.endsWith('/')) path += '/'
+  //   const [drive, subpath] = this.prepare(path)
+  //   await drive.rmdir(subpath)
+  // }
+
+  // list(path: string): FsItem[] {
+  //   const [drive, subpath] = this.prepare(path)
+  //   const r = new RegExp(`^${subpath}[^/]+?/?$`)
+  //   return (drive.items
+  //     .entries()
+  //     .map(([k, v]) => {
+  //       const m = k.match(r)?.[0]
+  //       if (!m) return null
+  //       return { name: m.slice(subpath.length), type: v.type }
+  //     })
+  //     .filter(e => e !== null)
+  //     .toArray()
+  //     .sort(sortBy(e => (e.type === 'folder' ? 0 : 1) + e.name)))
+  // }
+
+  // get(path: string): string | undefined {
+  //   const [drive, subpath] = this.prepare(path)
+  //   const item = drive.items.get(subpath)
+  //   if (item?.type === 'file') return normalize(item.content)
+  //   return undefined
+  // }
+
+  // async put(filepath: string, content: string) {
+  //   this.syncfs('put', [filepath, content])
+  //   const [drive, subpath] = this.prepare(filepath)
+  //   await drive.putfile(subpath, normalize(content))
+  // }
+
+  // watchTree(path: string, fn: (type: DriveNotificationType) => void) {
+  //   let watcher = this.watchers.get(path)
+  //   if (!watcher) this.watchers.set(path, watcher = new Listener())
+  //   return watcher.watch(fn)
+  // }
 
 
-}
+  // private prepare(fullpath: string) {
+  //   const parts = fullpath.split('/')
+  //   const drivename = parts.shift()!
+  //   const drive = this._drives.get(drivename)!
+  //   return [drive, parts.join('/')] as const
+  // }
 
-function sortBy<T, U>(fn: (o: T) => U) {
-  return (a: T, b: T) => {
-    const aa = fn(a)
-    const bb = fn(b)
-    if (aa < bb) return -1
-    if (aa > bb) return +1
-    return 0
-  }
-}
+  // private notify(type: DriveNotificationType, path: string) {
+  //   for (const [p, w] of this.watchers) {
+  //     if (path.startsWith(p)) {
+  //       w.dispatch(type)
+  //     }
+  //   }
+  // }
 
-function normalize(content: string) {
-  return content.replace(/\r\n/g, '\n')
+  // private addDrive(name: string, drive: Drive) {
+  //   this.$drives.val = [...this.$drives.val, name + '/']
+  //   this._drives.set(name, drive)
+  //   return drive.mount((type, path) => this.notify(type, name + '/' + path))
+  // }
+
+  // private removeDrive(name: string) {
+  //   if (name === 'sys' || name === 'usr' || name === 'net') return
+  //   const idx = this.$drives.val.indexOf(name + '/')
+  //   if (idx !== -1) this.$drives.val = this.$drives.val.toSpliced(idx, 1)
+  //   this._drives.get(name)?.unmount?.()
+  //   this._drives.delete(name)
+  // }
+
+
 }
 
 export const fs = new FS()

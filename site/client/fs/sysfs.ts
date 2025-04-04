@@ -1,48 +1,32 @@
 import { files } from "./data.js"
-import type { Drive, DriveItem, DriveNotificationType } from "./drive.js"
+import { DirItem, Drive } from "./drive.js"
+import { listdir } from "./util.js"
 
 export class SysDrive implements Drive {
 
-  items = new Map<string, DriveItem>()
-  notify?: (type: DriveNotificationType, path: string) => void
-
-  async mount(notify: (type: DriveNotificationType, path: string) => void) {
-    this.notify = notify
-
-    for (const [path, content] of Object.entries(files)) {
-      this.items.set(path, { type: 'file', content })
-
-      const dirs = path.split('/').slice(0, -1)
-      for (let i = 0; i < dirs.length; i++) {
-        const dir = dirs.slice(0, i + 1).join('/') + '/'
-        this.putdir(dir)
-      }
-    }
+  async getDir(path: string[]): Promise<DirItem[]> {
+    return listdir(path.join('/'), files)
   }
 
-  async putdir(path: string) {
-    this.items.set(path, { type: 'folder' })
-    this.notify?.('modified', path)
+  async putDir(path: string[]): Promise<boolean> {
+    return false
   }
 
-  async putfile(path: string, content: string) {
-    const has = this.items.has(path)
-    this.items.set(path, { type: 'file', content })
-    this.notify?.(has ? 'modified' : 'appeared', path)
+  async delDir(path: string[]): Promise<boolean> {
+    return false
   }
 
-  async rmdir(path: string) {
-    for (const key of this.items.keys()) {
-      if (key.startsWith(path)) {
-        this.items.delete(key)
-      }
-    }
-    this.notify?.('disappeared', path)
+  async getFile(path: string[]): Promise<string | null> {
+    const full = path.join('/')
+    return files.find(f => f.path === full)?.content ?? null
   }
 
-  async rmfile(path: string) {
-    this.items.delete(path)
-    this.notify?.('disappeared', path)
+  async putFile(path: string[], content: string): Promise<boolean> {
+    return false
+  }
+
+  async delFile(path: string[]): Promise<boolean> {
+    return false
   }
 
 }

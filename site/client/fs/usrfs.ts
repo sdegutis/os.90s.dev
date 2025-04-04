@@ -1,57 +1,45 @@
 import { opendb } from "../util/db.js"
-import type { Drive, DriveItem, DriveNotificationType } from "./drive.js"
+import { DirItem, Drive } from "./drive.js"
+import { listdir } from "./util.js"
 
-export async function openUsrDb() {
-  return await opendb<{ path: string, content?: string }>('usr', 'path')
-}
+export const usrdb = opendb<{ path: string, content?: string }>('usr', 'path')
 
 export class UsrDrive implements Drive {
 
-  db!: Awaited<ReturnType<typeof opendb<{ path: string, content?: string }>>>
-  items = new Map<string, DriveItem>()
-  notify?: (type: DriveNotificationType, path: string) => void
-
-  async mount(notify: (type: DriveNotificationType, path: string) => void) {
-    this.notify = notify
-    this.db = await openUsrDb()
-
-    for (const { path, content } of await this.db.all()) {
-      if (path.endsWith('/')) {
-        this.items.set(path, { type: 'folder' })
-      }
-      else {
-        this.items.set(path, { type: 'file', content: content! })
-      }
-    }
+  async getDir(path: string[]): Promise<DirItem[]> {
+    const db = await usrdb
+    const all = await db.all()
+    return listdir(path.join('/'), all)
   }
 
-  async putdir(path: string) {
-    this.items.set(path, { type: 'folder' })
-    this.db.set({ path })
-    this.notify?.('modified', path)
+  async putDir(path: string[]): Promise<boolean> {
+    const db = await usrdb
+    await db.set({ path: path.join('/') })
+    return true
   }
 
-  async putfile(path: string, content: string) {
-    const has = this.items.has(path)
-    this.items.set(path, { type: 'file', content })
-    this.db.set({ path, content })
-    this.notify?.(has ? 'modified' : 'appeared', path)
+  async delDir(path: string[]): Promise<boolean> {
+    const db = await usrdb
+    console.log(path)
+    return false
   }
 
-  async rmdir(path: string) {
-    for (const key of this.items.keys()) {
-      if (key.startsWith(path)) {
-        this.items.delete(key)
-        this.db.del(key)
-      }
-    }
-    this.notify?.('disappeared', path)
+  async getFile(path: string[]): Promise<string | null> {
+    const db = await usrdb
+    const file = await db.get(path.join('/'))
+    return file?.content ?? null
   }
 
-  async rmfile(path: string) {
-    this.items.delete(path)
-    this.db.del(path)
-    this.notify?.('disappeared', path)
+  async putFile(path: string[], content: string): Promise<boolean> {
+    const db = await usrdb
+    await db.set({ path: path.join('/'), content })
+    return true
+  }
+
+  async delFile(path: string[]): Promise<boolean> {
+    const db = await usrdb
+    await db.del(path.join('/'))
+    return true
   }
 
 }

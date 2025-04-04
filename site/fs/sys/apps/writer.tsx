@@ -2,7 +2,7 @@ import * as api from "/api.js"
 
 let content = ''
 const $filepath = api.$(api.program.opts["file"])
-if ($filepath.val) content = api.fs.get($filepath.val) ?? ''
+if ($filepath.val) content = await api.fs.getFile($filepath.val) ?? ''
 
 const textarea = <api.Textarea text={content} autofocus /> as api.Textarea
 

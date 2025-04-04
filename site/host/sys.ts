@@ -32,14 +32,14 @@ export class Sys {
   static async init(w: number, h: number) {
     const syncfs = new SharedWorker(import.meta.resolve('./syncfs.js'), { type: 'module' })
     await fs.init(syncfs.port, -1)
-    return new Sys(w, h)
+    const fontstr = await fs.getFile('sys/data/crt34.font')
+    return new Sys(w, h, new Font(fontstr!))
   }
 
-  private constructor(width: number, height: number) {
+  private constructor(width: number, height: number, font: Font) {
     this.$size = $({ w: width, h: height })
 
-    const fontstr = fs.get('sys/data/crt34.font')!
-    this.$font = $(new Font(fontstr))
+    this.$font = $(font)
 
     const { $point, $scale, canvas, ctx } = setupCanvas(this.$size)
     this.ctx = ctx

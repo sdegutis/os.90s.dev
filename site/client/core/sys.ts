@@ -91,13 +91,13 @@ class Sys {
 
     keymap.forEach(k => this.keymap.add(k))
 
-    const fontstr = fs.get('sys/data/crt34.font')!
-    this.$font = $(new Font(fontstr))
+    const fontstr = await fs.getFile('sys/data/crt34.font')
+    this.$font = $(new Font(fontstr!))
 
-    fs.watchTree('sys/data/crt34.font', () => {
-      const fontstr = fs.get('sys/data/crt34.font')!
-      this.font = new Font(fontstr)
-    })
+    // fs.watchTree('sys/data/crt34.font', () => {
+    //   const fontstr = fs.get('sys/data/crt34.font')!
+    //   this.font = new Font(fontstr)
+    // })
   }
 
   async makePanel(config: {

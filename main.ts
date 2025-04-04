@@ -42,9 +42,12 @@ function processSite() {
     fs.writeFileSync('./site/api.d.ts', exports)
     files.add('/api.js', exports)
 
-    const sysdata = JSON.stringify(Object.fromEntries(files
+    const sysdata = JSON.stringify((files
       .with('^/fs/sys')
-      .all().map(f => [f.path.slice('/fs/sys/'.length), f.text])
+      .all().map(f => ({
+        path: f.path.slice('/fs/sys/'.length),
+        content: f.text,
+      }))
     ), null, 2)
     files.add('/client/fs/data.js', `export const files = ${sysdata}`)
 

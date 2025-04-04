@@ -1,20 +1,10 @@
-export type DriveFile = { type: 'file', content: string }
-export type DriveFolder = { type: 'folder' }
-export type DriveItem = DriveFolder | DriveFile
-
-export type DriveNotificationType = 'appeared' | 'disappeared' | 'modified'
+export type DirItem = { type: 'folder' | 'file', name: string }
 
 export interface Drive {
-
-  items: Map<string, DriveItem>
-
-  mount(notify: (type: DriveNotificationType, path: string) => void): Promise<void>
-  unmount?(): void
-
-  putdir(path: string): Promise<void>
-  putfile(path: string, content: string): Promise<void>
-
-  rmdir(path: string): Promise<void>
-  rmfile(path: string): Promise<void>
-
+  getDir(path: string[]): Promise<DirItem[]>
+  putDir(path: string[]): Promise<boolean>
+  delDir(path: string[]): Promise<boolean>
+  getFile(path: string[]): Promise<string | null>
+  putFile(path: string[], content: string): Promise<boolean>
+  delFile(path: string[]): Promise<boolean>
 }
