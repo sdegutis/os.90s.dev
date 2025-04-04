@@ -2,7 +2,7 @@ import { opendb } from "../util/db.js"
 import type { Drive, DriveItem, DriveNotificationType } from "./drive.js"
 
 export async function openUsrDb() {
-  return await opendb<{ path: string, content?: string }>('idbfs', 'path')
+  return await opendb<{ path: string, content?: string }>('usr', 'path')
 }
 
 export class UsrDrive implements Drive {
