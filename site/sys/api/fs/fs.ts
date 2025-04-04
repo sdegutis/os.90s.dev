@@ -7,7 +7,7 @@ class FS {
 
   #watchers = new Map<string, Listener<string>>()
   #drives = new Map<string, Drive>()
-  private syncfs!: (path: string, op: string) => void
+  #syncfs!: (path: string, op: string) => void
 
   constructor() {
     this.#drives.set('sys', new SysDrive())
@@ -16,7 +16,7 @@ class FS {
 
   async init(syncfs: MessagePort, id: number) {
     let syncing = false
-    this.syncfs = (path, op) => {
+    this.#syncfs = (path, op) => {
       if (syncing) return
       syncfs.postMessage({ type: 'sync', path, op, id })
     }
@@ -88,7 +88,7 @@ class FS {
   }
 
   #notify(path: string, op: string) {
-    this.syncfs(path, op)
+    this.#syncfs(path, op)
     for (const [p, w] of this.#watchers) {
       if (path.startsWith(p)) {
         w.dispatch(path)
