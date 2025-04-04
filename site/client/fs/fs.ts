@@ -20,29 +20,29 @@ class FS {
   async init(syncfs: MessagePort, id: number) {
     this.$drives.equals = arrayEquals
 
-    let syncing = false
-    this.syncfs = (name, args) => {
-      if (syncing) return
-      syncfs.postMessage({ type: 'sync', name, args, id })
-    }
+    // let syncing = false
+    // this.syncfs = (name, args) => {
+    //   if (syncing) return
+    //   syncfs.postMessage({ type: 'sync', name, args, id })
+    // }
 
-    syncfs.onmessage = (e) => {
-      if (e.data.type === 'ping') {
-        syncfs.postMessage({ type: 'pong', id })
-        return
-      }
+    // syncfs.onmessage = (e) => {
+    //   if (e.data.type === 'ping') {
+    //     syncfs.postMessage({ type: 'pong', id })
+    //     return
+    //   }
 
-      if (e.data.type === 'sync') {
-        syncing = true
-        const { name, args } = e.data
-        const fn = this[name as keyof this] as Function
-        fn.apply(this, args)
-        syncing = false
-        return
-      }
-    }
+    //   if (e.data.type === 'sync') {
+    //     syncing = true
+    //     const { name, args } = e.data
+    //     const fn = this[name as keyof this] as Function
+    //     fn.apply(this, args)
+    //     syncing = false
+    //     return
+    //   }
+    // }
 
-    syncfs.postMessage({ type: 'init', id })
+    // syncfs.postMessage({ type: 'init', id })
 
     this.addDrive('sys', new SysDrive())
     await this.addDrive('usr', new UsrDrive())
