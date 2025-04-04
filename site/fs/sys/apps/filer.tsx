@@ -47,7 +47,14 @@ const $driveButtons = $drives.adapt(drives => drives.map(d =>
   </api.Button>
 ))
 
-const $dirs = $refresh.adapt(() => ['usr/'])
+const $dirs = $refresh.adapt<string[]>(() => [])
+
+
+const initpath = api.program.opts['file'] as string
+$dirs.val = initpath?.split('/').slice(0, -1).map(p => p + '/') ?? ['usr/']
+$dirs.watch(dirs => api.sys.noteCurrentFile(dirs.join('')))
+
+
 
 const $breadcrumbs = $dirs.adapt(dirs =>
   dirs.map((part, idx) =>
