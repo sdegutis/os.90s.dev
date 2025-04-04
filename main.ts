@@ -16,6 +16,8 @@ const iconlink = `<link rel="shortcut icon" href="${`data:image/svg+xml,${encode
 function processSite() {
   return tree.processFiles(files => {
 
+    files.with('/out/').remove()
+    files.with('tsconfig\.json').remove()
     files.with(/\.d\.ts$/).remove()
 
     files.with(/\.js$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
@@ -29,18 +31,17 @@ function processSite() {
         opts.jsc ??= {}
         opts.jsc.transform ??= {}
         opts.jsc.transform.react ??= {}
-        opts.jsc.transform.react.importSource = '/client/jsx.js'
+        opts.jsc.transform.react.importSource = '/sys/api/jsx.js'
       }).code
     })
 
     files.with(/\.tsx?$/).do(file => { file.path = file.path.replace(/\.tsx?$/, '.js') })
 
-    files.add('/sw/wasm.js', swc1)
-    files.add('/sw/wasm_bg.wasm', swc2)
+    files.add('/sys/sw/wasm.js', swc1)
+    files.add('/sys/sw/wasm_bg.wasm', swc2)
 
-    const exports = files.with('^/client/').paths().map(p => `export * from ".${p}"`).join('\n')
-    fs.writeFileSync('./site/api.d.ts', exports)
-    files.add('/api.js', exports)
+    fs.writeFileSync('./site/fs/api.d.ts', files.with('^/sys/api/').paths().map(p => `export * from "..${p}"`).join('\n'))
+    files.add('/api.js', files.with('^/sys/api/').paths().map(p => `export * from "${p}"`).join('\n'))
 
     const sysdata = JSON.stringify((files
       .with('^/fs/sys')
@@ -49,7 +50,7 @@ function processSite() {
         content: f.text,
       }))
     ), null, 2)
-    files.add('/client/fs/data.js', `export const files = ${sysdata}`)
+    files.add('/sys/api/fs/data.js', `export const files = ${sysdata}`)
 
     const paths = files.without('^/fs/sys')
 
@@ -59,8 +60,8 @@ function processSite() {
     const modules = paths.with('\.js$').paths()
       .map(path => `<link rel="modulepreload" href="${path}" />`)
 
-    const toinsert = [...datas, ...modules, iconlink].map(s => `  ${s}`).join('\n')
-    files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
+    // const toinsert = [...datas, ...modules, iconlink].map(s => `  ${s}`).join('\n')
+    // files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
 
   })
 }
@@ -71,7 +72,7 @@ if (isDev) {
   server.notFound = () => '/404.html'
 
   tree.watch({
-    ignored: (str) => str.endsWith('/site/api.d.ts')
+    ignored: (str) => str.includes('/out/') || str.endsWith('/site/fs/api.d.ts')
   }, async (paths) => {
     const start = Date.now()
     try { server.files = await processSite() }

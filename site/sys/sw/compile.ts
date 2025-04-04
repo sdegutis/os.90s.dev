@@ -16,10 +16,10 @@ export async function compile(url: URL, tsx: string) {
       transform: {
         react: {
           runtime: 'automatic',
-          importSource: '/@imlib',
+          importSource: '/FAKEIMPORT',
         },
       }
     }
   }).code
-  return transformed.replace('/@imlib/jsx-runtime', '/client/jsx.js')
+  return transformed.replace('/FAKEIMPORT/jsx-runtime', '/sys/api/jsx.js')
 }

@@ -1,2 +1,4 @@
 node_modules
-/site/api.d.ts
+/site/fs/api.d.ts
+out/
+tsconfig.tsbuildinfo

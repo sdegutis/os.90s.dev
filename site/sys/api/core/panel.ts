@@ -1,13 +1,14 @@
+import { opendb } from "../util/db.js"
 import { debounce } from "../util/throttle.js"
 import type { View } from "../views/view.js"
 import type { Cursor } from "./cursor.js"
 import { DrawingContext } from "./drawing.js"
+import { JSLN } from "./jsln.js"
 import { Listener } from "./listener.js"
 import { type Ref, multiplex } from "./ref.js"
 import { type ClientPanel, type PanelOrdering, type ServerPanel, wRPC } from "./rpc.js"
 import { sys } from "./sys.js"
 import type { Point, Size } from "./types.js"
-import { JSLN, opendb } from "/api.js"
 
 const panelnames = await opendb<{ panelname: string, size: Size }>('panels', 'panelname')
 

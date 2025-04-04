@@ -14,7 +14,8 @@
     "module": "ESNext",
     "jsx": "react-native",
     "rootDir": ".",
-    "noEmit": true,
+    "outDir": "out",
+    "emitDeclarationOnly": true,
     "moduleResolution": "Node",
 
     "forceConsistentCasingInFileNames": true,
@@ -31,10 +32,6 @@
     "noPropertyAccessFromIndexSignature": true,
     "skipLibCheck": true,
 
-    // "paths": { "/*": [ "./site/*" ], },
+    "paths": { "/*": [ "../*" ], },
   },
-  "references": [
-    { "path": "./site/fs/tsconfig.json" },
-    { "path": "./site/sys/tsconfig.json" },
-  ],
 }

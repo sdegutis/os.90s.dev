@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "generate": "node main.ts generate",
-    "watch": "tsc --watch"
+    "watch": "tsc --build --watch"
   },
   "type": "module",
   "devDependencies": {

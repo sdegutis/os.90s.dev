@@ -1,4 +1,4 @@
-import { handleRoute } from "./sw/router.js"
+import { handleRoute } from "./sys/sw/router.js"
 
 self.addEventListener('install', (e) => {
   e.addRoutes({

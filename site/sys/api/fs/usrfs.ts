@@ -1,5 +1,5 @@
 import { opendb } from "../util/db.js"
-import { Drive } from "./drive.js"
+import type { Drive } from "./drive.js"
 import { listdir } from "./util.js"
 
 export const usrdb = opendb<{ path: string, content?: string }>('usr', 'path')
