@@ -56,7 +56,7 @@ class FS {
   }
 
   drives() {
-    return this.#drives.keys().map(s => s + '/').toArray()
+    return this.#drives.keys().toArray()
   }
 
   async getDir(path: string): Promise<string[]> {

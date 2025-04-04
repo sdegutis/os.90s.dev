@@ -34,10 +34,6 @@ const $driveButtons = $drives.adapt(drives => drives.map(d =>
     if (b === 0) {
       $dirs.val = [d]
     }
-    else if (b === 2) {
-      // const unmount = () => api.fs.unmount(d)
-      // api.showMenu([{ text: 'unmount', onClick: unmount }])
-    }
   }}>
     <api.Label text={d} />
   </api.Button>
@@ -47,8 +43,8 @@ const $dirs = $refresh.adapt<string[]>(() => [])
 
 
 const initpath = api.program.opts['file'] as string
-$dirs.val = initpath?.split('/').slice(0, -1).map(p => p + '/') ?? ['usr/']
-$dirs.watch(dirs => api.sys.noteCurrentFile(dirs.join('')))
+$dirs.val = initpath?.split('/').slice(0, -1).map(p => p + '/') ?? ['usr']
+$dirs.watch(dirs => api.sys.noteCurrentFile(dirs.map(d => d + '/').join('')))
 
 
 
@@ -60,13 +56,13 @@ const $breadcrumbs = $dirs.adapt(dirs =>
   )
 )
 
-const $items = await $dirs.adaptAsync(dirs => api.fs.getDir(dirs.join('')))
+const $items = await $dirs.adaptAsync(dirs => api.fs.getDir(dirs.join('/')))
 
 const $itemButtons = $items.adapt(items => {
   if (items.length === 0) return [EMPTY]
   return items.map(name =>
     name.endsWith('/')
-      ? <FolderItem base={$dirs.val} name={name} />
+      ? <FolderItem base={$dirs.val} name={name.slice(0, -1)} />
       : <FileItem base={$dirs.val} name={name} />
   )
 })
@@ -131,19 +127,9 @@ function Main() {
 }
 
 function Sidebar() {
-  return <api.PanedYB>
-
-    <api.View background={0x00000077}>
-      <api.GroupY align={'+'} $children={$driveButtons} />
-    </api.View>
-
-    <api.GroupX background={0x00000033}>
-      <api.Button padding={2} onClick={mount}>
-        <api.Label text={'mount'} />
-      </api.Button>
-    </api.GroupX>
-
-  </api.PanedYB>
+  return <api.View background={0x00000077}>
+    <api.GroupY align={'+'} $children={$driveButtons} />
+  </api.View>
 }
 
 function FolderItem({ base, name }: { base: string[], name: string }) {
@@ -178,16 +164,6 @@ function FileItem({ base, name }: { base: string[], name: string }) {
       </api.GroupX>
     </api.Button>
   )
-}
-
-async function mount() {
-  const name = await api.showPrompt('drive name?')
-  if (!name) return
-
-  const dir = await api.sys.askdir()
-  if (!dir) return
-
-  // await api.fs.mount(name, dir)
 }
 
 async function handleFile(path: string) {
