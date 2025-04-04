@@ -20,8 +20,12 @@ export class UsrDrive implements Drive {
 
   async delDir(path: string[]): Promise<boolean> {
     const db = await usrdb
-    console.log(path)
-    return false
+    const all = await db.all()
+    const full = path.join('/')
+    const toDelete = all.map(f => f.path).filter(p => p.startsWith(full))
+    toDelete.push(full.slice(0, -1))
+    await Promise.all(toDelete.map(p => db.del(p)))
+    return true
   }
 
   async getFile(path: string[]): Promise<string | null> {
