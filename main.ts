@@ -61,8 +61,8 @@ function processSite() {
     const modules = paths.with('\.js$').paths()
       .map(path => `<link rel="modulepreload" href="${path}" />`)
 
-    // const toinsert = [...datas, ...modules, iconlink].map(s => `  ${s}`).join('\n')
-    // files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
+    const toinsert = [...datas, ...modules, iconlink].map(s => `  ${s}`).join('\n')
+    files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
 
   })
 }
