@@ -3,9 +3,6 @@
     "composite": true,
     "lib": [ "ESNext", "DOM", "DOM.Iterable" ],
     "types": [
-      "node",
-      "@types/sharedworker",
-      "@types/serviceworker",
       "@types/wicg-file-system-access",
       "@webgpu/types"
     ],
