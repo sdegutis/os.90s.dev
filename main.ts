@@ -40,8 +40,9 @@ function processSite() {
     files.add('/sys/sw/wasm.js', swc1)
     files.add('/sys/sw/wasm_bg.wasm', swc2)
 
-    fs.writeFileSync('./site/fs/api.d.ts', files.with('^/sys/api/').paths().map(p => `export * from "..${p}"`).join('\n'))
-    files.add('/api.js', files.with('^/sys/api/').paths().map(p => `export * from "${p}"`).join('\n'))
+    const apis = files.with('^/sys/api/').paths()
+    fs.writeFileSync('./site/fs/api.d.ts', apis.map(p => `export * from "..${p}"`).join('\n'))
+    files.add('/api.js', apis.map(p => `export * from "${p}"`).join('\n'))
 
     const sysdata = JSON.stringify((files
       .with('^/fs/sys')
