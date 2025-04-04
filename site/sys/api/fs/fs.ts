@@ -109,56 +109,46 @@ class FS {
     return [this.#drives.get(drivename)!, parts]
   }
 
-  // async cp(from: string, to: string) {
-  //   this.syncfs('cp', [from, to])
+  async copy(from: string, to: string) {
+    const parts = from.split('/')
 
-  //   const parts = from.split('/')
+    if (from.endsWith('/')) {
+      const last = parts.at(-2)
+      const dest = to + last
+      await this.#mkdirp(dest)
+      await this.#copyTree(from, dest + '/')
+    }
+    else {
+      const last = parts.at(-1)
+      const content = await this.getFile(from)
+      if (content === null) return false
+      let dest = to + last
+      while (await this.getFile(dest) !== null) dest += '_'
+      await this.putFile(dest, content)
+    }
+    return true
+  }
 
-  //   if (from.endsWith('/')) {
-  //     const last = parts.at(-2)
-  //     const dest = to + last
-  //     await this.mkdirp(dest)
-  //     await this.copyTree(from, dest + '/')
-  //   }
-  //   else {
-  //     const last = parts.at(-1)
-  //     const content = this.get(from)
-  //     if (!content) return
-  //     let dest = to + last
-  //     while (this.get(dest)) dest += '_'
-  //     await this.put(dest, content)
-  //   }
-  // }
+  async #copyTree(from: string, to: string) {
+    for (const name of await this.getDir(from)) {
+      if (name.endsWith('/')) {
+        await this.#mkdirp(to + name)
+        await this.#copyTree(from + name, to + name)
+      }
+      else {
+        await this.putFile(to + name, (await this.getFile(from + name))!)
+      }
+    }
+  }
 
-  // async copyTree(from: string, to: string) {
-  //   this.syncfs('copyTree', [from, to])
+  async #mkdirp(path: string) {
+    if (path.endsWith('/')) path = path.replace(/\/+$/, '')
+    const [drive, parts] = this.#split(path)
 
-  //   for (const item of this.list(from)) {
-  //     if (item.type === 'folder') {
-  //       await this.mkdirp(to + item.name)
-  //       await this.copyTree(from + item.name, to + item.name)
-  //     }
-  //     else {
-  //       this.put(to + item.name, this.get(from + item.name)!)
-  //     }
-  //   }
-  // }
-
-  // async mkdirp(path: string) {
-  //   this.syncfs('mkdirp', [path])
-
-  //   if (path.endsWith('/')) path = path.replace(/\/+$/, '')
-
-  //   const [drive, subpath] = this.prepare(path)
-  //   const parts = subpath.split('/')
-
-  //   for (let i = 0; i < parts.length; i++) {
-  //     const dir = parts.slice(0, i + 1).join('/') + '/'
-  //     if (!drive.items.has(dir)) {
-  //       await drive.putdir(dir)
-  //     }
-  //   }
-  // }
+    for (let i = 0; i < parts.length; i++) {
+      await drive.putDir(parts.slice(0, i + 1))
+    }
+  }
 
   watchTree(path: string, fn: () => void) {
     let watcher = this.#watchers.get(path)

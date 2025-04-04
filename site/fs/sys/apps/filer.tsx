@@ -101,9 +101,9 @@ function Main() {
         {
           text: 'paste',
           disabled: copying === undefined,
-          onClick: () => {
+          onClick: async () => {
             const curdir = $dirs.val.join('')
-            // api.fs.cp(copying!, curdir)
+            await api.fs.copy(copying!, curdir)
             copying = undefined
           }
         },
