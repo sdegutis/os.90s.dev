@@ -23,12 +23,8 @@ api.comps['button'] = button
 
 
 const $refresh = api.$(0)
+api.fs.watchTree('', () => $refresh.val++)
 
-// let $listeners: api.Ref<(() => void)[]>
-// $listeners = api.fs.$drives.adapt(drives => {
-//   $listeners?.val.forEach(done => done())
-//   return drives.map(drive => api.fs.watchTree(drive, () => $refresh.val++))
-// })
 
 const $drives = api.$<string[]>(api.fs.drives())
 

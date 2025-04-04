@@ -1,19 +1,19 @@
+import { Listener } from "../core/listener.js"
 import { Drive } from "./drive.js"
 import { SysDrive } from "./sysfs.js"
 import { UsrDrive } from "./usrfs.js"
 
 class FS {
 
-  // private mounts!: Awaited<ReturnType<typeof opendb<{ drive: string, dir: FileSystemDirectoryHandle }>>>
-  // private _drives = new Map<string, Drive>()
-  // private watchers = new Map<string, Listener<DriveNotificationType>>()
-  // private syncfs!: (name: string, args: any[]) => void
-
+  #watchers = new Map<string, Listener<string>>()
   #drives = new Map<string, Drive>()
+  // private syncfs!: (name: string, args: any[]) => void
 
   constructor() {
     this.#drives.set('sys', new SysDrive())
     this.#drives.set('usr', new UsrDrive())
+
+
   }
 
   async init(syncfs: MessagePort, id: number) {
@@ -104,7 +104,11 @@ class FS {
   }
 
   #notify(path: string, op: string) {
-
+    for (const [p, w] of this.#watchers) {
+      if (path.startsWith(p)) {
+        w.dispatch(path)
+      }
+    }
   }
 
   #checkfilepath(path: string) {
@@ -229,27 +233,11 @@ class FS {
   //   await drive.putfile(subpath, normalize(content))
   // }
 
-  // watchTree(path: string, fn: () => void) {
-  //   let watcher = this.watchers.get(path)
-  //   if (!watcher) this.watchers.set(path, watcher = new Listener())
-  //   return watcher.watch(fn)
-  // }
-
-
-  // private prepare(fullpath: string) {
-  //   const parts = fullpath.split('/')
-  //   const drivename = parts.shift()!
-  //   const drive = this._drives.get(drivename)!
-  //   return [drive, parts.join('/')] as const
-  // }
-
-  // private notify(type: DriveNotificationType, path: string) {
-  //   for (const [p, w] of this.watchers) {
-  //     if (path.startsWith(p)) {
-  //       w.dispatch(type)
-  //     }
-  //   }
-  // }
+  watchTree(path: string, fn: () => void) {
+    let watcher = this.#watchers.get(path)
+    if (!watcher) this.#watchers.set(path, watcher = new Listener())
+    return watcher.watch(fn)
+  }
 
   // private addDrive(name: string, drive: Drive) {
   //   this.$drives.val = [...this.$drives.val, name + '/']
