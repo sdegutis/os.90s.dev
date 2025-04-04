@@ -1,4 +1,4 @@
-import { usrdb } from "../client/fs/usrfs.js"
+import { usrdb } from "../api/fs/usrfs.js"
 import { compile } from "./compile.js"
 
 const jsHeaders = {

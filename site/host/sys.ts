@@ -1,10 +1,10 @@
-import { Cursor } from "../client/core/cursor.js"
-import { DrawingContext } from "../client/core/drawing.js"
-import { Font } from "../client/core/font.js"
-import { Listener } from "../client/core/listener.js"
-import { $, Ref } from "../client/core/ref.js"
-import { Point } from "../client/core/types.js"
-import { fs } from '../client/fs/fs.js'
+import { Cursor } from "../api/core/cursor.js"
+import { DrawingContext } from "../api/core/drawing.js"
+import { Font } from "../api/core/font.js"
+import { Listener } from "../api/core/listener.js"
+import { $, Ref } from "../api/core/ref.js"
+import { Point } from "../api/core/types.js"
+import { fs } from '../api/fs/fs.js'
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 import { Process } from "./process.js"

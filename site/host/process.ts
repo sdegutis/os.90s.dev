@@ -1,6 +1,6 @@
-import type { Cursor } from "../client/core/cursor.js"
-import type { ListenerDone } from "../client/core/listener.js"
-import { wRPC, type ClientProgram, type ServerProgram } from "../client/core/rpc.js"
+import type { Cursor } from "../api/core/cursor.js"
+import type { ListenerDone } from "../api/core/listener.js"
+import { wRPC, type ClientProgram, type ServerProgram } from "../api/core/rpc.js"
 import { Panel } from "./panel.js"
 import type { Sys } from "./sys.js"
 
