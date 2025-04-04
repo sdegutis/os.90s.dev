@@ -1,12 +1,12 @@
 import { opendb } from "../util/db.js"
-import { DirItem, Drive } from "./drive.js"
+import { Drive } from "./drive.js"
 import { listdir } from "./util.js"
 
 export const usrdb = opendb<{ path: string, content?: string }>('usr', 'path')
 
 export class UsrDrive implements Drive {
 
-  async getDir(path: string[]): Promise<DirItem[]> {
+  async getDir(path: string[]): Promise<string[]> {
     const db = await usrdb
     const all = await db.all()
     return listdir(path.join('/'), all)

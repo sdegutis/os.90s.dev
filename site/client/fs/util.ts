@@ -1,6 +1,4 @@
-import { DirItem } from "./drive.js"
-
-export function listdir(full: string, entries: { path: string, content?: string }[]): DirItem[] {
+export function listdir(full: string, entries: { path: string, content?: string }[]): string[] {
   return entries
     .map(file => file.path)
     .filter(path => path.startsWith(full))
@@ -9,8 +7,4 @@ export function listdir(full: string, entries: { path: string, content?: string 
     .reduce((set, name) => set.add(name), new Set<string>())
     .values()
     .toArray()
-    .map(name => ({
-      type: name.endsWith('/') ? 'folder' : 'file',
-      name: name,
-    }))
 }

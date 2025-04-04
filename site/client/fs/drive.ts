@@ -1,7 +1,5 @@
-export type DirItem = { type: 'folder' | 'file', name: string }
-
 export interface Drive {
-  getDir(path: string[]): Promise<DirItem[]>
+  getDir(path: string[]): Promise<string[]>
   putDir(path: string[]): Promise<boolean>
   delDir(path: string[]): Promise<boolean>
   getFile(path: string[]): Promise<string | null>

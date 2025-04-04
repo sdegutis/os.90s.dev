@@ -1,4 +1,4 @@
-import { DirItem, Drive } from "./drive.js"
+import { Drive } from "./drive.js"
 import { SysDrive } from "./sysfs.js"
 import { UsrDrive } from "./usrfs.js"
 
@@ -59,7 +59,7 @@ class FS {
     return this.#drives.keys().map(s => s + '/').toArray()
   }
 
-  async getDir(path: string): Promise<DirItem[]> {
+  async getDir(path: string): Promise<string[]> {
     if (!path.endsWith('/')) path += '/'
     const [drive, parts] = this.#split(path)
     return drive.getDir(parts)

@@ -13,9 +13,9 @@ async function showRun(this: api.Button) {
   const sysApps = await api.fs.getDir('sys/apps/')
   const usrApps = await api.fs.getDir('usr/apps/')
   api.showMenu([
-    ...sysApps.map(app => ({ text: app.name, onClick: () => { api.sys.launch(`sys/apps/${app.name}`) } })),
+    ...sysApps.map(app => ({ text: app, onClick: () => { api.sys.launch(`sys/apps/${app}`) } })),
     '-',
-    ...usrApps.map(app => ({ text: app.name, onClick: () => { api.sys.launch(`usr/apps/${app.name}`) } })),
+    ...usrApps.map(app => ({ text: app, onClick: () => { api.sys.launch(`usr/apps/${app}`) } })),
   ], this.screenPoint)
 }
 

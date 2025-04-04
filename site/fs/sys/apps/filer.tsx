@@ -61,10 +61,10 @@ const $items = await $dirs.adaptAsync(dirs => api.fs.getDir(dirs.join('')))
 
 const $itemButtons = $items.adapt(items => {
   if (items.length === 0) return [EMPTY]
-  return items.map(item =>
-    item.type === 'folder'
-      ? <FolderItem base={$dirs.val} name={item.name} />
-      : <FileItem base={$dirs.val} name={item.name} />
+  return items.map(name =>
+    name.endsWith('/')
+      ? <FolderItem base={$dirs.val} name={name} />
+      : <FileItem base={$dirs.val} name={name} />
   )
 })
 

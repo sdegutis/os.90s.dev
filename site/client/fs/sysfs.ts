@@ -1,10 +1,10 @@
 import { files } from "./data.js"
-import { DirItem, Drive } from "./drive.js"
+import { Drive } from "./drive.js"
 import { listdir } from "./util.js"
 
 export class SysDrive implements Drive {
 
-  async getDir(path: string[]): Promise<DirItem[]> {
+  async getDir(path: string[]): Promise<string[]> {
     return listdir(path.join('/'), files)
   }
 
