@@ -22,12 +22,11 @@ api.comps['button'] = button
 
 
 
-const $refresh = api.$(0)
-api.fs.watchTree('', () => $refresh.val++)
-
 
 const $drives = api.$<string[]>(api.fs.drives())
 
+
+const $dirs = api.$<string[]>([])
 
 const $driveButtons = $drives.adapt(drives => drives.map(d => d + '/').map(d =>
   <api.Button padding={2} onClick={(b) => {
@@ -39,7 +38,9 @@ const $driveButtons = $drives.adapt(drives => drives.map(d => d + '/').map(d =>
   </api.Button>
 ))
 
-const $dirs = $refresh.adapt<string[]>(() => [])
+
+api.fs.watchTree('', () => $dirs.val = [...$dirs.val])
+
 
 
 const initpath = api.program.opts['file'] as string
