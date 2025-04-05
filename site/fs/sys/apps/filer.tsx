@@ -1,5 +1,11 @@
 import * as api from '/api.js'
 
+// console.log(await fetch('http://localhost:8088/newuser', {
+//   method: 'post',
+//   body: 'hello world yes',
+//   credentials: 'include',
+// }))
+
 const IMG_FOLDER = new api.Bitmap([0x990000ff], 1, [1])
 const IMG_FILE = new api.Bitmap([0x009900ff], 1, [1])
 
