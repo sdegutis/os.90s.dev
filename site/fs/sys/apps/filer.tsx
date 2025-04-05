@@ -1,6 +1,8 @@
 import * as api from '/api.js'
 
-console.log(await fetch('http://localhost:8088/newuser', {
+console.log(api.config.net)
+
+console.log(await fetch(api.config.net + '/newuser', {
   method: 'post',
   body: 'hello world yes',
   credentials: 'include',
