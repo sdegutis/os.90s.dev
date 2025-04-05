@@ -1,5 +1,7 @@
 import * as api from '/api.js'
 
+console.log(location.host)
+
 // console.log(await fetch('http://localhost:8088/newuser', {
 //   method: 'post',
 //   body: 'hello world yes',
