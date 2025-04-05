@@ -73,7 +73,7 @@ export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
     this.handlers = handlers
 
     port.onmessage = (msg) => {
-      if ('LOGRPC' in self) console.debug('onmessage', msg.data)
+      if ((self as any).LOGRPC) console.debug('onmessage', msg.data)
 
       const args = msg.data as any[]
       const cid = args.pop() as number
@@ -107,7 +107,7 @@ export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
   }
 
   postMessage(...args: Parameters<typeof this.port['postMessage']>) {
-    if ('LOGRPC' in self) console.debug('postMessage', ...args)
+    if ((self as any).LOGRPC) console.debug('postMessage', ...args)
     this.port.postMessage(...args)
   }
 
