@@ -217,7 +217,7 @@ export class Panel {
     clearTimeout(this.repeater)
   }
 
-  private repeater?: ReturnType<typeof setTimeout>
+  private repeater?: number
 
   onKeyUp(key: string) {
     this.endKeyRepeats()

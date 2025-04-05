@@ -330,7 +330,7 @@ export class Textarea extends View {
     this.col = Math.min(this.lines[this.row].length, this.end)
   }
 
-  private blink?: ReturnType<typeof setInterval>
+  private blink?: number
 
   private restartBlinking() {
     this.stopBlinking()

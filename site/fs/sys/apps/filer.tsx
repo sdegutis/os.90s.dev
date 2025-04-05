@@ -1,15 +1,14 @@
 import * as api from '/api.js'
 
-console.log(api.config.net)
 
-console.log(await fetch(api.config.net + '/newuser', {
-  method: 'post',
-  body: 'hello world yes',
-  credentials: 'include',
-}).then(r => {
-  console.log(r.status)
-  return r.text()
-}))
+// console.log(await fetch(api.config.net + '/newuser', {
+//   method: 'post',
+//   body: 'hello sbdegutis@gmail.com yes',
+//   credentials: 'include',
+// }).then(r => {
+//   console.log(r.status)
+//   return r.text()
+// }))
 
 const IMG_FOLDER = new api.Bitmap([0x990000ff], 1, [1])
 const IMG_FILE = new api.Bitmap([0x009900ff], 1, [1])
