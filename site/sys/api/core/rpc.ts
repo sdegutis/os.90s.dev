@@ -73,6 +73,8 @@ export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
     this.handlers = handlers
 
     port.onmessage = (msg) => {
+      if ('LOGRPC' in self) console.debug('onmessage', msg.data)
+
       const args = msg.data as any[]
       const cid = args.pop() as number
 
@@ -83,7 +85,7 @@ export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
       }
 
       if (cid > 0) args.unshift((data: any[], transfer?: Transferable[]) => {
-        port.postMessage([...data, -cid], transfer ? { transfer } : undefined)
+        this.postMessage([...data, -cid], transfer ? { transfer } : undefined)
       })
 
       const name = args.pop() as keyof In
@@ -93,15 +95,20 @@ export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
   }
 
   send<K extends keyof Out>(name: K, data: Parameters<Out[K]>, transfer?: Transferable[]) {
-    this.port.postMessage([...data, name, 0], transfer ? { transfer } : undefined)
+    this.postMessage([...data, name, 0], transfer ? { transfer } : undefined)
   }
 
   call<K extends keyof Out>(name: K, data: Parameters<Out[K]>, transfer?: Transferable[]) {
     const p = Promise.withResolvers<Awaited<ReturnType<Out[K]>>>()
     const cid = ++this.cid
     this.waiters.set(cid, p.resolve)
-    this.port.postMessage([...data, name, cid], transfer ? { transfer } : undefined)
+    this.postMessage([...data, name, cid], transfer ? { transfer } : undefined)
     return p.promise
+  }
+
+  postMessage(...args: Parameters<typeof this.port['postMessage']>) {
+    if ('LOGRPC' in self) console.debug('postMessage', ...args)
+    this.port.postMessage(...args)
   }
 
 }
