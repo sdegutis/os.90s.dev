@@ -13,12 +13,18 @@ const copyright = `Copyright ©️ ${new Date().getFullYear()} Novo Cantico LLC.
 const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5"><path d="M1 0 L3 2 1 4 Z" fill="#19f" /></svg>`
 const iconlink = `<link rel="shortcut icon" href="${`data:image/svg+xml,${encodeURIComponent(icon)}`}" />`
 
+const config = {
+  net: 'https://net.90s.dev',
+}
+
 function processSite() {
   return tree.processFiles(files => {
 
     files.with('/out/').remove()
     files.with('tsconfig\.json').remove()
     files.with(/\.d\.ts$/).remove()
+
+    files.add('/sys/api.config.ts', `export const config = ${JSON.stringify(config)}`)
 
     files.with(/\.js$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
     files.with(/\.tsx?$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
