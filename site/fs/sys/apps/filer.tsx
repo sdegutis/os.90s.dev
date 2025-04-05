@@ -3,7 +3,7 @@ import * as api from '/api.js'
 
 // console.log(await fetch(api.config.net + '/newuser', {
 //   method: 'post',
-//   body: 'hello sbdegutis@gmail.com yes',
+//   body: 'hello admin@90s.dev yes',
 //   credentials: 'include',
 // }).then(r => {
 //   console.log(r.status)

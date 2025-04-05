@@ -1,5 +1,6 @@
 import { Listener } from "../core/listener.js"
 import { Drive } from "./drive.js"
+import { NetDrive } from "./netfs.js"
 import { SysDrive } from "./sysfs.js"
 import { UsrDrive } from "./usrfs.js"
 
@@ -12,6 +13,7 @@ class FS {
   constructor() {
     this.#drives.set('sys', new SysDrive())
     this.#drives.set('usr', new UsrDrive())
+    this.#drives.set('net', new NetDrive())
   }
 
   async init(syncfs: MessagePort, id: number) {
