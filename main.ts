@@ -24,7 +24,7 @@ function processSite() {
     files.with('tsconfig\.json').remove()
     files.with(/\.d\.ts$/).remove()
 
-    files.add('/sys/api.config.ts', `export const config = ${JSON.stringify(config)}`)
+    files.add('/sys/api/config.ts', `export const config = ${JSON.stringify(config)}`)
 
     files.with(/\.js$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
     files.with(/\.tsx?$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
