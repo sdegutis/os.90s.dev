@@ -28,6 +28,12 @@ export async function handleRoute(url: URL, req: Request) {
     return await jsResponse(url, res?.content ?? '')
   }
 
-  console.log(url.pathname)
+  // if (url.pathname.startsWith('/fs/net/')) {
+  //   const key = url.pathname.slice('/fs/usr/'.length)
+  //   const fs = await usrdb
+  //   const res = await fs.get(key)
+  //   return await jsResponse(url, res?.content ?? '')
+  // }
+
   return new Response('TEST')
 }

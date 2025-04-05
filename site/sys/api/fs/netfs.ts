@@ -1,3 +1,4 @@
+import { config } from "../config.js"
 import { files } from "./data.js"
 import { Drive } from "./drive.js"
 
@@ -5,11 +6,9 @@ export class NetDrive implements Drive {
 
   async getDir(path: string[]): Promise<string[]> {
     const full = path.join('/')
-
-    // console.log(config.net + '/fs/')
-
-    return []
-
+    const url = config.net + '/fs/' + full
+    console.log(url)
+    return await fetch(url).then(r => r.json())
   }
 
   async putDir(path: string[]): Promise<boolean> {
