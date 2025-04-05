@@ -6,7 +6,7 @@ const desktop = await api.Panel.create({
   order: 'bottom',
   pos: api.$({ x: 0, y: 0 }),
 }, (
-  <api.View $size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x003344ff} />
+  <api.View $size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
 ))
 
 async function showRun(this: api.Button) {
