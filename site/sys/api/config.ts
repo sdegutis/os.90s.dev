@@ -1,3 +1,3 @@
 export const config = {
-  net: 'http://net.localhost',
+  net: 'http://localhost:8088',
 }
