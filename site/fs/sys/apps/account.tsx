@@ -48,8 +48,8 @@ const panel = await api.Panel.create({ name: 'account' },
         <api.GroupX>
 
           <api.GroupY gap={2}>
-            <api.Border padding={2}><api.Label text='username' /></api.Border>
-            <api.Border padding={2}><api.Label text='email' /></api.Border>
+            <api.Border padding={2}><api.Label textColor={0xffffff33} text='username' /></api.Border>
+            <api.Border padding={2}><api.Label textColor={0xffffff33} text='email' /></api.Border>
           </api.GroupY>
 
           <api.GroupY gap={2}>
