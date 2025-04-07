@@ -84,7 +84,6 @@ class Sys {
 
   async init() {
     const [id, w, h, keymap, opts] = await this.rpc.call('init', [])
-    await fs.init()
     program.opts = opts
     program.pid = id
     this.size = { w, h }

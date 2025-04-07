@@ -14,9 +14,7 @@ class FS {
     this.#drives.set('sys', new SysDrive())
     this.#drives.set('usr', new UsrDrive())
     this.#drives.set('net', new NetDrive())
-  }
 
-  async init() {
     const syncfs = new BroadcastChannel('syncfs')
 
     let syncing = false

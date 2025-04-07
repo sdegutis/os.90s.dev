@@ -30,7 +30,6 @@ export class Sys {
   procEnded = new Listener<number>()
 
   static async init(w: number, h: number) {
-    await fs.init()
     const fontstr = await fs.getFile('sys/data/crt34.font')
     return new Sys(w, h, new Font(fontstr!))
   }
