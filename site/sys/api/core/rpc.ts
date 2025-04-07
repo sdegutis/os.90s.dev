@@ -11,7 +11,6 @@ export interface ServerProgram {
 
   launch(path: string, opts: Record<string, any>): Promise<[number]>
   watchprocs(): Promise<[]>
-  openipc(pid: number): Promise<[MessagePort | null]>
 
   askdir(): Promise<[dir: FileSystemDirectoryHandle | null]>
 }
@@ -25,7 +24,6 @@ export interface ClientProgram {
 
   procbegan(pid: number): void
   procended(pid: number): void
-  gotipc(port: MessagePort): void
 }
 
 export interface ServerPanel {
