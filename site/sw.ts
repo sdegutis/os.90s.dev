@@ -32,18 +32,17 @@ async function compile(url: URL, tsx: string) {
 
 
 self.addEventListener('install', (e) => {
-  e.addRoutes({
-    condition: { runningStatus: 'running' },
-    source: 'fetch-event',
-  })
+  // console.log('install', e)
   self.skipWaiting()
 })
 
 self.addEventListener('activate', (e) => {
+  // console.log('activate', e)
   self.clients.claim()
 })
 
 self.addEventListener('fetch', (e: FetchEvent) => {
+  // console.log('fetch', e)
   if (!e.request.url.startsWith(location.origin)) {
     e.respondWith(fetch(e.request))
     return
