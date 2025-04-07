@@ -38,7 +38,7 @@ export async function showDialog(text: string) {
     </Border>
   </Border>
 
-  const panel = await Panel.create({ pos: 'center' }, dialog)
+  const panel = await Panel.create({ name: 'dialog', pos: 'center' }, dialog)
 
   panel.focusPanel()
   dialog.focus()

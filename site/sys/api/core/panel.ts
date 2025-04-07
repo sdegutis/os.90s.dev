@@ -43,7 +43,7 @@ export class Panel {
   private focused: View | null = null
 
   static async create(config: {
-    name?: string,
+    name: string,
     order?: PanelOrdering,
     pos?: Ref<Point> | 'default' | 'center',
   }, view: View) {

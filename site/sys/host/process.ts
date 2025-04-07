@@ -24,6 +24,7 @@ export class Process {
   ready = Promise.withResolvers<void>()
 
   procevents = new BroadcastChannel('procevents')
+  panelevents = new BroadcastChannel('panelevents')
 
   constructor(sys: Sys, path: string, opts: Record<string, any>) {
     this.id = ++Process.id
@@ -52,15 +53,22 @@ export class Process {
         reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], opts], [])
       },
 
-      newpanel: (reply, ord, x, y, w, h) => {
+      newpanel: (reply, title, ord, x, y, w, h) => {
         const chan = new MessageChannel()
         const p = new Panel({ x, y, w, h }, this, chan.port1, ord, sys)
         reply([p.id, p.x, p.y, chan.port2], [chan.port2])
 
         this.panels.add(p)
 
+        this.panelevents.postMessage({ type: 'newpanel', pid: this.id, id: p.id, title })
+
         p.didAdjust.watch(() => sys.redrawAllPanels())
         p.didRedraw.watch(() => sys.redrawAllPanels())
+      },
+
+      focuspanel: (id) => {
+        const panel = Panel.all.get(id)
+        if (panel) this.focus(panel)
       },
 
       launch: async (reply, path, opts) => {
@@ -141,6 +149,7 @@ export class Process {
   }
 
   closePanel(panel: Panel) {
+    this.panelevents.postMessage({ type: 'closepanel', pid: this.id, id: panel.id })
     panel.closePort()
     this.sys.removePanel(panel)
     this.panels.delete(panel)

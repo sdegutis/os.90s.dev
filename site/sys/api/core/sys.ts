@@ -104,6 +104,7 @@ class Sys {
   }
 
   async makePanel(config: {
+    name: string,
     order?: PanelOrdering,
     pos?: Ref<Point> | 'default' | 'center',
     view: View,
@@ -116,7 +117,7 @@ class Sys {
     const root = config.view
     const { w, h } = root.size
 
-    const [id, x, y, port] = await this.rpc.call('newpanel', [order, point.val.x, point.val.y, w, h])
+    const [id, x, y, port] = await this.rpc.call('newpanel', [config.name, order, point.val.x, point.val.y, w, h])
 
     point.val = { x, y }
     const panel = new Panel(this.keymap, port, id, point, root)
@@ -135,6 +136,10 @@ class Sys {
   async getprocs() {
     const [procs] = await this.rpc.call('getprocs', [])
     return procs
+  }
+
+  focusPanel(id: number) {
+    this.rpc.send('focuspanel', [id])
   }
 
   endproc(pid: number) {

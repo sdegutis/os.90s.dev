@@ -2,7 +2,8 @@ export type PanelOrdering = 'normal' | 'bottom' | 'top'
 
 export interface ServerProgram {
   init(): Promise<[id: number, w: number, h: number, keymap: string[], opts: Record<string, any>]>
-  newpanel(ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, x: number, y: number, port: MessagePort]>
+  newpanel(title: string, ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, x: number, y: number, port: MessagePort]>
+  focuspanel(id: number): void
   terminate(pid: number): void
   resize(w: number, h: number): void
   thisfile(path: string): void

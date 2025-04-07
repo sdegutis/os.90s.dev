@@ -2,10 +2,40 @@ import * as api from "/api.js"
 
 api.program.becomeShell()
 
-
 api.sys.launch('usr/startup.js')
 
+const $panels = api.$<{
+  title: string,
+  id: number,
+  pid: number,
+}[]>([])
+
+const panelevents = new BroadcastChannel('panelevents')
+panelevents.onmessage = msg => {
+  const { type, pid, id, title } = msg.data
+  if (pid === api.program.pid) return
+
+  if (type === 'newpanel') {
+    $panels.val = [...$panels.val, { pid, id, title }]
+  }
+  else if (type === 'closepanel') {
+    const idx = $panels.val.findIndex(p => p.id === id)
+    if (idx !== -1) $panels.val = $panels.val.toSpliced(idx, 1)
+  }
+}
+
+
+const $panelButtons = $panels.adapt(panels =>
+  panels.map(p =>
+    <api.Button padding={2} onClick={() => { api.sys.focusPanel(p.id) }}>
+      <api.Label text={p.title} />
+    </api.Button>
+  )
+)
+
+
 const desktop = await api.Panel.create({
+  name: 'desktop',
   order: 'bottom',
   pos: api.$({ x: 0, y: 0 }),
 }, (
@@ -23,14 +53,16 @@ async function showRun(this: api.Button) {
 }
 
 const taskbar = await api.Panel.create({
+  name: 'taskbar',
   order: 'top',
   pos: api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })),
 }, (
   <api.SpacedX $size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x000000dd}>
-    <api.GroupX>
+    <api.GroupX gap={4}>
       <api.Button padding={2} onClick={showRun}>
         <api.Label text="run" />
       </api.Button>
+      <api.GroupX $children={$panelButtons} />
     </api.GroupX>
     <Clock />
   </api.SpacedX>
