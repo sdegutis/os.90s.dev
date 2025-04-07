@@ -35,7 +35,7 @@ export class Process {
 
     const absurl = new URL('/fs/' + path, import.meta.url)
     this.worker = new Worker(absurl, { type: 'module' })
-    this.worker.onerror = (e) => console.error('WORKER ERROR', this.id, this.path, e)
+    // this.worker.onerror = (e) => console.error('WORKER ERROR', this.id, this.path, e)
 
     fetch(absurl).then(r => {
       if (r.status === 404) this.terminate()

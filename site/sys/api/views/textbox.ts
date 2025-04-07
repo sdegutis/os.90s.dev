@@ -2,6 +2,7 @@ import type { DrawingContext } from "../core/drawing.js"
 import { $ } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import { JsxAttrs } from "../jsx.js"
+import { debounce } from "../util/throttle.js"
 import { Scroll } from "./scroll.js"
 import { View } from "./view.js"
 
@@ -149,7 +150,9 @@ export class TextBox extends View {
     return node
   }
 
-  private scrollCursorIntoView() {
+  scrollCursorIntoView = debounce(this._scrollCursorIntoView.bind(this))
+
+  private _scrollCursorIntoView() {
     const scroll = this.findScrollAncestor()
     if (!scroll) return
 
@@ -163,16 +166,14 @@ export class TextBox extends View {
       cy += node.point.y
     }
 
-    if (cy < 0) scroll.scrolly -= -cy
+    const maxy = scroll.area.size.h - this._cursor.size.h
+    const maxx = scroll.area.size.w - this._cursor.size.w
 
+    if (cy < 0) scroll.scrolly -= -cy
     if (cx < 0) scroll.scrollx -= -cx
 
-    const maxy = scroll.area.size.h - this._cursor.size.h
     if (cy > maxy) scroll.scrolly -= maxy - cy
-
-    const maxx = scroll.area.size.w - this._cursor.size.w
     if (cx > maxx) scroll.scrollx -= maxx - cx
-
   }
 
   override onKeyDown(key: string): boolean {
