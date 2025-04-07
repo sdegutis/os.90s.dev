@@ -133,6 +133,11 @@ class Sys {
     return panel
   }
 
+  async getprocs() {
+    const [procs] = await this.rpc.call('getprocs', [])
+    return procs
+  }
+
   endproc(pid: number) {
     this.rpc.send('terminate', [pid])
   }

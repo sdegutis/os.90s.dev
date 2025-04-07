@@ -39,14 +39,14 @@ export class Process {
     const absurl = new URL('/fs/' + path, import.meta.url)
     this.worker = new Worker(absurl, { type: 'module' })
 
-    this.procevents.postMessage({ type: 'started', id: this.id })
+    this.procevents.postMessage({ type: 'started', pid: this.id, path: this.path })
 
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
 
       init: (reply) => {
         opts["app"] = path
         this.ready.resolve()
-        this.procevents.postMessage({ type: 'init', id: this.id })
+        this.procevents.postMessage({ type: 'init', pid: this.id })
         reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], opts], [])
       },
 
@@ -82,6 +82,13 @@ export class Process {
       thisfile: (file) => {
         this.file = file
         this.sys.reflectCurrentApp()
+      },
+
+      getprocs: (reply) => {
+        reply([Process.all.values().map(p => ({
+          path: p.path,
+          pid: p.id,
+        })).toArray()])
       },
 
     })
@@ -126,7 +133,7 @@ export class Process {
     for (const panel of this.panels) {
       this.closePanel(panel)
     }
-    this.procevents.postMessage({ type: 'ended', id: this.id })
+    this.procevents.postMessage({ type: 'ended', pid: this.id })
     this.procwatchers?.()
   }
 

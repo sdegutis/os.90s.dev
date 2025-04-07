@@ -6,6 +6,7 @@ export interface ServerProgram {
   terminate(pid: number): void
   resize(w: number, h: number): void
   thisfile(path: string): void
+  getprocs(): Promise<[procs: { pid: number, path: string }[]]>
   launch(path: string, opts: Record<string, any>): Promise<[number]>
   askdir(opts: DirectoryPickerOptions | undefined): Promise<[dir: FileSystemDirectoryHandle | null]>
 }
