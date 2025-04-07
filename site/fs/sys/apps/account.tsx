@@ -46,6 +46,7 @@ const panel = await api.Panel.create({ name: 'account' },
       <api.GroupY gap={4}>
 
         <api.GroupX>
+
           <api.GroupY gap={2}>
             <api.Border padding={2}><api.Label text='username' /></api.Border>
             <api.Border padding={2}><api.Label text='email' /></api.Border>
@@ -55,12 +56,13 @@ const panel = await api.Panel.create({ name: 'account' },
             {usernameTextarea}
             {emailTextarea}
           </api.GroupY>
-        </api.GroupX>
 
+        </api.GroupX>
 
         <api.Button padding={2} onClick={create}>
           <api.Label text='create account' />
         </api.Button>
+
       </api.GroupY>
     </api.Center>
   </api.PanelView>
