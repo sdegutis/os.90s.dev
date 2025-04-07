@@ -143,6 +143,7 @@ export class Process {
   closePanel(panel: Panel) {
     panel.closePort()
     this.sys.removePanel(panel)
+    this.panels.delete(panel)
   }
 
 }
