@@ -7,47 +7,54 @@ const userinfo = await api.opendb<{ key: string, val: any }>('userinfo', 'key')
 // const user = await userinfo.get('username')
 // if (!user) {
 
-console.log(await fetch(api.config.net + '/newuser', {
-  method: 'post',
-  body: 'theadmin3 admin@90s.dev',
-  credentials: 'include',
-}).then(r => {
-  console.log(...r.headers)
-  console.log(r.status)
-
-  if (r.status === 200) {
-    userinfo.set({ key: 'username', val: 'theadmin3' })
-  }
-
-  return r.text()
-}))
-
-// }
-// else {
-
-//   console.log(await fetch(api.config.net + '/fs/', {
-
-//   }).then(r => {
+async function POST(path: string, data: any) {
+  return fetch(api.config.net + path, {
+    method: 'post',
+    body: JSON.stringify(data),
+    credentials: 'include',
+  }).then(r => r.json())
+}
 
 
 
-//     console.log(...r.headers)
-//     console.log(r.status)
-//     return r.text()
-//   }))
 
-// }
 
 async function create() {
+  const username = usernameTextarea.text
+  const email = emailTextarea.text
 
+  console.log([username, email])
+
+  return
+
+  const [ok, err] = await POST('/newuser', { name: 'theadmin3', email: 'admin@90s.dev' })
+  if (!ok) {
+    console.log(err)
+    return
+  }
+
+  userinfo.set({ key: 'username', val: 'theadmin3' })
 }
+
+const usernameTextarea: api.Textarea = <api.Textarea autofocus background={0x00000033} />
+const emailTextarea: api.Textarea = <api.Textarea background={0x00000033} />
 
 const panel = await api.Panel.create({ name: 'account' },
   <api.PanelView title={api.$('account')} size={api.$({ w: 150, h: 120 })}>
     <api.Center>
-      <api.Button padding={2} onClick={create}>
-        <api.Label text='create account' />
-      </api.Button>
+      <api.GroupY>
+        <api.GroupX>
+          <api.Label text='username' />
+          {usernameTextarea}
+        </api.GroupX>
+        <api.GroupX>
+          <api.Label text='email' />
+          {emailTextarea}
+        </api.GroupX>
+        <api.Button padding={2} onClick={create}>
+          <api.Label text='create account' />
+        </api.Button>
+      </api.GroupY>
     </api.Center>
   </api.PanelView>
 )
