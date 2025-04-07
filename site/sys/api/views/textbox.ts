@@ -1,6 +1,7 @@
 import type { DrawingContext } from "../core/drawing.js"
 import { $ } from "../core/ref.js"
 import { sys } from "../core/sys.js"
+import { Point } from "../core/types.js"
 import { JsxAttrs } from "../jsx.js"
 import { debounce } from "../util/throttle.js"
 import { Scroll } from "./scroll.js"
@@ -106,6 +107,9 @@ export class TextBox extends View {
     this.reflectCursorPos()
     this.scrollCursorIntoView()
     this.adjust()
+  }
+
+  override onMouseMove(pos: Point): void {
   }
 
   override draw(ctx: DrawingContext): void {

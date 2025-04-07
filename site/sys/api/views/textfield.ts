@@ -30,6 +30,7 @@ export class TextField extends View {
     showv: false,
     background: 0x00000033,
     onMouseDown: (...args) => this.textbox.onMouseDown(...args),
+    onMouseMove: (...args) => this.textbox.onMouseMove(...args),
     $size: multiplex([this.border.$size, this.$length], () => {
       return { w: this.length, h: this.border.$size.val.h }
     }),
