@@ -143,9 +143,6 @@ export class Sys {
   }
 
   redrawAllPanels() {
-    if (Panel.ordered.some(p => p.img)) {
-      this.ctx.clearRect(0, 0, this.size.w, this.size.h)
-    }
     for (const panel of Panel.ordered) {
       if (panel.img) {
         this.ctx.drawImage(panel.img, panel.x, panel.y)
