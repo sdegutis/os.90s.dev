@@ -23,6 +23,23 @@ class Program {
     self.close()
   }
 
+  becomeShell() {
+    const b = new BroadcastChannel('shell')
+    const started = performance.now()
+    b.onmessage = msg => {
+      if (msg.data.type === 'newshell') {
+        if (msg.data.t < started) {
+          this.terminate()
+        }
+        else {
+          b.postMessage({ type: 'newshell', t: started })
+        }
+      }
+
+    }
+    b.postMessage({ type: 'newshell', t: started })
+  }
+
 }
 
 export const program = new Program()

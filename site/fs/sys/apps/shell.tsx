@@ -1,21 +1,6 @@
 import * as api from "/api.js"
 
-const b = new BroadcastChannel('shell')
-const started = performance.now()
-b.onmessage = msg => {
-  if (msg.data.type === 'newshell') {
-    if (msg.data.t < started) {
-      api.program.terminate()
-    }
-    else {
-      b.postMessage({ type: 'newshell', t: started })
-    }
-  }
-
-}
-b.postMessage({ type: 'newshell', t: started })
-
-
+api.program.becomeShell()
 
 
 api.sys.launch('usr/startup.js')
