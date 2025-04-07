@@ -26,6 +26,9 @@ const config = {
 function processSite() {
   return tree.processFiles(files => {
 
+    files.add('/sys/sw/wasm.js', swc1)
+    files.add('/sys/sw/wasm_bg.wasm', swc2)
+
     const dbfile = files.with('^/sys/api/util/db.ts$').all()[0]
     files.add('/sys/sw/db.ts', dbfile.text.replace('export ', ''))
 
@@ -88,11 +91,8 @@ function processSite() {
     const datas = paths.without('\.js$|\.html$|\.wasm$').paths()
       .map(path => `<link rel="preload" as="fetch" href="${path}" crossorigin="anonymous" />`)
 
-    const modules = paths.with('\.js$').paths()
+    const modules = paths.with('\.js$').without('^/sys/sw/').paths()
       .map(path => `<link rel="modulepreload" href="${path}" />`)
-
-    files.add('/sys/sw/wasm.js', swc1)
-    files.add('/sys/sw/wasm_bg.wasm', swc2)
 
     const toinsert = [...datas, ...modules, iconlink].map(s => `  ${s}`).join('\n')
     files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
