@@ -163,27 +163,16 @@ export class TextBox extends View {
       cy += node.point.y
     }
 
-    if (cy < 0) {
-      scroll.scrolly -= -cy
-      this.adjust()
-    }
+    if (cy < 0) scroll.scrolly -= -cy
 
-    if (cx < 0) {
-      scroll.scrollx -= -cx
-      this.adjust()
-    }
+    if (cx < 0) scroll.scrollx -= -cx
 
     const maxy = scroll.area.size.h - this._cursor.size.h
-    if (cy > maxy) {
-      scroll.scrolly -= maxy - cy
-      this.adjust()
-    }
+    if (cy > maxy) scroll.scrolly -= maxy - cy
 
     const maxx = scroll.area.size.w - this._cursor.size.w
-    if (cx > maxx) {
-      scroll.scrollx -= maxx - cx
-      this.adjust()
-    }
+    if (cx > maxx) scroll.scrollx -= maxx - cx
+
   }
 
   override onKeyDown(key: string): boolean {
