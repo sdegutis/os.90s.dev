@@ -32,18 +32,28 @@ procevents.onmessage = msg => {
 
 const panel = await api.Panel.create({ name: "procman" },
   <api.PanelView title={api.$('procman')} size={api.$({ w: 100, h: 70 })}>
-    <api.Scroll background={0xffffff11}>
-      <api.GroupY align="a" $children={$procs.adapt(procs => (
-        procs.map(p => <api.GroupX gap={4}>
-          <api.Label text={p.path} />
-          <api.Label text={p.pid.toString()} />
-          <api.Label text={p.state} />
-          <api.Button onClick={() => api.sys.endproc(p.pid)}>
-            <api.Label text='terminate' />
-          </api.Button>
-        </api.GroupX>)
-      ))} />
-    </api.Scroll>
+    <api.PanedYA>
+      <api.GroupX>
+        <api.Button onClick={async () => {
+          const path = await api.showPrompt('path to run?')
+          if (path) api.sys.launch(path)
+        }}>
+          <api.Label text="run" />
+        </api.Button>
+      </api.GroupX>
+      <api.Scroll background={0xffffff11}>
+        <api.GroupY align="a" $children={$procs.adapt(procs => (
+          procs.map(p => <api.GroupX gap={4}>
+            <api.Label text={p.path} />
+            <api.Label text={p.pid.toString()} />
+            <api.Label text={p.state} />
+            <api.Button onClick={() => api.sys.endproc(p.pid)}>
+              <api.Label text='terminate' />
+            </api.Button>
+          </api.GroupX>)
+        ))} />
+      </api.Scroll>
+    </api.PanedYA>
   </api.PanelView>
 )
 
