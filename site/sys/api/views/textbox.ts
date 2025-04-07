@@ -5,9 +5,9 @@ import { JsxAttrs } from "../jsx.js"
 import { Scroll } from "./scroll.js"
 import { View } from "./view.js"
 
-export class Textarea extends View {
+export class TextBox extends View {
 
-  constructor(config?: JsxAttrs<Textarea>) {
+  constructor(config?: JsxAttrs<TextBox>) {
     super()
     this.canFocus = true
     this.canMouse = true

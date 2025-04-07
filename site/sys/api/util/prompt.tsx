@@ -6,14 +6,14 @@ import { Button } from "../views/button.js"
 import { GroupX, GroupY } from "../views/group.js"
 import { Label } from "../views/label.js"
 import { Scroll } from "../views/scroll.js"
-import { Textarea } from "../views/textarea.js"
+import { TextBox } from "../views/textbox.js"
 import { dragMove } from "./drag.js"
 
 export async function showPrompt(text: string) {
   const result = Promise.withResolvers<string | null>()
 
   const prompt = <Label text={text} />
-  const textarea = <Textarea multiline={false} /> as Textarea
+  const textarea = <TextBox multiline={false} /> as TextBox
   const buttons = <GroupX gap={2}>
     <Button onClick={no} background={0x99000099} padding={2}><Label text={'cancel'} /></Button>
     <Button onClick={ok} background={0xffffff33} padding={2}><Label text={'ok'} /></Button>

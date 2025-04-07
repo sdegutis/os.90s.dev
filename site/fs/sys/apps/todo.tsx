@@ -5,7 +5,7 @@ interface Item {
   done: boolean
 }
 
-const textfield = <api.Textarea autofocus multiline={false} onEnter={add} /> as api.Textarea
+const textfield = <api.TextBox autofocus multiline={false} onEnter={add} /> as api.TextBox
 
 const $items = api.$<Item[]>([])
 const $itemViews = $items.adapt<api.View[]>(items => items.map(item => <ItemView item={item} />))

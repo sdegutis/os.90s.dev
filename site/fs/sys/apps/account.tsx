@@ -36,8 +36,8 @@ async function create() {
   userinfo.set({ key: 'username', val: 'theadmin3' })
 }
 
-const usernameTextarea: api.Textarea = <api.Textarea autofocus background={0x00000033} />
-const emailTextarea: api.Textarea = <api.Textarea background={0x00000033} />
+const usernameTextarea: api.TextBox = <api.TextBox autofocus background={0x00000033} />
+const emailTextarea: api.TextBox = <api.TextBox background={0x00000033} />
 
 const panel = await api.Panel.create({ name: 'account' },
   <api.PanelView title={api.$('account')} size={api.$({ w: 150, h: 120 })}>
