@@ -74,8 +74,8 @@ export class Process {
         sys.resize(w, h)
       },
 
-      askdir: async (reply) => {
-        const folder = await self.showDirectoryPicker()
+      askdir: async (reply, opts) => {
+        const folder = await self.showDirectoryPicker(opts)
         reply([folder], [])
       },
 

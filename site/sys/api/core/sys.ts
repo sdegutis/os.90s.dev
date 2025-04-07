@@ -133,8 +133,8 @@ class Sys {
     return pid
   }
 
-  async askdir() {
-    const [dir] = await this.rpc.call('askdir', [])
+  async askdir(opts?: DirectoryPickerOptions) {
+    const [dir] = await this.rpc.call('askdir', [opts])
     return dir
   }
 

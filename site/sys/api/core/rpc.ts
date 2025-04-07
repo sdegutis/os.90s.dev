@@ -11,7 +11,7 @@ export interface ServerProgram {
 
   launch(path: string, opts: Record<string, any>): Promise<[number]>
 
-  askdir(): Promise<[dir: FileSystemDirectoryHandle | null]>
+  askdir(opts: DirectoryPickerOptions | undefined): Promise<[dir: FileSystemDirectoryHandle | null]>
 }
 
 export interface ClientProgram {
@@ -47,10 +47,8 @@ type Handler<T extends (...args: any) => any> = T extends (...args: infer A) => 
 type Handlers<T extends EventMap<T>> = { [K in keyof T]: Handler<T[K]> }
 
 interface PortLike {
-
   onmessage: ((msg: MessageEvent) => void) | null
   postMessage(message: any, options?: StructuredSerializeOptions): void
-
 }
 
 export class wRPC<In extends EventMap<In>, Out extends EventMap<Out>> {
