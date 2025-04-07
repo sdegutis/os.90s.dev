@@ -15,7 +15,7 @@ export class Process {
   private panels = new Set<Panel>()
 
   heartbeat
-  dead = false
+  status: 'alive' | 'zombie' | 'dead' = 'alive'
   rpc
 
   path: string
@@ -105,15 +105,15 @@ export class Process {
       ])
 
       if (got !== expected) {
-        if (!this.dead) {
-          this.dead = true
+        if (this.status === 'alive') {
+          this.status = 'zombie'
           this.panels.forEach(p => p.showSpinner())
           sys.redrawAllPanels()
         }
       }
       else {
-        if (this.dead) {
-          this.dead = false
+        if (this.status === 'zombie') {
+          this.status = 'alive'
           this.panels.forEach(p => p.hideSpinner())
           sys.redrawAllPanels()
         }
@@ -130,6 +130,7 @@ export class Process {
   }
 
   terminate() {
+    this.status = 'dead'
     Process.all.delete(this.id)
     clearInterval(this.heartbeat)
     this.worker.terminate()

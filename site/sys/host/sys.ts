@@ -95,7 +95,7 @@ export class Sys {
     document.onmousedown = (e) => {
       if (!this.hovered) return
 
-      if (this.hovered.proc.dead && e.button === 2) {
+      if (this.hovered.proc.status === 'zombie' && e.button === 2) {
         this.hovered.proc.terminate()
         return
       }
@@ -144,6 +144,7 @@ export class Sys {
 
   redrawAllPanels() {
     for (const panel of Panel.ordered) {
+      if (panel.proc.status === 'dead') continue
       if (panel.img) {
         this.ctx.drawImage(panel.img, panel.x, panel.y)
       }
