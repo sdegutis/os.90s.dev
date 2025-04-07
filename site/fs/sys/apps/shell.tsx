@@ -8,6 +8,7 @@ const $panels = api.$<{
   title: string,
   id: number,
   pid: number,
+  focused: boolean,
 }[]>([])
 
 const panelevents = new BroadcastChannel('panelevents')
@@ -15,19 +16,29 @@ panelevents.onmessage = msg => {
   const { type, pid, id, title } = msg.data
   if (pid === api.program.pid) return
 
-  if (type === 'newpanel') {
-    $panels.val = [...$panels.val, { pid, id, title }]
+  if (type === 'new') {
+    $panels.val = [
+      ...$panels.val.map(p => ({ ...p, focused: false })),
+      { pid, id, title, focused: true },
+    ]
   }
-  else if (type === 'closepanel') {
+  else if (type === 'closed') {
     const idx = $panels.val.findIndex(p => p.id === id)
-    if (idx !== -1) $panels.val = $panels.val.toSpliced(idx, 1)
+    if (idx === -1) return
+    $panels.val = $panels.val.toSpliced(idx, 1)
+  }
+  else if (type === 'focused') {
+    const idx = $panels.val.findIndex(p => p.id === id)
+    if (idx === -1) return
+    const panel = $panels.val[idx]
+    $panels.val = $panels.val.map(p => ({ ...p, focused: panel === p }))
   }
 }
 
 
 const $panelButtons = $panels.adapt(panels =>
   panels.map(p =>
-    <api.Button padding={2} onClick={() => { api.sys.focusPanel(p.id) }}>
+    <api.Button background={p.focused ? 0x99000099 : 0x000000ff} padding={2} onClick={() => { api.sys.focusPanel(p.id) }}>
       <api.Label text={p.title} />
     </api.Button>
   )

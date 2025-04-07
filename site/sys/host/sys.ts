@@ -20,6 +20,7 @@ export class Sys {
   prevFocused: Panel | null = null
 
   sysevents = new BroadcastChannel('sysevents')
+  panelevents = new BroadcastChannel('panelevents')
 
   $font
   get font() { return this.$font.val }
@@ -170,6 +171,7 @@ export class Sys {
       this.prevFocused = this.focused
       this.focused?.rpc.send('blur', [])
       this.focused = panel
+      this.panelevents.postMessage({ type: 'focused', id: panel.id })
       this.focused.rpc.send('focus', [])
       this.reflectCurrentApp()
     }

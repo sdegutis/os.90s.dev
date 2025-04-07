@@ -24,7 +24,6 @@ export class Process {
   ready = Promise.withResolvers<void>()
 
   procevents = new BroadcastChannel('procevents')
-  panelevents = new BroadcastChannel('panelevents')
 
   constructor(sys: Sys, path: string, opts: Record<string, any>) {
     this.id = ++Process.id
@@ -60,7 +59,7 @@ export class Process {
 
         this.panels.add(p)
 
-        this.panelevents.postMessage({ type: 'newpanel', pid: this.id, id: p.id, title })
+        this.sys.panelevents.postMessage({ type: 'new', pid: this.id, id: p.id, title })
 
         p.didAdjust.watch(() => sys.redrawAllPanels())
         p.didRedraw.watch(() => sys.redrawAllPanels())
@@ -149,7 +148,7 @@ export class Process {
   }
 
   closePanel(panel: Panel) {
-    this.panelevents.postMessage({ type: 'closepanel', pid: this.id, id: panel.id })
+    this.sys.panelevents.postMessage({ type: 'closed', id: panel.id })
     panel.closePort()
     this.sys.removePanel(panel)
     this.panels.delete(panel)
