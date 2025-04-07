@@ -164,6 +164,11 @@ class Sys {
     return dir
   }
 
+  async readClipboardText() {
+    const [text] = await this.rpc.call('readcliptext', [])
+    return text
+  }
+
 }
 
 export const sys = new Sys()

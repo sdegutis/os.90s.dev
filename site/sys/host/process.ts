@@ -100,6 +100,11 @@ export class Process {
         })).toArray()])
       },
 
+      readcliptext: async (reply) => {
+        const text = await navigator.clipboard.readText()
+        reply([text])
+      },
+
     })
 
     this.heartbeat = setInterval(async () => {

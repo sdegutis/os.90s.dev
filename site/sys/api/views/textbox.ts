@@ -285,6 +285,20 @@ export class TextBox extends View {
         this.onEnter?.()
       }
     }
+    else if (key === 'v' && this.panel?.isKeyDown('Control')) {
+      sys.readClipboardText().then(text => {
+        const [a, b] = this.halves()
+        this.lines[this.row] = a + text + b
+        this.col += text.length
+        this.end = this.col
+        this.adjust()
+
+        this.highlight()
+        this.restartBlinking()
+        this.reflectCursorPos()
+        this.scrollCursorIntoView()
+      })
+    }
     else if (key.length === 1 && !this.panel?.isKeyDown('Control') && !this.panel?.isKeyDown('Alt')) {
       const [a, b] = this.halves()
       this.lines[this.row] = a + key + b

@@ -10,6 +10,7 @@ export interface ServerProgram {
   getprocs(): Promise<[procs: { pid: number, path: string }[]]>
   launch(path: string, opts: Record<string, any>): Promise<[number]>
   askdir(opts: DirectoryPickerOptions | undefined): Promise<[dir: FileSystemDirectoryHandle | null]>
+  readcliptext(): Promise<[text: string]>
 }
 
 export interface ClientProgram {
