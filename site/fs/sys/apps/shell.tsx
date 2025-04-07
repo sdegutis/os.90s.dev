@@ -1,5 +1,13 @@
 import * as api from "/api.js"
 
+const b = new BroadcastChannel('shell')
+b.onmessage = msg => {
+  if (msg.data.type === 'newshell') {
+    api.program.terminate()
+  }
+}
+b.postMessage({ type: 'newshell' })
+
 api.sys.launch('usr/startup.js')
 
 const desktop = await api.Panel.create({
