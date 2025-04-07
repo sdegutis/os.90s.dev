@@ -43,15 +43,21 @@ const emailTextarea: api.TextField = <api.TextField />
 const panel = await api.Panel.create({ name: 'account' },
   <api.PanelView title={api.$('account')} size={api.$({ w: 150, h: 120 })}>
     <api.Center>
-      <api.GroupY gap={4} align='a'>
-        <api.GroupX gap={2}>
-          <api.Label text='username' />
-          {usernameTextarea}
+      <api.GroupY gap={4}>
+
+        <api.GroupX>
+          <api.GroupY gap={2}>
+            <api.Border padding={2}><api.Label text='username' /></api.Border>
+            <api.Border padding={2}><api.Label text='email' /></api.Border>
+          </api.GroupY>
+
+          <api.GroupY gap={2}>
+            {usernameTextarea}
+            {emailTextarea}
+          </api.GroupY>
         </api.GroupX>
-        <api.GroupX gap={2}>
-          <api.Label text='email' />
-          {emailTextarea}
-        </api.GroupX>
+
+
         <api.Button padding={2} onClick={create}>
           <api.Label text='create account' />
         </api.Button>
