@@ -1,3 +1,5 @@
+import { transformSync } from '@swc/core'
+import { randomUUID } from 'crypto'
 import * as fs from 'fs'
 import * as immaculata from 'immaculata'
 
@@ -31,14 +33,32 @@ function processSite() {
     files.with(/\.html$/).do(file => { file.text = `<!-- ${copyright} -->\n\n` + file.text })
 
     files.with(/\.tsx?$/).without('^/fs/sys/').do(file => {
-      file.text = immaculata.compileWithSwc(file.text, opts => {
-        opts.filename = file.path
-        opts.minify = true
-        opts.jsc ??= {}
-        opts.jsc.transform ??= {}
-        opts.jsc.transform.react ??= {}
-        opts.jsc.transform.react.importSource = '/sys/api/jsx.js'
+      const placeholder = randomUUID()
+      file.text = transformSync(file.text, {
+        filename: file.path,
+        sourceMaps: 'inline',
+        minify: true,
+        isModule: true,
+        module: {
+          type: 'es6',
+        },
+        jsc: {
+          keepClassNames: true,
+          target: 'esnext',
+          parser: {
+            syntax: 'typescript',
+            tsx: true,
+            decorators: true,
+          },
+          transform: {
+            react: {
+              runtime: 'automatic',
+              importSource: placeholder,
+            }
+          }
+        }
       }).code
+      file.text = file.text.replace(`${placeholder}/jsx-runtime`, '/sys/api/jsx.js')
     })
 
     files.with(/\.tsx?$/).do(file => { file.path = file.path.replace(/\.tsx?$/, '.js') })
