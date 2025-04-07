@@ -5,8 +5,12 @@ import * as immaculata from 'immaculata'
 
 const isDev = process.argv[2] === 'dev'
 
-const swc1 = fs.readFileSync('node_modules/@swc/wasm-web/wasm.js')
-const swc2 = fs.readFileSync('node_modules/@swc/wasm-web/wasm_bg.wasm')
+let swc1 = fs.readFileSync('node_modules/@swc/wasm-web/wasm.js').toString()
+let swc2 = fs.readFileSync('node_modules/@swc/wasm-web/wasm_bg.wasm')
+
+swc1 = swc1.replace(/\nexport function/g, 'function')
+swc1 = swc1.replace(/\nexport {[\s\S]+/, '')
+swc1 = swc1.replace('import.meta.url', `location.origin + '/sys/sw/'`)
 
 const tree = new immaculata.LiveTree('site', import.meta.url)
 
@@ -21,6 +25,9 @@ const config = {
 
 function processSite() {
   return tree.processFiles(files => {
+
+    const dbfile = files.with('^/sys/api/util/db.ts$').all()[0]
+    files.add('/sys/sw/db.ts', dbfile.text.replace('export ', ''))
 
     files.with('/out/').remove()
     files.with('tsconfig\.json').remove()
@@ -63,9 +70,6 @@ function processSite() {
 
     files.with(/\.tsx?$/).do(file => { file.path = file.path.replace(/\.tsx?$/, '.js') })
 
-    files.add('/sys/sw/wasm.js', swc1)
-    files.add('/sys/sw/wasm_bg.wasm', swc2)
-
     const apis = files.with('^/sys/api/').paths()
     fs.writeFileSync('./site/fs/api.d.ts', apis.map(p => `export * from "..${p}"`).join('\n'))
     files.add('/api.js', apis.map(p => `export * from "${p}"`).join('\n'))
@@ -86,6 +90,9 @@ function processSite() {
 
     const modules = paths.with('\.js$').paths()
       .map(path => `<link rel="modulepreload" href="${path}" />`)
+
+    files.add('/sys/sw/wasm.js', swc1)
+    files.add('/sys/sw/wasm_bg.wasm', swc2)
 
     const toinsert = [...datas, ...modules, iconlink].map(s => `  ${s}`).join('\n')
     files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
