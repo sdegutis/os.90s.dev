@@ -27,18 +27,10 @@ export class TextBox extends View {
       }
     })
 
-    this.label = new View({
-      canMouse: true,
-      adjust: () => this.adjustTextLabel(),
-      draw: (ctx) => this.drawTextLabel(ctx),
-      onMouseDown: (...args) => this.onMouseDown(...args),
-      children: [this._cursor]
-    })
-
-    this.children = [this.label]
+    this.children = [this._cursor]
 
     this.reflectCursorPos()
-    this.adjustTextLabel()
+    this.adjust()
 
     this.$cursorColor.watch(c => this._cursor.background = c)
   }
@@ -52,7 +44,6 @@ export class TextBox extends View {
   set color(val) { this.$color.val = val }
 
 
-  private label!: View
   private _cursor!: View
 
   private lines: string[] = ['']
@@ -66,7 +57,7 @@ export class TextBox extends View {
     this.highlight()
     this.row = Math.min(this.row, this.lines.length - 1)
     this.fixCol()
-    this.adjustTextLabel()
+    this.adjust()
   }
 
   highlightings: Record<string, [number, RegExp]> = {}
@@ -101,8 +92,8 @@ export class TextBox extends View {
   override onMouseDown(button: number): void {
     this.focus()
 
-    let x = this.mouse.x - this.label.point.x
-    let y = this.mouse.y - this.label.point.y
+    let x = this.mouse.x - this.point.x
+    let y = this.mouse.y - this.point.y
 
     const row = Math.floor(y / (this.font.ch + this.ygap))
     const col = Math.floor(x / (this.font.cw + this.xgap))
@@ -113,10 +104,12 @@ export class TextBox extends View {
     this.restartBlinking()
     this.reflectCursorPos()
     this.scrollCursorIntoView()
-    this.adjustTextLabel()
+    this.adjust()
   }
 
-  private drawTextLabel(ctx: DrawingContext) {
+  override draw(ctx: DrawingContext): void {
+    super.draw(ctx)
+
     for (let y = 0; y < this.lines.length; y++) {
       const line = this.lines[y]
       const py = y * this.font.ch + y * this.ygap + this.ygap / 2
@@ -127,20 +120,17 @@ export class TextBox extends View {
     }
   }
 
-  private adjustTextLabel() {
-    if (!this.label) { return }
-
+  override adjust(): void {
     let cols = 0
     const rows = this.lines.length
     for (const line of this.lines) {
       if (line.length > cols) cols = line.length
     }
     cols++
-    this.label.size = {
+    this.size = {
       w: (cols * this.font.cw) + (cols * this.xgap),
       h: (rows * this.font.ch) + (rows * this.ygap),
     }
-    this.size = this.label.size
   }
 
   private reflectCursorPos() {
@@ -175,24 +165,24 @@ export class TextBox extends View {
 
     if (cy < 0) {
       scroll.scrolly -= -cy
-      this.adjustTextLabel()
+      this.adjust()
     }
 
     if (cx < 0) {
       scroll.scrollx -= -cx
-      this.adjustTextLabel()
+      this.adjust()
     }
 
     const maxy = scroll.area.size.h - this._cursor.size.h
     if (cy > maxy) {
       scroll.scrolly -= maxy - cy
-      this.adjustTextLabel()
+      this.adjust()
     }
 
     const maxx = scroll.area.size.w - this._cursor.size.w
     if (cx > maxx) {
       scroll.scrollx -= maxx - cx
-      this.adjustTextLabel()
+      this.adjust()
     }
   }
 
@@ -250,7 +240,7 @@ export class TextBox extends View {
       this.lines[this.row] = a + '  ' + b
       this.col += 2
       this.end = this.col
-      this.adjustTextLabel()
+      this.adjust()
     }
     else if (key === 'Backspace') {
       if (this.col > 0) {
@@ -259,13 +249,13 @@ export class TextBox extends View {
           this.lines[this.row] = a.slice(0, -2) + b
           this.col -= 2
           this.end = this.col
-          this.adjustTextLabel()
+          this.adjust()
         }
         else {
           this.lines[this.row] = a.slice(0, -1) + b
           this.col--
           this.end = this.col
-          this.adjustTextLabel()
+          this.adjust()
         }
       }
       else if (this.row > 0) {
@@ -274,19 +264,19 @@ export class TextBox extends View {
         this.lines.splice(this.row, 1)
         this.row--
         this.col = this.end
-        this.adjustTextLabel()
+        this.adjust()
       }
     }
     else if (key === 'Delete') {
       if (this.col < this.lines[this.row].length) {
         const [a, b] = this.halves()
         this.lines[this.row] = a + b.slice(1)
-        this.adjustTextLabel()
+        this.adjust()
       }
       else if (this.row < this.lines.length - 1) {
         this.lines[this.row] += this.lines[this.row + 1]
         this.lines.splice(this.row + 1, 1)
-        this.adjustTextLabel()
+        this.adjust()
       }
     }
     else if (key === 'Enter') {
@@ -295,7 +285,7 @@ export class TextBox extends View {
         this.lines[this.row] = a
         this.lines.splice(++this.row, 0, b)
         this.end = this.col = 0
-        this.adjustTextLabel()
+        this.adjust()
       }
       else {
         this.onEnter?.()
@@ -306,7 +296,7 @@ export class TextBox extends View {
       this.lines[this.row] = a + key + b
       this.col++
       this.end = this.col
-      this.adjustTextLabel()
+      this.adjust()
     }
     else {
       return false

@@ -36,20 +36,28 @@ async function create() {
   userinfo.set({ key: 'username', val: 'theadmin3' })
 }
 
-const usernameTextarea: api.TextBox = <api.TextBox autofocus background={0x00000033} />
-const emailTextarea: api.TextBox = <api.TextBox background={0x00000033} />
+const usernameTextarea: api.TextBox = <api.TextBox autofocus background={0x99000099} />
+const emailTextarea: api.TextBox = <api.TextBox background={0x99000099} />
 
 const panel = await api.Panel.create({ name: 'account' },
   <api.PanelView title={api.$('account')} size={api.$({ w: 150, h: 120 })}>
     <api.Center>
-      <api.GroupY>
-        <api.GroupX>
+      <api.GroupY gap={4}>
+        <api.GroupX gap={2}>
           <api.Label text='username' />
-          {usernameTextarea}
+          <api.Scroll size={{ w: 40, h: 20 }}>
+            <api.Border padding={2} background={0x003300ff}>
+              {usernameTextarea}
+            </api.Border>
+          </api.Scroll>
         </api.GroupX>
-        <api.GroupX>
+        <api.GroupX gap={2}>
           <api.Label text='email' />
-          {emailTextarea}
+          <api.Scroll size={{ w: 40, h: 20 }}>
+            <api.Border padding={2} background={0x003300ff}>
+              {emailTextarea}
+            </api.Border>
+          </api.Scroll>
         </api.GroupX>
         <api.Button padding={2} onClick={create}>
           <api.Label text='create account' />
