@@ -96,8 +96,8 @@ export class TextBox extends View {
     let x = this.mouse.x - this.point.x
     let y = this.mouse.y - this.point.y
 
-    const row = Math.floor(y / (this.font.ch + this.ygap))
-    const col = Math.floor(x / (this.font.cw + this.xgap))
+    const row = Math.max(0, Math.floor(y / (this.font.ch + this.ygap)))
+    const col = Math.max(0, Math.floor(x / (this.font.cw + this.xgap)))
 
     this.row = Math.min(row, this.lines.length - 1)
     this.end = this.col = col
