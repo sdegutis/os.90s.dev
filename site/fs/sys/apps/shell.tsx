@@ -5,12 +5,10 @@ const started = performance.now()
 b.onmessage = msg => {
   if (msg.data.type === 'newshell') {
     if (msg.data.t < started) {
-      console.log('quitting', api.program.pid, msg.data.id)
       api.program.terminate()
     }
     else {
       b.postMessage({ type: 'newshell', t: started })
-      console.log('not quitting', api.program.pid)
     }
   }
 
