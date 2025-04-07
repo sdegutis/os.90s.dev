@@ -49,6 +49,9 @@ export class TextField extends View {
   get text() { return this.textbox.text }
   set text(val) { this.textbox.text = val }
 
+  get padding() { return this.border.padding }
+  set padding(val) { this.border.padding = val }
+
   override get autofocus() { return this.textbox.autofocus }
   override set autofocus(val) { this.textbox.autofocus = val }
 

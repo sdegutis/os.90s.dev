@@ -36,8 +36,8 @@ async function create() {
   userinfo.set({ key: 'username', val: 'theadmin3' })
 }
 
-const usernameTextarea: api.TextField = <api.TextField autofocus />
-const emailTextarea: api.TextField = <api.TextField />
+const usernameTextarea: api.TextField = <api.TextField padding={2} autofocus />
+const emailTextarea: api.TextField = <api.TextField padding={2} />
 
 
 const panel = await api.Panel.create({ name: 'account' },
