@@ -26,6 +26,8 @@ export class Process {
 
   ready = Promise.withResolvers<void>()
 
+  procevents = new BroadcastChannel('procevents')
+
   constructor(sys: Sys, path: string, opts: Record<string, any>) {
     this.id = ++Process.id
     Process.all.set(this.id, this)
@@ -37,12 +39,14 @@ export class Process {
     const absurl = new URL('/fs/' + path, import.meta.url)
     this.worker = new Worker(absurl, { type: 'module' })
 
+    this.procevents.postMessage({ type: 'started', id: this.id })
+
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
 
       init: (reply) => {
         opts["app"] = path
         this.ready.resolve()
-        this.sys.procBegan.dispatch(this.id)
+        this.procevents.postMessage({ type: 'init', id: this.id })
         reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], opts], [])
       },
 
@@ -55,18 +59,6 @@ export class Process {
 
         p.didAdjust.watch(() => sys.redrawAllPanels())
         p.didRedraw.watch(() => sys.redrawAllPanels())
-      },
-
-      watchprocs: (reply) => {
-        if (!this.procwatchers) {
-          const watcher1 = sys.procBegan.watch((pid) => rpc.send('procbegan', [pid]))
-          const watcher2 = sys.procEnded.watch((pid) => rpc.send('procended', [pid]))
-          this.procwatchers = () => {
-            watcher1()
-            watcher2()
-          }
-        }
-        reply([])
       },
 
       launch: async (reply, path, opts) => {
@@ -134,7 +126,7 @@ export class Process {
     for (const panel of this.panels) {
       this.closePanel(panel)
     }
-    this.sys.procEnded.dispatch(this.id)
+    this.procevents.postMessage({ type: 'ended', id: this.id })
     this.procwatchers?.()
   }
 

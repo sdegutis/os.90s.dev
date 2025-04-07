@@ -10,7 +10,6 @@ export interface ServerProgram {
   thisfile(path: string): void
 
   launch(path: string, opts: Record<string, any>): Promise<[number]>
-  watchprocs(): Promise<[]>
 
   askdir(): Promise<[dir: FileSystemDirectoryHandle | null]>
 }
@@ -21,9 +20,6 @@ export interface ClientProgram {
 
   keydown(key: string): void
   keyup(key: string): void
-
-  procbegan(pid: number): void
-  procended(pid: number): void
 }
 
 export interface ServerPanel {

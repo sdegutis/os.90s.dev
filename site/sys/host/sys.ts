@@ -1,7 +1,6 @@
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { Font } from "../api/core/font.js"
-import { Listener } from "../api/core/listener.js"
 import { $, Ref } from "../api/core/ref.js"
 import { Point } from "../api/core/types.js"
 import { fs } from '../api/fs/fs.js'
@@ -25,9 +24,6 @@ export class Sys {
 
   $size
   get size() { return this.$size.val }
-
-  procBegan = new Listener<number>()
-  procEnded = new Listener<number>()
 
   static async init(w: number, h: number) {
     const fontstr = await fs.getFile('sys/data/crt34.font')

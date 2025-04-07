@@ -1,7 +1,6 @@
 import { fs } from "../fs/fs.js"
 import { View } from "../views/view.js"
 import { Font } from "./font.js"
-import { Listener } from "./listener.js"
 import { Panel } from "./panel.js"
 import { $, Ref } from "./ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "./rpc.js"
@@ -50,18 +49,7 @@ class Sys {
       program.focusedPanel?.onKeyUp(key)
     },
 
-    procbegan: (pid) => {
-      this.procbegan.dispatch(pid)
-    },
-
-    procended: (pid) => {
-      this.procended.dispatch(pid)
-    },
-
   })
-
-  procbegan = new Listener<number>()
-  procended = new Listener<number>()
 
   keymap = new Set<string>()
 
@@ -121,10 +109,6 @@ class Sys {
     })
 
     return panel
-  }
-
-  async watchprocs() {
-    await this.rpc.call('watchprocs', [])
   }
 
   endproc(pid: number) {
