@@ -1,12 +1,24 @@
 import * as api from "/api.js"
 
 const b = new BroadcastChannel('shell')
+const started = performance.now()
 b.onmessage = msg => {
   if (msg.data.type === 'newshell') {
-    api.program.terminate()
+    if (msg.data.t < started) {
+      console.log('quitting', api.program.pid, msg.data.id)
+      api.program.terminate()
+    }
+    else {
+      b.postMessage({ type: 'newshell', t: started })
+      console.log('not quitting', api.program.pid)
+    }
   }
+
 }
-b.postMessage({ type: 'newshell' })
+b.postMessage({ type: 'newshell', t: started })
+
+
+
 
 api.sys.launch('usr/startup.js')
 
