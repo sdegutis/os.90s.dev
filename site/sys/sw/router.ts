@@ -26,7 +26,7 @@ export async function handleRoute(url: URL, req: Request) {
     const fs = await usrdb
     const res = await fs.get(key)
     if (res === undefined) return new Response('', { status: 404 })
-    return await jsResponse(url, res.content)
+    return await jsResponse(url, res.content!)
   }
 
   // if (url.pathname.startsWith('/fs/net/')) {
