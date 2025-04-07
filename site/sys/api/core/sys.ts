@@ -25,17 +25,16 @@ class Program {
 
   becomeShell() {
     const b = new BroadcastChannel('shell')
-    const started = performance.now()
+    const started = Date.now()
     b.onmessage = msg => {
       if (msg.data.type === 'newshell') {
-        if (msg.data.t < started) {
+        if (started < msg.data.t) {
           this.terminate()
         }
         else {
           b.postMessage({ type: 'newshell', t: started })
         }
       }
-
     }
     b.postMessage({ type: 'newshell', t: started })
   }
