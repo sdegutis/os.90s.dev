@@ -31,10 +31,6 @@ class Sys {
 
   private rpc = new wRPC<ClientProgram, ServerProgram>(self, {
 
-    resized: (w, h) => {
-      this.size = { w, h }
-    },
-
     ping: (reply, n) => {
       reply([n % 2 === 0 ? n + 2 : n + 1])
     },
@@ -65,11 +61,20 @@ class Sys {
   get size() { return this.$size.val }
   set size(s: Size) { this.$size.val = s }
 
+  sysevents = new BroadcastChannel('sysevents')
+
   async init() {
     const [id, w, h, keymap, opts] = await this.rpc.call('init', [])
     program.opts = opts
     program.pid = id
     this.size = { w, h }
+
+    this.sysevents.addEventListener('message', msg => {
+      if (msg.data.type === 'resized') {
+        const [w, h] = msg.data.size
+        this.size = { w, h }
+      }
+    })
 
     keymap.forEach(k => this.keymap.add(k))
 

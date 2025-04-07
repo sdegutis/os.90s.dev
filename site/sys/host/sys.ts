@@ -19,6 +19,8 @@ export class Sys {
   clicking: Panel | null = null
   prevFocused: Panel | null = null
 
+  sysevents = new BroadcastChannel('sysevents')
+
   $font
   get font() { return this.$font.val }
 
@@ -126,7 +128,7 @@ export class Sys {
 
   resize(w: number, h: number) {
     this.$size.val = { w, h }
-    Process.all.forEach(p => p.rpc.send('resized', [w, h]))
+    this.sysevents.postMessage({ type: 'resized', size: [w, h] })
     this.redrawAllPanels()
   }
 

@@ -16,8 +16,6 @@ export interface ServerProgram {
 
 export interface ClientProgram {
   ping(n: number): Promise<[n: number]>
-  resized(w: number, h: number): void
-
   keydown(key: string): void
   keyup(key: string): void
 }
