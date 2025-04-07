@@ -1,5 +1,4 @@
 import type { Cursor } from "../api/core/cursor.js"
-import type { ListenerDone } from "../api/core/listener.js"
 import { wRPC, type ClientProgram, type ServerProgram } from "../api/core/rpc.js"
 import { Panel } from "./panel.js"
 import type { Sys } from "./sys.js"
@@ -21,8 +20,6 @@ export class Process {
 
   path: string
   file?: string
-
-  procwatchers: ListenerDone | undefined
 
   ready = Promise.withResolvers<void>()
 
@@ -140,7 +137,6 @@ export class Process {
       this.closePanel(panel)
     }
     this.procevents.postMessage({ type: 'ended', pid: this.id })
-    this.procwatchers?.()
   }
 
   closePanel(panel: Panel) {
