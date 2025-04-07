@@ -133,6 +133,7 @@ export class Process {
   }
 
   terminate() {
+    Process.all.delete(this.id)
     clearInterval(this.heartbeat)
     this.worker.terminate()
     for (const panel of this.panels) {
