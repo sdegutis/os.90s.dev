@@ -3,7 +3,7 @@ export type PanelOrdering = 'normal' | 'bottom' | 'top'
 export type FsItem = { type: 'folder' | 'file', name: string }
 
 export interface ServerProgram {
-  init(): Promise<[id: number, w: number, h: number, keymap: string[], opts: Record<string, any>, syncfs: MessagePort]>
+  init(): Promise<[id: number, w: number, h: number, keymap: string[], opts: Record<string, any>]>
   newpanel(ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, x: number, y: number, port: MessagePort]>
   terminate(pid: number): void
   resize(w: number, h: number): void

@@ -30,8 +30,7 @@ export class Sys {
   procEnded = new Listener<number>()
 
   static async init(w: number, h: number) {
-    const syncfs = new SharedWorker(import.meta.resolve('./syncfs.js'), { type: 'module' })
-    await fs.init(syncfs.port, -1)
+    await fs.init()
     const fontstr = await fs.getFile('sys/data/crt34.font')
     return new Sys(w, h, new Font(fontstr!))
   }

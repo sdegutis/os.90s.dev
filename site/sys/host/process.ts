@@ -40,12 +40,10 @@ export class Process {
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
 
       init: (reply) => {
-        const syncfs = new SharedWorker(import.meta.resolve('./syncfs.js'), { type: 'module' })
-
         opts["app"] = path
         this.ready.resolve()
         this.sys.procBegan.dispatch(this.id)
-        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], opts, syncfs.port], [syncfs.port])
+        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], opts], [])
       },
 
       newpanel: (reply, ord, x, y, w, h) => {

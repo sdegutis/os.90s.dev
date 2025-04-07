@@ -16,29 +16,22 @@ class FS {
     this.#drives.set('net', new NetDrive())
   }
 
-  async init(syncfs: MessagePort, id: number) {
+  async init() {
+    const syncfs = new BroadcastChannel('syncfs')
+
     let syncing = false
     this.#syncfs = (path, op) => {
       if (syncing) return
-      syncfs.postMessage({ type: 'sync', path, op, id })
+      syncfs.postMessage([path, op])
     }
 
     syncfs.onmessage = (e) => {
-      if (e.data.type === 'ping') {
-        syncfs.postMessage({ type: 'pong', id })
-        return
-      }
-
-      if (e.data.type === 'sync') {
-        syncing = true
-        const { path, op } = e.data
-        this.#notify(path, op)
-        syncing = false
-        return
-      }
+      syncing = true
+      const [path, op] = e.data
+      this.#notify(path, op)
+      syncing = false
+      return
     }
-
-    syncfs.postMessage({ type: 'init', id })
   }
 
   drives() {
