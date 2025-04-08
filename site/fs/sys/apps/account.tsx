@@ -28,9 +28,29 @@ type State = GuestState | VerifyingState | KnownState
 const $state = api.$<State>({ type: 'guest' })
 
 
-// const userinfo = await api.opendb<{ key: string, val: any }>('userinfo', 'key')
-// const maybeUser = await userinfo.get('username')
-// if (maybeUser) $state.val = {kn}
+const accountinfo = await kvs<{ state: State }>('accountinfo')
+
+async function kvs<T extends Record<string, any>>(name: string) {
+  const store = await api.opendb<{ key: string, val: any }>(name, 'key')
+
+  return {
+    async get<K extends keyof T>(key: K) {
+      const entry = await store.get(key as string)
+      return entry?.val as T[K] | undefined
+    },
+    async set<K extends keyof T>(key: K, val: T[K]) {
+      await store.set({ key: key as string, val })
+    },
+  }
+}
+
+
+
+accountinfo.get('state').then(state => {
+  if (state) {
+    $state.val = state
+  }
+})
 
 
 
@@ -92,6 +112,7 @@ function SigninView() {
     if (err) { $error.val = err; return }
 
     $state.val = { type: 'verifying', username, email }
+    accountinfo.set('state', $state.val)
   }
 
   return <api.Center>
@@ -137,7 +158,7 @@ function VerifyView({ state }: { state: VerifyingState }) {
     if (err) { $error.val = err; return }
 
     $state.val = { ...state, type: 'known' }
-    // userinfo.set({ key: 'username', val: 'theadmin3' })
+    accountinfo.set('state', $state.val)
   }
 
   return <api.Center>
