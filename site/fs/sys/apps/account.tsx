@@ -28,21 +28,7 @@ type State = GuestState | VerifyingState | KnownState
 const $state = api.$<State>({ type: 'guest' })
 
 
-const accountinfo = await kvs<{ state: State }>('accountinfo')
-
-async function kvs<T extends Record<string, any>>(name: string) {
-  const store = await api.opendb<{ key: string, val: any }>(name, 'key')
-
-  return {
-    async get<K extends keyof T>(key: K) {
-      const entry = await store.get(key as string)
-      return entry?.val as T[K] | undefined
-    },
-    async set<K extends keyof T>(key: K, val: T[K]) {
-      await store.set({ key: key as string, val })
-    },
-  }
-}
+const accountinfo = await api.kvs<{ state: State }>('accountinfo')
 
 
 
