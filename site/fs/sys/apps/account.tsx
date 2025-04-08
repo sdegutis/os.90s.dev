@@ -22,6 +22,7 @@ type KnownState = {
   type: 'known'
   username: string
   email: string
+  publishes: boolean
 }
 
 type State = GuestState | VerifyingState | KnownState
@@ -142,7 +143,12 @@ function VerifyView({ state }: { state: VerifyingState }) {
     const err = await POST('/user/verify', token)
     if (err) { $error.val = err; return }
 
-    $state.val = { ...state, type: 'known' }
+    $state.val = {
+      type: 'known',
+      username: state.username,
+      email: state.email,
+      publishes: false,
+    }
     accountinfo.set('state', $state.val)
   }
 
