@@ -72,12 +72,12 @@ function SigninView() {
   const $error = api.$('')
 
   const userField = makeTextField({
-    textbox: { onEnter: create, autofocus: true },
+    textbox: { onEnter: create, onTab: create, autofocus: true },
     border: { padding: 2 },
   })
 
   const emailField = makeTextField({
-    textbox: { onEnter: create },
+    textbox: { onEnter: create, onTab: create },
     border: { padding: 2 },
   })
 
@@ -88,11 +88,8 @@ function SigninView() {
     const email = emailField.textbox.text
     if (!email) { emailField.textbox.focus(); return }
 
-    const [ok, err] = await POST('/user/new', `${username} ${email}`)
-    if (!ok) {
-      $error.val = err
-      return
-    }
+    const err = await POST('/user/new', `${username} ${email}`)
+    if (err) { $error.val = err; return }
 
     $state.val = { type: 'verifying', username, email }
   }
@@ -129,18 +126,15 @@ function VerifyView({ state }: { state: VerifyingState }) {
 
   const tokenField = makeTextField({
     border: { padding: 2 },
-    textbox: { onEnter: verify, autofocus: true },
+    textbox: { onEnter: verify, onTab: verify, autofocus: true },
   })
 
   async function verify() {
     const token = tokenField.textbox.text
     if (!token.trim()) return
 
-    const [ok, err] = await POST('/user/verify', token)
-    if (!ok) {
-      $error.val = err
-      return
-    }
+    const err = await POST('/user/verify', token)
+    if (err) { $error.val = err; return }
 
     $state.val = { ...state, type: 'known' }
     // userinfo.set({ key: 'username', val: 'theadmin3' })

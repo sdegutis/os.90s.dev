@@ -52,6 +52,7 @@ export class TextBox extends View {
 
   multiline = true
   onEnter?(): void
+  onTab?(): void
 
   get text() { return this.lines.join('\n') }
   set text(s: string) {
@@ -230,11 +231,16 @@ export class TextBox extends View {
       this.fixCol()
     }
     else if (key === 'Tab') {
-      const [a, b] = this.halves()
-      this.lines[this.row] = a + '  ' + b
-      this.col += 2
-      this.end = this.col
-      this.adjust()
+      if (this.onTab) {
+        debounce(() => this.onTab?.())()
+      }
+      else {
+        const [a, b] = this.halves()
+        this.lines[this.row] = a + '  ' + b
+        this.col += 2
+        this.end = this.col
+        this.adjust()
+      }
     }
     else if (key === 'Backspace') {
       if (this.col > 0) {
