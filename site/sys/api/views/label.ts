@@ -16,13 +16,13 @@ export class Label extends View {
 
     this.$text.watch(() => { this.adjust(); this.needsRedraw() })
     this.$font.watch(() => { this.adjust(); this.needsRedraw() })
-    this.$textColor.watch(() => this.needsRedraw())
+    this.$color.watch(() => this.needsRedraw())
     this.adjust()
   }
 
-  $textColor = $<number>(0xffffffff)
-  get textColor() { return this.$textColor.val }
-  set textColor(val) { this.$textColor.val = val }
+  $color = $<number>(0xffffffff)
+  get color() { return this.$color.val }
+  set color(val) { this.$color.val = val }
 
   $font = sys.$font
   get font() { return this.$font.val }
@@ -38,7 +38,7 @@ export class Label extends View {
 
   override draw(ctx: DrawingContext): void {
     super.draw(ctx)
-    this.font.print(ctx, 0, 0, this.textColor, this.text)
+    this.font.print(ctx, 0, 0, this.color, this.text)
   }
 
 }

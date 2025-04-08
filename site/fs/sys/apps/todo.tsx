@@ -55,7 +55,7 @@ function ItemView({ item }: { item: Item }) {
   return (
     <api.Button onClick={toggleDone}>
       <api.GroupX gap={2}>
-        <api.Label textColor={0xffffff77} text={item.done ? 'x' : 'o'} />
+        <api.Label color={0xffffff77} text={item.done ? 'x' : 'o'} />
         <api.Label text={item.text} />
       </api.GroupX>
     </api.Button>

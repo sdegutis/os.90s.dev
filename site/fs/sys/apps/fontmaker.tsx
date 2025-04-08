@@ -110,23 +110,23 @@ const panel = await api.Panel.create({ name: "fontmaker" },
           <api.Label text={SAMPLE_TEXT} $font={font} />
           <api.GroupX gap={7}>
             <api.GroupX gap={2}>
-              <api.Label textColor={0xffffff33} text='width' />
-              <api.Label textColor={0xffff00cc} $text={width.adapt(n => n.toString().padStart(2, ' '))} />
+              <api.Label color={0xffffff33} text='width' />
+              <api.Label color={0xffff00cc} $text={width.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={width} min={1} max={12} />
             </api.GroupX>
             <api.GroupX gap={2}>
-              <api.Label textColor={0xffffff33} text='height' />
-              <api.Label textColor={0xffff00cc} $text={height.adapt(n => n.toString().padStart(2, ' '))} />
+              <api.Label color={0xffffff33} text='height' />
+              <api.Label color={0xffff00cc} $text={height.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={height} min={1} max={12} />
             </api.GroupX>
             <api.GroupX gap={2}>
-              <api.Label textColor={0xffffff33} text='zoom' />
-              <api.Label textColor={0xffff00cc} $text={zoom.adapt(n => n.toString().padStart(2, ' '))} />
+              <api.Label color={0xffffff33} text='zoom' />
+              <api.Label color={0xffff00cc} $text={zoom.adapt(n => n.toString().padStart(2, ' '))} />
               <Slider val={zoom} min={zoommin} max={zoommax} />
             </api.GroupX>
             <api.GroupX gap={2}>
-              <api.Label textColor={0xffffff33} text='hover' />
-              <api.Label textColor={0xffff00cc} $text={current} />
+              <api.Label color={0xffffff33} text='hover' />
+              <api.Label color={0xffff00cc} $text={current} />
             </api.GroupX>
           </api.GroupX>
         </api.GroupY>

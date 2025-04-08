@@ -23,7 +23,7 @@ function submit() {
     append(<api.Label text={'> ' + res} />)
   }
   catch (e: any) {
-    append(<api.Label text={e.toString()} textColor={0x99000099} />)
+    append(<api.Label text={e.toString()} color={0x99000099} />)
   }
 }
 

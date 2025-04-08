@@ -4,7 +4,7 @@ const IMG_FOLDER = new api.Bitmap([0x990000ff], 1, [1])
 const IMG_FILE = new api.Bitmap([0x009900ff], 1, [1])
 
 const EMPTY = <api.Border padding={2}>
-  <api.Label text={'[empty]'} textColor={0xffffff77} />
+  <api.Label text={'[empty]'} color={0xffffff77} />
 </api.Border>
 
 

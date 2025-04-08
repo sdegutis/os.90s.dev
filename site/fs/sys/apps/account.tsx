@@ -103,8 +103,8 @@ function SigninView() {
       <api.GroupX>
 
         <api.GroupY gap={2}>
-          <api.Border padding={2}><api.Label textColor={0xffffff33} text='username' /></api.Border>
-          <api.Border padding={2}><api.Label textColor={0xffffff33} text='email' /></api.Border>
+          <api.Border padding={2}><api.Label color={0xffffff33} text='username' /></api.Border>
+          <api.Border padding={2}><api.Label color={0xffffff33} text='email' /></api.Border>
         </api.GroupY>
 
         <api.GroupY gap={2}>
@@ -118,7 +118,7 @@ function SigninView() {
         <api.Label text='create account' />
       </api.Button>
 
-      <api.Label $text={$error} textColor={0x99000099} />
+      <api.Label $text={$error} color={0x99000099} />
 
     </api.GroupY>
   </api.Center>
@@ -152,7 +152,7 @@ function VerifyView({ state }: { state: VerifyingState }) {
       <api.GroupX>
 
         <api.GroupY gap={2}>
-          <api.Border padding={2}><api.Label textColor={0xffffff33} text='token' /></api.Border>
+          <api.Border padding={2}><api.Label color={0xffffff33} text='token' /></api.Border>
         </api.GroupY>
 
         <api.GroupY gap={2}>
@@ -165,7 +165,7 @@ function VerifyView({ state }: { state: VerifyingState }) {
         <api.Label text='verify' />
       </api.Button>
 
-      <api.Label $text={$error} textColor={0x99000099} />
+      <api.Label $text={$error} color={0x99000099} />
 
     </api.GroupY>
   </api.Center>
