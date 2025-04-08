@@ -14,7 +14,7 @@ export async function kvs<T extends Record<string, any>>(name: string) {
   }
 }
 
-export async function kvsMap<T extends Record<string, any>>(name: string) {
+export async function opendbMap<T extends Record<string, any>>(name: string) {
   const store = await opendb<{ key: string, val: any }>(name, 'key')
 
   return {
