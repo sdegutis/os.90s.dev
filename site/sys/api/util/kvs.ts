@@ -1,6 +1,6 @@
 import { opendb } from "./db.js"
 
-export async function kvs<T extends Record<string, any>>(name: string) {
+export async function pobject<T extends Record<string, any>>(name: string) {
   const store = await opendb<{ key: string, val: any }>(name, 'key')
 
   return {
@@ -14,7 +14,7 @@ export async function kvs<T extends Record<string, any>>(name: string) {
   }
 }
 
-export async function opendbMap<T extends Record<string, any>>(name: string) {
+export async function kvs<T extends Record<string, any>>(name: string) {
   const store = await opendb<{ key: string, val: any }>(name, 'key')
 
   return {

@@ -1,4 +1,4 @@
-import { opendbMap } from "../util/kvs.js"
+import { kvs } from "../util/kvs.js"
 import { debounce } from "../util/throttle.js"
 import type { View } from "../views/view.js"
 import type { Cursor } from "./cursor.js"
@@ -10,7 +10,7 @@ import { type ClientPanel, type PanelOrdering, type ServerPanel, wRPC } from "./
 import { sys } from "./sys.js"
 import type { Point, Size } from "./types.js"
 
-const panelnames = await opendbMap<Size>('panels')
+const panelnames = await kvs<Size>('panels')
 
 export class Panel {
 
