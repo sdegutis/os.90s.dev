@@ -1,13 +1,5 @@
 import * as api from '/api.js'
 
-async function POST(path: string, data: string) {
-  return fetch(api.config.net + path, {
-    method: 'post',
-    body: data,
-    credentials: 'include',
-  }).then(r => r.json())
-}
-
 type GuestState = {
   type: 'guest'
 }
@@ -31,6 +23,9 @@ const $state = api.$<State>({ type: 'guest' })
 
 const accountinfo = await api.kvs<{ state: State }>('accountinfo')
 
+api.GET('/user/info').then(info => {
+  console.log({ info })
+})
 
 
 const maybeState = await accountinfo.get('state')
@@ -94,7 +89,7 @@ function SigninView() {
     const email = emailField.textbox.text
     if (!email) { emailField.textbox.focus(); return }
 
-    const err = await POST('/user/new', `${username} ${email}`)
+    const err = await api.POST('/user/new', `${username} ${email}`)
     if (err) { $error.val = err; return }
 
     $state.val = { type: 'verifying', username, email }
@@ -140,7 +135,7 @@ function VerifyView({ state }: { state: VerifyingState }) {
     const token = tokenField.textbox.text
     if (!token.trim()) return
 
-    const err = await POST('/user/verify', token)
+    const err = await api.POST('/user/verify', token)
     if (err) { $error.val = err; return }
 
     $state.val = {
