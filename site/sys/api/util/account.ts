@@ -33,7 +33,12 @@ await persisted.get().then(state => {
 })
 
 async function updateFromServerNow() {
-  await GET('/user/info').then(async state => {
+  await GET('/user/info').then(async ([err, state]) => {
+    if (err) {
+      console.error(err)
+      return
+    }
+
     if (state) {
       $userState.val = {
         type: state.verified ? 'known' : 'verifying',

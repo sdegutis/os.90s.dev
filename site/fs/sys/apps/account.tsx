@@ -56,7 +56,7 @@ function SigninView() {
     const email = emailField.textbox.text
     if (!email) { emailField.textbox.focus(); return }
 
-    const err = await api.POST('/user/new', `${username} ${email}`)
+    const [err] = await api.POST('/user/new', `${username} ${email}`)
     if (err) { $error.val = err; return }
 
     api.$userState.val = { type: 'verifying', username, email, publishes: false }
@@ -101,7 +101,7 @@ function VerifyView({ state }: { state: api.VerifyingState }) {
     const token = tokenField.textbox.text
     if (!token.trim()) return
 
-    const err = await api.POST('/user/verify', token)
+    const [err] = await api.POST('/user/verify', token)
     if (err) { $error.val = err; return }
 
     api.$userState.val = {
@@ -139,7 +139,7 @@ function VerifyView({ state }: { state: api.VerifyingState }) {
 
 function WelcomeView({ state }: { state: api.KnownState }) {
   async function enablePublishing() {
-    const err = await api.POST('/user/publish', '')
+    const [err] = await api.POST('/user/publish', '')
     console.log(err)
     if (err) {
       console.error(err)
