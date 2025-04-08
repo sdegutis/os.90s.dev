@@ -1,4 +1,4 @@
-import { opendb } from "../util/db.js"
+import { kvsMap } from "../util/kvs.js"
 import { debounce } from "../util/throttle.js"
 import type { View } from "../views/view.js"
 import type { Cursor } from "./cursor.js"
@@ -10,7 +10,7 @@ import { type ClientPanel, type PanelOrdering, type ServerPanel, wRPC } from "./
 import { sys } from "./sys.js"
 import type { Point, Size } from "./types.js"
 
-const panelnames = await opendb<{ panelname: string, size: Size }>('panels', 'panelname')
+const panelnames = await kvsMap<Size>('panels')
 
 export class Panel {
 
@@ -48,9 +48,9 @@ export class Panel {
     pos?: Ref<Point> | 'default' | 'center',
   }, view: View) {
     if (config.name) {
-      const prefs = await panelnames.get(config.name)
-      if (prefs) { view.$size.val = prefs.size }
-      view.$size.watch((size => panelnames.set({ panelname: config.name!, size })))
+      const size = await panelnames.get(config.name)
+      if (size) { view.$size.val = size }
+      view.$size.watch((size => panelnames.set(config.name!, size)))
     }
 
     return await sys.makePanel({ view, ...config })

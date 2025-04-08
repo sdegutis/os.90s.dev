@@ -21,15 +21,15 @@ type State = GuestState | VerifyingState | KnownState
 const $state = api.$<State>({ type: 'guest' })
 
 
-const accountinfo = await api.kvs<{ state: State }>('accountinfo')
+// const accountinfo = await api.kvs<{ state: State }>('accountinfo')
 
-api.GET('/user/info').then(info => {
-  console.log({ info })
-})
+// api.GET('/user/info').then(info => {
+//   console.log({ info })
+// })
 
 
-const maybeState = await accountinfo.get('state')
-if (maybeState) $state.val = maybeState
+// const maybeState = await accountinfo.get('state')
+// if (maybeState) $state.val = maybeState
 
 
 
@@ -93,7 +93,7 @@ function SigninView() {
     if (err) { $error.val = err; return }
 
     $state.val = { type: 'verifying', username, email }
-    accountinfo.set('state', $state.val)
+    // accountinfo.set('state', $state.val)
   }
 
   return <api.Center>
@@ -144,7 +144,7 @@ function VerifyView({ state }: { state: VerifyingState }) {
       email: state.email,
       publishes: false,
     }
-    accountinfo.set('state', $state.val)
+    // accountinfo.set('state', $state.val)
   }
 
   return <api.Center>
