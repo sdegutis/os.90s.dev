@@ -33,18 +33,60 @@ const $state = api.$<State>({ type: 'guest' })
 // if (maybeUser) $state.val = {kn}
 
 
+
+function makeTextField(data: {
+  textbox?: api.JsxAttrs<api.TextBox>,
+  border?: api.JsxAttrs<api.Border>,
+  scroll?: api.JsxAttrs<api.Scroll>,
+  length?: number,
+}) {
+
+  const length = data.length ?? 50
+
+  const textbox: api.TextBox = <api.TextBox
+    multiline={false}
+    {...data.textbox} />
+
+  const border: api.Border = <api.Border
+    padding={2}
+    children={[textbox]}
+    {...data.border} />
+
+  const scroll = <api.Scroll
+    showh={false}
+    showv={false}
+    background={0x00000033}
+    onMouseDown={function (...args) { textbox.onMouseDown(...args) }}
+    onMouseMove={function (...args) { textbox.onMouseMove(...args) }}
+    $size={border.$size.adapt(s => ({ w: length, h: border.$size.val.h }))}
+    children={[border]}
+    {...data.scroll} />
+
+  return { scroll, border, textbox }
+
+}
+
+
+
 function SigninView() {
   const $error = api.$('')
 
-  const userField: api.TextField = <api.TextField onEnter={create} padding={2} autofocus />
-  const emailField: api.TextField = <api.TextField onEnter={create} padding={2} />
+  const userField = makeTextField({
+    textbox: { onEnter: create, autofocus: true },
+    border: { padding: 2 },
+  })
+
+  const emailField = makeTextField({
+    textbox: { onEnter: create },
+    border: { padding: 2 },
+  })
 
   async function create() {
-    const username = userField.text
-    if (!username) { userField.focus(); return }
+    const username = userField.textbox.text
+    if (!username) { userField.textbox.focus(); return }
 
-    const email = emailField.text
-    if (!email) { emailField.focus(); return }
+    const email = emailField.textbox.text
+    if (!email) { emailField.textbox.focus(); return }
 
     const [ok, err] = await POST('/user/new', `${username} ${email}`)
     if (!ok) {
@@ -66,8 +108,8 @@ function SigninView() {
         </api.GroupY>
 
         <api.GroupY gap={2}>
-          {userField}
-          {emailField}
+          {userField.scroll}
+          {emailField.scroll}
         </api.GroupY>
 
       </api.GroupX>
@@ -85,10 +127,13 @@ function SigninView() {
 function VerifyView({ state }: { state: VerifyingState }) {
   const $error = api.$('')
 
-  const tokenField: api.TextField = <api.TextField onEnter={verify} padding={2} autofocus />
+  const tokenField = makeTextField({
+    border: { padding: 2 },
+    textbox: { onEnter: verify, autofocus: true },
+  })
 
   async function verify() {
-    const token = tokenField.text
+    const token = tokenField.textbox.text
     if (!token.trim()) return
 
     const [ok, err] = await POST('/user/verify', token)
@@ -111,7 +156,7 @@ function VerifyView({ state }: { state: VerifyingState }) {
         </api.GroupY>
 
         <api.GroupY gap={2}>
-          {tokenField}
+          {tokenField.scroll}
         </api.GroupY>
 
       </api.GroupX>
