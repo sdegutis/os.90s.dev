@@ -138,9 +138,34 @@ function VerifyView({ state }: { state: api.VerifyingState }) {
 }
 
 function WelcomeView({ state }: { state: api.KnownState }) {
-  return <api.Center>
-    <api.Label text={`Welcome, ${state.username}`} />
-  </api.Center>
+  async function enablePublishing() {
+    const err = await api.POST('/user/publish', '')
+    console.log(err)
+    if (err) {
+      console.error(err)
+      return
+    }
+    api.$userState.val = { ...state, publishes: true }
+  }
+
+  return (
+    <api.PanedYA>
+
+      <api.GroupX background={0x00000033}>
+        {state.publishes
+          ? <api.View />
+          : <api.Button onClick={enablePublishing} padding={2}>
+            <api.Label text='enable publishing' />
+          </api.Button>
+        }
+      </api.GroupX>
+
+      <api.Center>
+        <api.Label text={`Welcome, ${state.username}`} />
+      </api.Center>
+
+    </api.PanedYA>
+  )
 }
 
 const panel = await api.Panel.create({ name: 'account' },
