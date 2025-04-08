@@ -32,11 +32,10 @@ const accountinfo = await api.kvs<{ state: State }>('accountinfo')
 
 
 
-accountinfo.get('state').then(state => {
-  if (state) {
-    $state.val = state
-  }
-})
+const maybeState = await accountinfo.get('state')
+if (maybeState) $state.val = maybeState
+
+
 
 
 
