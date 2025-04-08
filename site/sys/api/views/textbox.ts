@@ -282,7 +282,7 @@ export class TextBox extends View {
         this.adjust()
       }
       else {
-        this.onEnter?.()
+        debounce(() => this.onEnter?.())()
       }
     }
     else if (key === 'v' && this.panel?.isKeyDown('Control')) {

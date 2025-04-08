@@ -36,13 +36,15 @@ const $state = api.$<State>({ type: 'guest' })
 function SigninView() {
   const $error = api.$('')
 
-  const userField: api.TextField = <api.TextField padding={2} autofocus />
-  const emailField: api.TextField = <api.TextField padding={2} />
+  const userField: api.TextField = <api.TextField onEnter={create} padding={2} autofocus />
+  const emailField: api.TextField = <api.TextField onEnter={create} padding={2} />
 
   async function create() {
     const username = userField.text
+    if (!username) { userField.focus(); return }
+
     const email = emailField.text
-    if (!username.trim() || !email.trim()) return
+    if (!email) { emailField.focus(); return }
 
     const [ok, err] = await POST('/user/new', `${username} ${email}`)
     if (!ok) {
@@ -83,7 +85,7 @@ function SigninView() {
 function VerifyView({ state }: { state: VerifyingState }) {
   const $error = api.$('')
 
-  const tokenField: api.TextField = <api.TextField padding={2} autofocus />
+  const tokenField: api.TextField = <api.TextField onEnter={verify} padding={2} autofocus />
 
   async function verify() {
     const token = tokenField.text

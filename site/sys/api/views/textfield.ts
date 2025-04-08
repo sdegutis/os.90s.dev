@@ -56,4 +56,11 @@ export class TextField extends View {
   override get autofocus() { return this.textbox.autofocus }
   override set autofocus(val) { this.textbox.autofocus = val }
 
+  get onEnter() { return this.textbox.onEnter }
+  set onEnter(fn: (() => void) | undefined) { this.textbox.onEnter = fn! }
+
+  override focus(): void {
+    this.textbox.focus()
+  }
+
 }
