@@ -26,6 +26,8 @@ const config = {
 function processSite() {
   return tree.processFiles(files => {
 
+    files.with('^/fs/api\.ts$').remove()
+
     files.add('/sys/sw/wasm.js', swc1)
     files.add('/sys/sw/wasm_bg.wasm', swc2)
 
@@ -74,7 +76,7 @@ function processSite() {
     files.with(/\.tsx?$/).do(file => { file.path = file.path.replace(/\.tsx?$/, '.js') })
 
     const apis = files.with('^/sys/api/').paths()
-    fs.writeFileSync('./site/fs/api.d.ts', apis.map(p => `export * from "..${p}"`).join('\n'))
+    fs.writeFileSync('./site/fs/api.ts', apis.map(p => `export * from "..${p}"`).join('\n'))
     files.add('/api.js', apis.map(p => `export * from "${p}"`).join('\n'))
 
     const sysdata = JSON.stringify((files
@@ -106,7 +108,7 @@ if (isDev) {
   server.notFound = () => '/404.html'
 
   tree.watch({
-    ignored: (str) => str.includes('/out/') || str.endsWith('/site/fs/api.d.ts')
+    ignored: (str) => str.includes('/out/') || str.endsWith('/site/fs/api.ts')
   }, async (paths) => {
     const start = Date.now()
     try { server.files = await processSite() }
