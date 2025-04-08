@@ -4,6 +4,7 @@ import { Font } from "../api/core/font.js"
 import { $, Ref } from "../api/core/ref.js"
 import { Point } from "../api/core/types.js"
 import { fs } from '../api/fs/fs.js'
+import { updateAccountFromServer } from "../api/util/account.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 import { Process } from "./process.js"
@@ -29,6 +30,7 @@ export class Sys {
   get size() { return this.$size.val }
 
   static async init(w: number, h: number) {
+    updateAccountFromServer()
     const fontstr = await fs.getFile('sys/data/crt34.font')
     return new Sys(w, h, new Font(fontstr!))
   }

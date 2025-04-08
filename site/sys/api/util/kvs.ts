@@ -4,12 +4,19 @@ export async function pobject<T extends Record<string, any>>(name: string) {
   const store = await opendb<{ key: string, val: any }>(name, 'key')
 
   return {
-    async get<K extends keyof T>(key: K) {
-      const entry = await store.get(key as string)
-      return entry?.val as T[K] | undefined
+    async get(): Promise<T> {
+      const entries = await store.all()
+      return Object.fromEntries(entries.map(kv => [kv.key, kv.val])) as T
     },
-    async set<K extends keyof T>(key: K, val: T[K]) {
-      await store.set({ key: key as string, val })
+    async set(o: T) {
+      const newkeys = Object.keys(o)
+      const entries = await store.all()
+      const oldkeys = entries.map(e => e.key)
+      const todelete = new Set(oldkeys).difference(new Set(newkeys))
+      await Promise.all([
+        ...[...todelete].map(key => store.del(key)),
+        ...newkeys.map(key => store.set({ key, val: o[key] }))
+      ])
     },
   }
 }

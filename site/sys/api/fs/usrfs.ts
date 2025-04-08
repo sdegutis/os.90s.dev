@@ -2,7 +2,7 @@ import { opendb } from "../util/db.js"
 import type { Drive } from "./drive.js"
 import { listdir } from "./util.js"
 
-export const usrdb = opendb<{ path: string, content?: string }>('usr', 'path')
+const usrdb = opendb<{ path: string, content?: string }>('usr', 'path')
 
 export class UsrDrive implements Drive {
 

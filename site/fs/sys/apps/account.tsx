@@ -1,38 +1,5 @@
 import * as api from '/api.js'
 
-type GuestState = {
-  type: 'guest'
-}
-
-type VerifyingState = {
-  type: 'verifying'
-  username: string
-  email: string
-}
-
-type KnownState = {
-  type: 'known'
-  username: string
-  email: string
-  publishes: boolean
-}
-
-type State = GuestState | VerifyingState | KnownState
-const $state = api.$<State>({ type: 'guest' })
-
-
-// const accountinfo = await api.kvs<{ state: State }>('accountinfo')
-
-// api.GET('/user/info').then(info => {
-//   console.log({ info })
-// })
-
-
-// const maybeState = await accountinfo.get('state')
-// if (maybeState) $state.val = maybeState
-
-
-
 
 
 function makeTextField(data: {
@@ -92,8 +59,7 @@ function SigninView() {
     const err = await api.POST('/user/new', `${username} ${email}`)
     if (err) { $error.val = err; return }
 
-    $state.val = { type: 'verifying', username, email }
-    // accountinfo.set('state', $state.val)
+    api.$userState.val = { type: 'verifying', username, email, publishes: false }
   }
 
   return <api.Center>
@@ -123,7 +89,7 @@ function SigninView() {
   </api.Center>
 }
 
-function VerifyView({ state }: { state: VerifyingState }) {
+function VerifyView({ state }: { state: api.VerifyingState }) {
   const $error = api.$('')
 
   const tokenField = makeTextField({
@@ -138,13 +104,12 @@ function VerifyView({ state }: { state: VerifyingState }) {
     const err = await api.POST('/user/verify', token)
     if (err) { $error.val = err; return }
 
-    $state.val = {
+    api.$userState.val = {
       type: 'known',
       username: state.username,
       email: state.email,
       publishes: false,
     }
-    // accountinfo.set('state', $state.val)
   }
 
   return <api.Center>
@@ -172,7 +137,7 @@ function VerifyView({ state }: { state: VerifyingState }) {
   </api.Center>
 }
 
-function WelcomeView({ state }: { state: KnownState }) {
+function WelcomeView({ state }: { state: api.KnownState }) {
   return <api.Center>
     <api.Label text={`Welcome, ${state.username}`} />
   </api.Center>
@@ -180,7 +145,7 @@ function WelcomeView({ state }: { state: KnownState }) {
 
 const panel = await api.Panel.create({ name: 'account' },
   <api.PanelView title={api.$('account')} size={api.$({ w: 150, h: 120 })}>
-    <api.Margin $children={$state.adapt(state => {
+    <api.Margin $children={api.$userState.adapt(state => {
       if (state.type === 'verifying') return [<VerifyView state={state} />]
       if (state.type === 'known') return [<WelcomeView state={state} />]
       return [<SigninView />]
