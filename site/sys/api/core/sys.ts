@@ -24,19 +24,19 @@ class Program {
   }
 
   async becomeShell() {
-    const quit = new BroadcastChannel('shell')
-
-    await navigator.locks.request('shell', {
-      ifAvailable: true,
-    }, async (lock) => {
-      if (lock === null) {
-        quit.postMessage(true)
-        await navigator.locks.request('shell', () => { })
-      }
+    const isLocked = new Promise(r => setTimeout(() => r(1), 100))
+    const isUnlocked = Promise.withResolvers<number>()
+    navigator.locks.request('shell', async () => {
+      isUnlocked.resolve(0)
+      await new Promise(r => { })
     })
 
+    const quit = new BroadcastChannel('shell')
     quit.onmessage = msg => this.terminate()
-    navigator.locks.request('shell', () => new Promise(r => { }))
+
+    await Promise.race([isUnlocked.promise, isLocked]).then(need => {
+      if (need) quit.postMessage(true)
+    })
   }
 
 }
