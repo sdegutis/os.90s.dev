@@ -26,6 +26,7 @@ class Program {
   async becomeShell() {
     const isLocked = new Promise(r => setTimeout(() => r(1), 100))
     const isUnlocked = Promise.withResolvers<number>()
+
     navigator.locks.request('shell', async () => {
       isUnlocked.resolve(0)
       await new Promise(r => { })
