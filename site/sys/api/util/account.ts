@@ -2,31 +2,35 @@ import { $ } from "../core/ref.js"
 import { pobject } from "./kvs.js"
 import { GET } from "./net.js"
 
-export type GuestState = {
+export type UserStateGuest = {
   type: 'guest'
 }
 
-export type VerifyingState = {
-  type: 'verifying'
+export type UserStateRegistering = {
+  type: 'registering'
   username: string
-  email: string
 }
 
-export type KnownState = {
+export type UserStateVerifying = {
+  type: 'verifying'
+  username: string
+}
+
+export type UserStateKnown = {
   type: 'known'
   username: string
-  email: string
   publishes: boolean
 }
 
-export type State =
-  | GuestState
-  | VerifyingState
-  | KnownState
+export type UserState =
+  | UserStateGuest
+  | UserStateRegistering
+  | UserStateVerifying
+  | UserStateKnown
 
-export const $userState = $<State>({ type: 'guest' })
+export const $userState = $<UserState>({ type: 'guest' })
 
-const persisted = await pobject<State>('_persisted')
+const persisted = await pobject<UserState>('_persisted')
 await persisted.get().then(state => {
   if (state) $userState.val = state
 })
@@ -43,7 +47,6 @@ export async function updateAccountFromServer() {
       $userState.val = {
         type: state.verified ? 'known' : 'verifying',
         username: state.username,
-        email: state.email,
         publishes: state.publishes,
       }
     }

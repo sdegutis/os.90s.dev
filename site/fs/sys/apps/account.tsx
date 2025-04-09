@@ -35,137 +35,95 @@ function makeTextField(data: {
 }
 
 
+function SimpleForm(data: {
+  label: string,
+  button: string,
+  onSubmit: (value: string) => Promise<string | void>,
+}) {
+  const $error = api.$('')
+
+  const field = makeTextField({
+    textbox: { onEnter: submit, autofocus: true },
+    border: { padding: 2 },
+  })
+
+  async function submit() {
+    const value = field.textbox.text
+    if (!value) { field.textbox.focus(); return }
+    const error = await data.onSubmit(value)
+    if (error) $error.val = error
+  }
+
+  return (
+    <api.Center>
+      <api.GroupY gap={4}>
+
+        <api.GroupX>
+          <api.Border padding={2}>
+            <api.Label color={0xffffff33} text={data.label} />
+          </api.Border>
+          {field.scroll}
+        </api.GroupX>
+
+        <api.GroupX gap={2}>
+
+          <api.Button padding={2} onClick={submit} background={0xffffff11}>
+            <api.Label text={data.button} />
+          </api.Button>
+
+        </api.GroupX>
+
+        <api.Label $text={$error} color={0x99000099} />
+
+      </api.GroupY>
+    </api.Center>
+  )
+}
+
 
 function SigninView() {
-  const $error = api.$('')
-
-  const userField = makeTextField({
-    textbox: { onTab: create, autofocus: true },
-    border: { padding: 2 },
-  })
-
-  const emailField = makeTextField({
-    textbox: { onTab: create },
-    border: { padding: 2 },
-  })
-
-  function ensure() {
-    const username = userField.textbox.text
-    if (!username) { userField.textbox.focus(); return null }
-
-    const email = emailField.textbox.text
-    if (!email) { emailField.textbox.focus(); return null }
-
-    return { username, email }
-  }
-
-  async function create() {
-    const fields = ensure()
-    if (!fields) return
-    const { username, email } = fields
-
-    const [err] = await api.POST('/user/new', `${username} ${email}`)
-    if (err) { $error.val = err; return }
-
-    api.$userState.val = { type: 'verifying', username, email }
-  }
-
-  async function signin() {
-    const fields = ensure()
-    if (!fields) return
-    const { username, email } = fields
-
-    const [err] = await api.POST('/user/signin', `${username} ${email}`)
-    if (err) { $error.val = err; return }
-
-    api.$userState.val = { type: 'verifying', username, email }
-  }
-
-  return <api.Center>
-    <api.GroupY gap={4}>
-
-      <api.GroupX>
-
-        <api.GroupY gap={2}>
-          <api.Border padding={2}><api.Label color={0xffffff33} text='username' /></api.Border>
-          <api.Border padding={2}><api.Label color={0xffffff33} text='email' /></api.Border>
-        </api.GroupY>
-
-        <api.GroupY gap={2}>
-          {userField.scroll}
-          {emailField.scroll}
-        </api.GroupY>
-
-      </api.GroupX>
-
-      <api.GroupX gap={2}>
-
-        <api.Button padding={2} onClick={create} background={0xffffff11}>
-          <api.Label text='create account' />
-        </api.Button>
-
-        <api.Button padding={2} onClick={signin} background={0xffffff11}>
-          <api.Label text='sign in' />
-        </api.Button>
-
-      </api.GroupX>
-
-
-      <api.Label $text={$error} color={0x99000099} />
-
-    </api.GroupY>
-  </api.Center>
+  return <SimpleForm
+    button='sign in|up'
+    label='username'
+    onSubmit={async (username) => {
+      const [err, known] = await api.POST('/user/sign', username)
+      if (err) { return err }
+      const next = known ? 'verifying' : 'registering'
+      api.$userState.val = { type: next, username }
+    }}
+  />
 }
 
-function VerifyView({ state }: { state: api.VerifyingState }) {
-  const $error = api.$('')
-
-  const tokenField = makeTextField({
-    border: { padding: 2 },
-    textbox: { onEnter: verify, onTab: verify, autofocus: true },
-  })
-
-  async function verify() {
-    const token = tokenField.textbox.text
-    if (!token.trim()) return
-
-    const [err] = await api.POST('/user/verify', token)
-    if (err) { $error.val = err; return }
-
-    api.$userState.val = {
-      type: 'known',
-      username: state.username,
-      email: state.email,
-      publishes: false,
-    }
-  }
-
-  return <api.Center>
-    <api.GroupY gap={4}>
-
-      <api.GroupX>
-
-        <api.GroupY gap={2}>
-          <api.Border padding={2}><api.Label color={0xffffff33} text='token' /></api.Border>
-        </api.GroupY>
-
-        <api.GroupY gap={2}>
-          {tokenField.scroll}
-        </api.GroupY>
-
-      </api.GroupX>
-
-      <api.Button padding={2} onClick={verify}>
-        <api.Label text='verify' />
-      </api.Button>
-
-      <api.Label $text={$error} color={0x99000099} />
-
-    </api.GroupY>
-  </api.Center>
+function RegisterView({ state }: { state: api.UserStateRegistering }) {
+  return <SimpleForm
+    button='register'
+    label='email'
+    onSubmit={async (email) => {
+      const [err] = await api.POST('/user/register', `${state.username} ${email}`)
+      if (err) { return err }
+      api.$userState.val = { type: 'verifying', username: state.username }
+    }}
+  />
 }
 
-function WelcomeView({ state }: { state: api.KnownState }) {
+function VerifyView({ state }: { state: api.UserStateVerifying }) {
+  return <SimpleForm
+    button='verify'
+    label='token'
+    onSubmit={async (token) => {
+      const [err, info] = await api.POST('/user/verify', token)
+      if (err) { return err }
+      api.$userState.val = {
+        type: 'known',
+        username: state.username,
+        publishes: info.publishes,
+      }
+    }}
+  />
+}
+
+function WelcomeView({ state }: { state: api.UserStateKnown }) {
+
   async function enablePublishing() {
     const [err] = await api.POST('/user/publish', '')
     if (err) { console.error(err); return }
@@ -199,14 +157,18 @@ function WelcomeView({ state }: { state: api.KnownState }) {
 
     </api.PanedYA>
   )
+
 }
 
 const panel = await api.Panel.create({ name: 'account' },
   <api.PanelView title={api.$('account')} size={api.$({ w: 150, h: 120 })}>
     <api.Margin $children={api.$userState.adapt(state => {
-      if (state.type === 'verifying') return [<VerifyView state={state} />]
-      if (state.type === 'known') return [<WelcomeView state={state} />]
-      return [<SigninView />]
+      switch (state.type) {
+        case 'guest': return [<SigninView />]
+        case 'registering': return [<RegisterView state={state} />]
+        case 'verifying': return [<VerifyView state={state} />]
+        case 'known': return [<WelcomeView state={state} />]
+      }
     })} />
   </api.PanelView>
 )
