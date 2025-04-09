@@ -10,7 +10,6 @@ export type VerifyingState = {
   type: 'verifying'
   username: string
   email: string
-  publishes: false
 }
 
 export type KnownState = {

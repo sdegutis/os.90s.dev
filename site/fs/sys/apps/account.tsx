@@ -49,17 +49,36 @@ function SigninView() {
     border: { padding: 2 },
   })
 
-  async function create() {
+  function ensure() {
     const username = userField.textbox.text
-    if (!username) { userField.textbox.focus(); return }
+    if (!username) { userField.textbox.focus(); return null }
 
     const email = emailField.textbox.text
-    if (!email) { emailField.textbox.focus(); return }
+    if (!email) { emailField.textbox.focus(); return null }
+
+    return { username, email }
+  }
+
+  async function create() {
+    const fields = ensure()
+    if (!fields) return
+    const { username, email } = fields
 
     const [err] = await api.POST('/user/new', `${username} ${email}`)
     if (err) { $error.val = err; return }
 
-    api.$userState.val = { type: 'verifying', username, email, publishes: false }
+    api.$userState.val = { type: 'verifying', username, email }
+  }
+
+  async function signin() {
+    const fields = ensure()
+    if (!fields) return
+    const { username, email } = fields
+
+    const [err] = await api.POST('/user/signin', `${username} ${email}`)
+    if (err) { $error.val = err; return }
+
+    api.$userState.val = { type: 'verifying', username, email }
   }
 
   return <api.Center>
@@ -81,6 +100,10 @@ function SigninView() {
 
       <api.Button padding={2} onClick={create}>
         <api.Label text='create account' />
+      </api.Button>
+
+      <api.Button padding={2} onClick={signin}>
+        <api.Label text='sign in' />
       </api.Button>
 
       <api.Label $text={$error} color={0x99000099} />
