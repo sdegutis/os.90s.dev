@@ -100,11 +100,11 @@ function SigninView() {
 
       <api.GroupX gap={2}>
 
-        <api.Button padding={2} onClick={create}>
+        <api.Button padding={2} onClick={create} background={0xffffff11}>
           <api.Label text='create account' />
         </api.Button>
 
-        <api.Button padding={2} onClick={signin}>
+        <api.Button padding={2} onClick={signin} background={0xffffff11}>
           <api.Label text='sign in' />
         </api.Button>
 
