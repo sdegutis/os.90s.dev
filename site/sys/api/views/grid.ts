@@ -1,4 +1,4 @@
-import { $ } from "../core/ref.js"
+import { makeRef } from "../core/ref.js"
 import type { Point } from "../core/types.js"
 import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
@@ -25,21 +25,18 @@ export class Grid extends View {
     fixall()
   }
 
-  $cols = $(Infinity)
-  get cols() { return this.$cols.val }
-  set cols(val) { this.$cols.val = val }
+  cols = Infinity
+  $cols = makeRef(this, 'cols')
 
-  $flow = $(false)
-  get flow() { return this.$flow.val }
-  set flow(val) { this.$flow.val = val }
+  flow = false
+  $flow = makeRef(this, 'flow')
 
-  $xgap = $(0)
-  get xgap() { return this.$xgap.val }
-  set xgap(val) { this.$xgap.val = val }
+  xgap = 0
+  $xgap = makeRef(this, 'xgap')
 
-  $ygap = $(0)
-  get ygap() { return this.$ygap.val }
-  set ygap(val) { this.$ygap.val = val }
+  ygap = 0
+  $ygap = makeRef(this, 'ygap')
+
 
   override adopted(parent: View): void {
     this.adjust()

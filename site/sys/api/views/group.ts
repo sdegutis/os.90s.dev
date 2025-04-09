@@ -1,4 +1,4 @@
-import { $ } from "../core/ref.js"
+import { makeRef } from "../core/ref.js"
 import type { Size } from "../core/types.js"
 import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
@@ -22,17 +22,15 @@ export class Group extends View {
     // this.layout()
   }
 
-  $gap = $<number>(0)
-  get gap() { return this.$gap.val }
-  set gap(val) { this.$gap.val = val }
+  gap = 0
+  $gap = makeRef(this, 'gap')
 
-  $dir = $<'x' | 'y'>('x')
-  get dir() { return this.$dir.val }
-  set dir(val) { this.$dir.val = val }
+  dir: 'x' | 'y' = 'x'
+  $dir = makeRef(this, 'dir')
 
-  $align = $<'a' | 'm' | 'z' | '+'>('m')
-  get align() { return this.$align.val }
-  set align(val) { this.$align.val = val }
+  align: 'a' | 'm' | 'z' | '+' = 'm'
+  $align = makeRef(this, 'align')
+
 
   override adjust(): void {
     const dw = this.dir === 'x' ? 'w' : 'h'

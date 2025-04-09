@@ -1,5 +1,5 @@
 import type { DrawingContext } from "../core/drawing.js"
-import { $ } from "../core/ref.js"
+import { makeRef } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import { Point } from "../core/types.js"
 import { JsxAttrs } from "../jsx.js"
@@ -37,13 +37,11 @@ export class TextBox extends View {
     this.$cursorColor.watch(c => this._cursor.background = c)
   }
 
-  $font = sys.$font
-  get font() { return this.$font.val }
-  set font(val) { this.$font.val = val }
+  font = sys.$font.val
+  $font = makeRef(this, 'font')
 
-  $color = $<number>(0xffffffff)
-  get color() { return this.$color.val }
-  set color(val) { this.$color.val = val }
+  color = 0xffffffff
+  $color = makeRef(this, 'color')
 
 
   private _cursor!: View
@@ -65,9 +63,8 @@ export class TextBox extends View {
 
   highlightings: Record<string, [number, RegExp]> = {}
 
-  $cursorColor = $(0x0000FF99)
-  get cursorColor() { return this.$cursorColor.val }
-  set cursorColor(val) { this.$cursorColor.val = val }
+  cursorColor = 0x0000ff99
+  $cursorColor = makeRef(this, 'cursorColor')
 
   private row = 0
   private col = 0

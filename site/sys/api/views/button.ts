@@ -1,5 +1,5 @@
 import type { DrawingContext } from "../core/drawing.js"
-import { $ } from "../core/ref.js"
+import { makeRef } from "../core/ref.js"
 import { JsxAttrs } from "../jsx.js"
 import { Border } from "./border.js"
 
@@ -19,17 +19,14 @@ export class Button extends Border {
     this.adjust()
   }
 
-  $hoverBackground = $<number>(0xffffff22)
-  get hoverBackground() { return this.$hoverBackground.val }
-  set hoverBackground(val) { this.$hoverBackground.val = val }
+  hoverBackground = 0xffffff22
+  $hoverBackground = makeRef(this, 'hoverBackground')
 
-  $pressBackground = $<number>(0xffffff11)
-  get pressBackground() { return this.$pressBackground.val }
-  set pressBackground(val) { this.$pressBackground.val = val }
+  pressBackground = 0xffffff11
+  $pressBackground = makeRef(this, 'pressBackground')
 
-  $selectedBackground = $<number>(0xffffff33)
-  get selectedBackground() { return this.$selectedBackground.val }
-  set selectedBackground(val) { this.$selectedBackground.val = val }
+  selectedBackground = 0xffffff33
+  $selectedBackground = makeRef(this, 'selectedBackground')
 
   onClick?(button: number): void
 

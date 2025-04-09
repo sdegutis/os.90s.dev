@@ -1,6 +1,6 @@
 import type { Bitmap } from "../core/bitmap.js"
 import type { DrawingContext } from "../core/drawing.js"
-import { $ } from "../core/ref.js"
+import { makeRef } from "../core/ref.js"
 import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
@@ -18,9 +18,8 @@ export class ImageView extends View {
     this.adjust()
   }
 
-  $bitmap = $<Bitmap | null>(null)
-  get bitmap() { return this.$bitmap.val }
-  set bitmap(val) { this.$bitmap.val = val }
+  bitmap: Bitmap | null = null
+  $bitmap = makeRef(this, 'bitmap')
 
   override adjust(): void {
     this.size = {

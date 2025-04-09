@@ -1,5 +1,5 @@
 import type { DrawingContext } from "../core/drawing.js"
-import { $ } from "../core/ref.js"
+import { makeRef } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
@@ -20,17 +20,14 @@ export class Label extends View {
     this.adjust()
   }
 
-  $color = $<number>(0xffffffff)
-  get color() { return this.$color.val }
-  set color(val) { this.$color.val = val }
+  color = 0xffffffff
+  $color = makeRef(this, 'color')
 
-  $font = sys.$font
-  get font() { return this.$font.val }
-  set font(val) { this.$font.val = val }
+  font = sys.$font.val
+  $font = makeRef(this, 'font')
 
-  $text = $<string>('')
-  get text() { return this.$text.val }
-  set text(val) { this.$text.val = val }
+  text = ''
+  $text = makeRef(this, 'text')
 
   override adjust() {
     this.size = this.font.calcSize(this.text)

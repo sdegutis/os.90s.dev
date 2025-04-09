@@ -1,6 +1,6 @@
 import type { DrawingContext } from "../core/drawing.js"
 import type { Panel } from "../core/panel.js"
-import { $, multiplex } from "../core/ref.js"
+import { makeRef, multiplex } from "../core/ref.js"
 import { type Point, type Size, arrayEquals, pointEquals, sizeEquals } from "../core/types.js"
 import { JsxAttrs } from "../jsx.js"
 import { debounce } from "../util/throttle.js"
@@ -86,71 +86,36 @@ export class View {
     this.$size.equals = sizeEquals
   }
 
-  $panel = $<Panel | null>(null)
-  get panel() { return this.$panel.val }
-  set panel(val) { this.$panel.val = val }
+  panel: Panel | null = null; $panel = makeRef(this, 'panel')
+  parent: View | null = null; $parent = makeRef(this, 'parent')
+
+  children: View[] = []
+  $children = makeRef(this, 'children')
+
+  point: Point = { x: 0, y: 0 }
+  $point = makeRef(this, 'point')
+
+  size: Size = { w: 0, h: 0 }
+  $size = makeRef(this, 'size')
+
+  canFocus = false; $canFocus = makeRef(this, 'canFocus')
+  canMouse = false; $canMouse = makeRef(this, 'canMouse')
+  visible = true; $visible = makeRef(this, 'visible')
+  autofocus = false; $autofocus = makeRef(this, 'autofocus')
+
+  hovered = false; $hovered = makeRef(this, 'hovered')
+  pressed = false; $pressed = makeRef(this, 'pressed')
+  selected = false; $selected = makeRef(this, 'selected')
 
 
-  $parent = $<View | null>(null)
-  get parent() { return this.$parent.val }
-  set parent(val) { this.$parent.val = val }
+  background = 0x00000000
+  $background = makeRef(this, 'background')
 
-  $children = $<View[]>([])
-  get children() { return this.$children.val }
-  set children(val) { this.$children.val = val }
+  panelOffset: Point = { x: 0, y: 0 }
+  $panelOffset = makeRef(this, 'panelOffset')
 
-
-  $point = $<Point>({ x: 0, y: 0 })
-  get point() { return this.$point.val }
-  set point(val) { this.$point.val = val }
-
-  $size = $<Size>({ w: 0, h: 0 })
-  get size() { return this.$size.val }
-  set size(val) { this.$size.val = val }
-
-
-  $canFocus = $<boolean>(false)
-  get canFocus() { return this.$canFocus.val }
-  set canFocus(val) { this.$canFocus.val = val }
-
-  $canMouse = $<boolean>(false)
-  get canMouse() { return this.$canMouse.val }
-  set canMouse(val) { this.$canMouse.val = val }
-
-  $visible = $<boolean>(true)
-  get visible() { return this.$visible.val }
-  set visible(val) { this.$visible.val = val }
-
-  $autofocus = $<boolean>(false)
-  get autofocus() { return this.$autofocus.val }
-  set autofocus(val) { this.$autofocus.val = val }
-
-
-  $hovered = $<boolean>(false)
-  get hovered() { return this.$hovered.val }
-  set hovered(val) { this.$hovered.val = val }
-
-  $pressed = $<boolean>(false)
-  get pressed() { return this.$pressed.val }
-  set pressed(val) { this.$pressed.val = val }
-
-  $selected = $<boolean>(false)
-  get selected() { return this.$selected.val }
-  set selected(val) { this.$selected.val = val }
-
-
-  $background = $<number>(0x00000000)
-  get background() { return this.$background.val }
-  set background(val) { this.$background.val = val }
-
-
-  $panelOffset = $<Point>({ x: 0, y: 0 })
-  get panelOffset() { return this.$panelOffset.val }
-  set panelOffset(val) { this.$panelOffset.val = val }
-
-  $mouse = $<Point>({ x: 0, y: 0 })
-  get mouse() { return this.$mouse.val }
-  set mouse(val) { this.$mouse.val = val }
+  mouse: Point = { x: 0, y: 0 }
+  $mouse = makeRef(this, 'mouse')
 
 
   onPanelFocus?(): void
