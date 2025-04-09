@@ -37,22 +37,23 @@ function makeTextField(data: {
 
 function SimpleForm(data: {
   label: string,
-  button: string,
-  onSubmit: (value: string) => Promise<string | void>,
+  buttons: Record<string, (value: string) => Promise<string | void>>,
 }) {
   const $error = api.$('')
 
+  function wrapSubmit(onSubmit: (val: string) => Promise<string | void>) {
+    return async () => {
+      const error = await onSubmit(field.textbox.text)
+      if (error) $error.val = error
+    }
+  }
+
+  const defaultButton = Object.values(data.buttons).at(-1)!
+
   const field = makeTextField({
-    textbox: { onEnter: submit, autofocus: true },
+    textbox: { onEnter: wrapSubmit(defaultButton), autofocus: true },
     border: { padding: 2 },
   })
-
-  async function submit() {
-    const value = field.textbox.text
-    if (!value) { field.textbox.focus(); return }
-    const error = await data.onSubmit(value)
-    if (error) $error.val = error
-  }
 
   return (
     <api.Center>
@@ -65,13 +66,14 @@ function SimpleForm(data: {
           {field.scroll}
         </api.GroupX>
 
-        <api.GroupX gap={2}>
-
-          <api.Button padding={2} onClick={submit} background={0xffffff11}>
-            <api.Label text={data.button} />
-          </api.Button>
-
-        </api.GroupX>
+        <api.GroupX
+          gap={2}
+          children={Object.entries(data.buttons).map(([label, onSubmit]) => {
+            return <api.Button padding={2} onClick={wrapSubmit(onSubmit)} background={0xffffff11}>
+              <api.Label text={label} />
+            </api.Button>
+          })}
+        />
 
         <api.Label $text={$error} color={0x99000099} />
 
@@ -83,42 +85,52 @@ function SimpleForm(data: {
 
 function SigninView() {
   return <SimpleForm
-    button='sign in|up'
-    label='username'
-    onSubmit={async (username) => {
-      const [err, known] = await api.POST('/user/sign', username)
-      if (err) { return err }
-      const next = known ? 'verifying' : 'registering'
-      api.$userState.val = { type: next, username }
+    buttons={{
+      'sign in|up': async (username) => {
+        const [err, known] = await api.POST('/user/sign', username)
+        if (err) { return err }
+        const next = known ? 'verifying' : 'registering'
+        api.$userState.val = { type: next, username }
+      },
     }}
+    label='username'
   />
 }
 
 function RegisterView({ state }: { state: api.UserStateRegistering }) {
   return <SimpleForm
-    button='register'
-    label='email'
-    onSubmit={async (email) => {
-      const [err] = await api.POST('/user/register', `${state.username} ${email}`)
-      if (err) { return err }
-      api.$userState.val = { type: 'verifying', username: state.username }
+    buttons={{
+      'go back': async () => {
+        api.$userState.val = { type: 'guest' }
+      },
+      'register': async (email) => {
+        const [err] = await api.POST('/user/register', `${state.username} ${email}`)
+        if (err) { return err }
+        api.$userState.val = { type: 'verifying', username: state.username }
+      }
     }}
+    label='email'
   />
 }
 
 function VerifyView({ state }: { state: api.UserStateVerifying }) {
   return <SimpleForm
-    button='verify'
-    label='token'
-    onSubmit={async (token) => {
-      const [err, info] = await api.POST('/user/verify', token)
-      if (err) { return err }
-      api.$userState.val = {
-        type: 'known',
-        username: state.username,
-        publishes: info.publishes,
+    buttons={{
+      'go back': async () => {
+        console.log(api.$userState.val)
+        api.$userState.val = { type: 'guest' }
+      },
+      'verify': async (token) => {
+        const [err, info] = await api.POST('/user/verify', token)
+        if (err) { return err }
+        api.$userState.val = {
+          type: 'known',
+          username: state.username,
+          publishes: info.publishes,
+        }
       }
     }}
+    label='token'
   />
 }
 
