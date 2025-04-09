@@ -140,12 +140,14 @@ function VerifyView({ state }: { state: api.VerifyingState }) {
 function WelcomeView({ state }: { state: api.KnownState }) {
   async function enablePublishing() {
     const [err] = await api.POST('/user/publish', '')
-    console.log(err)
-    if (err) {
-      console.error(err)
-      return
-    }
+    if (err) { console.error(err); return }
     api.$userState.val = { ...state, publishes: true }
+  }
+
+  async function logout() {
+    const [err] = await api.POST('/user/logout', '')
+    if (err) { console.error(err); return }
+    api.updateAccountFromServer()
   }
 
   return (
@@ -158,6 +160,9 @@ function WelcomeView({ state }: { state: api.KnownState }) {
             <api.Label text='enable publishing' />
           </api.Button>
         }
+        <api.Button onClick={logout} padding={2}>
+          <api.Label text='logout' />
+        </api.Button>
       </api.GroupX>
 
       <api.Center>

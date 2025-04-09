@@ -32,7 +32,7 @@ await persisted.get().then(state => {
   if (state) $userState.val = state
 })
 
-async function updateFromServerNow() {
+export async function updateAccountFromServer() {
   await GET('/user/info').then(async ([err, state]) => {
     console.log('here', err, state)
     if (err) {
@@ -55,10 +55,7 @@ async function updateFromServerNow() {
   })
 }
 
-export function updateAccountFromServer() {
-  updateFromServerNow()
-  setInterval(updateFromServerNow, 1000 * 60)
-}
+setInterval(updateAccountFromServer, 1000 * 60)
 
 const b = new BroadcastChannel('userstate')
 let syncing = false
