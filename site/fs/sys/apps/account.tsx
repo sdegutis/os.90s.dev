@@ -40,12 +40,12 @@ function SigninView() {
   const $error = api.$('')
 
   const userField = makeTextField({
-    textbox: { onEnter: create, onTab: create, autofocus: true },
+    textbox: { onTab: create, autofocus: true },
     border: { padding: 2 },
   })
 
   const emailField = makeTextField({
-    textbox: { onEnter: create, onTab: create },
+    textbox: { onTab: create },
     border: { padding: 2 },
   })
 
