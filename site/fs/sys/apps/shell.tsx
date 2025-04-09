@@ -68,7 +68,7 @@ const taskbar = await api.Panel.create({
   order: 'top',
   pos: api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })),
 }, (
-  <api.SpacedX $size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x000000ff}>
+  <api.SpacedX $size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x222222ff}>
     <api.GroupX gap={2}>
       <api.Button padding={2} onClick={showRun}>
         <api.Label text="run" />
