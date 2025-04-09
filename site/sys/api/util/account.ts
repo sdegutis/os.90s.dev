@@ -33,8 +33,8 @@ await persisted.get().then(state => {
 })
 
 async function updateFromServerNow() {
-  console.log('here')
   await GET('/user/info').then(async ([err, state]) => {
+    console.log('here', err, state)
     if (err) {
       console.error(err)
       return
