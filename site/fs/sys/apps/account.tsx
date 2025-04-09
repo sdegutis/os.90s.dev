@@ -98,13 +98,18 @@ function SigninView() {
 
       </api.GroupX>
 
-      <api.Button padding={2} onClick={create}>
-        <api.Label text='create account' />
-      </api.Button>
+      <api.GroupX gap={2}>
 
-      <api.Button padding={2} onClick={signin}>
-        <api.Label text='sign in' />
-      </api.Button>
+        <api.Button padding={2} onClick={create}>
+          <api.Label text='create account' />
+        </api.Button>
+
+        <api.Button padding={2} onClick={signin}>
+          <api.Label text='sign in' />
+        </api.Button>
+
+      </api.GroupX>
+
 
       <api.Label $text={$error} color={0x99000099} />
 

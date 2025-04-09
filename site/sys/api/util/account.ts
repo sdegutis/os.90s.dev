@@ -54,7 +54,7 @@ export async function updateAccountFromServer() {
   })
 }
 
-setInterval(updateAccountFromServer, 1000 * 60)
+// setInterval(updateAccountFromServer, 1000 * 60)
 
 const b = new BroadcastChannel('userstate')
 let syncing = false
