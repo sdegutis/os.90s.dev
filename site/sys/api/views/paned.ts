@@ -1,4 +1,4 @@
-import { makeRef } from "../core/ref.js"
+import { $$ } from "../core/ref.js"
 import { JsxAttrs } from "../jsx.js"
 import { debounce } from "../util/throttle.js"
 import { View } from "./view.js"
@@ -27,13 +27,13 @@ export class Paned extends View {
   }
 
   gap = 0
-  $gap = makeRef(this, 'gap')
+  $gap = $$(this, 'gap')
 
   dir: 'x' | 'y' = 'x'
-  $dir = makeRef(this, 'dir')
+  $dir = $$(this, 'dir')
 
   vacuum: 'a' | 'b' = 'a'
-  $vacuum = makeRef(this, 'vacuum')
+  $vacuum = $$(this, 'vacuum')
 
   override layout(): void {
     const [a, b] = this.children

@@ -1,4 +1,4 @@
-import { makeRef } from "../core/ref.js"
+import { $$ } from "../core/ref.js"
 import type { Size } from "../core/types.js"
 import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
@@ -23,13 +23,13 @@ export class Group extends View {
   }
 
   gap = 0
-  $gap = makeRef(this, 'gap')
+  $gap = $$(this, 'gap')
 
   dir: 'x' | 'y' = 'x'
-  $dir = makeRef(this, 'dir')
+  $dir = $$(this, 'dir')
 
   align: 'a' | 'm' | 'z' | '+' = 'm'
-  $align = makeRef(this, 'align')
+  $align = $$(this, 'align')
 
 
   override adjust(): void {

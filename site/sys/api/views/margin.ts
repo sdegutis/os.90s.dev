@@ -1,5 +1,5 @@
 import type { DrawingContext } from "../core/drawing.js"
-import { makeRef, Ref } from "../core/ref.js"
+import { $$, Ref } from "../core/ref.js"
 import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
@@ -46,12 +46,12 @@ export class Margin extends View {
   }
 
   paddingColor = 0x00000000
-  $paddingColor = makeRef(this, 'paddingColor')
+  $paddingColor = $$(this, 'paddingColor')
 
-  up = 0; $up = makeRef(this, 'up')
-  down = 0; $down = makeRef(this, 'down')
-  left = 0; $left = makeRef(this, 'left')
-  right = 0; $right = makeRef(this, 'right')
+  up = 0; $up = $$(this, 'up')
+  down = 0; $down = $$(this, 'down')
+  left = 0; $left = $$(this, 'left')
+  right = 0; $right = $$(this, 'right')
 
   override layout(): void {
     if (this.size.w === 0 || this.size.h === 0) return

@@ -1,5 +1,5 @@
 import type { DrawingContext } from "../core/drawing.js"
-import { makeRef } from "../core/ref.js"
+import { $$ } from "../core/ref.js"
 import { JsxAttrs } from "../jsx.js"
 import { Border } from "./border.js"
 
@@ -20,13 +20,13 @@ export class Button extends Border {
   }
 
   hoverBackground = 0xffffff22
-  $hoverBackground = makeRef(this, 'hoverBackground')
+  $hoverBackground = $$(this, 'hoverBackground')
 
   pressBackground = 0xffffff11
-  $pressBackground = makeRef(this, 'pressBackground')
+  $pressBackground = $$(this, 'pressBackground')
 
   selectedBackground = 0xffffff33
-  $selectedBackground = makeRef(this, 'selectedBackground')
+  $selectedBackground = $$(this, 'selectedBackground')
 
   onClick?(button: number): void
 

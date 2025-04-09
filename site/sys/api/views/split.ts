@@ -1,5 +1,5 @@
 import type { DrawingContext } from "../core/drawing.js"
-import { $, makeRef } from "../core/ref.js"
+import { $, $$ } from "../core/ref.js"
 import { JsxAttrs } from "../jsx.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
@@ -98,15 +98,15 @@ export class Split extends View {
   dividerColorHovered = 0xffffff11
   dividerColorPressed = 0x1177ffcc
 
-  pos = 20; $pos = makeRef(this, 'pos')
-  min = 10; $min = makeRef(this, 'min')
-  max = -10; $max = makeRef(this, 'max')
+  pos = 20; $pos = $$(this, 'pos')
+  min = 10; $min = $$(this, 'min')
+  max = -10; $max = $$(this, 'max')
 
   dir: 'x' | 'y' = 'y'
-  $dir = makeRef(this, 'dir')
+  $dir = $$(this, 'dir')
 
   stick: 'a' | 'b' = 'a'
-  $stick = makeRef(this, 'stick')
+  $stick = $$(this, 'stick')
 
 
   resizer?: SplitDivider
