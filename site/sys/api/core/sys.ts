@@ -23,20 +23,20 @@ class Program {
     self.close()
   }
 
-  becomeShell() {
-    const b = new BroadcastChannel('shell')
-    const started = Date.now()
-    b.onmessage = msg => {
-      if (msg.data.type === 'newshell') {
-        if (started < msg.data.t) {
-          this.terminate()
-        }
-        else {
-          b.postMessage({ type: 'newshell', t: started })
-        }
+  async becomeShell() {
+    const quit = new BroadcastChannel('shell')
+
+    await navigator.locks.request('shell', {
+      ifAvailable: true,
+    }, async (lock) => {
+      if (lock === null) {
+        quit.postMessage(true)
+        await navigator.locks.request('shell', () => { })
       }
-    }
-    b.postMessage({ type: 'newshell', t: started })
+    })
+
+    quit.onmessage = msg => this.terminate()
+    navigator.locks.request('shell', () => new Promise(r => { }))
   }
 
 }

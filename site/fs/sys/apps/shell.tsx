@@ -1,8 +1,8 @@
 import * as api from "/api.js"
 
-api.program.becomeShell()
+await api.program.becomeShell()
 
-api.sys.launch('usr/startup.js')
+// api.sys.launch('usr/startup.js')
 
 const $panels = api.$<{
   title: string,
