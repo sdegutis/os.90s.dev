@@ -184,7 +184,7 @@ export class TextBox extends View {
   override onKeyDown(key: string): boolean {
     if (key === 'Home') {
       const firstNonSpace = this.lines[this.row].match(/[^\s]/)?.index ?? 0
-      if (this.panel?.isKeyDown('Control')) {
+      if (sys.keymap.has('Control')) {
         this.row = 0
         this.end = this.col = 0
       }
@@ -196,7 +196,7 @@ export class TextBox extends View {
       }
     }
     else if (key === 'End') {
-      if (this.panel?.isKeyDown('Control')) {
+      if (sys.keymap.has('Control')) {
         this.row = this.lines.length - 1
         this.col = this.end = this.lines[this.row].length
       }
@@ -291,7 +291,7 @@ export class TextBox extends View {
         debounce(() => this.onEnter?.())()
       }
     }
-    else if (key === 'v' && this.panel?.isKeyDown('Control')) {
+    else if (key === 'v' && sys.keymap.has('Control')) {
       sys.readClipboardText().then(text => {
         const [a, b] = this.halves()
         this.lines[this.row] = a + text + b
@@ -305,7 +305,7 @@ export class TextBox extends View {
         this.scrollCursorIntoView()
       })
     }
-    else if (key.length === 1 && !this.panel?.isKeyDown('Control') && !this.panel?.isKeyDown('Alt')) {
+    else if (key.length === 1 && !sys.keymap.has('Control') && !sys.keymap.has('Alt')) {
       const [a, b] = this.halves()
       this.lines[this.row] = a + key + b
       this.col++

@@ -122,7 +122,7 @@ class Sys {
     const [id, x, y, port] = await this.rpc.call('newpanel', [config.name, order, point.val.x, point.val.y, w, h])
 
     point.val = { x, y }
-    const panel = new Panel(this.keymap, port, id, point, root)
+    const panel = new Panel(port, id, point, root)
 
     program.panels.add(panel)
     panel.didClose.watch(() => {

@@ -31,7 +31,6 @@ export class Panel {
   id
   rpc
   root
-  keymap = new Set<string>()
   didClose = new Listener()
   isFocused = false
 
@@ -57,11 +56,10 @@ export class Panel {
     return await sys.makePanel({ view, ...config })
   }
 
-  constructor(keymap: Set<string>, port: MessagePort, id: number, point: Ref<Point>, root: View) {
+  constructor(port: MessagePort, id: number, point: Ref<Point>, root: View) {
     Panel.all.set(id, this)
 
     this.id = id
-    this.keymap = keymap
 
     this.$point = point
     this.$size = root.$size
@@ -344,10 +342,6 @@ export class Panel {
   close() {
     this.rpc.send('close', [])
     this.didClose.dispatch()
-  }
-
-  isKeyDown(key: string) {
-    return this.keymap.has(key)
   }
 
 }

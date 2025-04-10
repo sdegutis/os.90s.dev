@@ -1,4 +1,5 @@
 import { $, makeRef, multiplex } from "../core/ref.js"
+import { sys } from "../core/sys.js"
 import { JsxAttrs } from "../jsx.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
@@ -130,7 +131,7 @@ export class Scroll extends View {
   override onWheel(px: number, py: number): void {
     px = px / 100 * this.scrollBy
     py = py / 100 * this.scrollBy
-    if (this.panel?.isKeyDown('Shift')) [px, py] = [py, px]
+    if (sys.keymap.has('Shift')) [px, py] = [py, px]
     this.scrollx += px
     this.scrolly += py
   }
