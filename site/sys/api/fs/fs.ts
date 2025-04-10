@@ -39,7 +39,13 @@ class FS {
   async getDir(path: string): Promise<string[]> {
     if (!path.endsWith('/')) path += '/'
     const [drive, parts] = this.#split(path)
-    return drive.getDir(parts)
+    const items = await drive.getDir(parts)
+    items.sort((a, b) => {
+      if (a.endsWith('/') && !(b.endsWith('/'))) return -1
+      if (b.endsWith('/') && !(a.endsWith('/'))) return +1
+      return a.localeCompare(b)
+    })
+    return items
   }
 
   async putDir(path: string): Promise<boolean> {
