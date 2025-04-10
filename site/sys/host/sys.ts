@@ -1,7 +1,7 @@
+import { getConfigs } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { Font } from "../api/core/font.js"
-import { JSLN } from "../api/core/jsln.js"
 import { $, Ref } from "../api/core/ref.js"
 import { Point } from "../api/core/types.js"
 import { fs } from '../api/fs/fs.js'
@@ -266,44 +266,3 @@ pixels=
 `.trimStart())
 
 let cursor = defaultCursor
-
-async function loadConfigs<T extends Record<string, any>>(
-  kvs: { [K in keyof T]: (o: T[K]) => boolean }
-) {
-  const paths = [
-    'usr/config.jsln',
-    'sys/default/config.jsln',
-  ]
-
-  const files = await Promise.all(paths.map(p => fs.getFile(p)))
-  const configs = files.map(f => JSLN.tryParse(f!)).filter(c => c !== null)
-
-  const o = {} as T
-
-  nextKey:
-  for (const [keyPath, validate] of Object.entries(kvs)) {
-    const keys = keyPath.split('.')
-    const last = keys.pop()!
-    nextConfig:
-    for (const config of configs) {
-      try {
-        let node = config
-        for (const key of keys) node = node[key]
-        const val = node[last] as T[string]
-        if (!validate(val)) continue nextConfig
-        (o as any)[keyPath] = val
-        continue nextKey
-      }
-      catch (e) {
-        console.error(e)
-      }
-    }
-    throw new Error(`Sys config file invalid?`)
-  }
-
-  return o
-}
-
-const getConfigs = () => loadConfigs({
-  'sys.size': ([w, h]: [number, number]) => w > 0 && h > 0,
-})

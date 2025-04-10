@@ -8,6 +8,7 @@ export class Label extends View {
 
   constructor(config?: JsxAttrs<Label>) {
     super()
+    this.$font = sys.$font
     this.setup(config)
   }
 

@@ -11,6 +11,7 @@ export class TextBox extends View {
 
   constructor(config?: JsxAttrs<TextBox>) {
     super()
+    this.$font = sys.$font
     this.canFocus = true
     this.canMouse = true
     this.setup(config)

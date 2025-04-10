@@ -1,5 +1,6 @@
 import { fs } from "../fs/fs.js"
 import { View } from "../views/view.js"
+import { getConfigs } from "./config.js"
 import { Font } from "./font.js"
 import { Panel } from "./panel.js"
 import { $, Ref } from "./ref.js"
@@ -85,6 +86,13 @@ class Sys {
     program.opts = opts
     program.pid = id
     this.size = { w, h }
+
+    fs.watchTree('usr/config.jsln', async () => {
+      const config = await getConfigs()
+      const path = config["sys.font"]
+      console.log(path)
+      this.$font.val = new Font((await fs.getFile(path))!)
+    })
 
     this.sysevents.addEventListener('message', msg => {
       if (msg.data.type === 'resized') {
