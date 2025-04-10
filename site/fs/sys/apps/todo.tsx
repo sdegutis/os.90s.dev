@@ -22,7 +22,7 @@ const panel = await api.Panel.create({ name: "todo" },
           <api.GroupY align={'a'} children={$itemViews} />
         </api.Scroll>
         <api.Border padding={2} background={0x00000033}>
-          <api.TextBox model={model} autofocus multiline={false} onEnter={add} />
+          <api.TextBox model={model} autofocus onEnter={add} />
         </api.Border>
       </api.PanedYB>
     </api.PanedYA>

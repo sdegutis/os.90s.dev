@@ -11,9 +11,7 @@ function makeTextField(data: {
 
   const length = data.length ?? 50
 
-  const textbox = <api.TextBox
-    multiline={false}
-    {...data.textbox} /> as api.TextBox
+  const textbox = <api.TextBox {...data.textbox} /> as api.TextBox
 
   const border = <api.Border
     padding={2}

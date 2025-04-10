@@ -3,7 +3,7 @@ import * as api from "/api.js"
 (self as any).api = api
 
 const $lines = api.$<api.View[]>([])
-const textarea = <api.TextBox autofocus multiline={false} onEnter={submit} /> as api.TextBox
+const textarea = <api.TextBox autofocus onEnter={submit} /> as api.TextBox
 const context = {}
 
 function append(view: api.View) {

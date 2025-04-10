@@ -51,9 +51,7 @@ export class TextBox extends View {
 
   model = new TextModel()
 
-  multiline = true
   onEnter?(): void
-  onTab?(): void
 
   override onMouseDown(button: number): void {
 

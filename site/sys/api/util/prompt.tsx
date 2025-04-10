@@ -13,13 +13,11 @@ export async function showPrompt(text: string) {
   const result = Promise.withResolvers<string | null>()
 
   const prompt = <Label text={text} />
-  const textarea = <TextBox multiline={false} /> as TextBox
+  const textarea = <TextBox onEnter={ok} /> as TextBox
   const buttons = <GroupX gap={2}>
     <Button onClick={no} background={0x99000099} padding={2}><Label text={'cancel'} /></Button>
     <Button onClick={ok} background={0xffffff33} padding={2}><Label text={'ok'} /></Button>
   </GroupX>
-
-  textarea.onEnter = ok
 
   const scroll = <Scroll
     showh={false}
