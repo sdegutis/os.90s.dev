@@ -33,9 +33,10 @@ export class Sys {
   static async init() {
     updateAccountFromServer()
     const fontstr = await fs.getFile('sys/data/crt34.font')
-    const configFile = await fs.getFile('sys/default/config.jsln')
-    const config = JSLN.parse(configFile!)
-    const [w, h] = config['sys']['size']
+
+    const configs = await getConfigs()
+    const [w, h] = configs<[number, number]>('sys.size')
+
     return new Sys(w, h, new Font(fontstr!))
   }
 
@@ -43,18 +44,9 @@ export class Sys {
     this.$size = $({ w: width, h: height })
 
     fs.watchTree('usr/config.jsln', async () => {
-      const configFile = await fs.getFile('usr/config.jsln')
-      try {
-        const config = JSLN.parse(configFile!)
-        const size = config['sys']['size']
-        if (size instanceof Array && size.length === 2 && size.every(n => typeof n === 'number')) {
-          const [w, h] = size
-          this.resize(w, h)
-        }
-      }
-      catch (e) {
-        console.error(e)
-      }
+      const configs = await getConfigs()
+      const [w, h] = configs<[number, number]>('sys.size')
+      this.resize(w, h)
     })
 
     this.$font = $(font)
@@ -274,3 +266,29 @@ pixels=
 `.trimStart())
 
 let cursor = defaultCursor
+
+async function getConfigs() {
+  const paths = [
+    'usr/config.jsln',
+    'sys/default/config.jsln',
+  ]
+
+  const files = await Promise.all(paths.map(p => fs.getFile(p)))
+  const configs = files.map(f => JSLN.tryParse(f!)).filter(c => c !== null)
+
+  return <T>(keyPath: string) => {
+    const keys = keyPath.split('.')
+    const last = keys.pop()!
+    for (const config of configs) {
+      try {
+        let node = config
+        for (const key of keys) node = node[key]
+        return node[last] as T
+      }
+      catch (e) {
+        console.error(e)
+      }
+    }
+    throw new Error(`Config file must be corrupted`)
+  }
+}

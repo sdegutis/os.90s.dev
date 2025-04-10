@@ -254,6 +254,16 @@ export const JSLN = {
     return new JSLNParser(str).parse()
   },
 
+  tryParse: (str: string) => {
+    try {
+      return new JSLNParser(str).parse()
+    }
+    catch (e) {
+      console.error(e)
+      return null
+    }
+  },
+
   stringify: (o: Record<string, any>, stringifiers?: Record<string, (o: any) => string>) => {
     return new JSLNEncoder(o, stringifiers).stringify()
   },
