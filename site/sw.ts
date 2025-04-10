@@ -1,9 +1,11 @@
 declare var __wbg_init: () => Promise<void>
 declare var transformSync: typeof import('@swc/wasm-web').transformSync
 declare var opendb: typeof import('./sys/api/util/db.js').opendb
+declare var config: typeof import('./sys/api/config.js').config
 
 importScripts('./sys/sw/wasm.js')
 importScripts('./sys/sw/db.js')
+importScripts('./sys/sw/config.js')
 
 const ready = __wbg_init()
 const usrdb = opendb<{ path: string, content?: string }>('usr', 'path')
@@ -87,12 +89,10 @@ async function handleRoute(url: URL, req: Request) {
     return await jsResponse(url, res.content!)
   }
 
-  // if (url.pathname.startsWith('/fs/net/')) {
-  //   const key = url.pathname.slice('/fs/usr/'.length)
-  //   const fs = await usrdb
-  //   const res = await fs.get(key)
-  //   return await jsResponse(url, res?.content ?? '')
-  // }
+  if (url.pathname.startsWith('/fs/net/')) {
+    const path = url.pathname.slice('/fs/usr/'.length)
+    return fetch(`${config.net}/fs/${path}`)
+  }
 
   return new Response('TEST')
 }

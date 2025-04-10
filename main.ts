@@ -34,6 +34,9 @@ function processSite() {
     const dbfile = files.with('^/sys/api/util/db.ts$').all()[0]
     files.add('/sys/sw/db.ts', dbfile.text.replace('export ', ''))
 
+    const configfile = files.with('^/sys/api/config.ts$').all()[0]
+    files.add('/sys/sw/config.ts', configfile.text.replace('export ', ''))
+
     files.with('/out/').remove()
     files.with('tsconfig\.json').remove()
     files.with(/\.d\.ts$/).remove()
