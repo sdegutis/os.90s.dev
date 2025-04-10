@@ -1,3 +1,4 @@
+import { config } from "../config.js"
 import { GET, POST } from "../util/net.js"
 import { Drive } from "./drive.js"
 
@@ -11,10 +12,9 @@ export class NetDrive implements Drive {
 
   async putDir(path: string[]): Promise<boolean> {
     console.log('in here', '/fs/' + path.join('/'))
-    const [err, ok] = await POST('/fs/' + path.join('/'), 'mkdir')
-    console.log(ok)
+    const [err] = await POST('/fs/' + path.join('/'), 'mkdir')
     if (err) throw new Error(err)
-    return ok
+    return true
   }
 
   async delDir(path: string[]): Promise<boolean> {
@@ -22,14 +22,15 @@ export class NetDrive implements Drive {
   }
 
   async getFile(path: string[]): Promise<string | null> {
-    const full = path.join('/')
-    return null
+    return await fetch(config.net + '/fs/' + path.join('/'), {
+      credentials: 'include',
+    }).then(r => r.text())
   }
 
   async putFile(path: string[], content: string): Promise<boolean> {
-    // console.log(path, content)
-
-    return false
+    const [err] = await POST('/fs/' + path.join('/'), content)
+    if (err) throw new Error(err)
+    return true
   }
 
   async delFile(path: string[]): Promise<boolean> {
