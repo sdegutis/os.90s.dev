@@ -45,34 +45,7 @@ function processSite() {
     files.with(/\.tsx?$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
     files.with(/\.html$/).do(file => { file.text = `<!-- ${copyright} -->\n\n` + file.text })
 
-    files.with(/\.tsx?$/).without('^/fs/sys/').do(file => {
-      const placeholder = randomUUID()
-      file.text = transformSync(file.text, {
-        filename: file.path,
-        sourceMaps: 'inline',
-        minify: true,
-        isModule: true,
-        module: {
-          type: 'es6',
-        },
-        jsc: {
-          keepClassNames: true,
-          target: 'esnext',
-          parser: {
-            syntax: 'typescript',
-            tsx: true,
-            decorators: true,
-          },
-          transform: {
-            react: {
-              runtime: 'automatic',
-              importSource: placeholder,
-            }
-          }
-        }
-      }).code
-      file.text = file.text.replace(`${placeholder}/jsx-runtime`, '/sys/api/jsx.js')
-    })
+    files.with(/\.tsx?$/).without('^/fs/sys/').do(compileTsx)
 
     files.with(/\.tsx?$/).do(file => { file.path = file.path.replace(/\.tsx?$/, '.js') })
 
@@ -120,4 +93,33 @@ if (isDev) {
 }
 else {
   immaculata.generateFiles(await processSite())
+}
+
+function compileTsx(file: { text: string, path: string }) {
+  const placeholder = randomUUID()
+  file.text = transformSync(file.text, {
+    filename: file.path,
+    sourceMaps: 'inline',
+    minify: true,
+    isModule: true,
+    module: {
+      type: 'es6',
+    },
+    jsc: {
+      keepClassNames: true,
+      target: 'esnext',
+      parser: {
+        syntax: 'typescript',
+        tsx: true,
+        decorators: true,
+      },
+      transform: {
+        react: {
+          runtime: 'automatic',
+          importSource: placeholder,
+        }
+      }
+    }
+  }).code
+  file.text = file.text.replace(`${placeholder}/jsx-runtime`, '/sys/api/jsx.js')
 }
