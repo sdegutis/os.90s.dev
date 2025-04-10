@@ -19,7 +19,6 @@ export type UserStateVerifying = {
 export type UserStateKnown = {
   type: 'known'
   username: string
-  publishes: boolean
 }
 
 export type UserState =
@@ -47,7 +46,6 @@ export async function updateAccountFromServer() {
       $userState.val = {
         type: state.verified ? 'known' : 'verifying',
         username: state.username,
-        publishes: state.publishes,
       }
     }
     else {

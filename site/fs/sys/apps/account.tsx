@@ -121,12 +121,11 @@ function VerifyView({ state }: { state: api.UserStateVerifying }) {
         api.$userState.val = { type: 'guest' }
       },
       'verify': async (token) => {
-        const [err, info] = await api.POST('/user/verify', token)
+        const [err] = await api.POST('/user/verify', token)
         if (err) { return err }
         api.$userState.val = {
           type: 'known',
           username: state.username,
-          publishes: info.publishes,
         }
       }
     }}
@@ -135,12 +134,6 @@ function VerifyView({ state }: { state: api.UserStateVerifying }) {
 }
 
 function WelcomeView({ state }: { state: api.UserStateKnown }) {
-
-  async function enablePublishing() {
-    const [err] = await api.POST('/user/publish', '')
-    if (err) { console.error(err); return }
-    api.$userState.val = { ...state, publishes: true }
-  }
 
   async function logout() {
     const [err] = await api.POST('/user/logout', '')
@@ -152,12 +145,6 @@ function WelcomeView({ state }: { state: api.UserStateKnown }) {
     <api.PanedYA>
 
       <api.GroupX background={0x00000033}>
-        {state.publishes
-          ? <api.View />
-          : <api.Button onClick={enablePublishing} padding={2}>
-            <api.Label text='enable publishing' />
-          </api.Button>
-        }
         <api.Button onClick={logout} padding={2}>
           <api.Label text='logout' />
         </api.Button>
