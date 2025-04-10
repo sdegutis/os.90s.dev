@@ -17,7 +17,6 @@ export class TextBox extends View {
   }
 
   override init(): void {
-    this.$model.watch(m => this.adjust())
     this.$font.watch(m => this.adjust())
 
     this.adjust()
@@ -48,7 +47,6 @@ export class TextBox extends View {
   $font = makeRef(this, 'font')
 
   model = new TextModel()
-  $model = makeRef(this, 'model')
 
   // private _cursor!: View
 
