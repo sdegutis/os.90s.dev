@@ -23,9 +23,11 @@ export class NetDrive implements Drive {
   }
 
   async getFile(path: string[]): Promise<string | null> {
-    return await fetch(config.net + '/fs/' + path.join('/'), {
+    const res = await fetch(config.net + '/fs/' + path.join('/'), {
       credentials: 'include',
-    }).then(r => r.text())
+    })
+    if (res.status === 404) return null
+    return await res.text()
   }
 
   async putFile(path: string[], content: string): Promise<boolean> {
