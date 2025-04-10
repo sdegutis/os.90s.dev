@@ -116,7 +116,11 @@ class FS {
       const content = await this.getFile(from)
       if (content === null) return false
       let dest = to + last
-      while (await this.getFile(dest) !== null) dest += '_'
+      while (await this.getFile(dest) !== null) {
+        dest = dest.match(/\.[^\/]+$/)
+          ? dest.replace(/\.[^\/]+$/, '_$&')
+          : dest + '_'
+      }
       await this.putFile(dest, content)
     }
     return true
