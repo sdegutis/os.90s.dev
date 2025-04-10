@@ -106,7 +106,7 @@ const panel = await api.Panel.create({ name: "fontmaker" },
       </api.Scroll>
       <api.Border padding={2} canMouse onWheel={(x, y) => zoom.val += -y / 100}>
         <api.GroupY align='a' gap={4}>
-          <api.TextBox autofocus font={font} initialText={'sample text goes here (you can type in it)'} />
+          <api.TextBox autofocus font={font} model={new api.TextModel('sample text goes here (you can type in it)')} />
           <api.Label text={SAMPLE_TEXT} font={font} />
           <api.GroupX gap={7}>
             <api.GroupX gap={2}>
