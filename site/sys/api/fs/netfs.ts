@@ -26,7 +26,7 @@ export class NetDrive implements Drive {
     const res = await fetch(config.net + '/fs/' + path.join('/'), {
       credentials: 'include',
     })
-    if (res.status === 404) return null
+    if (res.status !== 200) return null
     return await res.text()
   }
 
