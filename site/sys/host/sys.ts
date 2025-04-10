@@ -33,13 +33,29 @@ export class Sys {
   static async init() {
     updateAccountFromServer()
     const fontstr = await fs.getFile('sys/data/crt34.font')
-    const config = JSLN.parse((await fs.getFile('sys/default/config.jsln'))!)
+    const configFile = await fs.getFile('sys/default/config.jsln')
+    const config = JSLN.parse(configFile!)
     const [w, h] = config['sys']['size']
     return new Sys(w, h, new Font(fontstr!))
   }
 
   private constructor(width: number, height: number, font: Font) {
     this.$size = $({ w: width, h: height })
+
+    fs.watchTree('usr/config.jsln', async () => {
+      const configFile = await fs.getFile('usr/config.jsln')
+      try {
+        const config = JSLN.parse(configFile!)
+        const size = config['sys']['size']
+        if (size instanceof Array && size.length === 2 && size.every(n => typeof n === 'number')) {
+          const [w, h] = size
+          this.resize(w, h)
+        }
+      }
+      catch (e) {
+        console.error(e)
+      }
+    })
 
     this.$font = $(font)
 
