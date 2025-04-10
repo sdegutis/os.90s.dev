@@ -71,6 +71,15 @@ export class Sys {
 
   private installEventHandlers(canvas: HTMLCanvasElement, $point: Ref<Point>, $scale: Ref<number>) {
 
+    window.onblur = (e) => {
+      const keys = [...this.keymap.values()]
+      this.keymap.clear()
+
+      for (const key of keys) {
+        Process.all.forEach(p => p.rpc.send('keyup', [key]))
+      }
+    }
+
     document.onkeydown = (e) => {
       if (e.target !== canvas) return
       if (e.key.match(/^F\d{1,2}$/)) return
@@ -83,7 +92,9 @@ export class Sys {
     }
 
     document.onkeyup = (e) => {
-      this.keymap.delete(e.key)
+      const wasDown = this.keymap.delete(e.key)
+      if (!wasDown) return
+
       Process.all.forEach(p => p.rpc.send('keyup', [e.key]))
       this.redrawAllPanels()
     }
