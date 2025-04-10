@@ -30,11 +30,8 @@ async function loadConfigs<T extends Record<string, any>>(
         (o as any)[keyPath] = compval
         continue nextKey
       }
-      catch (e) {
-        // console.error(e)
-      }
+      catch (e) { }
     }
-    throw new Error(`Sys config file invalid?`)
   }
 
   return o
@@ -50,5 +47,10 @@ export const getConfigs = () => loadConfigs({
   },
   'sys.shell': async (path: string) => {
     return await fs.getFile(path) ? path : undefined
+  },
+  'sys.startup': async (paths: string[]) => {
+    if (!(paths instanceof Array)) return undefined
+    if (!paths.every(p => typeof p === 'string')) return undefined
+    return paths
   },
 })

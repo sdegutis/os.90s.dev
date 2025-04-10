@@ -59,6 +59,10 @@ export class Sys {
       this.$font.val = config["sys.font"]
     })
 
+    for (const path of config["sys.startup"] ?? []) {
+      this.launch(path, {})
+    }
+
     if (location.pathname.startsWith('/run/')) {
       const app = location.pathname.slice('/run/'.length)
       this.launch(app, Object.fromEntries(new URLSearchParams(location.search)))
