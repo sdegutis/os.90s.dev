@@ -16,20 +16,8 @@ class FS {
     this.#drives.set('net', new NetDrive())
 
     const syncfs = new BroadcastChannel('syncfs')
-
-    let syncing = false
-    this.#syncfs = (path, op) => {
-      if (syncing) return
-      syncfs.postMessage([path, op])
-    }
-
-    syncfs.onmessage = (e) => {
-      syncing = true
-      const [path, op] = e.data
-      this.#notify(path, op)
-      syncing = false
-      return
-    }
+    this.#syncfs = (path, op) => syncfs.postMessage([path, op])
+    syncfs.onmessage = (e) => this.#notify(...e.data as [string, string], false)
   }
 
   drives() {
@@ -86,8 +74,8 @@ class FS {
     return success
   }
 
-  #notify(path: string, op: string) {
-    this.#syncfs(path, op)
+  #notify(path: string, op: string, sync = true) {
+    if (sync) this.#syncfs(path, op)
     for (const [p, w] of this.#watchers) {
       if (path.startsWith(p)) {
         w.dispatch(path)
