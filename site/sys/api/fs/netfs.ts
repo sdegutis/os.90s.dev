@@ -1,4 +1,4 @@
-import { GET } from "../util/net.js"
+import { GET, POST } from "../util/net.js"
 import { Drive } from "./drive.js"
 
 export class NetDrive implements Drive {
@@ -10,7 +10,11 @@ export class NetDrive implements Drive {
   }
 
   async putDir(path: string[]): Promise<boolean> {
-    return false
+    console.log('in here', '/fs/' + path.join('/'))
+    const [err, ok] = await POST('/fs/' + path.join('/'), 'mkdir')
+    console.log(ok)
+    if (err) throw new Error(err)
+    return ok
   }
 
   async delDir(path: string[]): Promise<boolean> {
