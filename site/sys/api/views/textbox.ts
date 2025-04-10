@@ -41,9 +41,6 @@ export class TextBox extends View {
   font = sys.$font.val
   $font = makeRef(this, 'font')
 
-  color = 0xffffffff
-  $color = makeRef(this, 'color')
-
 
   private _cursor!: View
 
@@ -80,7 +77,7 @@ export class TextBox extends View {
     this.colors.length = this.lines.length
     for (let i = 0; i < this.lines.length; i++) {
       const line = this.lines[i]
-      const cline = Array(line.length).fill(this.color)
+      const cline = Array(line.length).fill(0xffffffff)
       this.colors[i] = cline
       for (const [col, regex] of Object.values(this.highlightings)) {
         for (const m of line.matchAll(regex)) {
