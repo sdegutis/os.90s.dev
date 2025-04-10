@@ -40,6 +40,7 @@ export class Margin extends View {
           ns.length === 3 ? [...ns, ns[1]] :
             ns
 
+    this.$padding.val = u
     this.up = u
     this.down = d
     this.left = l

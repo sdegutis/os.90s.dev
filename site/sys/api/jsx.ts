@@ -1,5 +1,6 @@
 import { getComponent } from "./components.js"
 import { MaybeRef, Ref } from "./core/ref.js"
+import { View } from "./views/view.js"
 
 export type JsxAttrs<T> = {
   [K in keyof T as K extends `$${string}` ? never : K]?: (
@@ -21,7 +22,7 @@ declare global {
   namespace JSX {
     type IntrinsicElements = { [key: string]: any }
     type ElementChildrenAttribute = { children: any }
-    type Element = any
+    type Element = View
     type ElementType =
       | string
       | (new (data: JsxAttrs<any>) => JSX.Element)

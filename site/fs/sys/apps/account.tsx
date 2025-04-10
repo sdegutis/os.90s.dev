@@ -11,14 +11,14 @@ function makeTextField(data: {
 
   const length = data.length ?? 50
 
-  const textbox: api.TextBox = <api.TextBox
+  const textbox = <api.TextBox
     multiline={false}
-    {...data.textbox} />
+    {...data.textbox} /> as api.TextBox
 
-  const border: api.Border = <api.Border
+  const border = <api.Border
     padding={2}
     children={[textbox]}
-    {...data.border} />
+    {...data.border} /> as api.Border
 
   const scroll = <api.Scroll
     showh={false}
