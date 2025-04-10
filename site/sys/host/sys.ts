@@ -1,7 +1,6 @@
 import { getConfigs } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
-import { Font } from "../api/core/font.js"
 import { $, Ref } from "../api/core/ref.js"
 import { Point } from "../api/core/types.js"
 import { fs } from '../api/fs/fs.js'
@@ -32,24 +31,24 @@ export class Sys {
 
   static async init() {
     updateAccountFromServer()
-    const fontstr = await fs.getFile('sys/data/crt34.font')
-
     const config = await getConfigs()
-    const [w, h] = config["sys.size"]
-
-    return new Sys(w, h, new Font(fontstr!))
+    return new Sys(config)
   }
 
-  private constructor(width: number, height: number, font: Font) {
-    this.$size = $({ w: width, h: height })
+  private constructor(config: Awaited<ReturnType<typeof getConfigs>>) {
+    const [w, h] = config["sys.size"]
+    this.$size = $({ w, h })
 
     fs.watchTree('usr/config.jsln', async () => {
       const config = await getConfigs()
+
       const [w, h] = config["sys.size"]
       this.resize(w, h)
+
+      this.$font.val = config["sys.font"]
     })
 
-    this.$font = $(font)
+    this.$font = $(config["sys.font"])
 
     const { $point, $scale, canvas, ctx } = setupCanvas(this.$size)
     this.ctx = ctx

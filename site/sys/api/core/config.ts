@@ -1,8 +1,9 @@
 import { fs } from "../fs/fs.js"
+import { Font } from "./font.js"
 import { JSLN } from "./jsln.js"
 
 async function loadConfigs<T extends Record<string, any>>(
-  kvs: { [K in keyof T]: (o: T[K]) => Promise<boolean> }
+  kvs: { [K in keyof T]: (o: any) => Promise<T[K] | undefined> }
 ) {
   const paths = [
     'usr/config.jsln',
@@ -23,10 +24,10 @@ async function loadConfigs<T extends Record<string, any>>(
       try {
         let node = config
         for (const key of keys) node = node[key]
-        const val = node[last] as T[string]
-        const valid = await validate(val)
-        if (!valid) continue nextConfig
-        (o as any)[keyPath] = val
+        const userval = node[last] as T[string]
+        const compval = await validate(userval)
+        if (compval === undefined) continue nextConfig
+        (o as any)[keyPath] = compval
         continue nextKey
       }
       catch (e) {
@@ -40,6 +41,11 @@ async function loadConfigs<T extends Record<string, any>>(
 }
 
 export const getConfigs = () => loadConfigs({
-  'sys.size': async ([w, h]: [number, number]) => w > 0 && h > 0,
-  'sys.font': async (path: string) => !!(await fs.getFile(path)),
+  'sys.size': async ([w, h]: [number, number]) => {
+    return w > 0 && h > 0 ? [w, h] : undefined
+  },
+  'sys.font': async (path: string) => {
+    const content = await fs.getFile(path)
+    return content ? new Font(content) : undefined
+  },
 })

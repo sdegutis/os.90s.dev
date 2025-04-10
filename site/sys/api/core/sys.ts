@@ -87,13 +87,6 @@ class Sys {
     program.pid = id
     this.size = { w, h }
 
-    fs.watchTree('usr/config.jsln', async () => {
-      const config = await getConfigs()
-      const path = config["sys.font"]
-      console.log(path)
-      this.$font.val = new Font((await fs.getFile(path))!)
-    })
-
     this.sysevents.addEventListener('message', msg => {
       if (msg.data.type === 'resized') {
         const [w, h] = msg.data.size
@@ -103,13 +96,13 @@ class Sys {
 
     keymap.forEach(k => this.keymap.add(k))
 
-    const fontstr = await fs.getFile('sys/data/crt34.font')
-    this.$font = $(new Font(fontstr!))
+    const config = await getConfigs()
+    this.$font = $(config["sys.font"])
 
-    // fs.watchTree('sys/data/crt34.font', () => {
-    //   const fontstr = fs.get('sys/data/crt34.font')!
-    //   this.font = new Font(fontstr)
-    // })
+    fs.watchTree('usr/config.jsln', async () => {
+      const config = await getConfigs()
+      this.$font.val = config["sys.font"]
+    })
   }
 
   async makePanel(config: {
