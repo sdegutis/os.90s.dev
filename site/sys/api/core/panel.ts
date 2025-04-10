@@ -44,10 +44,11 @@ export class Panel {
 
   static async create(config: {
     name: string,
+    saveSize?: boolean,
     order?: PanelOrdering,
     pos?: Ref<Point> | 'default' | 'center',
   }, view: View) {
-    if (config.name) {
+    if (config.name && config.saveSize !== false) {
       const size = await panelnames.get(config.name)
       if (size) { view.$size.val = size }
       view.$size.watch((size => panelnames.set(config.name!, size)))

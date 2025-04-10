@@ -1,6 +1,7 @@
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { Font } from "../api/core/font.js"
+import { JSLN } from "../api/core/jsln.js"
 import { $, Ref } from "../api/core/ref.js"
 import { Point } from "../api/core/types.js"
 import { fs } from '../api/fs/fs.js'
@@ -29,9 +30,11 @@ export class Sys {
   $size
   get size() { return this.$size.val }
 
-  static async init(w: number, h: number) {
+  static async init() {
     updateAccountFromServer()
     const fontstr = await fs.getFile('sys/data/crt34.font')
+    const config = JSLN.parse((await fs.getFile('sys/default/config.jsln'))!)
+    const [w, h] = config['sys']['size']
     return new Sys(w, h, new Font(fontstr!))
   }
 

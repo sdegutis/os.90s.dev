@@ -1,3 +1,4 @@
-sys.font="sys/data/crt34.font"
-user.startup[]="usr/startup.js"
-user.compath[]="usr/myviews.ts"
+sys.size=[320 180]
+# sys.font="sys/data/crt34.font"
+# user.startup[]="usr/startup.js"
+# user.compath[]="usr/myviews.ts"
