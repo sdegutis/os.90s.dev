@@ -61,7 +61,7 @@ export function multiplex<T>(refs: Ref<any>[], fn: () => T) {
   return ref
 }
 
-export function $$<T, K extends keyof T>(o: T, k: K) {
+export function makeRef<T, K extends keyof T>(o: T, k: K) {
   const rk = `$${k as string}` as keyof T
   const val = o[k]
   Object.defineProperty(o, k, {

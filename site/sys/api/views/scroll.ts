@@ -1,4 +1,4 @@
-import { $, $$, multiplex } from "../core/ref.js"
+import { $, makeRef, multiplex } from "../core/ref.js"
 import { JsxAttrs } from "../jsx.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
@@ -104,10 +104,10 @@ export class Scroll extends View {
 
   scrollBy: number = 6
 
-  scrollx = 0; $scrollx = $$(this, 'scrollx')
-  scrolly = 0; $scrolly = $$(this, 'scrolly')
-  showh = true; $showh = $$(this, 'showh')
-  showv = true; $showv = $$(this, 'showv')
+  scrollx = 0; $scrollx = makeRef(this, 'scrollx')
+  scrolly = 0; $scrolly = makeRef(this, 'scrolly')
+  showh = true; $showh = makeRef(this, 'showh')
+  showv = true; $showv = makeRef(this, 'showv')
 
   content!: View
   area = new View({})

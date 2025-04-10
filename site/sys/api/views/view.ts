@@ -1,6 +1,6 @@
 import type { DrawingContext } from "../core/drawing.js"
 import type { Panel } from "../core/panel.js"
-import { $$, multiplex } from "../core/ref.js"
+import { makeRef, multiplex } from "../core/ref.js"
 import { type Point, type Size, arrayEquals, pointEquals, sizeEquals } from "../core/types.js"
 import { JsxAttrs } from "../jsx.js"
 import { debounce } from "../util/throttle.js"
@@ -86,39 +86,39 @@ export class View {
     this.$size.equals = sizeEquals
   }
 
-  panel: Panel | null = null; $panel = $$(this, 'panel')
-  parent: View | null = null; $parent = $$(this, 'parent')
+  panel: Panel | null = null; $panel = makeRef(this, 'panel')
+  parent: View | null = null; $parent = makeRef(this, 'parent')
 
   children: View[] = []
-  $children = $$(this, 'children')
+  $children = makeRef(this, 'children')
 
   point: Point = { x: 0, y: 0 }
-  $point = $$(this, 'point')
+  $point = makeRef(this, 'point')
 
   size: Size = { w: 0, h: 0 }
-  $size = $$(this, 'size')
+  $size = makeRef(this, 'size')
 
-  canFocus = false; $canFocus = $$(this, 'canFocus')
-  canMouse = false; $canMouse = $$(this, 'canMouse')
-  visible = true; $visible = $$(this, 'visible')
-  autofocus = false; $autofocus = $$(this, 'autofocus')
+  canFocus = false; $canFocus = makeRef(this, 'canFocus')
+  canMouse = false; $canMouse = makeRef(this, 'canMouse')
+  visible = true; $visible = makeRef(this, 'visible')
+  autofocus = false; $autofocus = makeRef(this, 'autofocus')
 
-  hovered = false; $hovered = $$(this, 'hovered')
-  pressed = false; $pressed = $$(this, 'pressed')
-  selected = false; $selected = $$(this, 'selected')
+  hovered = false; $hovered = makeRef(this, 'hovered')
+  pressed = false; $pressed = makeRef(this, 'pressed')
+  selected = false; $selected = makeRef(this, 'selected')
 
 
   alpha = 1
-  $alpha = $$(this, 'alpha')
+  $alpha = makeRef(this, 'alpha')
 
   background = 0x00000000
-  $background = $$(this, 'background')
+  $background = makeRef(this, 'background')
 
   panelOffset: Point = { x: 0, y: 0 }
-  $panelOffset = $$(this, 'panelOffset')
+  $panelOffset = makeRef(this, 'panelOffset')
 
   mouse: Point = { x: 0, y: 0 }
-  $mouse = $$(this, 'mouse')
+  $mouse = makeRef(this, 'mouse')
 
 
   onPanelFocus?(): void

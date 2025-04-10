@@ -1,4 +1,4 @@
-import { $$ } from "../core/ref.js"
+import { makeRef } from "../core/ref.js"
 import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
@@ -19,7 +19,7 @@ export class Spaced extends View {
   }
 
   dir: 'x' | 'y' = 'x'
-  $dir = $$(this, 'dir')
+  $dir = makeRef(this, 'dir')
 
   override adjust(): void {
     const dh = this.dir === 'x' ? 'h' : 'w'
