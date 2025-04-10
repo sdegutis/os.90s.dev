@@ -196,10 +196,37 @@ export class Panel {
 
   onKeyDown(key: string) {
     this.focused?.onKeyDown?.(key)
+    this.handleKeyPress(key)
   }
 
   onKeyUp(key: string) {
     this.focused?.onKeyUp?.(key)
+  }
+
+  #ctrlKeys = new Set(['Control', 'Alt', 'Shift'])
+
+  private handleKeyPress(key: string) {
+    if (!this.#ctrlKeys.has(key)) {
+      const keys = []
+      if (sys.keymap.has('Control')) keys.push('ctrl')
+      if (sys.keymap.has('Alt')) keys.push('alt')
+      if (sys.keymap.has('Shift') && key.length > 1 && key !== key.toLowerCase()) {
+        keys.push('shift')
+      }
+
+      key = key.replace(/^Arrow/, '')
+      if (key.length > 1) key = key.toLowerCase()
+      keys.push(key)
+      const finalkey = keys.join(' ')
+
+      let node = this.focused
+      while (node) {
+        if (node?.onKeyPress?.(finalkey)) {
+          break
+        }
+        node = node.parent
+      }
+    }
   }
 
   private checkUnderMouse() {

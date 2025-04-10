@@ -36,10 +36,10 @@ export async function showMenu(items: MenuItem[], from = sys.mouse) {
 
   const root = (
     <Border
-      // onKeyDown={key => {
-      //   if (key === 'Escape') panel.close()
-      //   return true
-      // }}
+      onKeyPress={key => {
+        if (key === 'escape') panel.close()
+        return true
+      }}
       canFocus={true}
       onPanelBlur={() => {
         panel.focusPanel()

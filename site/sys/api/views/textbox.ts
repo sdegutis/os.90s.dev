@@ -176,6 +176,11 @@ export class TextBox extends View {
     if (cx > maxx) scroll.scrollx -= maxx - cx
   }
 
+
+  override onKeyPress(key: string): boolean {
+    return false
+  }
+
   override onKeyDown(key: string): boolean {
     if (key === 'Home') {
       const firstNonSpace = this.lines[this.row].match(/[^\s]/)?.index ?? 0

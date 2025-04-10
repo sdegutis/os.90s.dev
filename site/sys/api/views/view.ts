@@ -144,8 +144,9 @@ export class View {
   onFocus?(): void
   onBlur?(): void
 
-  onKeyDown?(key: string): boolean
+  onKeyDown?(key: string): void
   onKeyUp?(key: string): void
+  onKeyPress?(key: string): boolean
 
   adjust?(): void
   layout?(): void

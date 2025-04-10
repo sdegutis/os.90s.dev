@@ -38,7 +38,7 @@ export function PanelView(data: {
   children: View,
   size?: MaybeRef<Size>,
   presented?: (panel: Panel) => void,
-  // onKeyDown?: (key: string) => boolean,
+  onKeyPress?: (key: string) => boolean,
   menuItems?: () => MenuItem[],
 }) {
 
@@ -59,7 +59,7 @@ export function PanelView(data: {
 
   return (
     <Margin
-      // onKeyDown={data.onKeyDown}
+      onKeyPress={data.onKeyPress}
       paddingColor={borderColor}
       padding={1}
       size={$size}
@@ -149,7 +149,7 @@ export function FilePanelView({
   filedata,
   title,
   menuItems,
-  // onKeyDown,
+  onKeyPress,
   presented,
   ...data
 }: Parameters<typeof PanelView>[0] & {
@@ -194,12 +194,12 @@ export function FilePanelView({
     return items
   }
 
-  // const keyHandler = (key: string) => {
-  //   if (key === 'o' && panel.isKeyDown('Control')) { load(); panel.endKeyRepeats(); return true }
-  //   if (key === 's' && panel.isKeyDown('Control')) { save(); panel.endKeyRepeats(); return true }
-  //   if (key === 'S' && panel.isKeyDown('Control')) { saveAs(); panel.endKeyRepeats(); return true }
-  //   return onKeyDown?.(key) ?? false
-  // }
+  const keyHandler = (key: string) => {
+    if (key === 'ctrl o') { load(); return true }
+    if (key === 'ctrl s') { save(); return true }
+    if (key === 'ctrl shift s') { saveAs(); return true }
+    return onKeyPress?.(key) ?? false
+  }
 
   const $title = defRef(title)
 
@@ -213,7 +213,7 @@ export function FilePanelView({
       panel = p
       presented?.(p)
     }}
-    // onKeyDown={keyHandler}
+    onKeyPress={keyHandler}
     title={filetitle}
     menuItems={fileMenu}
   />
