@@ -10,7 +10,7 @@ export class TextModel {
   cursors: TextCursor[] = [new TextCursor()]
 
   cursorsChanged = new Listener()
-  linesChanged = new Listener()
+  // linesChanged = new Listener()
 
   constructor(initialText = '') {
     this.setText(initialText)
@@ -23,7 +23,7 @@ export class TextModel {
   setText(s: string) {
     this.lines = s.split('\n')
     this.labels = this.lines.map(line => Array(line.length).fill(''))
-    this.linesChanged.dispatch()
+    // this.linesChanged.dispatch()
   }
 
 }
