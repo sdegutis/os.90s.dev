@@ -29,6 +29,22 @@ export class TextBox extends View {
     this.adjust()
   }
 
+  model = new TextModel()
+
+  font = sys.$font.val
+  $font = makeRef(this, 'font')
+
+  cursorColor = 0x0000ff99
+  $cursorColor = makeRef(this, 'cursorColor')
+
+  textColor = 0xffffffff
+  $textColor = makeRef(this, 'textColor')
+
+  xgap = 0
+  ygap = 0
+
+  onEnter?(): void
+
   private makeCursors() {
     return this.model.cursors.map(c => {
       return new View({
@@ -46,13 +62,6 @@ export class TextBox extends View {
     })
   }
 
-  font = sys.$font.val
-  $font = makeRef(this, 'font')
-
-  model = new TextModel()
-
-  onEnter?(): void
-
   override onMouseDown(button: number): void {
 
   }
@@ -69,15 +78,6 @@ export class TextBox extends View {
   //   this.fixCol()
   //   this.adjust()
   // }
-
-  cursorColor = 0x0000ff99
-  $cursorColor = makeRef(this, 'cursorColor')
-
-  textColor = 0xffffffff
-  $textColor = makeRef(this, 'textColor')
-
-  xgap = 0
-  ygap = 0
 
   // highlight() {
   //   this.colors.length = this.lines.length
@@ -138,13 +138,6 @@ export class TextBox extends View {
       h: (rows * this.font.ch) + (rows * this.ygap),
     }
   }
-
-  // private reflectCursorPos() {
-  //   this._cursor.point = {
-  //     x: this.col * (this.font.cw + this.xgap),
-  //     y: this.row * (this.font.ch + this.ygap),
-  //   }
-  // }
 
   // private findScrollAncestor() {
   //   let node = this.parent
