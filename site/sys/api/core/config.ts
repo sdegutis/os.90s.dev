@@ -11,7 +11,7 @@ async function loadConfigs<T extends Record<string, any>>(
   ]
 
   const files = await Promise.all(paths.map(p => fs.getFile(p)))
-  const configs = files.map(f => JSLN.tryParse(f!)).filter(c => c !== null)
+  const configs = files.map(f => JSLN.tryParse(f!)).filter(c => c !== undefined)
 
   const o = {} as T
 

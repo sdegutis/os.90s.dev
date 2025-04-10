@@ -256,7 +256,7 @@ export const JSLN = {
 
   tryParse: (str: string) => {
     try { return new JSLNParser(str).parse() }
-    catch (e) { return null }
+    catch (e) { return undefined }
   },
 
   stringify: (o: Record<string, any>, stringifiers?: Record<string, (o: any) => string>) => {
