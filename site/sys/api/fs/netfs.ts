@@ -34,7 +34,9 @@ export class NetDrive implements Drive {
   }
 
   async delFile(path: string[]): Promise<boolean> {
-    return false
+    const [err] = await POST('/fs/' + path.join('/') + '?delete', '')
+    if (err) throw new Error(err)
+    return true
   }
 
 }
