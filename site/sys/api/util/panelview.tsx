@@ -197,7 +197,7 @@ export function FilePanelView({
   const keyHandler = (key: string) => {
     if (key === 'ctrl o') { load(); return true }
     if (key === 'ctrl s') { save(); return true }
-    if (key === 'ctrl shift s') { saveAs(); return true }
+    if (key === 'ctrl S') { saveAs(); return true }
     return onKeyPress?.(key) ?? false
   }
 
