@@ -16,8 +16,5 @@
     "@webgpu/types": "^0.1.56",
     "immaculata": "^0.1.5",
     "typescript": "^5.8.2"
-  },
-  "dependencies": {
-    "@babel/core": "^7.26.10"
   }
 }
