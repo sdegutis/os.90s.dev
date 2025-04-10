@@ -68,6 +68,7 @@ export class View {
       this.needsRedraw()
     })
 
+    this.$alpha.watch(() => this.needsRedraw())
     this.$visible.watch(() => this.needsRedraw())
     this.$hovered.watch(() => this.needsRedraw())
     this.$pressed.watch(() => this.needsRedraw())

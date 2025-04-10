@@ -1,4 +1,5 @@
 import { DrawingContext } from "../core/drawing.js"
+import { Listener } from "../core/listener.js"
 import { $, makeRef, multiplex } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import { Point } from "../core/types.js"
@@ -21,9 +22,9 @@ export class TextBox extends View {
 
     this.$font.watch(m => this.adjust())
 
-    this.children = this.makeCursors()
+    this.makeCursors()
     this.model.cursorsChanged.watch(() => {
-      this.children = this.makeCursors()
+      this.makeCursors()
     })
 
     this.adjust()
@@ -46,8 +47,9 @@ export class TextBox extends View {
   onEnter?(): void
 
   private makeCursors() {
-    return this.model.cursors.map(c => {
-      return new View({
+    this.children = this.model.cursors.map(c => {
+
+      const view = new View({
         visible: this.$focused,
         background: this.$cursorColor,
         point: multiplex([c.$row, c.$col], () => ({
@@ -59,8 +61,26 @@ export class TextBox extends View {
           h: font.ch + this.ygap,
         })),
       })
+
+      let blinker: number | undefined
+      const blink = () => view.alpha = 1 - view.alpha
+
+      this.restartCursorBlink.watch(() => {
+        clearInterval(blinker)
+        blinker = setInterval(blink, 500)
+        view.alpha = 1
+      })
+
+      this.$visible.watch(is => {
+        if (!is) clearInterval(blinker)
+      })
+
+      return view
+
     })
   }
+
+  private restartCursorBlink = new Listener()
 
   override onMouseDown(button: number): void {
 
@@ -174,6 +194,12 @@ export class TextBox extends View {
   //   if (cx > maxx) scroll.scrollx -= maxx - cx
   // }
 
+  override onKeyPress(key: string): boolean {
+
+    this.restartCursorBlink.dispatch()
+
+    return true
+  }
 
   // override onKeyPress(key: string): boolean {
   //   return false
@@ -332,34 +358,11 @@ export class TextBox extends View {
   //   this.col = Math.min(this.lines[this.row].length, this.end)
   // }
 
-  // private blink?: number
-
-  // private restartBlinking() {
-  //   this.stopBlinking()
-  //   this._cursor.visible = true
-  //   this.blink = setInterval(() => {
-  //     this._cursor.visible = !this._cursor.visible
-  //     this.panel?.needsRedraw()
-  //   }, 500)
-  // }
-
-  // private stopBlinking() {
-  //   this._cursor.visible = false
-  //   clearInterval(this.blink)
-  // }
-
-  // override onFocus(): void {
-  //   this.restartBlinking()
-  // }
-
-  // override onBlur(): void {
-  //   this.stopBlinking()
-  // }
-
   $focused = $(false)
 
   override onFocus(): void {
     this.$focused.val = true
+    this.restartCursorBlink.dispatch()
   }
 
   override onBlur(): void {
