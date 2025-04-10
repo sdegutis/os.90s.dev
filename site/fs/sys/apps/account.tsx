@@ -43,7 +43,7 @@ function SimpleForm(data: {
 
   function wrapSubmit(onSubmit: (val: string) => Promise<string | void>) {
     return async () => {
-      const error = await onSubmit(field.textbox.text)
+      const error = await onSubmit(field.textbox.model.getText())
       if (error) $error.val = error
     }
   }

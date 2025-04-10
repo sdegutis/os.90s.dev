@@ -74,7 +74,7 @@ export async function showPrompt(text: string) {
 
   textarea.focus()
 
-  function ok() { panel.close(); result.resolve(textarea.text) }
+  function ok() { panel.close(); result.resolve(textarea.model.getText()) }
   function no() { panel.close(); result.resolve(null) }
 
   return result.promise

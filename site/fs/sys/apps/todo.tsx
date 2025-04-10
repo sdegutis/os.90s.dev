@@ -5,7 +5,7 @@ interface Item {
   done: boolean
 }
 
-const textfield = <api.TextBox autofocus multiline={false} onEnter={add} /> as api.TextBox
+const model = new api.TextModel()
 
 const $items = api.$<Item[]>([])
 const $itemViews = $items.adapt<api.View[]>(items => items.map(item => <ItemView item={item} />))
@@ -22,7 +22,7 @@ const panel = await api.Panel.create({ name: "todo" },
           <api.GroupY align={'a'} children={$itemViews} />
         </api.Scroll>
         <api.Border padding={2} background={0x00000033}>
-          {textfield}
+          <api.TextBox model={model} autofocus multiline={false} onEnter={add} />
         </api.Border>
       </api.PanedYB>
     </api.PanedYA>
@@ -32,11 +32,11 @@ const panel = await api.Panel.create({ name: "todo" },
 panel.focusPanel()
 
 function add() {
-  const text = textfield.text
+  const text = model.getText()
   if (!text) return
 
   $items.val = [...$items.val, { done: false, text }]
-  textfield.text = ''
+  model.setText('')
 }
 
 function clear() {

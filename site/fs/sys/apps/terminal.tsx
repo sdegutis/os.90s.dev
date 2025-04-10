@@ -11,8 +11,8 @@ function append(view: api.View) {
 }
 
 function submit() {
-  let toeval = textarea.text
-  textarea.text = ''
+  let toeval = textarea.model.getText()
+  textarea.model.setText('')
 
   append(<api.Label text={toeval} />)
 
