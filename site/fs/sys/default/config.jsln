@@ -2,4 +2,3 @@ sys.size=[320 180]
 sys.font="sys/data/crt34.font"
 sys.shell="sys/apps/shell.js"
 # sys.startup[]="usr/startup.js"
-# user.compath[]="usr/myviews.ts"
