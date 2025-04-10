@@ -1,7 +1,7 @@
-export async function opendb<T>(dbname: string, key: keyof T & string) {
+export async function opendb<T>(dbname: string, keyPath: keyof T & string) {
   const db = await new Promise<IDBDatabase>(resolve => {
     const r = self.indexedDB.open(dbname, 1)
-    r.onupgradeneeded = () => { r.result.createObjectStore('kvs', { keyPath: key }) }
+    r.onupgradeneeded = () => { r.result.createObjectStore('kvs', { keyPath }) }
     r.onsuccess = () => { resolve(r.result) }
   })
 
