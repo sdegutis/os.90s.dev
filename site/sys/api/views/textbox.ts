@@ -1,5 +1,5 @@
 import { DrawingContext } from "../core/drawing.js"
-import { makeRef } from "../core/ref.js"
+import { $, makeRef, multiplex } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import { Point } from "../core/types.js"
 import { JsxAttrs } from "../jsx.js"
@@ -17,39 +17,39 @@ export class TextBox extends View {
   }
 
   override init(): void {
+    super.init()
+
     this.$font.watch(m => this.adjust())
+
+    this.children = this.makeCursors()
+    this.model.cursorsChanged.watch(() => {
+      this.children = this.makeCursors()
+    })
 
     this.adjust()
   }
 
-  // override init(): void {
-  //   super.init()
-
-  //   this._cursor = new View({
-  //     onMouseDown: (...args) => this.onMouseDown(...args),
-  //     background: this.cursorColor,
-  //     visible: false,
-  //     size: {
-  //       w: this.font.cw + this.xgap,
-  //       h: this.font.ch + this.ygap,
-  //     }
-  //   })
-
-  //   this.children = [this._cursor]
-
-  //   this.reflectCursorPos()
-  //   this.adjust()
-
-  //   this.$cursorColor.watch(c => this._cursor.background = c)
-  // }
+  private makeCursors() {
+    return this.model.cursors.map(c => {
+      return new View({
+        visible: this.$focused,
+        background: this.$cursorColor,
+        point: multiplex([c.$row, c.$col], () => ({
+          x: c.col * (this.font.cw + this.xgap),
+          y: c.row * (this.font.ch + this.ygap),
+        })),
+        size: this.$font.adapt(font => ({
+          w: font.cw + this.xgap,
+          h: font.ch + this.ygap,
+        })),
+      })
+    })
+  }
 
   font = sys.$font.val
   $font = makeRef(this, 'font')
 
   model = new TextModel()
-
-  // private _cursor!: View
-
 
   multiline = true
   onEnter?(): void
@@ -364,5 +364,15 @@ export class TextBox extends View {
   // override onBlur(): void {
   //   this.stopBlinking()
   // }
+
+  $focused = $(false)
+
+  override onFocus(): void {
+    this.$focused.val = true
+  }
+
+  override onBlur(): void {
+    this.$focused.val = false
+  }
 
 }

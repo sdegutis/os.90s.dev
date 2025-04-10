@@ -1,4 +1,5 @@
 import { Listener } from "../core/listener.js"
+import { makeRef } from "../core/ref.js"
 
 export class TextModel {
 
@@ -8,6 +9,7 @@ export class TextModel {
 
   cursors: TextCursor[] = [new TextCursor()]
 
+  cursorsChanged = new Listener()
   linesChanged = new Listener()
 
   constructor(initialText = '') {
@@ -28,8 +30,8 @@ export class TextModel {
 
 export class TextCursor {
 
-  private row = 0
-  private col = 0
-  private end = 0
+  row = 0; $row = makeRef(this, 'row')
+  col = 0; $col = makeRef(this, 'col')
+  end = 0; $end = makeRef(this, 'end')
 
 }
