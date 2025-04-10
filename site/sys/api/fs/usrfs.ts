@@ -1,6 +1,31 @@
 import { opendb } from "../util/db.js"
 import type { Drive } from "./drive.js"
-import { listdir } from "./util.js"
+
+
+
+function listdir(full: string, entries: { path: string, content?: string }[]): string[] {
+  return entries
+    .map(file => file.content === undefined ? file.path + '/' : file.path)
+    .filter(path => path.startsWith(full))
+    .map(path => path.slice(full.length))
+    .filter(name => name)
+    .map(name => name.match(/^[^\/]+\/?/)![0])
+    .reduce((set, name) => set.add(name), new Set<string>())
+    .values()
+    .toArray()
+}
+
+
+// new EventSource('/_reload').onmessage = () => location.reload()
+
+// navigator.locks.request('testing', async () => {
+
+//   console.log(files)
+//   console.log(listdir(['default', 'conf', ''].join('/'), files))
+
+//   await new Promise(r => { })
+// })
+
 
 const usrdb = opendb<{ path: string, content?: string }>('usr', 'path')
 
