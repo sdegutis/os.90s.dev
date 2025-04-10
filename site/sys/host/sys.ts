@@ -34,8 +34,8 @@ export class Sys {
     updateAccountFromServer()
     const fontstr = await fs.getFile('sys/data/crt34.font')
 
-    const configs = await getConfigs()
-    const [w, h] = configs<[number, number]>('sys.size')
+    const config = await getConfigs()
+    const [w, h] = config["sys.size"]
 
     return new Sys(w, h, new Font(fontstr!))
   }
@@ -44,8 +44,8 @@ export class Sys {
     this.$size = $({ w: width, h: height })
 
     fs.watchTree('usr/config.jsln', async () => {
-      const configs = await getConfigs()
-      const [w, h] = configs<[number, number]>('sys.size')
+      const config = await getConfigs()
+      const [w, h] = config["sys.size"]
       this.resize(w, h)
     })
 
@@ -267,7 +267,9 @@ pixels=
 
 let cursor = defaultCursor
 
-async function getConfigs() {
+async function loadConfigs<T extends Record<string, any>>(
+  kvs: { [K in keyof T]: (o: T[K]) => boolean }
+) {
   const paths = [
     'usr/config.jsln',
     'sys/default/config.jsln',
@@ -276,19 +278,32 @@ async function getConfigs() {
   const files = await Promise.all(paths.map(p => fs.getFile(p)))
   const configs = files.map(f => JSLN.tryParse(f!)).filter(c => c !== null)
 
-  return <T>(keyPath: string) => {
+  const o = {} as T
+
+  nextKey:
+  for (const [keyPath, validate] of Object.entries(kvs)) {
     const keys = keyPath.split('.')
     const last = keys.pop()!
+    nextConfig:
     for (const config of configs) {
       try {
         let node = config
         for (const key of keys) node = node[key]
-        return node[last] as T
+        const val = node[last] as T[string]
+        if (!validate(val)) continue nextConfig
+        (o as any)[keyPath] = val
+        continue nextKey
       }
       catch (e) {
         console.error(e)
       }
     }
-    throw new Error(`Config file must be corrupted`)
+    throw new Error(`Sys config file invalid?`)
   }
+
+  return o
 }
+
+const getConfigs = () => loadConfigs({
+  'sys.size': ([w, h]: [number, number]) => w > 0 && h > 0,
+})
