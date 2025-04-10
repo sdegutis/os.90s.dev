@@ -15,8 +15,8 @@ export class Label extends View {
   override init(): void {
     super.init()
 
-    this.$text.watch(() => { this.adjust(); this.needsRedraw() })
-    this.$font.watch(() => { this.adjust(); this.needsRedraw() })
+    this.$text.watch(() => this.adjust())
+    this.$font.watch(() => this.adjust())
     this.$color.watch(() => this.needsRedraw())
     this.adjust()
   }
