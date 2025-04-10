@@ -37,7 +37,7 @@ await persisted.get().then(state => {
 
 export async function updateAccountFromServer() {
   await GET('/user/info').then(async ([err, state]) => {
-    console.log('here', err, state)
+    // console.log('here', err, state)
     if (err) {
       console.error(err)
       return
