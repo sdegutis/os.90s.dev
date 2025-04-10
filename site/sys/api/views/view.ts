@@ -108,6 +108,9 @@ export class View {
   selected = false; $selected = $$(this, 'selected')
 
 
+  alpha = 1
+  $alpha = $$(this, 'alpha')
+
   background = 0x00000000
   $background = $$(this, 'background')
 

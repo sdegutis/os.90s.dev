@@ -277,6 +277,9 @@ export class Panel {
   ) {
     if (!node.visible) return
 
+    const alpha = this.ctx.alpha
+    this.ctx.alpha *= node.alpha
+
     node.draw(this.ctx)
 
     for (const child of node.children) {
@@ -291,6 +294,9 @@ export class Panel {
 
       this.ctx.clearClipport()
     }
+
+    this.ctx.alpha = alpha
+
   }
 
   needsRedraw = debounce(() => {

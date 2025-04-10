@@ -22,6 +22,9 @@ export class DrawingContext {
     this.ctx.clip()
   }
 
+  get alpha() { return this.ctx.globalAlpha }
+  set alpha(n) { this.ctx.globalAlpha = n }
+
   clearClipport() {
     this.ctx.restore()
   }
