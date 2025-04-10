@@ -73,10 +73,17 @@ const $itemButtons = $items.adapt(items => {
 
 
 async function newFile() {
-  const name = await api.showPrompt('filename?')
+  const name = await api.showPrompt('file name?')
   if (!name) return
   const full = [...$dirs.val, name].join('')
   await api.fs.putFile(full, '')
+}
+
+async function newFolder() {
+  const name = await api.showPrompt('folder name?')
+  if (!name) return
+  const full = [...$dirs.val, name].join('')
+  await api.fs.putDir(full)
 }
 
 
@@ -121,6 +128,7 @@ function Main() {
       </api.Scroll>
       <api.GroupX background={0x00000033}>
         <button action={newFile} text='new file' />
+        <button action={newFolder} text='new folder' />
       </api.GroupX>
     </api.PanedYB>
 
