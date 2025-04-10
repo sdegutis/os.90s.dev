@@ -194,34 +194,11 @@ export class Panel {
     return true
   }
 
-  private sendKeyDown(key: string) {
-    let node = this.focused
-    while (node) {
-      if (node.onKeyDown?.(key)) return
-      node = node.parent
-    }
-  }
-
   onKeyDown(key: string) {
-    this.endKeyRepeats()
-
-    this.repeater = setTimeout(() => {
-      this.repeater = setInterval(() => {
-        this.sendKeyDown(key)
-      }, 50)
-    }, 500)
-
-    this.sendKeyDown(key)
+    this.focused?.onKeyDown?.(key)
   }
-
-  endKeyRepeats() {
-    clearTimeout(this.repeater)
-  }
-
-  private repeater?: number
 
   onKeyUp(key: string) {
-    this.endKeyRepeats()
     this.focused?.onKeyUp?.(key)
   }
 

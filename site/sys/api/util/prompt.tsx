@@ -45,11 +45,11 @@ export async function showPrompt(text: string) {
       panel.focusPanel()
       no()
     }}
-    onKeyDown={key => {
-      if (key === 'Enter') ok()
-      if (key === 'Escape') no()
-      return true
-    }}
+    // onKeyDown={key => {
+    //   if (key === 'Enter') ok()
+    //   if (key === 'Escape') no()
+    //   return true
+    // }}
     onMouseDown={function (b) {
       this.onMouseUp = dragMove(sys.$mouse, panel.$point)
     }}
