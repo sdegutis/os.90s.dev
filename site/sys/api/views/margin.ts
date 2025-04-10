@@ -1,5 +1,5 @@
 import type { DrawingContext } from "../core/drawing.js"
-import { makeRef, Ref } from "../core/ref.js"
+import { $, makeRef } from "../core/ref.js"
 import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
@@ -30,8 +30,9 @@ export class Margin extends View {
     this.layout()
   }
 
-  $padding?: Ref<number>
+  $padding = $(0)
 
+  get padding() { return this.$padding.val }
   set padding(ns: number | [number, number] | [number, number, number] | [number, number, number, number]) {
     const [u, r, d, l] =
       typeof ns === 'number' ? [ns, ns, ns, ns] :

@@ -60,9 +60,9 @@ export function PanelView(data: {
   return (
     <Margin
       onKeyDown={data.onKeyDown}
-      $paddingColor={borderColor}
+      paddingColor={borderColor}
       padding={1}
-      $size={$size}
+      size={$size}
       presented={async function (p) {
         panel = p
         data.presented?.(p)
@@ -83,7 +83,7 @@ export function PanelView(data: {
                   y: this.screenPoint.y + this.size.h,
                 })
               }} padding={2}><ImageView bitmap={mnuImage} /></Button>
-              <Label $text={data.title} />
+              <Label text={data.title} />
             </GroupX>
           </Border>
           <Border>
@@ -134,7 +134,7 @@ function PanelResizer(data: { size: Ref<Size> }) {
     bitmap={adjImage}
     onMouseEnter={function (this: View) { panel.pushCursor(adjCursor) }}
     onMouseExit={function (this: View) { panel.popCursor(adjCursor) }}
-    $point={data.size.adapt(s => ({
+    point={data.size.adapt(s => ({
       x: s.w - adjImage.width,
       y: s.h - adjImage.height,
     }))}

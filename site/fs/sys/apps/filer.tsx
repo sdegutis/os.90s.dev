@@ -120,11 +120,11 @@ function Main() {
 
   return <api.PanedYA>
 
-    <api.GroupX $children={$breadcrumbs} />
+    <api.GroupX>{$breadcrumbs}</api.GroupX>
 
     <api.PanedYB>
       <api.Scroll background={0xffffff11} onMouseDown={mouseDownFileArea}>
-        <api.GroupY gap={-2} align={'+'} $children={$itemButtons} />
+        <api.GroupY gap={-2} align={'+'} children={$itemButtons} />
       </api.Scroll>
       <api.GroupX background={0x00000033}>
         <button action={newFile} text='new file' />
@@ -137,7 +137,7 @@ function Main() {
 
 function Sidebar() {
   return <api.View background={0x00000077}>
-    <api.GroupY align={'+'} $children={$driveButtons} />
+    <api.GroupY align={'+'} children={$driveButtons} />
   </api.View>
 }
 

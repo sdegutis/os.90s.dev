@@ -19,7 +19,7 @@ const panel = await api.Panel.create({ name: "todo" },
       </api.GroupX>
       <api.PanedYB>
         <api.Scroll showh={false}>
-          <api.GroupY align={'a'} $children={$itemViews} />
+          <api.GroupY align={'a'} children={$itemViews} />
         </api.Scroll>
         <api.Border padding={2} background={0x00000033}>
           {textfield}

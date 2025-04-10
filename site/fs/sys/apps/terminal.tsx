@@ -30,7 +30,7 @@ function submit() {
 const panel = await api.Panel.create({ name: "terminal" },
   <api.PanelView title={api.$('terminal')} size={api.$({ w: 100, h: 70 })}>
     <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
-      <api.GroupY align={'a'} $children={$lines.adapt(ls => [...ls, textarea])} />
+      <api.GroupY align={'a'} children={$lines.adapt(ls => [...ls, textarea])} />
     </api.Scroll>
   </api.PanelView>
 )

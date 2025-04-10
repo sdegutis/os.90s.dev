@@ -26,7 +26,7 @@ function makeTextField(data: {
     background={0x00000033}
     onMouseDown={function (...args) { textbox.onMouseDown(...args) }}
     onMouseMove={function (...args) { textbox.onMouseMove(...args) }}
-    $size={border.$size.adapt(s => ({ w: length, h: border.$size.val.h }))}
+    size={border.$size.adapt(s => ({ w: length, h: border.$size.val.h }))}
     children={[border]}
     {...data.scroll} />
 
@@ -75,7 +75,7 @@ function SimpleForm(data: {
           })}
         />
 
-        <api.Label $text={$error} color={0x99000099} />
+        <api.Label text={$error} color={0x99000099} />
 
       </api.GroupY>
     </api.Center>
@@ -161,7 +161,7 @@ function WelcomeView({ state }: { state: api.UserStateKnown }) {
 
 const panel = await api.Panel.create({ name: 'account' },
   <api.PanelView title={api.$('account')} size={api.$({ w: 150, h: 120 })}>
-    <api.Margin $children={api.$userState.adapt(state => {
+    <api.Margin children={api.$userState.adapt(state => {
       switch (state.type) {
         case 'guest': return [<SigninView />]
         case 'registering': return [<RegisterView state={state} />]

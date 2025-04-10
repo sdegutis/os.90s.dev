@@ -1,6 +1,6 @@
 import type { DrawingContext } from "../core/drawing.js"
 import type { Panel } from "../core/panel.js"
-import { makeRef, multiplex } from "../core/ref.js"
+import { makeRef, multiplex, Ref } from "../core/ref.js"
 import { type Point, type Size, arrayEquals, pointEquals, sizeEquals } from "../core/types.js"
 import { JsxAttrs } from "../jsx.js"
 import { debounce } from "../util/throttle.js"
@@ -14,14 +14,22 @@ export class View {
   protected setup<T extends View>(config?: JsxAttrs<T>) {
     if (!config) return
 
-    const c = config as JsxAttrs<View>
-    if ('children' in c) {
-      if (!(c.children instanceof Array)) {
-        c.children = [c.children]
-      }
-    }
+    for (const [key, val] of Object.entries(config)) {
 
-    Object.assign(this, config)
+      if (key === 'children' && !(val instanceof Array) && !(val instanceof Ref)) {
+        this.children = [val]
+        continue
+      }
+
+      if (val instanceof Ref) {
+        const rkey = `$${key}`
+        this[rkey as keyof this] = val as this[keyof this]
+      }
+      else {
+        this[key as keyof this] = val
+      }
+
+    }
 
     this.init()
   }

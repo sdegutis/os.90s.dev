@@ -24,7 +24,7 @@ export async function showPrompt(text: string) {
   const scroll = <Scroll
     showh={false}
     showv={false}
-    $size={multiplex([
+    size={multiplex([
       prompt.$size,
       textarea.$size,
       buttons.$size,

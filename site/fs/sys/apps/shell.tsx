@@ -49,7 +49,7 @@ const desktop = await api.Panel.create({
   order: 'bottom',
   pos: api.$({ x: 0, y: 0 }),
 }, (
-  <api.View $size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
+  <api.View size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
 ))
 
 async function showRun(this: api.Button) {
@@ -68,12 +68,12 @@ const taskbar = await api.Panel.create({
   order: 'top',
   pos: api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })),
 }, (
-  <api.SpacedX $size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x222222ff}>
+  <api.SpacedX size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x222222ff}>
     <api.GroupX gap={2}>
       <api.Button padding={2} onClick={showRun}>
         <api.Label text="run" />
       </api.Button>
-      <api.GroupX gap={2} $children={$panelButtons} />
+      <api.GroupX gap={2} children={$panelButtons} />
     </api.GroupX>
     <Clock />
   </api.SpacedX>
@@ -109,7 +109,7 @@ function Clock() {
 
   return (
     <api.Button padding={2} canMouse onClick={toggle}>
-      <api.Label $text={time} />
+      <api.Label text={time} />
     </api.Button>
   )
 }

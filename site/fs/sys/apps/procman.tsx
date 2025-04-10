@@ -42,7 +42,7 @@ const panel = await api.Panel.create({ name: "procman" },
         </api.Button>
       </api.GroupX>
       <api.Scroll background={0xffffff11}>
-        <api.GroupY align="a" $children={$procs.adapt(procs => (
+        <api.GroupY align="a" children={$procs.adapt(procs => (
           procs.map(p => <api.GroupX gap={4}>
             <api.Label text={p.path} />
             <api.Label text={p.pid.toString()} />
