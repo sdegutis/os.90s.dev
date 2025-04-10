@@ -11,14 +11,15 @@ export class NetDrive implements Drive {
   }
 
   async putDir(path: string[]): Promise<boolean> {
-    console.log('in here', '/fs/' + path.join('/'))
     const [err] = await POST('/fs/' + path.join('/'), 'mkdir')
     if (err) throw new Error(err)
     return true
   }
 
   async delDir(path: string[]): Promise<boolean> {
-    return false
+    const [err] = await POST('/fs/' + path.join('/'), 'rmdir')
+    if (err) throw new Error(err)
+    return true
   }
 
   async getFile(path: string[]): Promise<string | null> {
