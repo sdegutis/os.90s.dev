@@ -92,8 +92,13 @@ async function handleRoute(url: URL, req: Request) {
   if (url.pathname.startsWith('/fs/net/')) {
     const path = url.pathname.slice('/fs/usr/'.length)
     const r = await fetch(`${config.net}/fs/${path}`)
-    const contentType = r.headers.get('content-type')!
     const text = await r.text()
+
+    if (path.endsWith('.js')) {
+      return await jsResponse(url, text)
+    }
+
+    const contentType = r.headers.get('content-type')!
     return new Response(text, { headers: { 'content-type': contentType } })
   }
 
