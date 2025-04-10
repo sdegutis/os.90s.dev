@@ -23,6 +23,8 @@ export class NetDrive implements Drive {
   }
 
   async putFile(path: string[], content: string): Promise<boolean> {
+    // console.log(path, content)
+
     return false
   }
 
