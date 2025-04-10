@@ -31,7 +31,7 @@ async function loadConfigs<T extends Record<string, any>>(
         continue nextKey
       }
       catch (e) {
-        console.error(e)
+        // console.error(e)
       }
     }
     throw new Error(`Sys config file invalid?`)
@@ -47,5 +47,8 @@ export const getConfigs = () => loadConfigs({
   'sys.font': async (path: string) => {
     const content = await fs.getFile(path)
     return content ? new Font(content) : undefined
+  },
+  'sys.shell': async (path: string) => {
+    return await fs.getFile(path) ? path : undefined
   },
 })

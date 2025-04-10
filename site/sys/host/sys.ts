@@ -39,15 +39,6 @@ export class Sys {
     const [w, h] = config["sys.size"]
     this.$size = $({ w, h })
 
-    fs.watchTree('usr/config.jsln', async () => {
-      const config = await getConfigs()
-
-      const [w, h] = config["sys.size"]
-      this.resize(w, h)
-
-      this.$font.val = config["sys.font"]
-    })
-
     this.$font = $(config["sys.font"])
 
     const { $point, $scale, canvas, ctx } = setupCanvas(this.$size)
@@ -57,7 +48,16 @@ export class Sys {
 
     this.installEventHandlers(canvas, $point, $scale)
 
-    this.launch('sys/apps/shell.js', {})
+    this.launch(config["sys.shell"], {})
+
+    fs.watchTree('usr/config.jsln', async () => {
+      const config = await getConfigs()
+
+      const [w, h] = config["sys.size"]
+      this.resize(w, h)
+
+      this.$font.val = config["sys.font"]
+    })
 
     if (location.pathname.startsWith('/run/')) {
       const app = location.pathname.slice('/run/'.length)
