@@ -42,6 +42,9 @@ const $panelButtons = $panels.adapt(panels =>
   )
 )
 
+// const config = await api.getConfigs()
+// config['']
+const bgcolor = 0x004433ff
 
 const desktop = await api.Panel.create({
   name: 'desktop',
@@ -49,7 +52,7 @@ const desktop = await api.Panel.create({
   order: 'bottom',
   pos: api.$({ x: 0, y: 0 }),
 }, (
-  <api.View size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={0x004433ff} />
+  <api.View size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={bgcolor} />
 ))
 
 async function showRun(this: api.Button) {
