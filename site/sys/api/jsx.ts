@@ -1,5 +1,5 @@
 import { getComponent } from "./components.js"
-import { Ref } from "./core/ref.js"
+import { MaybeRef, Ref } from "./core/ref.js"
 
 export type JsxAttrs<T> = {
   [K in keyof T as K extends `$${string}` ? never : K]?: (
@@ -11,7 +11,7 @@ export type JsxAttrs<T> = {
     ? ((this: T, ...args: A) => R) | undefined
 
     : `$${K & string}` extends keyof T ? T[`$${K & string}`] extends Ref<infer R>
-    ? R | Ref<R> : never
+    ? MaybeRef<R> : never
 
     : T[K]
   )

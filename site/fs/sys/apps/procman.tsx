@@ -31,7 +31,7 @@ procevents.onmessage = msg => {
 }
 
 const panel = await api.Panel.create({ name: "procman" },
-  <api.PanelView title={api.$('procman')} size={api.$({ w: 100, h: 70 })}>
+  <api.PanelView title='procman' size={{ w: 100, h: 70 }}>
     <api.PanedYA>
       <api.GroupX>
         <api.Button onClick={async () => {

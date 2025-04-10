@@ -90,7 +90,7 @@ async function newFolder() {
 
 
 const panel = await api.Panel.create({ name: 'filer' },
-  <api.PanelView title={api.$('filer')} size={api.$({ w: 150, h: 120 })}>
+  <api.PanelView title='filer' size={{ w: 150, h: 120 }}>
     <api.SplitXA pos={30}>
       <Sidebar />
       <Main />

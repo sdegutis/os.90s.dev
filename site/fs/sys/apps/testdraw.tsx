@@ -27,7 +27,7 @@ class MyView extends api.View {
 }
 
 const panel = await api.Panel.create({ name: "testdraw" },
-  <api.PanelView title={api.$('test draw')} size={api.$({ w: 100, h: 70 })}>
+  <api.PanelView title='test draw' size={{ w: 100, h: 70 }}>
     <MyView />
   </api.PanelView>
 )

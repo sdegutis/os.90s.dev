@@ -1,7 +1,7 @@
 import { Bitmap } from "../core/bitmap.js"
 import { Cursor } from "../core/cursor.js"
 import type { Panel } from "../core/panel.js"
-import { $, multiplex, Ref } from "../core/ref.js"
+import { $, defRef, MaybeRef, multiplex, Ref } from "../core/ref.js"
 import { program, sys } from "../core/sys.js"
 import type { Size } from "../core/types.js"
 import { fs } from "../fs/fs.js"
@@ -34,15 +34,15 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
 ]))
 
 export function PanelView(data: {
-  title: Ref<string>,
+  title: MaybeRef<string>,
   children: View,
-  size?: Ref<Size>,
+  size?: MaybeRef<Size>,
   presented?: (panel: Panel) => void,
   onKeyDown?: (key: string) => boolean,
   menuItems?: () => MenuItem[],
 }) {
 
-  const $size = data.size ?? $({ w: 200, h: 150 })
+  const $size = defRef(data.size ?? $({ w: 200, h: 150 }))
 
   let panel: Panel
 
@@ -134,7 +134,7 @@ function PanelResizer(data: { size: Ref<Size> }) {
     bitmap={adjImage}
     onMouseEnter={function (this: View) { panel.pushCursor(adjCursor) }}
     onMouseExit={function (this: View) { panel.popCursor(adjCursor) }}
-    point={data.size.adapt(s => ({
+    point={defRef(data.size).adapt(s => ({
       x: s.w - adjImage.width,
       y: s.h - adjImage.height,
     }))}
@@ -201,8 +201,10 @@ export function FilePanelView({
     return onKeyDown?.(key) ?? false
   }
 
-  const filetitle = multiplex([filepath, title], () => {
-    return `${title.val}: ${filepath.val ?? '[no file]'}`
+  const $title = defRef(title)
+
+  const filetitle = multiplex([filepath, $title], () => {
+    return `${$title.val}: ${filepath.val ?? '[no file]'}`
   })
 
   return <PanelView

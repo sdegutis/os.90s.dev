@@ -11,7 +11,7 @@ const $items = api.$<Item[]>([])
 const $itemViews = $items.adapt<api.View[]>(items => items.map(item => <ItemView item={item} />))
 
 const panel = await api.Panel.create({ name: "todo" },
-  <api.PanelView title={api.$('todo')} size={api.$({ w: 70, h: 50 })}>
+  <api.PanelView title='todo' size={{ w: 70, h: 50 }}>
     <api.PanedYA>
       <api.GroupX>
         <api.Button padding={2} onClick={clear}><api.Label text='clear' /></api.Button>

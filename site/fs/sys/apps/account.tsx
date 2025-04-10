@@ -160,7 +160,7 @@ function WelcomeView({ state }: { state: api.UserStateKnown }) {
 }
 
 const panel = await api.Panel.create({ name: 'account' },
-  <api.PanelView title={api.$('account')} size={api.$({ w: 150, h: 120 })}>
+  <api.PanelView title='account' size={{ w: 150, h: 120 }}>
     <api.Margin children={api.$userState.adapt(state => {
       switch (state.type) {
         case 'guest': return [<SigninView />]
