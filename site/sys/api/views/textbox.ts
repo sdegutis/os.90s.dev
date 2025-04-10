@@ -1,3 +1,4 @@
+import { DrawingContext } from "../core/drawing.js"
 import { makeRef } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import { Point } from "../core/types.js"
@@ -16,9 +17,10 @@ export class TextBox extends View {
   }
 
   override init(): void {
-    if (this.initialText) {
-      this.model.setText(this.initialText)
-    }
+    this.$model.watch(m => this.adjust())
+    this.$font.watch(m => this.adjust())
+
+    this.adjust()
   }
 
   // override init(): void {
@@ -48,18 +50,12 @@ export class TextBox extends View {
   model = new TextModel()
   $model = makeRef(this, 'model')
 
-  initialText = ''
-
   // private _cursor!: View
 
-  // private lines: string[] = ['']
 
   multiline = true
   onEnter?(): void
   onTab?(): void
-
-  // get text() { return '' }
-  // set text(s) { }
 
   override onMouseDown(button: number): void {
 
@@ -78,19 +74,14 @@ export class TextBox extends View {
   //   this.adjust()
   // }
 
-  // highlightings: Record<string, [number, RegExp]> = {}
+  cursorColor = 0x0000ff99
+  $cursorColor = makeRef(this, 'cursorColor')
 
-  // cursorColor = 0x0000ff99
-  // $cursorColor = makeRef(this, 'cursorColor')
+  textColor = 0xffffffff
+  $textColor = makeRef(this, 'textColor')
 
-  // private row = 0
-  // private col = 0
-  // private end = 0
-
-  // private colors: number[][] = []
-
-  // xgap = 0
-  // ygap = 0
+  xgap = 0
+  ygap = 0
 
   // highlight() {
   //   this.colors.length = this.lines.length
@@ -124,34 +115,33 @@ export class TextBox extends View {
   //   this.adjust()
   // }
 
-  // override onMouseMove(pos: Point): void {
-  // }
+  override draw(ctx: DrawingContext): void {
+    super.draw(ctx)
 
-  // override draw(ctx: DrawingContext): void {
-  //   super.draw(ctx)
+    for (let y = 0; y < this.model.lines.length; y++) {
+      const line = this.model.lines[y]
+      const py = y * this.font.ch + y * this.ygap + this.ygap / 2
+      for (let x = 0; x < line.length; x++) {
+        const px = x * this.font.cw + x * this.xgap
+        const label = this.model.labels[y][x]
+        const color = this.model.colors[label] ?? this.textColor
+        this.font.print(ctx, px, py, color, line[x])
+      }
+    }
+  }
 
-  //   for (let y = 0; y < this.lines.length; y++) {
-  //     const line = this.lines[y]
-  //     const py = y * this.font.ch + y * this.ygap + this.ygap / 2
-  //     for (let x = 0; x < line.length; x++) {
-  //       const px = x * this.font.cw + x * this.xgap
-  //       this.font.print(ctx, px, py, this.colors[y][x], line[x])
-  //     }
-  //   }
-  // }
-
-  // override adjust(): void {
-  //   let cols = 0
-  //   const rows = this.lines.length
-  //   for (const line of this.lines) {
-  //     if (line.length > cols) cols = line.length
-  //   }
-  //   cols++
-  //   this.size = {
-  //     w: (cols * this.font.cw) + (cols * this.xgap),
-  //     h: (rows * this.font.ch) + (rows * this.ygap),
-  //   }
-  // }
+  override adjust(): void {
+    let cols = 0
+    const rows = this.model.lines.length
+    for (const line of this.model.lines) {
+      if (line.length > cols) cols = line.length
+    }
+    cols++
+    this.size = {
+      w: (cols * this.font.cw) + (cols * this.xgap),
+      h: (rows * this.font.ch) + (rows * this.ygap),
+    }
+  }
 
   // private reflectCursorPos() {
   //   this._cursor.point = {
