@@ -66,6 +66,7 @@ class JSLNParser {
     if (this.isend()) this.error(`Unexpected EOS after key`)
     if (this.isnewline()) return this.multi()
     if (this.ch()!.match(/['"`]/)) return this.string(this.ch()!)
+    if (this.ch() === '[') return this.inlinearray()
 
     const ident = this.ident()
     if (ident === 'null') return null
@@ -76,6 +77,21 @@ class JSLNParser {
     if (ident !== 'NaN' && !isNaN(n)) return n
 
     this.error(`Expected value, got ${ident}`)
+  }
+
+  private inlinearray() {
+    this.i++
+    const vals: any[] = []
+    this.skipspace()
+    while (this.ch() !== ']') {
+      const val = this.someval()
+      vals.push(val)
+      this.skipspace()
+      if (this.ch() === ',') this.i++
+      this.skipspace()
+    }
+    this.i++
+    return vals
   }
 
   private multi() {
@@ -232,15 +248,15 @@ class JSLNEncoder {
 
 }
 
-export class JSLN {
+export const JSLN = {
 
-  static parse(str: string) {
+  parse: (str: string) => {
     return new JSLNParser(str).parse()
-  }
+  },
 
-  static stringify(o: Record<string, any>, stringifiers?: Record<string, (o: any) => string>) {
+  stringify: (o: Record<string, any>, stringifiers?: Record<string, (o: any) => string>) => {
     return new JSLNEncoder(o, stringifiers).stringify()
-  }
+  },
 
 }
 
