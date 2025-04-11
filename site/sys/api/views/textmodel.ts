@@ -34,37 +34,6 @@ class Line {
 
 }
 
-type Rule = {
-  test: RegExp,
-  action: { token: string, next?: string },
-}
-
-type ConvenientRule = [
-  test: RegExp | string,
-  action: string | { token: string, next?: string },
-]
-
-export class Highlighter {
-
-  log = false
-  colors: Record<string, number>
-  rules: Record<string, Rule[]> = {}
-
-  constructor(
-    colors: Record<string, number>,
-    rules: Record<string, ConvenientRule[]>,
-  ) {
-    this.colors = colors
-    for (const [key, ruleset] of Object.entries(rules)) {
-      this.rules[key] = ruleset.map(([test, action]) => ({
-        test: new RegExp(test, 'gy'),
-        action: typeof action === 'string' ? { token: action } : action,
-      }))
-    }
-  }
-
-}
-
 export class TextModel {
 
   highlighter?: Highlighter | undefined
@@ -391,6 +360,37 @@ export class TextModel {
   }
 
 }
+
+export class Highlighter {
+
+  log = false
+  colors: Record<string, number>
+  rules: Record<string, Rule[]> = {}
+
+  constructor(
+    colors: Record<string, number>,
+    rules: Record<string, ConvenientRule[]>,
+  ) {
+    this.colors = colors
+    for (const [key, ruleset] of Object.entries(rules)) {
+      this.rules[key] = ruleset.map(([test, action]) => ({
+        test: new RegExp(test, 'gy'),
+        action: typeof action === 'string' ? { token: action } : action,
+      }))
+    }
+  }
+
+}
+
+type Rule = {
+  test: RegExp,
+  action: { token: string, next?: string },
+}
+
+type ConvenientRule = [
+  test: RegExp | string,
+  action: string | { token: string, next?: string },
+]
 
 type Pos = { col: number, row: number }
 
