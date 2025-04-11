@@ -5,9 +5,9 @@ class Span {
 
   text: string
   label: string
-  meta: string
+  meta?: string | undefined
 
-  constructor(text: string, label: string, meta: string) {
+  constructor(text: string, label: string, meta?: string) {
     this.text = text
     this.label = label
     this.meta = meta
@@ -44,7 +44,7 @@ export class TextModel {
 
   setText(s: string) {
     this.lines = s.split('\n')
-    this.spans = this.lines.map(line => [])
+    this.spans = this.lines.map(line => [new Span(line, '')])
 
     this.doMove(false, c => {
       c.row = Math.min(c.row, this.lines.length - 1)
@@ -76,6 +76,7 @@ export class TextModel {
       this.lines[c.row] = a + ch + b
       c.col++
       c.end = c.col
+      this.rebuildSpan(c.row)
       this.rehighlight(c.row)
     })
   }
@@ -86,6 +87,7 @@ export class TextModel {
       this.lines[c.row] = a + '  ' + b
       c.col += 2
       c.end = c.col
+      this.rebuildSpan(c.row)
       this.rehighlight(c.row)
     })
   }
@@ -96,8 +98,10 @@ export class TextModel {
       this.lines[c.row] = a
       this.lines.splice(++c.row, 0, b)
       this.spans.splice(c.row, 0, [])
-      this.moveCursorsAfter(c, c.row, 1)
+      this.pushCursorsAfter(c, c.row, 1)
       c.end = c.col = 0
+      this.rebuildSpan(c.row - 1)
+      this.rebuildSpan(c.row)
       this.rehighlight(c.row - 1)
     })
   }
@@ -112,8 +116,9 @@ export class TextModel {
         this.lines[c.row] += this.lines[c.row + 1]
         this.lines.splice(c.row + 1, 1)
         this.spans.splice(c.row + 1, 1)
-        this.moveCursorsAfter(c, c.row + 1, -1)
+        this.pushCursorsAfter(c, c.row + 1, -1)
       }
+      this.rebuildSpan(c.row)
       this.rehighlight(c.row)
     })
   }
@@ -138,15 +143,16 @@ export class TextModel {
         this.lines[c.row - 1] += this.lines[c.row]
         this.lines.splice(c.row, 1)
         this.spans.splice(c.row, 1)
-        this.moveCursorsAfter(c, c.row, -1)
+        this.pushCursorsAfter(c, c.row, -1)
         c.row--
         c.col = c.end
       }
+      this.rebuildSpan(c.row)
       this.rehighlight(c.row)
     })
   }
 
-  private moveCursorsAfter(init: TextCursor, row: number, linesDown: number) {
+  private pushCursorsAfter(init: TextCursor, row: number, linesDown: number) {
     this.cursors.forEach(c => {
       if (c === init) return
       if (c.row >= row) {
@@ -292,7 +298,12 @@ export class TextModel {
     //   .map(c => c.begin)
   }
 
+  private rebuildSpan(line: number) {
+    this.spans[line] = [new Span(this.lines[line], '')]
+  }
+
   private rehighlight(line: number) {
+    if (!this.highlighter) return
 
   }
 
