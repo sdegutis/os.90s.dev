@@ -112,20 +112,6 @@ export class TextBox extends View {
     this.scrollCursorIntoView()
   }
 
-  // highlight() {
-  //   this.colors.length = this.lines.length
-  //   for (let i = 0; i < this.lines.length; i++) {
-  //     const line = this.lines[i]
-  //     const cline = Array(line.length).fill(0xffffffff)
-  //     this.colors[i] = cline
-  //     for (const [col, regex] of Object.values(this.highlightings)) {
-  //       for (const m of line.matchAll(regex)) {
-  //         cline.fill(col, m.index, m.index + m[1].length)
-  //       }
-  //     }
-  //   }
-  // }
-
   override draw(ctx: DrawingContext): void {
     super.draw(ctx)
 
@@ -134,7 +120,7 @@ export class TextBox extends View {
       const py = y * this.font.ch + y * this.ygap + this.ygap / 2
       for (let x = 0; x < line.length; x++) {
         const px = x * this.font.cw + x * this.xgap
-        const label = this.model.labels[y][x]
+        const label = this.model.labels[y][x] ?? ''
         const color = this.model.colors[label] ?? this.textColor
         this.font.print(ctx, px, py, color, line[x])
       }
