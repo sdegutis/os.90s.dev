@@ -311,6 +311,10 @@ export class TextModel {
       const line = this.lines[row]
       const spans: Span[] = []
 
+      if (hl.log) console.log('\n%cHL ROW: %d',
+        'font-weight:bold;border:10px solid transparent;font-size:200%',
+        row)
+
       nextToken:
       for (let pos = 0; pos < line.text.length;) {
         const state = states.at(-1)!

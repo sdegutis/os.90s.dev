@@ -36,13 +36,14 @@ if ($filepath.val?.endsWith('.jsln')) {
     'val': [
       [/^/, ['', '@pop()']],
       [/\[/, ['punc', '@push(array)']],
-      // [/0x[0-9a-fA-F]+/, ['number', 'start']],
-      // [/[0-9]+/, ['number', 'start']],
+      [/(\btrue\b|\bfalse\b|\bnull\b)/, ['literal', '@pop()']],
+      [/0x[0-9a-fA-F]+/, ['number', 'start']],
+      [/[0-9]+/, ['number', 'start']],
       [/["']/, ['quote', '@push(string)']],
-      // [/[ \t]+/, 'val'],
+      [/[ \t]+/, ''],
     ],
     'array': [
-      // [/^/, ['error', 'error']],
+      [/^/, ['error', 'error']],
       [/\[/, ['punc', '@push(array)']],
       [/\]/, ['punc', '@pop()']],
       [/(\btrue\b|\bfalse\b|\bnull\b)/, 'literal'],
