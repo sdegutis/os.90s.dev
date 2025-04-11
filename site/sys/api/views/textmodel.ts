@@ -311,8 +311,8 @@ export class TextModel {
       const line = this.lines[row]
       const spans: Span[] = []
 
-      if (hl.log) console.log('\n%cHL ROW: %d',
-        'font-weight:bold;font-size:300%',
+      if (hl.log) console.log('\n%crow: %d',
+        'border-left:7em solid #19f; padding-left:1em',
         row)
 
       nextToken:
@@ -324,10 +324,9 @@ export class TextModel {
           spans.push(new Span(line.text.slice(pos), state))
           break
         }
-        if (hl.log) {
-          console.log('\n', { row, pos, input: line.text.slice(pos) })
-          console.log('state:', states)
-        }
+        if (hl.log) console.log('%c state[\x1b[35m%s\x1b[0m] pos[\x1b[34m%d\x1b[0m] input[\x1b[34m%s\x1b[0m]',
+          'border-left:3em solid #19f; padding-left:1em',
+          states.join(','), pos, line.text.slice(pos))
         for (const { test, action } of ruleset) {
           test.lastIndex = pos
           if (hl.log) console.log('try', test)
@@ -337,15 +336,15 @@ export class TextModel {
             spans.push(new Span(match[0], action.token))
             if (action.next) {
               if (action.next.action === 'pop') {
-                if (hl.log) console.log('@pop()')
+                if (hl.log) console.log('\x1b[33m%s\x1b[0m', '@pop()')
                 states.pop()
               }
               else if (action.next.action === 'push') {
-                if (hl.log) console.log(`@push(${action.next.state})`)
+                if (hl.log) console.log('\x1b[33m%s\x1b[0m', `@push(${action.next.state})`)
                 states.push(action.next.state)
               }
               else {
-                if (hl.log) console.log(`@replace(${action.next.state})`)
+                if (hl.log) console.log('\x1b[33m%s\x1b[0m', `@replace(${action.next.state})`)
                 states[states.length - 1] = action.next.state
               }
             }
