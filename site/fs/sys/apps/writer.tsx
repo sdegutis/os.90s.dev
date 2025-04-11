@@ -51,7 +51,7 @@ if ($filepath.val?.endsWith('.jsln')) {
     ],
   })
 
-  hl.log = true
+  // hl.log = true
 
   model.highlighter = hl
   model.highlightDocument()

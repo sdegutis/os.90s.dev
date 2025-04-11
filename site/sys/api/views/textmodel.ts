@@ -321,7 +321,7 @@ export class TextModel {
           break
         }
         if (hl.log) {
-          console.log('\n', { input: line.text.slice(pos), row, pos })
+          console.log('\n', { row, pos, input: line.text.slice(pos) })
           console.log('state:', states)
         }
         for (const { test, action } of ruleset) {
@@ -350,8 +350,7 @@ export class TextModel {
           }
         }
 
-        if (hl.log) console.log('no match :\'(', [row, pos, line.text.slice(pos)])
-        states[states.length - 1] = ''
+        if (hl.log) console.log('no match :\'(')
         spans.push(new Span(line.text.slice(pos), 'error'))
         break
       }
