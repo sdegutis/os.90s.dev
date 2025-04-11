@@ -330,33 +330,39 @@ export class TextModel {
   private rehighlight(row: number) {
     if (!this.highlighter) return
 
-    const line = this.lines[row]
-    const spans: Span[] = []
-    let state = this.stateBefore(row)
+    while (row < this.lines.length) {
+      const line = this.lines[row]
+      const spans: Span[] = []
+      let state = this.stateBefore(row)
 
-    nextToken:
-    for (let pos = 0; pos < line.text.length;) {
-      for (const { test, action } of this.highlighter.rules[state]) {
-        test.lastIndex = pos
-        const match = test.exec(line.text)
-        console.log('test', pos, test, match, test.lastIndex)
-        if (match) {
-          console.log('match', pos, test.lastIndex, test, match)
-          spans.push(new Span(match[0], action.token))
-          if (action.next) state = action.next
-          pos = test.lastIndex
-          continue nextToken
+      nextToken:
+      for (let pos = 0; pos < line.text.length;) {
+        for (const { test, action } of this.highlighter.rules[state]) {
+          test.lastIndex = pos
+          const match = test.exec(line.text)
+          console.log('test', pos, test, match, test.lastIndex)
+          if (match) {
+            console.log('match', pos, test.lastIndex, test, match)
+            spans.push(new Span(match[0], action.token))
+            if (action.next) state = action.next
+            pos = test.lastIndex
+            continue nextToken
+          }
         }
+
+        console.log('NO match', row, pos, line.text.slice(pos))
+        spans.push(new Span(line.text.slice(pos), 'error'))
+        break
       }
 
-      console.log('NO match', row, pos, line.text.slice(pos))
-      spans.push(new Span(line.text.slice(pos), 'error'))
-      break
+      const needMoreLines = line.endState !== state
+
+      line.endState = state
+      line.spans = spans
+
+      if (!needMoreLines) return
+      row++
     }
-
-    line.endState = state
-    line.spans = spans
-
   }
 
   private stateBefore(row: number) {
