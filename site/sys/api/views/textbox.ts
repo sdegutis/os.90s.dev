@@ -198,6 +198,8 @@ export class TextBox extends View {
   keyHandlers: [RegExp, (...groups: string[]) => void][] = [
     [/(shift )?(right)/, (shift) => this.model.moveCursorsRight(!!shift)],
     [/(shift )?(left)/, (shift) => this.model.moveCursorsLeft(!!shift)],
+    [/(shift )?(down)/, (shift) => this.model.moveCursorsDown(!!shift)],
+    [/(shift )?(up)/, (shift) => this.model.moveCursorsUp(!!shift)],
     [/enter/, () => this.onEnter ? this.onEnter() : this.model.insertNewline()],
     [/(.)/, (ch) => this.model.insert(ch)],
   ]

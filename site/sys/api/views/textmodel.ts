@@ -72,6 +72,24 @@ export class TextModel {
     })
   }
 
+  moveCursorsDown(selecting = false) {
+    this.doMove(selecting, c => {
+      c.row = Math.min(c.row + 1, this.lines.length - 1)
+      this.fixCol(c)
+    })
+  }
+
+  moveCursorsUp(selecting = false) {
+    this.doMove(selecting, c => {
+      c.row = Math.max(0, c.row - 1)
+      this.fixCol(c)
+    })
+  }
+
+  private fixCol(c: TextCursor) {
+    c.col = Math.min(this.lines[c.row].length, c.end)
+  }
+
   private doMove(selecting: boolean, fn: (c: TextCursor) => void) {
     this.cursors.forEach(c => {
       c.noteSelecting(selecting)
