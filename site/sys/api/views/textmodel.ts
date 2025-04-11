@@ -142,7 +142,7 @@ export class TextModel {
 
   moveCursorTo(row: number, col: number, selecting = false) {
     this.removeExtraCursors()
-    this.doMove(false, c => {
+    this.doMove(selecting, c => {
       c.row = Math.min(row, this.lines.length - 1)
       c.end = c.col = col
       this.fixCursorCol(c)
