@@ -1,9 +1,9 @@
-import { TextModel, TextSpan } from "./model.js"
+import { TextHighlighter, TextModel, TextSpan } from "./model.js"
 
 export type LangTheme = Record<string, number>
 export type LangGrammar = Record<string, ConvenientRule[]>
 
-export class Highlighter {
+export class Highlighter implements TextHighlighter {
 
   log
   colors: LangTheme

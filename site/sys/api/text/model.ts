@@ -2,7 +2,7 @@ import { Listener } from "../core/listener.js"
 import { makeRef } from "../core/ref.js"
 import { LangTheme } from "./highlighter.js"
 
-interface Highlighter {
+export interface TextHighlighter {
   highlight(model: TextModel, row: number): void
   colors: LangTheme
 }
@@ -42,7 +42,7 @@ export class TextLine {
 
 export class TextModel {
 
-  highlighter?: Highlighter | undefined
+  highlighter?: TextHighlighter | undefined
 
   lines: TextLine[] = [new TextLine('')]
   cursors: TextCursor[] = [new TextCursor()]
