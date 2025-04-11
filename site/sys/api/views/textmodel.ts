@@ -31,7 +31,7 @@ export class TextModel {
     this.cursors.forEach(c => {
       const [a, b] = this.halves(c)
       this.lines[c.row] = a + text + b
-      c.col++
+      c.col += text.length
       c.end = c.col
       this.onLineChanged.dispatch(c.row)
     })

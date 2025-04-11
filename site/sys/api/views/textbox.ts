@@ -209,12 +209,14 @@ export class TextBox extends View {
     [/^ctrl (shift )?home$/, (shift) => this.model.moveToBeginningOfDocument(!!shift)],
     [/^(shift )?end$/, (shift) => this.model.moveToEndOfLine(!!shift)],
     [/^ctrl (shift )?end$/, (shift) => this.model.moveToEndOfDocument(!!shift)],
+    [/^ctrl v$/, () => {
+      sys.readClipboardText().then(text => {
+        this.model.insertText(text)
+      })
+    }],
   ]
 
   override onKeyPress(key: string): boolean {
-
-    console.log(key)
-
     for (const [r, fn] of this.keyHandlers) {
       const m = key.match(r)
       if (m) {
@@ -225,35 +227,8 @@ export class TextBox extends View {
         return true
       }
     }
-
     return false
   }
-
-  // override onKeyDown(key: string): boolean {
-  //   else if (key === 'v' && sys.keymap.has('Control')) {
-  //     sys.readClipboardText().then(text => {
-  //       const [a, b] = this.halves()
-  //       this.lines[this.row] = a + text + b
-  //       this.col += text.length
-  //       this.end = this.col
-  //       this.adjust()
-
-  //       this.highlight()
-  //       this.restartBlinking()
-  //       this.reflectCursorPos()
-  //       this.scrollCursorIntoView()
-  //     })
-  //   }
-  //   else if (key.length === 1 && !sys.keymap.has('Control') && !sys.keymap.has('Alt')) {
-  //     const [a, b] = this.halves()
-  //     this.lines[this.row] = a + key + b
-  //     this.col++
-  //     this.end = this.col
-  //     this.adjust()
-  //   }
-  //   else {
-  //     return false
-  //   }
 
   $focused = $(false)
 
