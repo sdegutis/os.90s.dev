@@ -197,21 +197,27 @@ export class TextBox extends View {
 
   override onKeyPress(key: string): boolean {
 
-    this.restartCursorBlink.dispatch()
-
     console.log(key)
 
     if (key.length === 1) {
       this.model.insert(key)
+      this.restartCursorBlink.dispatch()
       return true
     }
 
     if (key === 'right') {
       this.model.moveCursorsRight()
+      this.restartCursorBlink.dispatch()
       return true
     }
 
-    return true
+    if (key === 'shift right') {
+      this.model.moveCursorsRight(true)
+      this.restartCursorBlink.dispatch()
+      return true
+    }
+
+    return false
   }
 
   // override onKeyPress(key: string): boolean {
