@@ -305,9 +305,7 @@ export class TextModel {
     if (!this.highlighter) return
     const hl = this.highlighter
 
-    let states: string[] = [
-      this.stateBefore(row)
-    ]
+    const states: string[] = this.stateBefore(row)
 
     while (row < this.lines.length) {
       const line = this.lines[row]
@@ -322,26 +320,29 @@ export class TextModel {
           spans.push(new Span(line.text.slice(pos), state))
           break
         }
+        if (hl.log) {
+          console.log('\nINPUT:', [line.text.slice(pos)], { row, pos })
+          console.log('STATE:', states)
+        }
         for (const { test, action } of ruleset) {
           test.lastIndex = pos
-          if (hl.log) console.log('try', [row, pos, state, line.text.slice(pos), test])
+          if (hl.log) console.log('try', test)
           const match = test.exec(line.text)
           if (match) {
             if (hl.log) console.log('MATCH', action, match)
             spans.push(new Span(match[0], action.token))
-            if (action.next !== undefined) {
-              let match
-              if (action.next === '@pop()') {
-                if (hl.log) console.log('POP STATE')
+            if (action.next) {
+              if (action.next.action === 'pop') {
+                if (hl.log) console.log('@pop()')
                 states.pop()
               }
-              else if (match = action.next.match(/^@push\((.+?)\)$/)) {
-                if (hl.log) console.log('PUSH STATE', [match[1]])
-                states.push(match[1])
+              else if (action.next.action === 'push') {
+                if (hl.log) console.log(`@push(${action.next.state})`)
+                states.push(action.next.state)
               }
               else {
-                if (hl.log) console.log('REPLACE STATE', [action.next])
-                states[states.length - 1] = action.next
+                if (hl.log) console.log(`@replace(${action.next.state})`)
+                states[states.length - 1] = action.next.state
               }
             }
             pos = test.lastIndex
@@ -355,9 +356,9 @@ export class TextModel {
         break
       }
 
+
       const endStates = JSON.stringify(states)
       const needMoreLines = line.endState !== endStates
-      if (hl.log) console.log('NEED MORE LINES?', [row, endStates, line.endState])
 
       line.endState = endStates
       line.spans = spans
@@ -366,11 +367,11 @@ export class TextModel {
       row++
     }
 
-    if (hl.log) console.log(`DONE HIGHLIGHTING ${Date.now()}\n\n`)
+    if (hl.log) console.log(`DONE HIGHLIGHTING ${Date.now()}\n\n\n`)
   }
 
   private stateBefore(row: number) {
-    if (row === 0) return ''
+    if (row === 0) return [Object.keys(this.highlighter!.rules)[0]]
     return JSON.parse(this.lines[row - 1].endState!)
   }
 
@@ -392,23 +393,35 @@ export class Highlighter {
   ) {
     this.colors = colors
     for (const [key, ruleset] of Object.entries(rules)) {
-      this.rules[key] = ruleset.map(([test, action]) => ({
-        test: new RegExp(test, 'gy'),
-        action: typeof action === 'string'
-          ? { token: action }
-          : action instanceof Array
-            ? { token: action[0], next: action[1] }
-            : action,
-      }))
+      this.rules[key] = ruleset.map(([test, action]) => {
+        test = new RegExp(test, 'gy')
+
+        if (typeof action === 'string') action = { token: action }
+        else if (action instanceof Array) action = { token: action[0], next: action[1] }
+
+        let next: Next | undefined
+        let match
+        if (action.next === '@pop()')
+          next = { action: 'pop' }
+        else if (match = action.next?.match(/^@push\((.+?)\)$/))
+          next = { action: 'push', state: match[1] }
+        else if (action.next)
+          next = { action: 'replace', state: action.next }
+
+        return { test, action: { token: action.token, next } }
+      })
     }
   }
 
 }
 
-type Rule = {
-  test: RegExp,
-  action: { token: string, next?: string },
-}
+type Next =
+  | { action: 'replace', state: string }
+  | { action: 'push', state: string }
+  | { action: 'pop' }
+
+type Action = { token: string, next?: Next | undefined }
+type Rule = { test: RegExp, action: Action }
 
 type ConvenientRule = [
   test: RegExp | string,

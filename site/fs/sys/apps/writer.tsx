@@ -17,7 +17,7 @@ if ($filepath.val?.endsWith('.jsln')) {
     comment: 0x009900ff,
     error: 0x990000ff,
   }, {
-    '': [
+    'start': [
       [/[a-zA-Z0-9_]+/, 'ident'],
       [/\./, 'punc'],
       [/=/, ['punc', '@push(val)']],
@@ -25,16 +25,19 @@ if ($filepath.val?.endsWith('.jsln')) {
       [/[ \t]+/, ''],
     ],
     'comment': [
-      [/.*$/, ['comment', '']],
+      [/.*$/, ['comment', 'start']],
     ],
     'val': [
-      [/\[/, ['punc', 'array']],
-      [/0x[0-9a-fA-F]+/, ['number', '']],
-      [/[0-9]+/, ['number', '']],
+      [/^/, ['', '@pop()']],
+      [/\[/, ['punc', '@push(array)']],
+      [/0x[0-9a-fA-F]+/, ['number', 'start']],
+      [/[0-9]+/, ['number', 'start']],
       [/["']/, ['quote', 'string']],
-      [/[ \t]+/, ''],
+      [/[ \t]+/, 'val'],
     ],
     'array': [
+      [/^/, ['error', 'error']],
+      [/\[/, ['punc', '@push(array)']],
       [/\]/, ['punc', '@pop()']],
       [/0x[0-9a-fA-F]+/, 'number'],
       [/[0-9]+/, 'number'],
@@ -43,7 +46,7 @@ if ($filepath.val?.endsWith('.jsln')) {
     'string': [
       [/\\["rnt]/, 'quote'],
       [/[^"]*$/, ['error', 'error']],
-      [/"/, ['quote', '']],
+      [/"/, ['quote', '@pop()']],
       [/[^\\"]+/, 'string'],
     ],
   })
