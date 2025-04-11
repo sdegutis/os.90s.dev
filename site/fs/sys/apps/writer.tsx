@@ -66,7 +66,7 @@ if ($filepath.val?.endsWith('.jsln')) {
   }
 
   model.highlighter = new api.Highlighter(theme1, jslnGrammar, true)
-  model.highlight(0)
+  model.highlighter.highlight(model, 0)
 
 }
 
