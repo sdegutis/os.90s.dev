@@ -12,7 +12,7 @@ if ($filepath.val?.endsWith('.jsln')) {
     ident: 0x99990099,
     punc: 0xffffff33,
     string: 0xff99ffff,
-    string2: 0x9999ffff,
+    quote: 0x9999ffff,
     number: 0x0099ffff,
     comment: 0x009900ff,
     error: 0x990000ff,
@@ -23,14 +23,14 @@ if ($filepath.val?.endsWith('.jsln')) {
       [/[a-zA-Z0-9_]+/, 'ident'],
       [/[.=[\]]/, 'punc'],
       [/#/, { token: 'comment', next: 'comment' }],
-      [/"/, { token: 'string2', next: 'string' }],
+      [/["']/, { token: 'quote', next: 'string' }],
       [/[ \t]+/, ''],
     ],
     'comment': [
       [/.*$/, { token: 'comment', next: '' }],
     ],
     'string': [
-      [/"/, { token: 'string2', next: '' }],
+      [/"/, { token: 'quote', next: '' }],
       [/[^"]+/, 'string'],
     ],
   })
