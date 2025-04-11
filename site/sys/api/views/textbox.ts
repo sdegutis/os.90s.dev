@@ -201,6 +201,7 @@ export class TextBox extends View {
     [/(shift )?(down)/, (shift) => this.model.moveCursorsDown(!!shift)],
     [/(shift )?(up)/, (shift) => this.model.moveCursorsUp(!!shift)],
     [/enter/, () => this.onEnter ? this.onEnter() : this.model.insertNewline()],
+    [/delete/, () => this.model.delete()],
     [/backspace/, () => this.model.backspace()],
     [/(.)/, (ch) => this.model.insert(ch)],
   ]
@@ -214,6 +215,7 @@ export class TextBox extends View {
       if (m) {
         fn(...m.slice(1))
         this.restartCursorBlink.dispatch()
+        this.needsRedraw()
         return true
       }
     }
@@ -258,30 +260,6 @@ export class TextBox extends View {
   //       this.col += 2
   //       this.end = this.col
   //       this.adjust()
-  //     }
-  //   }
-  //   else if (key === 'Delete') {
-  //     if (this.col < this.lines[this.row].length) {
-  //       const [a, b] = this.halves()
-  //       this.lines[this.row] = a + b.slice(1)
-  //       this.adjust()
-  //     }
-  //     else if (this.row < this.lines.length - 1) {
-  //       this.lines[this.row] += this.lines[this.row + 1]
-  //       this.lines.splice(this.row + 1, 1)
-  //       this.adjust()
-  //     }
-  //   }
-  //   else if (key === 'Enter') {
-  //     if (this.multiline) {
-  //       const [a, b] = this.halves()
-  //       this.lines[this.row] = a
-  //       this.lines.splice(++this.row, 0, b)
-  //       this.end = this.col = 0
-  //       this.adjust()
-  //     }
-  //     else {
-  //       debounce(() => this.onEnter?.())()
   //     }
   //   }
   //   else if (key === 'v' && sys.keymap.has('Control')) {

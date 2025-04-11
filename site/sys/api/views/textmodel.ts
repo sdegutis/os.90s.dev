@@ -86,6 +86,19 @@ export class TextModel {
     })
   }
 
+  delete() {
+    this.cursors.forEach(c => {
+      if (c.col < this.lines[c.row].length) {
+        const [a, b] = this.halves(c)
+        this.lines[c.row] = a + b.slice(1)
+      }
+      else if (c.row < this.lines.length - 1) {
+        this.lines[c.row] += this.lines[c.row + 1]
+        this.lines.splice(c.row + 1, 1)
+      }
+    })
+  }
+
   backspace() {
     this.cursors.forEach(c => {
       if (c.col > 0) {
@@ -108,7 +121,6 @@ export class TextModel {
         c.row--
         c.col = c.end
       }
-
     })
   }
 
