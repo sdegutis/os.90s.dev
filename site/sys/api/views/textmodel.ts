@@ -4,12 +4,12 @@ import { makeRef } from "../core/ref.js"
 class Span {
 
   text: string
-  label: string
+  state: string
   meta?: string | undefined
 
-  constructor(text: string, label: string, meta?: string) {
+  constructor(text: string, state: string, meta?: string) {
     this.text = text
-    this.label = label
+    this.state = state
     this.meta = meta
   }
 
@@ -19,6 +19,7 @@ class Line {
 
   text!: string
   spans!: Span[]
+  private endState = ''
 
   constructor(text: string) {
     this.setText(text)
@@ -31,10 +32,12 @@ class Line {
 
 }
 
+type Rule = [RegExp, { token: string, next?: string }]
+
 export class Highlighter {
 
   colors: Record<string, number> = {}
-
+  rules: Record<string, Rule[]> = {}
 
 }
 

@@ -13,6 +13,20 @@ if ($filepath.val?.endsWith('.jsln')) {
   hl.colors['ident'] = 0x99000099
   hl.colors['punc'] = 0xffffff33
   hl.colors['string'] = 0x0099ffff
+  hl.colors['number'] = 0x00ff99ff
+
+  hl.rules = {
+    '': [
+      [/[a-zA-Z0-9_]+/, { token: 'ident' }],
+      [/[.=]/, { token: 'punc' }],
+      [/#/, { token: 'comment', next: 'comment' }],
+      [/0x[0-9]+/, { token: 'number' }],
+      [/[0-9]+/, { token: 'number' }],
+    ],
+    'comment': [
+      [/.+$/, { token: 'comment', next: '' }],
+    ],
+  }
 
   model.highlighter = hl
   model.highlightDocument()

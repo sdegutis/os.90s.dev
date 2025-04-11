@@ -120,7 +120,7 @@ export class TextBox extends View {
       const py = y * this.font.ch
       let px = 0
       for (const span of line.spans) {
-        const color = this.model.highlighter?.colors[span.label] ?? this.textColor
+        const color = this.model.highlighter?.colors[span.state] ?? this.textColor
         this.font.print(ctx, px, py, color, span.text)
         px += span.text.length * this.font.cw
       }
