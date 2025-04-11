@@ -21,13 +21,15 @@ class Line {
   spans!: Span[]
   endState?: string | undefined
 
-  constructor(text: string) {
+  constructor(text: string, endState?: string) {
     this.setText(text)
+    this.endState = endState
   }
 
   setText(text: string) {
     this.text = text
     this.spans = [new Span(text, '')]
+    this.endState = undefined
   }
 
 }
@@ -132,8 +134,9 @@ export class TextModel {
   insertNewline() {
     this.editWithCursors(c => {
       const [a, b] = this.halves(c)
+      const ender = this.lines[c.row].endState
       this.lines[c.row].setText(a)
-      this.lines.splice(++c.row, 0, new Line(b))
+      this.lines.splice(++c.row, 0, new Line(b, ender))
       this.pushCursorsAfter(c, c.row, 1)
       c.end = c.col = 0
       this.rehighlight(c.row - 1)
@@ -366,6 +369,7 @@ export class TextModel {
       }
 
       const needMoreLines = line.endState !== state
+      if (hl.log) console.log('NEED MORE LINES?', [row, state, line.endState])
 
       line.endState = state
       line.spans = spans
