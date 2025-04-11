@@ -1,10 +1,31 @@
 import { Listener } from "../core/listener.js"
 import { makeRef } from "../core/ref.js"
 
-export class TextModel {
+class Span {
+
+  text: string
+  label: string
+  meta: string
+
+  constructor(text: string, label: string, meta: string) {
+    this.text = text
+    this.label = label
+    this.meta = meta
+  }
+
+}
+
+class Highlighter {
 
   colors: Record<string, number> = {}
-  labels: string[][] = []
+
+}
+
+export class TextModel {
+
+  highlighter?: Highlighter
+
+  spans: Span[][] = []
   lines: string[] = ['']
 
   cursors: TextCursor[] = [new TextCursor()]
@@ -23,7 +44,7 @@ export class TextModel {
 
   setText(s: string) {
     this.lines = s.split('\n')
-    this.labels = this.lines.map(line => [])
+    this.spans = this.lines.map(line => [])
 
     this.doMove(false, c => {
       c.row = Math.min(c.row, this.lines.length - 1)
@@ -74,7 +95,7 @@ export class TextModel {
       const [a, b] = this.halves(c)
       this.lines[c.row] = a
       this.lines.splice(++c.row, 0, b)
-      this.labels.splice(c.row, 0, [])
+      this.spans.splice(c.row, 0, [])
       this.moveCursorsAfter(c, c.row, 1)
       c.end = c.col = 0
       this.rehighlight(c.row - 1)
@@ -90,7 +111,7 @@ export class TextModel {
       else if (c.row < this.lines.length - 1) {
         this.lines[c.row] += this.lines[c.row + 1]
         this.lines.splice(c.row + 1, 1)
-        this.labels.splice(c.row + 1, 1)
+        this.spans.splice(c.row + 1, 1)
         this.moveCursorsAfter(c, c.row + 1, -1)
       }
       this.rehighlight(c.row)
@@ -116,7 +137,7 @@ export class TextModel {
         c.end = this.lines[c.row - 1].length
         this.lines[c.row - 1] += this.lines[c.row]
         this.lines.splice(c.row, 1)
-        this.labels.splice(c.row, 1)
+        this.spans.splice(c.row, 1)
         this.moveCursorsAfter(c, c.row, -1)
         c.row--
         c.col = c.end

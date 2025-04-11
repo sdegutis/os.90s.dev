@@ -115,14 +115,14 @@ export class TextBox extends View {
   override draw(ctx: DrawingContext): void {
     super.draw(ctx)
 
-    for (let y = 0; y < this.model.lines.length; y++) {
-      const line = this.model.lines[y]
-      const py = y * this.font.ch + y * this.ygap + this.ygap / 2
-      for (let x = 0; x < line.length; x++) {
-        const px = x * this.font.cw + x * this.xgap
-        const label = this.model.labels[y][x] ?? ''
-        const color = this.model.colors[label] ?? this.textColor
-        this.font.print(ctx, px, py, color, line[x])
+    for (let y = 0; y < this.model.spans.length; y++) {
+      const spans = this.model.spans[y]
+      const py = y * this.font.ch
+      let px = 0
+      for (const span of spans) {
+        const color = this.model.highlighter?.colors[span.label] ?? this.textColor
+        this.font.print(ctx, px, py, color, span.text)
+        px += span.text.length * this.font.cw
       }
     }
   }
