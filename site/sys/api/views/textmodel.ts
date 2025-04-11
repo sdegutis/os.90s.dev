@@ -321,15 +321,15 @@ export class TextModel {
           break
         }
         if (hl.log) {
-          console.log('\nINPUT:', [line.text.slice(pos)], { row, pos })
-          console.log('STATE:', states)
+          console.log('\n', { input: line.text.slice(pos), row, pos })
+          console.log('state:', states)
         }
         for (const { test, action } of ruleset) {
           test.lastIndex = pos
           if (hl.log) console.log('try', test)
           const match = test.exec(line.text)
           if (match) {
-            if (hl.log) console.log('MATCH', action, match)
+            if (hl.log) console.log('match', action, match)
             spans.push(new Span(match[0], action.token))
             if (action.next) {
               if (action.next.action === 'pop') {
@@ -350,7 +350,7 @@ export class TextModel {
           }
         }
 
-        if (hl.log) console.log('NO MATCH :\'(', [row, pos, line.text.slice(pos)])
+        if (hl.log) console.log('no match :\'(', [row, pos, line.text.slice(pos)])
         states[states.length - 1] = ''
         spans.push(new Span(line.text.slice(pos), 'error'))
         break
@@ -367,7 +367,7 @@ export class TextModel {
       row++
     }
 
-    if (hl.log) console.log(`DONE HIGHLIGHTING ${Date.now()}\n\n\n`)
+    if (hl.log) console.log(`done highlighting ${Date.now()}\n\n\n`)
   }
 
   private stateBefore(row: number) {
