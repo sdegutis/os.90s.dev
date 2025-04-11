@@ -107,9 +107,7 @@ export class TextModel {
   }
 
   editWithCursors(fn: (c: TextCursor) => void) {
-    for (let i = this.cursors.length - 1; i >= 0; i--) {
-      fn(this.cursors[i])
-    }
+    this.cursors.forEach(fn)
   }
 
   moveCursorsRight(selecting = false) {
