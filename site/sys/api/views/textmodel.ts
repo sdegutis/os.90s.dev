@@ -39,7 +39,7 @@ type Rule = {
 
 type ConvenientRule = [
   test: RegExp | string,
-  action: { token: string, next?: string },
+  action: string | { token: string, next?: string },
 ]
 
 export class Highlighter {
@@ -54,8 +54,8 @@ export class Highlighter {
     this.colors = colors
     for (const [key, ruleset] of Object.entries(rules)) {
       this.rules[key] = ruleset.map(([test, action]) => ({
-        test: new RegExp(test, 'g'),
-        action,
+        test: new RegExp(test, 'gy'),
+        action: typeof action === 'string' ? { token: action } : action,
       }))
     }
   }
@@ -335,34 +335,23 @@ export class TextModel {
     let state = this.stateBefore(row)
 
     nextToken:
-    for (let i = 0; i < line.text.length;) {
-      console.log('here1')
-
-      const ruleset = this.highlighter.rules[state]
-      let match
-
-      for (const { test, action } of ruleset) {
-
-
-
-        test.lastIndex = i
-        match = test.exec(line.text)
-        console.log('here22', i, match)
+    for (let pos = 0; pos < line.text.length;) {
+      for (const { test, action } of this.highlighter.rules[state]) {
+        test.lastIndex = pos
+        const match = test.exec(line.text)
+        console.log('test', pos, test, match, test.lastIndex)
         if (match) {
+          console.log('match', pos, test.lastIndex, test, match)
           spans.push(new Span(match[0], action.token))
           if (action.next) state = action.next
-          i = test.lastIndex
+          pos = test.lastIndex
           continue nextToken
         }
-        console.log('here333')
       }
 
-      if (!match) {
-        console.log('=== no match', row, i, line.text.slice(i))
-        spans.push(new Span(line.text.slice(i), 'error'))
-        break
-      }
-
+      console.log('NO match', row, pos, line.text.slice(pos))
+      spans.push(new Span(line.text.slice(pos), 'error'))
+      break
     }
 
     line.endState = state
