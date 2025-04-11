@@ -11,9 +11,14 @@ if ($filepath.val?.endsWith('.jsln')) {
   const hl = new api.Highlighter({
     ident: 0x99990099,
     punc: 0xffffff33,
+
     string: 0xff99ffff,
     quote: 0x9999ffff,
+    escape: 0x9999ffff,
+
     number: 0x0099ffff,
+    literal: 0xffff99ff,
+
     comment: 0x009900ff,
     error: 0x990000ff,
   }, {
@@ -25,33 +30,37 @@ if ($filepath.val?.endsWith('.jsln')) {
       [/[ \t]+/, ''],
     ],
     'comment': [
-      [/.*$/, ['comment', 'start']],
+      [/^/, ['', 'start']],
+      [/.+/, 'comment'],
     ],
     'val': [
       [/^/, ['', '@pop()']],
       [/\[/, ['punc', '@push(array)']],
-      [/0x[0-9a-fA-F]+/, ['number', 'start']],
-      [/[0-9]+/, ['number', 'start']],
-      [/["']/, ['quote', 'string']],
-      [/[ \t]+/, 'val'],
+      // [/0x[0-9a-fA-F]+/, ['number', 'start']],
+      // [/[0-9]+/, ['number', 'start']],
+      [/["']/, ['quote', '@push(string)']],
+      // [/[ \t]+/, 'val'],
     ],
     'array': [
-      [/^/, ['error', 'error']],
+      // [/^/, ['error', 'error']],
       [/\[/, ['punc', '@push(array)']],
       [/\]/, ['punc', '@pop()']],
+      [/(\btrue\b|\bfalse\b|\bnull\b)/, 'literal'],
+      [/[a-zA-Z]+/, 'error'],
       [/0x[0-9a-fA-F]+/, 'number'],
       [/[0-9]+/, 'number'],
       [/[ \t]+/, ''],
     ],
     'string': [
-      [/\\["rnt]/, 'quote'],
-      [/[^"]*$/, ['error', 'error']],
+      [/\\["rnt]/, 'escape'],
+      [/\\./, 'error'],
+      [/[^"]+$/, ['error', 'error']],
       [/"/, ['quote', '@pop()']],
       [/[^\\"]+/, 'string'],
     ],
   })
 
-  // hl.log = true
+  hl.log = true
 
   model.highlighter = hl
   model.highlightDocument()
@@ -64,6 +73,7 @@ const panel = await api.Panel.create({ name: "writer" },
       background={0xffffff11}
       onMouseDown={function (b) { this.content.onMouseDown?.(b) }}
       onMouseMove={function (p) { this.content.onMouseMove?.(p) }}
+      onMouseUp={function () { this.content.onMouseUp?.() }}
     >
       <api.TextBox model={model} autofocus />
     </api.Scroll>

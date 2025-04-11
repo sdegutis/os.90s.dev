@@ -316,7 +316,7 @@ export class TextModel {
         const state = states.at(-1)!
         const ruleset = hl.rules[state]
         if (!ruleset) {
-          if (hl.log) console.log('NO RULESET', state)
+          if (hl.log) console.log('no ruleset named:', state)
           spans.push(new Span(line.text.slice(pos), state))
           break
         }
