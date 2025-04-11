@@ -49,6 +49,18 @@ export class TextModel {
     })
   }
 
+  moveCursorsLeft(selecting = false) {
+    this.doMove(selecting, c => {
+      if (c.col > 0) {
+        c.end = c.col = c.col - 1
+      }
+      else if (c.row > 0) {
+        c.row--
+        c.end = c.col = this.lines[c.row].length
+      }
+    })
+  }
+
   private doMove(selecting: boolean, fn: (c: TextCursor) => void) {
     this.cursors.forEach(c => {
       c.noteSelecting(selecting)
@@ -64,7 +76,7 @@ export class TextModel {
     return [first, last] as const
   }
 
-  ranges: any[] = []
+  // ranges: any[] = []
 
   private rebuildRanges() {
     // this.cursors

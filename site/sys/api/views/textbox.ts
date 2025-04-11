@@ -195,26 +195,23 @@ export class TextBox extends View {
   //   if (cx > maxx) scroll.scrollx -= maxx - cx
   // }
 
+  keyHandlers: [RegExp, (...groups: string[]) => void][] = [
+    [/(shift )?(right)/, (shift) => this.model.moveCursorsRight(!!shift)],
+    [/(shift )?(left)/, (shift) => this.model.moveCursorsLeft(!!shift)],
+    [/(.)/, (ch) => this.model.insert(ch)],
+  ]
+
   override onKeyPress(key: string): boolean {
 
     console.log(key)
 
-    if (key.length === 1) {
-      this.model.insert(key)
-      this.restartCursorBlink.dispatch()
-      return true
-    }
-
-    if (key === 'right') {
-      this.model.moveCursorsRight()
-      this.restartCursorBlink.dispatch()
-      return true
-    }
-
-    if (key === 'shift right') {
-      this.model.moveCursorsRight(true)
-      this.restartCursorBlink.dispatch()
-      return true
+    for (const [r, fn] of this.keyHandlers) {
+      const m = key.match(r)
+      if (m) {
+        fn(...m.slice(1))
+        this.restartCursorBlink.dispatch()
+        return true
+      }
     }
 
     return false
