@@ -201,6 +201,7 @@ export class TextBox extends View {
     [/(shift )?(down)/, (shift) => this.model.moveCursorsDown(!!shift)],
     [/(shift )?(up)/, (shift) => this.model.moveCursorsUp(!!shift)],
     [/enter/, () => this.onEnter ? this.onEnter() : this.model.insertNewline()],
+    [/backspace/, () => this.model.backspace()],
     [/(.)/, (ch) => this.model.insert(ch)],
   ]
 
@@ -247,32 +248,6 @@ export class TextBox extends View {
   //       this.end = this.col = this.lines[this.row].length
   //     }
   //   }
-  //   else if (key === 'ArrowRight') {
-  //     if (this.col < this.lines[this.row].length) {
-  //       this.end = this.col = this.col + 1
-  //     }
-  //     else if (this.row < this.lines.length - 1) {
-  //       this.col = this.end = 0
-  //       this.row++
-  //     }
-  //   }
-  //   else if (key === 'ArrowLeft') {
-  //     if (this.col > 0) {
-  //       this.end = this.col = this.col - 1
-  //     }
-  //     else if (this.row > 0) {
-  //       this.row--
-  //       this.end = this.col = this.lines[this.row].length
-  //     }
-  //   }
-  //   else if (key === 'ArrowDown') {
-  //     this.row = Math.min(this.row + 1, this.lines.length - 1)
-  //     this.fixCol()
-  //   }
-  //   else if (key === 'ArrowUp') {
-  //     this.row = Math.max(0, this.row - 1)
-  //     this.fixCol()
-  //   }
   //   else if (key === 'Tab') {
   //     if (this.onTab) {
   //       debounce(() => this.onTab?.())()
@@ -282,31 +257,6 @@ export class TextBox extends View {
   //       this.lines[this.row] = a + '  ' + b
   //       this.col += 2
   //       this.end = this.col
-  //       this.adjust()
-  //     }
-  //   }
-  //   else if (key === 'Backspace') {
-  //     if (this.col > 0) {
-  //       const [a, b] = this.halves()
-  //       if (a === ' '.repeat(a.length) && a.length >= 2) {
-  //         this.lines[this.row] = a.slice(0, -2) + b
-  //         this.col -= 2
-  //         this.end = this.col
-  //         this.adjust()
-  //       }
-  //       else {
-  //         this.lines[this.row] = a.slice(0, -1) + b
-  //         this.col--
-  //         this.end = this.col
-  //         this.adjust()
-  //       }
-  //     }
-  //     else if (this.row > 0) {
-  //       this.end = this.lines[this.row - 1].length
-  //       this.lines[this.row - 1] += this.lines[this.row]
-  //       this.lines.splice(this.row, 1)
-  //       this.row--
-  //       this.col = this.end
   //       this.adjust()
   //     }
   //   }

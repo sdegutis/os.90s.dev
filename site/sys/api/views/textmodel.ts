@@ -86,6 +86,32 @@ export class TextModel {
     })
   }
 
+  backspace() {
+    this.cursors.forEach(c => {
+      if (c.col > 0) {
+        const [a, b] = this.halves(c)
+        if (a === ' '.repeat(a.length) && a.length >= 2) {
+          this.lines[c.row] = a.slice(0, -2) + b
+          c.col -= 2
+          c.end = c.col
+        }
+        else {
+          this.lines[c.row] = a.slice(0, -1) + b
+          c.col--
+          c.end = c.col
+        }
+      }
+      else if (c.row > 0) {
+        c.end = this.lines[c.row - 1].length
+        this.lines[c.row - 1] += this.lines[c.row]
+        this.lines.splice(c.row, 1)
+        c.row--
+        c.col = c.end
+      }
+
+    })
+  }
+
   private fixCol(c: TextCursor) {
     c.col = Math.min(this.lines[c.row].length, c.end)
   }
