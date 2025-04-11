@@ -127,6 +127,7 @@ export class TextModel {
       else if (c.row < this.lines.length - 1) {
         this.lines[c.row] += this.lines[c.row + 1]
         this.lines.splice(c.row + 1, 1)
+        this.labels.splice(c.row + 1, 1)
       }
     })
   }
@@ -150,6 +151,7 @@ export class TextModel {
         c.end = this.lines[c.row - 1].length
         this.lines[c.row - 1] += this.lines[c.row]
         this.lines.splice(c.row, 1)
+        this.labels.splice(c.row, 1)
         c.row--
         c.col = c.end
       }
