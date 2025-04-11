@@ -3,9 +3,9 @@ import { Listener } from "../core/listener.js"
 import { $, makeRef, multiplex } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import { JsxAttrs } from "../jsx.js"
+import { TextModel } from "../text/model.js"
 import { debounce } from "../util/throttle.js"
 import { Scroll } from "./scroll.js"
-import { TextModel } from "./textmodel.js"
 import { View } from "./view.js"
 
 export class TextBox extends View {
