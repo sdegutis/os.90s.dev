@@ -337,12 +337,17 @@ export class TextModel {
 
       nextToken:
       for (let pos = 0; pos < line.text.length;) {
-        for (const { test, action } of this.highlighter.rules[state]) {
+        const ruleset = this.highlighter.rules[state]
+        if (!ruleset) {
+          console.log('NO RULESET', state)
+          // spans.
+        }
+        for (const { test, action } of ruleset) {
           test.lastIndex = pos
+          console.log('t', [row, pos, state, line.text.slice(pos), test])
           const match = test.exec(line.text)
-          // console.log('test', pos, state, test, match, test.lastIndex)
           if (match) {
-            // console.log('match', pos, state, test.lastIndex, test, match)
+            console.log('MATCH', action.token, action.next, match)
             spans.push(new Span(match[0], action.token))
             if (action.next !== undefined) state = action.next
             pos = test.lastIndex
@@ -350,8 +355,9 @@ export class TextModel {
           }
         }
 
-        // console.log('NO match', row, pos, line.text.slice(pos))
-        spans.push(new Span(line.text.slice(pos), 'error'))
+        console.log('NO MATCH :\'(', [row, pos, line.text.slice(pos)])
+        state = 'error'
+        spans.push(new Span(line.text.slice(pos), state))
         break
       }
 
@@ -360,9 +366,11 @@ export class TextModel {
       line.endState = state
       line.spans = spans
 
-      if (!needMoreLines) return
+      if (!needMoreLines) break
       row++
     }
+
+    console.log('DONE HIGHLIGHTING')
   }
 
   private stateBefore(row: number) {
