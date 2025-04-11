@@ -15,9 +15,14 @@ if ($filepath.val?.endsWith('.jsln')) {
 
   function highlightStartingAt(row: number) {
     console.log(row, model.labels)
+
+
+
   }
 
-  model.colors['symbol'] = 0x99000099
+  model.colors['ident'] = 0x99000099
+  model.colors['punc'] = 0xffffff33
+  model.colors['string'] = 0x0099ffff
 
 }
 
