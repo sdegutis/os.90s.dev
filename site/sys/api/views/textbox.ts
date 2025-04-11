@@ -98,7 +98,7 @@ export class TextBox extends View {
     this.focus()
     this.moveCursor(false)
 
-    this.onMouseMove = () => this.moveCursor(true)
+    this.onMouseMove = debounce(() => this.moveCursor(true))
     this.onMouseUp = () => delete this.onMouseMove
   }
 
