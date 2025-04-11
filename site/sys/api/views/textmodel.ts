@@ -324,7 +324,7 @@ export class TextModel {
           spans.push(new Span(line.text.slice(pos), state))
           break
         }
-        if (hl.log) console.log('%c state[\x1b[35m%s\x1b[0m] pos[\x1b[34m%d\x1b[0m] input[\x1b[34m%s\x1b[0m]',
+        if (hl.log) console.log('%c state[\x1b[35m%s\x1b[0m] pos[\x1b[34m%d\x1b[0m] input[\x1b[34;40m%s\x1b[0m]',
           'border-left:3em solid #19f; padding-left:1em',
           states.join(','), pos, line.text.slice(pos))
         for (const { test, action } of ruleset) {
@@ -332,7 +332,7 @@ export class TextModel {
           if (hl.log) console.log('try', test)
           const match = test.exec(line.text)
           if (match) {
-            if (hl.log) console.log('match', action, match)
+            if (hl.log) console.log('\x1b[32m%s\x1b[0m', 'match', action, match)
             spans.push(new Span(match[0], action.token))
             if (action.next) {
               if (action.next.action === 'pop') {
@@ -353,7 +353,7 @@ export class TextModel {
           }
         }
 
-        if (hl.log) console.log('no match :\'(')
+        if (hl.log) console.log('\x1b[31m%s\x1b[0m', 'no match :\'(')
         spans.push(new Span(line.text.slice(pos), 'error'))
         break
       }
