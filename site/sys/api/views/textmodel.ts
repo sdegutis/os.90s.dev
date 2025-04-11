@@ -4,8 +4,8 @@ import { makeRef } from "../core/ref.js"
 export class TextModel {
 
   colors: Record<string, number> = {}
-  labels!: string[][]
-  lines!: string[]
+  labels: string[][] = []
+  lines: string[] = ['']
 
   cursors: TextCursor[] = [new TextCursor()]
 
