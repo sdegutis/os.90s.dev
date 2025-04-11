@@ -8,14 +8,12 @@ const model = new api.TextModel(content)
 
 if ($filepath.val?.endsWith('.jsln')) {
 
-  const hl = new api.Highlighter()
-
-  hl.colors['ident'] = 0x99000099
-  hl.colors['punc'] = 0xffffff33
-  hl.colors['string'] = 0x0099ffff
-  hl.colors['number'] = 0x00ff99ff
-
-  hl.rules = {
+  const hl = new api.Highlighter({
+    ident: 0x99000099,
+    punc: 0xffffff33,
+    string: 0x0099ffff,
+    number: 0x00ff99ff,
+  }, {
     '': [
       [/[a-zA-Z0-9_]+/, { token: 'ident' }],
       [/[.=]/, { token: 'punc' }],
@@ -26,7 +24,7 @@ if ($filepath.val?.endsWith('.jsln')) {
     'comment': [
       [/.+$/, { token: 'comment', next: '' }],
     ],
-  }
+  })
 
   model.highlighter = hl
   model.highlightDocument()

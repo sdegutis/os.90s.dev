@@ -19,7 +19,7 @@ class Line {
 
   text!: string
   spans!: Span[]
-  private endState = ''
+  endState?: string | undefined
 
   constructor(text: string) {
     this.setText(text)
@@ -32,18 +32,40 @@ class Line {
 
 }
 
-type Rule = [RegExp, { token: string, next?: string }]
+type Rule = {
+  test: RegExp,
+  action: { token: string, next?: string },
+}
+
+type ConvenientRule = [
+  test: RegExp | string,
+  action: { token: string, next?: string },
+]
 
 export class Highlighter {
 
-  colors: Record<string, number> = {}
+  colors: Record<string, number>
   rules: Record<string, Rule[]> = {}
+
+  constructor(
+    colors: Record<string, number>,
+    rules: Record<string, ConvenientRule[]>,
+  ) {
+    this.colors = colors
+    for (const [key, ruleset] of Object.entries(rules)) {
+      this.rules[key] = ruleset.map(([test, action]) => ({
+        test: new RegExp(test, 'g'),
+        action,
+      }))
+    }
+  }
 
 }
 
 export class TextModel {
 
-  highlighter?: Highlighter
+  highlighter?: Highlighter | undefined
+
   lines: Line[] = [new Line('')]
   cursors: TextCursor[] = [new TextCursor()]
 
@@ -305,9 +327,52 @@ export class TextModel {
     //   .map(c => c.begin)
   }
 
-  private rehighlight(line: number) {
+  private rehighlight(row: number) {
     if (!this.highlighter) return
 
+    const line = this.lines[row]
+    const spans: Span[] = []
+    let state = this.stateBefore(row)
+
+    nextToken:
+    for (let i = 0; i < line.text.length;) {
+      console.log('here1')
+
+      const ruleset = this.highlighter.rules[state]
+      let match
+
+      for (const { test, action } of ruleset) {
+
+
+
+        test.lastIndex = i
+        match = test.exec(line.text)
+        console.log('here22', i, match)
+        if (match) {
+          spans.push(new Span(match[0], action.token))
+          if (action.next) state = action.next
+          i = test.lastIndex
+          continue nextToken
+        }
+        console.log('here333')
+      }
+
+      if (!match) {
+        console.log('=== no match', row, i, line.text.slice(i))
+        spans.push(new Span(line.text.slice(i), 'error'))
+        break
+      }
+
+    }
+
+    line.endState = state
+    line.spans = spans
+
+  }
+
+  private stateBefore(row: number) {
+    if (row === 0) return ''
+    return this.lines[row - 1].endState!
   }
 
   highlightDocument() {
