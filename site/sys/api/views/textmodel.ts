@@ -27,13 +27,22 @@ export class TextModel {
     this.onTextChanged.dispatch()
   }
 
-  insert(text: string) {
+  insertText(text: string) {
     this.cursors.forEach(c => {
       const [a, b] = this.halves(c)
       this.lines[c.row] = a + text + b
       c.col++
       c.end = c.col
       this.onLineChanged.dispatch(c.row)
+    })
+  }
+
+  insertTab() {
+    this.cursors.forEach(c => {
+      const [a, b] = this.halves(c)
+      this.lines[c.row] = a + '  ' + b
+      c.col += 2
+      c.end = c.col
     })
   }
 

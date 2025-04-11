@@ -196,18 +196,19 @@ export class TextBox extends View {
   // }
 
   keyHandlers: [RegExp, (...groups: string[]) => void][] = [
+    [/^(.)$/, (ch) => this.model.insertText(ch)],
     [/^(shift )?(right)$/, (shift) => this.model.moveCursorsRight(!!shift)],
     [/^(shift )?(left)$/, (shift) => this.model.moveCursorsLeft(!!shift)],
     [/^(shift )?(down)$/, (shift) => this.model.moveCursorsDown(!!shift)],
     [/^(shift )?(up)$/, (shift) => this.model.moveCursorsUp(!!shift)],
     [/^enter$/, () => this.onEnter ? this.onEnter() : this.model.insertNewline()],
     [/^delete$/, () => this.model.delete()],
+    [/^tab$/, () => this.model.insertTab()],
     [/^backspace$/, () => this.model.backspace()],
     [/^(shift )?home$/, (shift) => this.model.moveToBeginningOfLine(!!shift)],
     [/^ctrl (shift )?home$/, (shift) => this.model.moveToBeginningOfDocument(!!shift)],
     [/^(shift )?end$/, (shift) => this.model.moveToEndOfLine(!!shift)],
     [/^ctrl (shift )?end$/, (shift) => this.model.moveToEndOfDocument(!!shift)],
-    [/^(.)$/, (ch) => this.model.insert(ch)],
   ]
 
   override onKeyPress(key: string): boolean {
@@ -219,6 +220,7 @@ export class TextBox extends View {
       if (m) {
         fn(...m.slice(1))
         this.restartCursorBlink.dispatch()
+        this.adjust()
         this.needsRedraw()
         return true
       }
@@ -228,18 +230,6 @@ export class TextBox extends View {
   }
 
   // override onKeyDown(key: string): boolean {
-  //   else if (key === 'Tab') {
-  //     if (this.onTab) {
-  //       debounce(() => this.onTab?.())()
-  //     }
-  //     else {
-  //       const [a, b] = this.halves()
-  //       this.lines[this.row] = a + '  ' + b
-  //       this.col += 2
-  //       this.end = this.col
-  //       this.adjust()
-  //     }
-  //   }
   //   else if (key === 'v' && sys.keymap.has('Control')) {
   //     sys.readClipboardText().then(text => {
   //       const [a, b] = this.halves()
@@ -264,24 +254,6 @@ export class TextBox extends View {
   //   else {
   //     return false
   //   }
-
-  //   this.highlight()
-  //   this.restartBlinking()
-  //   this.reflectCursorPos()
-  //   this.scrollCursorIntoView()
-  //   return true
-  // }
-
-  // private halves() {
-  //   let line = this.lines[this.row]
-  //   const first = line.slice(0, this.col)
-  //   const last = line.slice(this.col)
-  //   return [first, last] as const
-  // }
-
-  // private fixCol() {
-  //   this.col = Math.min(this.lines[this.row].length, this.end)
-  // }
 
   $focused = $(false)
 
