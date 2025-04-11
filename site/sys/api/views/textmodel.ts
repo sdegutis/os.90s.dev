@@ -312,7 +312,7 @@ export class TextModel {
       const spans: Span[] = []
 
       if (hl.log) console.log('\n%cHL ROW: %d',
-        'font-weight:bold;border:10px solid transparent;font-size:200%',
+        'font-weight:bold;font-size:300%',
         row)
 
       nextToken:
@@ -360,7 +360,7 @@ export class TextModel {
       }
 
 
-      const endStates = JSON.stringify(states)
+      const endStates = states.join('.')
       const needMoreLines = line.endState !== endStates
 
       line.endState = endStates
@@ -375,7 +375,7 @@ export class TextModel {
 
   private stateBefore(row: number) {
     if (row === 0) return [Object.keys(this.highlighter!.rules)[0]]
-    return JSON.parse(this.lines[row - 1].endState!)
+    return this.lines[row - 1].endState!.split('.')
   }
 
   highlightDocument() {
