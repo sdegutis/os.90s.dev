@@ -198,10 +198,13 @@ export class Panel {
   }
 
   onKeyUp(key: string) {
+    clearTimeout(this.#repeater)
     this.focused?.onKeyUp?.(key)
   }
 
   #ctrlKeys = new Set(['Control', 'Alt', 'Shift'])
+
+  #repeater: number | undefined
 
   private handleKeyPress(key: string) {
     if (!this.#ctrlKeys.has(key)) {
@@ -220,6 +223,13 @@ export class Panel {
       let node = this.focused
       while (node) {
         if (node?.onKeyPress?.(finalkey)) {
+          if (keys.length === 1) {
+            const repeat = () => node!.onKeyPress!(finalkey)
+            clearTimeout(this.#repeater)
+            this.#repeater = setTimeout(() => {
+              this.#repeater = setInterval(repeat, 50)
+            }, 333)
+          }
           break
         }
         node = node.parent
