@@ -15,8 +15,6 @@ export interface ServerProgram {
 
 export interface ClientProgram {
   ping(n: number): Promise<[n: number]>
-  keydown(key: string): void
-  keyup(key: string): void
 }
 
 export interface ServerPanel {

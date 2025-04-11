@@ -21,6 +21,7 @@ export class Sys {
   prevFocused: Panel | null = null
 
   sysevents = new BroadcastChannel('sysevents')
+  keyevents = new BroadcastChannel('keyevents')
   panelevents = new BroadcastChannel('panelevents')
 
   $font
@@ -76,7 +77,7 @@ export class Sys {
       this.keymap.clear()
 
       for (const key of keys) {
-        Process.all.forEach(p => p.rpc.send('keyup', [key]))
+        this.keyevents.postMessage(['keyup', key])
       }
     }
 
@@ -87,7 +88,7 @@ export class Sys {
 
       if (e.repeat) return
       this.keymap.add(e.key)
-      Process.all.forEach(p => p.rpc.send('keydown', [e.key]))
+      this.keyevents.postMessage(['keydown', e.key])
       this.redrawAllPanels()
     }
 
@@ -95,7 +96,7 @@ export class Sys {
       const wasDown = this.keymap.delete(e.key)
       if (!wasDown) return
 
-      Process.all.forEach(p => p.rpc.send('keyup', [e.key]))
+      this.keyevents.postMessage(['keyup', e.key])
       this.redrawAllPanels()
     }
 

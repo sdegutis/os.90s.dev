@@ -47,20 +47,12 @@ export const program = new Program()
 
 class Sys {
 
+  keyevents = new BroadcastChannel('keyevents')
+
   private rpc = new wRPC<ClientProgram, ServerProgram>(self, {
 
     ping: (reply, n) => {
       reply([n % 2 === 0 ? n + 2 : n + 1])
-    },
-
-    keydown: (key) => {
-      this.keymap.add(key)
-      program.focusedPanel?.onKeyDown(key)
-    },
-
-    keyup: (key) => {
-      this.keymap.delete(key)
-      program.focusedPanel?.onKeyUp(key)
     },
 
   })
@@ -82,6 +74,18 @@ class Sys {
   sysevents = new BroadcastChannel('sysevents')
 
   async init() {
+    this.keyevents.onmessage = msg => {
+      const [fn, key] = msg.data
+      if (fn === 'keydown') {
+        this.keymap.add(key)
+        program.focusedPanel?.onKeyDown(key)
+      }
+      else if (fn === 'keyup') {
+        this.keymap.delete(key)
+        program.focusedPanel?.onKeyUp(key)
+      }
+    }
+
     const [id, w, h, keymap, opts] = await this.rpc.call('init', [])
     program.opts = opts
     program.pid = id
