@@ -213,14 +213,14 @@ export class TextBox extends View {
 
   keyHandlers: [RegExp, (...groups: string[]) => void][] = [
     [/^(.)$/, (ch) => this.model.insertText(ch)],
-    [/^(shift )?(right)$/, (shift) => this.model.moveCursorsRight(!!shift)],
-    [/^(shift )?(left)$/, (shift) => this.model.moveCursorsLeft(!!shift)],
-    [/^(shift )?(down)$/, (shift) => this.model.moveCursorsDown(!!shift)],
-    [/^(shift )?(up)$/, (shift) => this.model.moveCursorsUp(!!shift)],
     [/^enter$/, () => this.onEnter ? this.onEnter() : this.model.insertNewline()],
     [/^delete$/, () => this.model.delete()],
     [/^tab$/, () => this.model.insertTab()],
     [/^backspace$/, () => this.model.backspace()],
+    [/^(shift )?(right)$/, (shift) => this.model.moveCursorsRight(!!shift)],
+    [/^(shift )?(left)$/, (shift) => this.model.moveCursorsLeft(!!shift)],
+    [/^(shift )?(down)$/, (shift) => this.model.moveCursorsDown(!!shift)],
+    [/^(shift )?(up)$/, (shift) => this.model.moveCursorsUp(!!shift)],
     [/^(shift )?home$/, (shift) => this.model.moveToBeginningOfLine(!!shift)],
     [/^(shift )?end$/, (shift) => this.model.moveToEndOfLine(!!shift)],
     [/^ctrl (shift )?home$/, (shift) => this.model.moveToBeginningOfDocument(!!shift)],

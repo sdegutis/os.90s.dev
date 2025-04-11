@@ -58,6 +58,49 @@ export class TextModel {
     })
   }
 
+  delete() {
+    this.cursors.forEach(c => {
+      if (c.col < this.lines[c.row].length) {
+        const [a, b] = this.halves(c)
+        this.lines[c.row] = a + b.slice(1)
+        this.onLineChanged.dispatch(c.row)
+      }
+      else if (c.row < this.lines.length - 1) {
+        this.lines[c.row] += this.lines[c.row + 1]
+        this.lines.splice(c.row + 1, 1)
+        this.labels.splice(c.row + 1, 1)
+        this.onLineChanged.dispatch(c.row + 1)
+      }
+    })
+  }
+
+  backspace() {
+    this.cursors.forEach(c => {
+      if (c.col > 0) {
+        const [a, b] = this.halves(c)
+        if (a === ' '.repeat(a.length) && a.length >= 2) {
+          this.lines[c.row] = a.slice(0, -2) + b
+          c.col -= 2
+          c.end = c.col
+        }
+        else {
+          this.lines[c.row] = a.slice(0, -1) + b
+          c.col--
+          c.end = c.col
+        }
+      }
+      else if (c.row > 0) {
+        c.end = this.lines[c.row - 1].length
+        this.lines[c.row - 1] += this.lines[c.row]
+        this.lines.splice(c.row, 1)
+        this.labels.splice(c.row, 1)
+        c.row--
+        c.col = c.end
+      }
+      this.onLineChanged.dispatch(c.row)
+    })
+  }
+
   moveCursorsRight(selecting = false) {
     this.doMove(selecting, c => {
       if (c.col < this.lines[c.row].length) {
@@ -125,49 +168,6 @@ export class TextModel {
     this.doMove(selecting, c => {
       c.row = this.lines.length - 1
       c.col = c.end = this.lines[c.row].length
-    })
-  }
-
-  delete() {
-    this.cursors.forEach(c => {
-      if (c.col < this.lines[c.row].length) {
-        const [a, b] = this.halves(c)
-        this.lines[c.row] = a + b.slice(1)
-        this.onLineChanged.dispatch(c.row)
-      }
-      else if (c.row < this.lines.length - 1) {
-        this.lines[c.row] += this.lines[c.row + 1]
-        this.lines.splice(c.row + 1, 1)
-        this.labels.splice(c.row + 1, 1)
-        this.onLineChanged.dispatch(c.row + 1)
-      }
-    })
-  }
-
-  backspace() {
-    this.cursors.forEach(c => {
-      if (c.col > 0) {
-        const [a, b] = this.halves(c)
-        if (a === ' '.repeat(a.length) && a.length >= 2) {
-          this.lines[c.row] = a.slice(0, -2) + b
-          c.col -= 2
-          c.end = c.col
-        }
-        else {
-          this.lines[c.row] = a.slice(0, -1) + b
-          c.col--
-          c.end = c.col
-        }
-      }
-      else if (c.row > 0) {
-        c.end = this.lines[c.row - 1].length
-        this.lines[c.row - 1] += this.lines[c.row]
-        this.lines.splice(c.row, 1)
-        this.labels.splice(c.row, 1)
-        c.row--
-        c.col = c.end
-      }
-      this.onLineChanged.dispatch(c.row)
     })
   }
 
