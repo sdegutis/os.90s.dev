@@ -180,8 +180,6 @@ export class TextBox extends View {
 
     const cursor = this.children.at(-1)!
 
-    console.log(cursor)
-
     let cx = cursor.point.x
     let cy = cursor.point.y
 
