@@ -15,11 +15,12 @@ if ($filepath.val?.endsWith('.jsln')) {
     number: 0x00ff99ff,
   }, {
     '': [
+      [/0x[0-9]+/, 'number'],
+      [/[0-9]+/, 'number'],
       [/[a-zA-Z0-9_]+/, 'ident'],
       [/[.=[\]]/, 'punc'],
       [/#/, { token: 'comment', next: 'comment' }],
-      [/0x[0-9]+/, 'number'],
-      [/[0-9]+/, 'number'],
+      [/ /, ''],
     ],
     'comment': [
       [/.+$/, { token: 'comment', next: '' }],
