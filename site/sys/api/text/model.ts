@@ -309,11 +309,11 @@ export class TextModel {
 
 }
 
-type Pos = { col: number, row: number }
+type CursorPos = { col: number, row: number }
 
 export class TextCursor {
 
-  begin: Pos | undefined
+  begin: CursorPos | undefined
 
   row = 0; $row = makeRef(this, 'row')
   col = 0; $col = makeRef(this, 'col')
