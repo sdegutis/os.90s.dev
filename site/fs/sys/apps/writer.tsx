@@ -9,21 +9,21 @@ const model = new api.TextModel(content)
 if ($filepath.val?.endsWith('.jsln')) {
 
   const hl = new api.Highlighter({
-    ident: 0x99990099,
+    key: 0xff00ff99,
     punc: 0xffffff33,
 
-    string: 0xff99ffff,
-    quote: 0x9999ffff,
-    escape: 0x9999ffff,
+    quote: 0xffff00ff,
+    string: 0xff9900ff,
+    escape: 0xff99ffff,
 
     number: 0x0099ffff,
-    literal: 0xffff99ff,
+    literal: 0x00ff99ff,
 
     comment: 0x009900ff,
     error: 0x990000ff,
   }, {
     'start': [
-      [/[a-zA-Z0-9_]+/, 'ident'],
+      [/[a-zA-Z0-9_]+/, 'key'],
       [/\./, 'punc'],
       [/=/, ['punc', '@push(val)']],
       [/#/, ['comment', 'comment']],
@@ -44,6 +44,7 @@ if ($filepath.val?.endsWith('.jsln')) {
     ],
     'array': [
       [/^/, ['error', 'error']],
+      [/,/, 'punc'],
       [/\[/, ['punc', '@push(array)']],
       [/\]/, ['punc', '@pop()']],
       [/(\btrue\b|\bfalse\b|\bnull\b)/, 'literal'],
