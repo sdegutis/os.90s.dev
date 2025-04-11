@@ -75,6 +75,7 @@ export class TextModel {
       this.lines[c.row] = a
       this.lines.splice(++c.row, 0, b)
       this.labels.splice(c.row, 0, [])
+      this.moveCursorsAfter(c, c.row, 1)
       c.end = c.col = 0
       this.onLineChanged.dispatch(c.row - 1)
     })
@@ -91,6 +92,7 @@ export class TextModel {
         this.lines[c.row] += this.lines[c.row + 1]
         this.lines.splice(c.row + 1, 1)
         this.labels.splice(c.row + 1, 1)
+        this.moveCursorsAfter(c, c.row + 1, -1)
         this.onLineChanged.dispatch(c.row + 1)
       }
     })
@@ -116,6 +118,7 @@ export class TextModel {
         this.lines[c.row - 1] += this.lines[c.row]
         this.lines.splice(c.row, 1)
         this.labels.splice(c.row, 1)
+        this.moveCursorsAfter(c, c.row, -1)
         c.row--
         c.col = c.end
       }
@@ -123,7 +126,17 @@ export class TextModel {
     })
   }
 
-  editWithCursors(fn: (c: TextCursor) => void) {
+  private moveCursorsAfter(init: TextCursor, row: number, linesDown: number) {
+    this.cursors.forEach(c => {
+      if (c === init) return
+      if (c.row >= row) {
+        c.row += linesDown
+        this.fixCursorCol(c)
+      }
+    })
+  }
+
+  private editWithCursors(fn: (c: TextCursor) => void) {
     this.cursors.forEach(fn)
   }
 
@@ -154,14 +167,14 @@ export class TextModel {
   moveCursorsDown(selecting = false) {
     this.doMove(selecting, c => {
       c.row = Math.min(c.row + 1, this.lines.length - 1)
-      this.constrainCursorCol(c)
+      this.fixCursorCol(c)
     })
   }
 
   moveCursorsUp(selecting = false) {
     this.doMove(selecting, c => {
       c.row = Math.max(0, c.row - 1)
-      this.constrainCursorCol(c)
+      this.fixCursorCol(c)
     })
   }
 
@@ -202,7 +215,7 @@ export class TextModel {
     if (last.row === this.lines.length - 1) return
 
     const next = new TextCursor(last.row + 1, last.col, last.end)
-    this.constrainCursorCol(next)
+    this.fixCursorCol(next)
     this.cursors.push(next)
     this.onCursorsChanged.dispatch()
   }
@@ -212,7 +225,7 @@ export class TextModel {
     this.onCursorsChanged.dispatch()
   }
 
-  private constrainCursorCol(c: TextCursor) {
+  private fixCursorCol(c: TextCursor) {
     c.col = Math.min(this.lines[c.row].length, c.end)
   }
 
