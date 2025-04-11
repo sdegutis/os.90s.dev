@@ -305,13 +305,17 @@ export class TextModel {
     if (!this.highlighter) return
     const hl = this.highlighter
 
+    let states: string[] = [
+      this.stateBefore(row)
+    ]
+
     while (row < this.lines.length) {
       const line = this.lines[row]
       const spans: Span[] = []
-      let state = this.stateBefore(row)
 
       nextToken:
       for (let pos = 0; pos < line.text.length;) {
+        const state = states.at(-1)!
         const ruleset = hl.rules[state]
         if (!ruleset) {
           if (hl.log) console.log('NO RULESET', state)
@@ -325,17 +329,33 @@ export class TextModel {
           if (match) {
             if (hl.log) console.log('MATCH', action, match)
             spans.push(new Span(match[0], action.token))
-            if (action.next !== undefined) state = action.next
+            if (action.next !== undefined) {
+              let match
+              if (action.next === '@pop()') {
+                if (hl.log) console.log('POP STATE')
+                states.pop()
+              }
+              else if (match = action.next.match(/^@push\((.+?)\)$/)) {
+                if (hl.log) console.log('PUSH STATE', [match[1]])
+                states.push(match[1])
+              }
+              else {
+                if (hl.log) console.log('REPLACE STATE', [action.next])
+                states[states.length - 1] = action.next
+              }
+            }
             pos = test.lastIndex
             continue nextToken
           }
         }
 
         if (hl.log) console.log('NO MATCH :\'(', [row, pos, line.text.slice(pos)])
-        state = ''
+        states[states.length - 1] = ''
         spans.push(new Span(line.text.slice(pos), 'error'))
         break
       }
+
+      const state = states.at(-1)!
 
       const needMoreLines = line.endState !== state
       if (hl.log) console.log('NEED MORE LINES?', [row, state, line.endState])

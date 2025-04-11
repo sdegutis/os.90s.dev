@@ -18,21 +18,32 @@ if ($filepath.val?.endsWith('.jsln')) {
     error: 0x990000ff,
   }, {
     '': [
-      [/0x[0-9a-fA-F]+/, 'number'],
-      [/[0-9]+/, 'number'],
       [/[a-zA-Z0-9_]+/, 'ident'],
-      [/[.=[\]]/, 'punc'],
-      [/#/, { token: 'comment', next: 'comment' }],
-      [/["']/, { token: 'quote', next: 'string' }],
+      [/\./, 'punc'],
+      [/=/, ['punc', '@push(val)']],
+      [/#/, ['comment', 'comment']],
       [/[ \t]+/, ''],
     ],
     'comment': [
-      [/.*$/, { token: 'comment', next: '' }],
+      [/.*$/, ['comment', '']],
+    ],
+    'val': [
+      [/\[/, ['punc', 'array']],
+      [/0x[0-9a-fA-F]+/, ['number', '']],
+      [/[0-9]+/, ['number', '']],
+      [/["']/, ['quote', 'string']],
+      [/[ \t]+/, ''],
+    ],
+    'array': [
+      [/\]/, ['punc', '@pop()']],
+      [/0x[0-9a-fA-F]+/, 'number'],
+      [/[0-9]+/, 'number'],
+      [/[ \t]+/, ''],
     ],
     'string': [
-      [/\\["rnt]/, { token: 'quote' }],
-      [/[^"]*$/, { token: 'error', next: 'error' }],
-      [/"/, { token: 'quote', next: '' }],
+      [/\\["rnt]/, 'quote'],
+      [/[^"]*$/, ['error', 'error']],
+      [/"/, ['quote', '']],
       [/[^\\"]+/, 'string'],
     ],
   })
