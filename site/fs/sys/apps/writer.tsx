@@ -9,10 +9,11 @@ const model = new api.TextModel(content)
 if ($filepath.val?.endsWith('.jsln')) {
 
   const hl = new api.Highlighter({
-    ident: 0x99000099,
+    ident: 0x99990099,
     punc: 0xffffff33,
-    string: 0x0099ffff,
-    number: 0x00ff99ff,
+    string: 0xff99ffff,
+    number: 0x0099ffff,
+    comment: 0x009900ff,
   }, {
     '': [
       [/0x[0-9]+/, 'number'],
@@ -20,10 +21,15 @@ if ($filepath.val?.endsWith('.jsln')) {
       [/[a-zA-Z0-9_]+/, 'ident'],
       [/[.=[\]]/, 'punc'],
       [/#/, { token: 'comment', next: 'comment' }],
-      [/ /, ''],
+      [/"/, { token: 'string', next: 'string' }],
+      [/[ \t]+/, ''],
     ],
     'comment': [
-      [/.+$/, { token: 'comment', next: '' }],
+      [/.*$/, { token: 'comment', next: '' }],
+    ],
+    'string': [
+      [/"/, { token: 'string', next: '' }],
+      [/.*/, 'string'],
     ],
   })
 

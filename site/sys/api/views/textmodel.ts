@@ -340,17 +340,17 @@ export class TextModel {
         for (const { test, action } of this.highlighter.rules[state]) {
           test.lastIndex = pos
           const match = test.exec(line.text)
-          console.log('test', pos, test, match, test.lastIndex)
+          // console.log('test', pos, state, test, match, test.lastIndex)
           if (match) {
-            console.log('match', pos, test.lastIndex, test, match)
+            // console.log('match', pos, state, test.lastIndex, test, match)
             spans.push(new Span(match[0], action.token))
-            if (action.next) state = action.next
+            if (action.next !== undefined) state = action.next
             pos = test.lastIndex
             continue nextToken
           }
         }
 
-        console.log('NO match', row, pos, line.text.slice(pos))
+        // console.log('NO match', row, pos, line.text.slice(pos))
         spans.push(new Span(line.text.slice(pos), 'error'))
         break
       }
