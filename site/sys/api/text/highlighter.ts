@@ -1,4 +1,4 @@
-import { Span, TextModel } from "./model.js"
+import { TextModel, TextSpan } from "./model.js"
 
 export type LangTheme = Record<string, number>
 export type LangGrammar = Record<string, ConvenientRule[]>
@@ -41,7 +41,7 @@ export class Highlighter {
 
     while (row < model.lines.length) {
       const line = model.lines[row]
-      const spans: Span[] = []
+      const spans: TextSpan[] = []
 
       if (this.log) console.log('\n%crow: %d',
         'border-left:7em solid #19f; padding-left:1em',
@@ -53,7 +53,7 @@ export class Highlighter {
         const ruleset = this.rules[state]
         if (!ruleset) {
           if (this.log) console.log('no ruleset named:', state)
-          spans.push(new Span(line.text.slice(pos), state))
+          spans.push(new TextSpan(line.text.slice(pos), state))
           break
         }
         if (this.log) console.log('%c state[\x1b[35m%s\x1b[0m] pos[\x1b[34m%d\x1b[0m] input[\x1b[34;40m%s\x1b[0m]',
@@ -65,7 +65,7 @@ export class Highlighter {
           const match = test.exec(line.text)
           if (match) {
             if (this.log) console.log('\x1b[32m%s\x1b[0m', 'match', action, match)
-            spans.push(new Span(match[0], action.token))
+            spans.push(new TextSpan(match[0], action.token))
             if (action.next) {
               if (action.next.action === 'pop') {
                 if (this.log) console.log('\x1b[33m%s\x1b[0m', '@pop()')
@@ -86,7 +86,7 @@ export class Highlighter {
         }
 
         if (this.log) console.log('\x1b[31m%s\x1b[0m', 'no match :\'(')
-        spans.push(new Span(line.text.slice(pos), 'error'))
+        spans.push(new TextSpan(line.text.slice(pos), 'error'))
         break
       }
 

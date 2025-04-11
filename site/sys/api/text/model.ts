@@ -7,7 +7,7 @@ interface Highlighter {
   colors: LangTheme
 }
 
-export class Span {
+export class TextSpan {
 
   text: string
   state: string
@@ -21,10 +21,10 @@ export class Span {
 
 }
 
-export class Line {
+export class TextLine {
 
   text!: string
-  spans!: Span[]
+  spans!: TextSpan[]
   endState?: string | undefined
 
   constructor(text: string, endState?: string) {
@@ -34,7 +34,7 @@ export class Line {
 
   setText(text: string) {
     this.text = text
-    this.spans = [new Span(text, '')]
+    this.spans = [new TextSpan(text, '')]
     this.endState = undefined
   }
 
@@ -44,7 +44,7 @@ export class TextModel {
 
   highlighter?: Highlighter | undefined
 
-  lines: Line[] = [new Line('')]
+  lines: TextLine[] = [new TextLine('')]
   cursors: TextCursor[] = [new TextCursor()]
 
   onCursorsChanged = new Listener()
@@ -60,7 +60,7 @@ export class TextModel {
   }
 
   setText(s: string) {
-    this.lines = s.split('\n').map(str => new Line(str))
+    this.lines = s.split('\n').map(str => new TextLine(str))
 
     this.doMove(false, c => {
       c.row = Math.min(c.row, this.lines.length - 1)
@@ -111,7 +111,7 @@ export class TextModel {
       const [a, b] = this.halves(c)
       const ender = this.lines[c.row].endState
       this.lines[c.row].setText(a)
-      this.lines.splice(++c.row, 0, new Line(b, ender))
+      this.lines.splice(++c.row, 0, new TextLine(b, ender))
       this.pushCursorsAfter(c, c.row, 1)
       c.end = c.col = 0
       this.highlighter?.highlight(this, c.row - 1)
