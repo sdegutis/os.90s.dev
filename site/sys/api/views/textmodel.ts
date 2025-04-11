@@ -31,9 +31,10 @@ class Line {
 
 }
 
-class Highlighter {
+export class Highlighter {
 
   colors: Record<string, number> = {}
+
 
 }
 
@@ -304,6 +305,10 @@ export class TextModel {
   private rehighlight(line: number) {
     if (!this.highlighter) return
 
+  }
+
+  highlightDocument() {
+    this.rehighlight(0)
   }
 
 }

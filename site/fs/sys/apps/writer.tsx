@@ -8,23 +8,14 @@ const model = new api.TextModel(content)
 
 if ($filepath.val?.endsWith('.jsln')) {
 
-  // highlightStartingAt(0)
-  // // model.onLineChanged.watch(line => {
-  // //   highlightStartingAt(line)
-  // // })
+  const hl = new api.Highlighter()
 
-  // function highlightStartingAt(row: number) {
-  //   console.log(row, model.labels)
+  hl.colors['ident'] = 0x99000099
+  hl.colors['punc'] = 0xffffff33
+  hl.colors['string'] = 0x0099ffff
 
-  //   for (let i = row; i < model.lines.length; i++) {
-  //     // model.labels[i].set
-  //   }
-
-  // }
-
-  // model.colors['ident'] = 0x99000099
-  // model.colors['punc'] = 0xffffff33
-  // model.colors['string'] = 0x0099ffff
+  model.highlighter = hl
+  model.highlightDocument()
 
 }
 
