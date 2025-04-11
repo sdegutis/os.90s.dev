@@ -103,15 +103,6 @@ export class TextBox extends View {
 
   }
 
-  // get text() { return this.lines.join('\n') }
-  // set text(s: string) {
-  //   this.lines = s.split('\n')
-  //   this.highlight()
-  //   this.row = Math.min(this.row, this.lines.length - 1)
-  //   this.fixCol()
-  //   this.adjust()
-  // }
-
   // highlight() {
   //   this.colors.length = this.lines.length
   //   for (let i = 0; i < this.lines.length; i++) {

@@ -24,6 +24,11 @@ export class TextModel {
   setText(s: string) {
     this.lines = s.split('\n')
     this.labels = this.lines.map(line => [])
+
+    this.doMove(false, c => {
+      c.row = Math.min(c.row, this.lines.length - 1)
+    })
+
     this.onLineChanged.dispatch(0)
   }
 
@@ -134,14 +139,14 @@ export class TextModel {
   moveCursorsDown(selecting = false) {
     this.doMove(selecting, c => {
       c.row = Math.min(c.row + 1, this.lines.length - 1)
-      this.fixCol(c)
+      this.constrainCursorCol(c)
     })
   }
 
   moveCursorsUp(selecting = false) {
     this.doMove(selecting, c => {
       c.row = Math.max(0, c.row - 1)
-      this.fixCol(c)
+      this.constrainCursorCol(c)
     })
   }
 
@@ -180,7 +185,7 @@ export class TextModel {
   addCursorBelow() {
     const last = this.cursors.at(-1)!
     const next = new TextCursor(last.row + 1, last.col, last.end)
-    this.fixCol(next)
+    this.constrainCursorCol(next)
     this.cursors.push(next)
     this.onCursorsChanged.dispatch()
   }
@@ -190,7 +195,7 @@ export class TextModel {
     this.onCursorsChanged.dispatch()
   }
 
-  private fixCol(c: TextCursor) {
+  private constrainCursorCol(c: TextCursor) {
     c.col = Math.min(this.lines[c.row].length, c.end)
   }
 
