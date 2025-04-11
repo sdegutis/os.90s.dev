@@ -355,12 +355,11 @@ export class TextModel {
         break
       }
 
-      const state = states.at(-1)!
+      const endStates = JSON.stringify(states)
+      const needMoreLines = line.endState !== endStates
+      if (hl.log) console.log('NEED MORE LINES?', [row, endStates, line.endState])
 
-      const needMoreLines = line.endState !== state
-      if (hl.log) console.log('NEED MORE LINES?', [row, state, line.endState])
-
-      line.endState = state
+      line.endState = endStates
       line.spans = spans
 
       if (!needMoreLines) break
@@ -372,7 +371,7 @@ export class TextModel {
 
   private stateBefore(row: number) {
     if (row === 0) return ''
-    return this.lines[row - 1].endState!
+    return JSON.parse(this.lines[row - 1].endState!)
   }
 
   highlightDocument() {
