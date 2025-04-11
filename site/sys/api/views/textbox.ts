@@ -214,6 +214,7 @@ export class TextBox extends View {
     [/^(shift )?end$/, (shift) => this.model.moveToEndOfLine(!!shift)],
     [/^ctrl (shift )?home$/, (shift) => this.model.moveToBeginningOfDocument(!!shift)],
     [/^ctrl (shift )?end$/, (shift) => this.model.moveToEndOfDocument(!!shift)],
+    [/^ctrl alt up$/, () => this.model.addCursorAbove()],
     [/^ctrl alt down$/, () => this.model.addCursorBelow()],
     [/^escape$/, () => this.model.cursors.length > 1
       ? this.model.removeExtraCursors()

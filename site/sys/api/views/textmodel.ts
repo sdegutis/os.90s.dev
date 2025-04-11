@@ -210,6 +210,16 @@ export class TextModel {
     })
   }
 
+  addCursorAbove() {
+    const last = this.cursors.at(-1)!
+    if (last.row === 0) return
+
+    const next = new TextCursor(last.row - 1, last.col, last.end)
+    this.fixCursorCol(next)
+    this.cursors.push(next)
+    this.onCursorsChanged.dispatch()
+  }
+
   addCursorBelow() {
     const last = this.cursors.at(-1)!
     if (last.row === this.lines.length - 1) return
