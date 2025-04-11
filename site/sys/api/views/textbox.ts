@@ -28,7 +28,15 @@ export class TextBox extends View {
     })
 
     this.adjust()
-    this.model.onLineChanged.watch(() => this.adjust())
+
+    this.model.onLineChanged.watch(() => {
+      this.adjust()
+      this.needsRedraw()
+    })
+
+    this.model.onCursorsMoved.watch(() => {
+      this.needsRedraw()
+    })
   }
 
   model = new TextModel()
@@ -206,8 +214,8 @@ export class TextBox extends View {
     [/^tab$/, () => this.model.insertTab()],
     [/^backspace$/, () => this.model.backspace()],
     [/^(shift )?home$/, (shift) => this.model.moveToBeginningOfLine(!!shift)],
-    [/^ctrl (shift )?home$/, (shift) => this.model.moveToBeginningOfDocument(!!shift)],
     [/^(shift )?end$/, (shift) => this.model.moveToEndOfLine(!!shift)],
+    [/^ctrl (shift )?home$/, (shift) => this.model.moveToBeginningOfDocument(!!shift)],
     [/^ctrl (shift )?end$/, (shift) => this.model.moveToEndOfDocument(!!shift)],
     [/^ctrl v$/, () => {
       sys.readClipboardText().then(text => {
@@ -222,8 +230,6 @@ export class TextBox extends View {
       if (m) {
         fn(...m.slice(1))
         this.restartCursorBlink.dispatch()
-        this.adjust()
-        this.needsRedraw()
         return true
       }
     }

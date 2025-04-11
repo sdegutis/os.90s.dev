@@ -10,7 +10,7 @@ export class TextModel {
   cursors: TextCursor[] = [new TextCursor()]
 
   onCursorsChanged = new Listener()
-  onTextChanged = new Listener()
+  onCursorsMoved = new Listener()
   onLineChanged = new Listener<number>()
 
   constructor(initialText = '') {
@@ -24,7 +24,7 @@ export class TextModel {
   setText(s: string) {
     this.lines = s.split('\n')
     this.labels = this.lines.map(line => [])
-    this.onTextChanged.dispatch()
+    this.onLineChanged.dispatch(0)
   }
 
   insertText(text: string) {
@@ -43,6 +43,7 @@ export class TextModel {
       this.lines[c.row] = a + '  ' + b
       c.col += 2
       c.end = c.col
+      this.onLineChanged.dispatch(c.row)
     })
   }
 
@@ -132,11 +133,13 @@ export class TextModel {
       if (c.col < this.lines[c.row].length) {
         const [a, b] = this.halves(c)
         this.lines[c.row] = a + b.slice(1)
+        this.onLineChanged.dispatch(c.row)
       }
       else if (c.row < this.lines.length - 1) {
         this.lines[c.row] += this.lines[c.row + 1]
         this.lines.splice(c.row + 1, 1)
         this.labels.splice(c.row + 1, 1)
+        this.onLineChanged.dispatch(c.row + 1)
       }
     })
   }
@@ -164,6 +167,7 @@ export class TextModel {
         c.row--
         c.col = c.end
       }
+      this.onLineChanged.dispatch(c.row)
     })
   }
 
@@ -177,6 +181,7 @@ export class TextModel {
       fn(c)
     })
     this.rebuildRanges()
+    this.onCursorsMoved.dispatch()
   }
 
   private halves(c: TextCursor) {
