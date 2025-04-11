@@ -140,6 +140,17 @@ export class TextModel {
     this.cursors.forEach(fn)
   }
 
+  moveCursorTo(row: number, col: number) {
+    this.removeExtraCursors()
+    this.doMove(false, c => {
+      c.row = Math.min(row, this.lines.length - 1)
+      c.end = c.col = col
+      this.fixCursorCol(c)
+    })
+
+
+  }
+
   moveCursorsRight(selecting = false) {
     this.doMove(selecting, c => {
       if (c.col < this.lines[c.row].length) {
