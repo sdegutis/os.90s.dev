@@ -44,6 +44,7 @@ type ConvenientRule = [
 
 export class Highlighter {
 
+  log = false
   colors: Record<string, number>
   rules: Record<string, Rule[]> = {}
 
@@ -193,6 +194,7 @@ export class TextModel {
 
   private editWithCursors(fn: (c: TextCursor) => void) {
     this.cursors.forEach(fn)
+    this.onTextChanged.dispatch()
   }
 
   moveCursorTo(row: number, col: number, selecting = false) {
@@ -329,6 +331,7 @@ export class TextModel {
 
   private rehighlight(row: number) {
     if (!this.highlighter) return
+    const hl = this.highlighter
 
     while (row < this.lines.length) {
       const line = this.lines[row]
@@ -337,17 +340,17 @@ export class TextModel {
 
       nextToken:
       for (let pos = 0; pos < line.text.length;) {
-        const ruleset = this.highlighter.rules[state]
+        const ruleset = hl.rules[state]
         if (!ruleset) {
-          console.log('NO RULESET', state)
+          if (hl.log) console.log('NO RULESET', state)
           // spans.
         }
         for (const { test, action } of ruleset) {
           test.lastIndex = pos
-          console.log('t', [row, pos, state, line.text.slice(pos), test])
+          if (hl.log) console.log('try', [row, pos, state, line.text.slice(pos), test])
           const match = test.exec(line.text)
           if (match) {
-            console.log('MATCH', action.token, action.next, match)
+            if (hl.log) console.log('MATCH', action, match)
             spans.push(new Span(match[0], action.token))
             if (action.next !== undefined) state = action.next
             pos = test.lastIndex
@@ -355,7 +358,7 @@ export class TextModel {
           }
         }
 
-        console.log('NO MATCH :\'(', [row, pos, line.text.slice(pos)])
+        if (hl.log) console.log('NO MATCH :\'(', [row, pos, line.text.slice(pos)])
         state = 'error'
         spans.push(new Span(line.text.slice(pos), state))
         break
@@ -370,7 +373,7 @@ export class TextModel {
       row++
     }
 
-    console.log('DONE HIGHLIGHTING')
+    if (hl.log) console.log('DONE HIGHLIGHTING\n\n')
   }
 
   private stateBefore(row: number) {
