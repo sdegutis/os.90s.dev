@@ -15,6 +15,22 @@ class Span {
 
 }
 
+class Line {
+
+  text!: string
+  spans!: Span[]
+
+  constructor(text: string) {
+    this.setText(text)
+  }
+
+  setText(text: string) {
+    this.text = text
+    this.spans = [new Span(text, '')]
+  }
+
+}
+
 class Highlighter {
 
   colors: Record<string, number> = {}
@@ -24,10 +40,7 @@ class Highlighter {
 export class TextModel {
 
   highlighter?: Highlighter
-
-  spans: Span[][] = []
-  lines: string[] = ['']
-
+  lines: Line[] = [new Line('')]
   cursors: TextCursor[] = [new TextCursor()]
 
   onCursorsChanged = new Listener()
@@ -43,8 +56,7 @@ export class TextModel {
   }
 
   setText(s: string) {
-    this.lines = s.split('\n')
-    this.spans = this.lines.map(line => [new Span(line, '')])
+    this.lines = s.split('\n').map(str => new Line(str))
 
     this.doMove(false, c => {
       c.row = Math.min(c.row, this.lines.length - 1)
@@ -73,10 +85,9 @@ export class TextModel {
   insertChar(ch: string) {
     this.editWithCursors(c => {
       const [a, b] = this.halves(c)
-      this.lines[c.row] = a + ch + b
+      this.lines[c.row].setText(a + ch + b)
       c.col++
       c.end = c.col
-      this.rebuildSpan(c.row)
       this.rehighlight(c.row)
     })
   }
@@ -84,10 +95,9 @@ export class TextModel {
   insertTab() {
     this.editWithCursors(c => {
       const [a, b] = this.halves(c)
-      this.lines[c.row] = a + '  ' + b
+      this.lines[c.row].setText(a + '  ' + b)
       c.col += 2
       c.end = c.col
-      this.rebuildSpan(c.row)
       this.rehighlight(c.row)
     })
   }
@@ -95,30 +105,25 @@ export class TextModel {
   insertNewline() {
     this.editWithCursors(c => {
       const [a, b] = this.halves(c)
-      this.lines[c.row] = a
-      this.lines.splice(++c.row, 0, b)
-      this.spans.splice(c.row, 0, [])
+      this.lines[c.row].setText(a)
+      this.lines.splice(++c.row, 0, new Line(b))
       this.pushCursorsAfter(c, c.row, 1)
       c.end = c.col = 0
-      this.rebuildSpan(c.row - 1)
-      this.rebuildSpan(c.row)
       this.rehighlight(c.row - 1)
     })
   }
 
   delete() {
     this.editWithCursors(c => {
-      if (c.col < this.lines[c.row].length) {
+      if (c.col < this.lines[c.row].text.length) {
         const [a, b] = this.halves(c)
-        this.lines[c.row] = a + b.slice(1)
+        this.lines[c.row].setText(a + b.slice(1))
       }
       else if (c.row < this.lines.length - 1) {
-        this.lines[c.row] += this.lines[c.row + 1]
+        this.lines[c.row].setText(this.lines[c.row].text + this.lines[c.row + 1].text)
         this.lines.splice(c.row + 1, 1)
-        this.spans.splice(c.row + 1, 1)
         this.pushCursorsAfter(c, c.row + 1, -1)
       }
-      this.rebuildSpan(c.row)
       this.rehighlight(c.row)
     })
   }
@@ -128,26 +133,24 @@ export class TextModel {
       if (c.col > 0) {
         const [a, b] = this.halves(c)
         if (a === ' '.repeat(a.length) && a.length >= 2) {
-          this.lines[c.row] = a.slice(0, -2) + b
+          this.lines[c.row].setText(a.slice(0, -2) + b)
           c.col -= 2
           c.end = c.col
         }
         else {
-          this.lines[c.row] = a.slice(0, -1) + b
+          this.lines[c.row].setText(a.slice(0, -1) + b)
           c.col--
           c.end = c.col
         }
       }
       else if (c.row > 0) {
-        c.end = this.lines[c.row - 1].length
-        this.lines[c.row - 1] += this.lines[c.row]
+        c.end = this.lines[c.row - 1].text.length
+        this.lines[c.row - 1].setText(this.lines[c.row - 1].text + this.lines[c.row].text)
         this.lines.splice(c.row, 1)
-        this.spans.splice(c.row, 1)
         this.pushCursorsAfter(c, c.row, -1)
         c.row--
         c.col = c.end
       }
-      this.rebuildSpan(c.row)
       this.rehighlight(c.row)
     })
   }
@@ -177,7 +180,7 @@ export class TextModel {
 
   moveCursorsRight(selecting = false) {
     this.doMove(selecting, c => {
-      if (c.col < this.lines[c.row].length) {
+      if (c.col < this.lines[c.row].text.length) {
         c.end = c.col = c.col + 1
       }
       else if (c.row < this.lines.length - 1) {
@@ -194,7 +197,7 @@ export class TextModel {
       }
       else if (c.row > 0) {
         c.row--
-        c.end = c.col = this.lines[c.row].length
+        c.end = c.col = this.lines[c.row].text.length
       }
     })
   }
@@ -215,7 +218,7 @@ export class TextModel {
 
   moveToBeginningOfLine(selecting = false) {
     this.doMove(selecting, c => {
-      const firstNonSpace = this.lines[c.row].match(/[^\s]/)?.index ?? 0
+      const firstNonSpace = this.lines[c.row].text.match(/[^\s]/)?.index ?? 0
       if (c.col !== firstNonSpace) {
         c.end = c.col = firstNonSpace
       }
@@ -234,14 +237,14 @@ export class TextModel {
 
   moveToEndOfLine(selecting = false) {
     this.doMove(selecting, c => {
-      c.end = c.col = this.lines[c.row].length
+      c.end = c.col = this.lines[c.row].text.length
     })
   }
 
   moveToEndOfDocument(selecting = false) {
     this.doMove(selecting, c => {
       c.row = this.lines.length - 1
-      c.col = c.end = this.lines[c.row].length
+      c.col = c.end = this.lines[c.row].text.length
     })
   }
 
@@ -271,7 +274,7 @@ export class TextModel {
   }
 
   private fixCursorCol(c: TextCursor) {
-    c.col = Math.min(this.lines[c.row].length, c.end)
+    c.col = Math.min(this.lines[c.row].text.length, c.end)
   }
 
   private doMove(selecting: boolean, fn: (c: TextCursor) => void) {
@@ -285,8 +288,8 @@ export class TextModel {
 
   private halves(c: TextCursor) {
     let line = this.lines[c.row]
-    const first = line.slice(0, c.col)
-    const last = line.slice(c.col)
+    const first = line.text.slice(0, c.col)
+    const last = line.text.slice(c.col)
     return [first, last] as const
   }
 
@@ -296,10 +299,6 @@ export class TextModel {
     // this.cursors
     //   .filter(c => c.begin !== undefined)
     //   .map(c => c.begin)
-  }
-
-  private rebuildSpan(line: number) {
-    this.spans[line] = [new Span(this.lines[line], '')]
   }
 
   private rehighlight(line: number) {
