@@ -363,8 +363,8 @@ export class TextModel {
         }
 
         if (hl.log) console.log('NO MATCH :\'(', [row, pos, line.text.slice(pos)])
-        state = 'error'
-        spans.push(new Span(line.text.slice(pos), state))
+        state = ''
+        spans.push(new Span(line.text.slice(pos), 'error'))
         break
       }
 
