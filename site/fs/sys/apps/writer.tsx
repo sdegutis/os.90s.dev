@@ -8,7 +8,7 @@ const model = new api.TextModel(content)
 
 if ($filepath.val?.endsWith('.jsln')) {
 
-  const hl = new api.Highlighter({
+  const theme1: api.LangTheme = {
     key: 0xff00ff99,
     punc: 0xffffff33,
 
@@ -21,7 +21,10 @@ if ($filepath.val?.endsWith('.jsln')) {
 
     comment: 0x009900ff,
     error: 0x990000ff,
-  }, {
+
+  }
+
+  const jslnGrammar: api.LangGrammar = {
     'start': [
       [/[a-zA-Z0-9_]+/, 'key'],
       [/\./, 'punc'],
@@ -60,11 +63,9 @@ if ($filepath.val?.endsWith('.jsln')) {
       [/"/, ['quote', '@pop()']],
       [/[^\\"]+/, 'string'],
     ],
-  })
+  }
 
-  hl.log = true
-
-  model.highlighter = hl
+  model.highlighter = new api.Highlighter(theme1, jslnGrammar, true)
   model.highlightDocument()
 
 }

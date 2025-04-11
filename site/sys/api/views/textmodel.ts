@@ -384,17 +384,19 @@ export class TextModel {
 
 }
 
+export type LangTheme = Record<string, number>
+export type LangGrammar = Record<string, ConvenientRule[]>
+
 export class Highlighter {
 
-  log = false
-  colors: Record<string, number>
+  log
+  colors: LangTheme
   rules: Record<string, Rule[]> = {}
 
-  constructor(
-    colors: Record<string, number>,
-    rules: Record<string, ConvenientRule[]>,
-  ) {
+  constructor(colors: LangTheme, rules: LangGrammar, log = false) {
+    this.log = log
     this.colors = colors
+
     for (const [key, ruleset] of Object.entries(rules)) {
       this.rules[key] = ruleset.map(([test, action]) => {
         test = new RegExp(test, 'gy')
