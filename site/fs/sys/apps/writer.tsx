@@ -30,6 +30,7 @@ if ($filepath.val?.endsWith('.jsln')) {
       [/.*$/, { token: 'comment', next: '' }],
     ],
     'string': [
+      [/[^"]*$/, { token: 'error', next: 'error' }],
       [/"/, { token: 'quote', next: '' }],
       [/[^"]+/, 'string'],
     ],
