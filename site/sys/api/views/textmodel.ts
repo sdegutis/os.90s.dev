@@ -33,10 +33,27 @@ export class TextModel {
   }
 
   insertText(text: string) {
+    for (const ch of Array.from(text)) {
+      if (ch === '\n') {
+        this.insertNewline()
+      }
+      else if (ch === '\r') {
+        // no
+      }
+      else if (ch === '\t') {
+        this.insertTab()
+      }
+      else {
+        this.insertChar(ch)
+      }
+    }
+  }
+
+  insertChar(ch: string) {
     this.editWithCursors(c => {
       const [a, b] = this.halves(c)
-      this.lines[c.row] = a + text + b
-      c.col += text.length
+      this.lines[c.row] = a + ch + b
+      c.col++
       c.end = c.col
       this.onLineChanged.dispatch(c.row)
     })
@@ -182,6 +199,8 @@ export class TextModel {
 
   addCursorBelow() {
     const last = this.cursors.at(-1)!
+    if (last.row === this.lines.length - 1) return
+
     const next = new TextCursor(last.row + 1, last.col, last.end)
     this.constrainCursorCol(next)
     this.cursors.push(next)
