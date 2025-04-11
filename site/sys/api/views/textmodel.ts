@@ -23,7 +23,7 @@ export class TextModel {
 
   setText(s: string) {
     this.lines = s.split('\n')
-    this.labels = this.lines.map(line => Array(line.length).fill(''))
+    this.labels = this.lines.map(line => [])
     this.onTextChanged.dispatch()
   }
 
@@ -34,6 +34,17 @@ export class TextModel {
       c.col++
       c.end = c.col
       this.onLineChanged.dispatch(c.row)
+    })
+  }
+
+  insertNewline() {
+    this.cursors.forEach(c => {
+      const [a, b] = this.halves(c)
+      this.lines[c.row] = a
+      this.lines.splice(++c.row, 0, b)
+      this.labels.splice(c.row, 0, [])
+      c.end = c.col = 0
+      this.onLineChanged.dispatch(c.row - 1)
     })
   }
 
