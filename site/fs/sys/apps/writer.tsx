@@ -7,7 +7,7 @@ if ($filepath.val) content = await api.fs.getFile($filepath.val) ?? ''
 const model = new api.TextModel(content)
 
 if ($filepath.val?.endsWith('.jsln')) {
-  const hl = new api.Highlighter(api.langThemes.theme1, api.langGrammars.jslnGrammar, true)
+  const hl = new api.Highlighter(api.langThemes.theme1, api.langGrammars.jslnGrammar)
   model.highlighter = hl
   hl.highlight(model, 0)
 }
