@@ -1,5 +1,18 @@
 import { TextHighlighter, TextModel, TextSpan } from "./model.js"
 
+type Next =
+  | { action: 'replace', state: string }
+  | { action: 'push', state: string }
+  | { action: 'pop' }
+
+type Action = { token: string, next?: Next | undefined }
+type Rule = { test: RegExp, action: Action }
+
+type ConvenientRule = [
+  test: RegExp | string,
+  action: string | [string, string] | { token: string, next?: string },
+]
+
 export type LangTheme = Record<string, number>
 export type LangGrammar = Record<string, ConvenientRule[]>
 
@@ -105,16 +118,3 @@ export class Highlighter implements TextHighlighter {
   }
 
 }
-
-type Next =
-  | { action: 'replace', state: string }
-  | { action: 'push', state: string }
-  | { action: 'pop' }
-
-type Action = { token: string, next?: Next | undefined }
-type Rule = { test: RegExp, action: Action }
-
-type ConvenientRule = [
-  test: RegExp | string,
-  action: string | [string, string] | { token: string, next?: string },
-]
