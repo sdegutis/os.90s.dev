@@ -61,7 +61,7 @@ export class TextModel {
       c.row = Math.min(c.row, this.lines.length - 1)
     })
 
-    this.rehighlight(0)
+    this.highlight(0)
   }
 
   insertText(text: string) {
@@ -87,7 +87,7 @@ export class TextModel {
       this.lines[c.row].setText(a + ch + b)
       c.col++
       c.end = c.col
-      this.rehighlight(c.row)
+      this.highlight(c.row)
     })
   }
 
@@ -97,7 +97,7 @@ export class TextModel {
       this.lines[c.row].setText(a + '  ' + b)
       c.col += 2
       c.end = c.col
-      this.rehighlight(c.row)
+      this.highlight(c.row)
     })
   }
 
@@ -109,7 +109,7 @@ export class TextModel {
       this.lines.splice(++c.row, 0, new Line(b, ender))
       this.pushCursorsAfter(c, c.row, 1)
       c.end = c.col = 0
-      this.rehighlight(c.row - 1)
+      this.highlight(c.row - 1)
     })
   }
 
@@ -124,7 +124,7 @@ export class TextModel {
         this.lines.splice(c.row + 1, 1)
         this.pushCursorsAfter(c, c.row + 1, -1)
       }
-      this.rehighlight(c.row)
+      this.highlight(c.row)
     })
   }
 
@@ -151,7 +151,7 @@ export class TextModel {
         c.row--
         c.col = c.end
       }
-      this.rehighlight(c.row)
+      this.highlight(c.row)
     })
   }
 
@@ -302,11 +302,13 @@ export class TextModel {
     //   .map(c => c.begin)
   }
 
-  private rehighlight(row: number) {
+  highlight(row: number) {
     if (!this.highlighter) return
     const hl = this.highlighter
 
-    const states: string[] = this.stateBefore(row)
+    const states: string[] = (row === 0)
+      ? [Object.keys(this.highlighter!.rules)[0]]
+      : this.lines[row - 1].endState!.split('.')
 
     while (row < this.lines.length) {
       const line = this.lines[row]
@@ -371,15 +373,6 @@ export class TextModel {
     }
 
     if (hl.log) console.log(`done highlighting ${Date.now()}\n\n\n`)
-  }
-
-  private stateBefore(row: number) {
-    if (row === 0) return [Object.keys(this.highlighter!.rules)[0]]
-    return this.lines[row - 1].endState!.split('.')
-  }
-
-  highlightDocument() {
-    this.rehighlight(0)
   }
 
 }
