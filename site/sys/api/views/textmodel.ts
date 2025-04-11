@@ -375,7 +375,11 @@ export class Highlighter {
     for (const [key, ruleset] of Object.entries(rules)) {
       this.rules[key] = ruleset.map(([test, action]) => ({
         test: new RegExp(test, 'gy'),
-        action: typeof action === 'string' ? { token: action } : action,
+        action: typeof action === 'string'
+          ? { token: action }
+          : action instanceof Array
+            ? { token: action[0], next: action[1] }
+            : action,
       }))
     }
   }
@@ -389,7 +393,7 @@ type Rule = {
 
 type ConvenientRule = [
   test: RegExp | string,
-  action: string | { token: string, next?: string },
+  action: string | [string, string] | { token: string, next?: string },
 ]
 
 type Pos = { col: number, row: number }
