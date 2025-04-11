@@ -373,7 +373,7 @@ export class TextModel {
       row++
     }
 
-    if (hl.log) console.log('DONE HIGHLIGHTING\n\n')
+    if (hl.log) console.log('DONE HIGHLIGHTING' + Date.now() + '\n\n')
   }
 
   private stateBefore(row: number) {
