@@ -28,7 +28,7 @@ export class TextModel {
   }
 
   insertText(text: string) {
-    this.cursors.forEach(c => {
+    this.editWithCursors(c => {
       const [a, b] = this.halves(c)
       this.lines[c.row] = a + text + b
       c.col += text.length
@@ -38,7 +38,7 @@ export class TextModel {
   }
 
   insertTab() {
-    this.cursors.forEach(c => {
+    this.editWithCursors(c => {
       const [a, b] = this.halves(c)
       this.lines[c.row] = a + '  ' + b
       c.col += 2
@@ -48,7 +48,7 @@ export class TextModel {
   }
 
   insertNewline() {
-    this.cursors.forEach(c => {
+    this.editWithCursors(c => {
       const [a, b] = this.halves(c)
       this.lines[c.row] = a
       this.lines.splice(++c.row, 0, b)
@@ -59,7 +59,7 @@ export class TextModel {
   }
 
   delete() {
-    this.cursors.forEach(c => {
+    this.editWithCursors(c => {
       if (c.col < this.lines[c.row].length) {
         const [a, b] = this.halves(c)
         this.lines[c.row] = a + b.slice(1)
@@ -75,7 +75,7 @@ export class TextModel {
   }
 
   backspace() {
-    this.cursors.forEach(c => {
+    this.editWithCursors(c => {
       if (c.col > 0) {
         const [a, b] = this.halves(c)
         if (a === ' '.repeat(a.length) && a.length >= 2) {
@@ -99,6 +99,12 @@ export class TextModel {
       }
       this.onLineChanged.dispatch(c.row)
     })
+  }
+
+  editWithCursors(fn: (c: TextCursor) => void) {
+    for (let i = this.cursors.length - 1; i >= 0; i--) {
+      fn(this.cursors[i])
+    }
   }
 
   moveCursorsRight(selecting = false) {
@@ -171,6 +177,19 @@ export class TextModel {
     })
   }
 
+  addCursorBelow() {
+    const last = this.cursors.at(-1)!
+    const next = new TextCursor(last.row + 1, last.col, last.end)
+    this.fixCol(next)
+    this.cursors.push(next)
+    this.onCursorsChanged.dispatch()
+  }
+
+  removeExtraCursors() {
+    this.cursors = [this.cursors[0]]
+    this.onCursorsChanged.dispatch()
+  }
+
   private fixCol(c: TextCursor) {
     c.col = Math.min(this.lines[c.row].length, c.end)
   }
@@ -210,6 +229,12 @@ export class TextCursor {
   row = 0; $row = makeRef(this, 'row')
   col = 0; $col = makeRef(this, 'col')
   end = 0; $end = makeRef(this, 'end')
+
+  constructor(row = 0, col = 0, end = 0) {
+    this.row = row
+    this.col = col
+    this.end = end
+  }
 
   noteSelecting(selecting: boolean) {
     if (!this.begin && selecting) {

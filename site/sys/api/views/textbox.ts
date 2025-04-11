@@ -225,6 +225,8 @@ export class TextBox extends View {
     [/^(shift )?end$/, (shift) => this.model.moveToEndOfLine(!!shift)],
     [/^ctrl (shift )?home$/, (shift) => this.model.moveToBeginningOfDocument(!!shift)],
     [/^ctrl (shift )?end$/, (shift) => this.model.moveToEndOfDocument(!!shift)],
+    [/^ctrl alt down$/, () => this.model.addCursorBelow()],
+    [/^escape$/, () => this.model.removeExtraCursors()],
     [/^ctrl v$/, () => {
       sys.readClipboardText().then(text => {
         this.model.insertText(text)
@@ -233,6 +235,7 @@ export class TextBox extends View {
   ]
 
   override onKeyPress(key: string): boolean {
+    console.log(key)
     for (const [r, fn] of this.keyHandlers) {
       const m = key.match(r)
       if (m) {
