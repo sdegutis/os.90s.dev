@@ -200,7 +200,7 @@ export class TextBox extends View {
     if (cx > maxx) scroll.scrollx -= maxx - cx
   }
 
-  keyHandlers: [RegExp, (...groups: string[]) => void][] = [
+  keyHandlers: [RegExp, (...groups: string[]) => void | boolean][] = [
     [/^(.)$/, (ch) => this.model.insertText(ch)],
     [/^enter$/, () => this.onEnter ? this.onEnter() : this.model.insertNewline()],
     [/^delete$/, () => this.model.delete()],
@@ -215,7 +215,9 @@ export class TextBox extends View {
     [/^ctrl (shift )?home$/, (shift) => this.model.moveToBeginningOfDocument(!!shift)],
     [/^ctrl (shift )?end$/, (shift) => this.model.moveToEndOfDocument(!!shift)],
     [/^ctrl alt down$/, () => this.model.addCursorBelow()],
-    [/^escape$/, () => this.model.removeExtraCursors()],
+    [/^escape$/, () => this.model.cursors.length > 1
+      ? this.model.removeExtraCursors()
+      : false],
     [/^ctrl v$/, () => {
       sys.readClipboardText().then(text => {
         this.model.insertText(text)
@@ -224,13 +226,13 @@ export class TextBox extends View {
   ]
 
   override onKeyPress(key: string): boolean {
-    console.log(key)
+    // console.log(key)
     for (const [r, fn] of this.keyHandlers) {
       const m = key.match(r)
       if (m) {
-        fn(...m.slice(1))
+        const result = fn(...m.slice(1))
         this.restartCursorBlink.dispatch()
-        return true
+        return !!result
       }
     }
     return false
