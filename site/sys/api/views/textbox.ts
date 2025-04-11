@@ -23,11 +23,12 @@ export class TextBox extends View {
     this.$font.watch(m => this.adjust())
 
     this.makeCursors()
-    this.model.cursorsChanged.watch(() => {
+    this.model.onCursorsChanged.watch(() => {
       this.makeCursors()
     })
 
     this.adjust()
+    this.model.onLineChanged.watch(() => this.adjust())
   }
 
   model = new TextModel()
@@ -197,6 +198,12 @@ export class TextBox extends View {
   override onKeyPress(key: string): boolean {
 
     this.restartCursorBlink.dispatch()
+
+    console.log(key)
+
+    if (key.length === 1) {
+      this.model.insert(key)
+    }
 
     return true
   }

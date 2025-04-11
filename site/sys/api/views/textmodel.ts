@@ -9,8 +9,10 @@ export class TextModel {
 
   cursors: TextCursor[] = [new TextCursor()]
 
-  cursorsChanged = new Listener()
+  onCursorsChanged = new Listener()
   // linesChanged = new Listener()
+
+  onLineChanged = new Listener<number>()
 
   constructor(initialText = '') {
     this.setText(initialText)
@@ -24,6 +26,23 @@ export class TextModel {
     this.lines = s.split('\n')
     this.labels = this.lines.map(line => Array(line.length).fill(''))
     // this.linesChanged.dispatch()
+  }
+
+  insert(text: string) {
+    this.cursors.forEach(c => {
+      const [a, b] = this.halves(c)
+      this.lines[c.row] = a + text + b
+      c.col++
+      c.end = c.col
+      this.onLineChanged.dispatch(c.row)
+    })
+  }
+
+  private halves(c: TextCursor) {
+    let line = this.lines[c.row]
+    const first = line.slice(0, c.col)
+    const last = line.slice(c.col)
+    return [first, last] as const
   }
 
 }
