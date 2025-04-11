@@ -343,7 +343,8 @@ export class TextModel {
         const ruleset = hl.rules[state]
         if (!ruleset) {
           if (hl.log) console.log('NO RULESET', state)
-          // spans.
+          spans.push(new Span(line.text.slice(pos), state))
+          break
         }
         for (const { test, action } of ruleset) {
           test.lastIndex = pos
