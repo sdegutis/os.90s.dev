@@ -2,7 +2,6 @@ import { DrawingContext } from "../core/drawing.js"
 import { Listener } from "../core/listener.js"
 import { $, makeRef, multiplex } from "../core/ref.js"
 import { sys } from "../core/sys.js"
-import { Point } from "../core/types.js"
 import { JsxAttrs } from "../jsx.js"
 import { debounce } from "../util/throttle.js"
 import { Scroll } from "./scroll.js"
@@ -97,21 +96,20 @@ export class TextBox extends View {
 
   override onMouseDown(button: number): void {
     this.focus()
+    this.moveCursor(false)
 
-    let x = this.mouse.x
-    let y = this.mouse.y
+    this.onMouseMove = () => this.moveCursor(true)
+    this.onMouseUp = () => delete this.onMouseMove
+  }
 
-    const row = Math.max(0, Math.floor(y / (this.font.ch + this.ygap)))
-    const col = Math.max(0, Math.floor(x / (this.font.cw + this.xgap)))
+  private moveCursor(selecting: boolean) {
+    const row = Math.max(0, Math.floor(this.mouse.y / (this.font.ch + this.ygap)))
+    const col = Math.max(0, Math.floor(this.mouse.x / (this.font.cw + this.xgap)))
 
-    this.model.moveCursorTo(row, col)
+    this.model.moveCursorTo(row, col, selecting)
 
     this.restartCursorBlink.dispatch()
     this.scrollCursorIntoView()
-  }
-
-  override onMouseMove(pos: Point): void {
-
   }
 
   // highlight() {
