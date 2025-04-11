@@ -4,6 +4,8 @@ import { $, makeRef, multiplex } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import { Point } from "../core/types.js"
 import { JsxAttrs } from "../jsx.js"
+import { debounce } from "../util/throttle.js"
+import { Scroll } from "./scroll.js"
 import { TextModel } from "./textmodel.js"
 import { View } from "./view.js"
 
@@ -32,10 +34,12 @@ export class TextBox extends View {
     this.model.onLineChanged.watch(() => {
       this.adjust()
       this.needsRedraw()
+      this.scrollCursorIntoView()
     })
 
     this.model.onCursorsMoved.watch(() => {
       this.needsRedraw()
+      this.scrollCursorIntoView()
     })
   }
 
@@ -168,40 +172,44 @@ export class TextBox extends View {
     }
   }
 
-  // private findScrollAncestor() {
-  //   let node = this.parent
-  //   while (node) {
-  //     if (node instanceof Scroll) return node
-  //     node = node.parent
-  //   }
-  //   return node
-  // }
+  private findScrollAncestor() {
+    let node = this.parent
+    while (node) {
+      if (node instanceof Scroll) return node
+      node = node.parent
+    }
+    return node
+  }
 
-  // scrollCursorIntoView = debounce(this._scrollCursorIntoView.bind(this))
+  scrollCursorIntoView = debounce(this._scrollCursorIntoView.bind(this))
 
-  // private _scrollCursorIntoView() {
-  //   const scroll = this.findScrollAncestor()
-  //   if (!scroll) return
+  private _scrollCursorIntoView() {
+    const scroll = this.findScrollAncestor()
+    if (!scroll) return
 
-  //   let cx = this._cursor.point.x
-  //   let cy = this._cursor.point.y
+    const cursor = this.children.at(-1)!
 
-  //   let node = this._cursor
-  //   while (node.parent !== scroll) {
-  //     node = node.parent!
-  //     cx += node.point.x
-  //     cy += node.point.y
-  //   }
+    console.log(cursor)
 
-  //   const maxy = scroll.area.size.h - this._cursor.size.h
-  //   const maxx = scroll.area.size.w - this._cursor.size.w
+    let cx = cursor.point.x
+    let cy = cursor.point.y
 
-  //   if (cy < 0) scroll.scrolly -= -cy
-  //   if (cx < 0) scroll.scrollx -= -cx
+    let node = cursor
+    while (node.parent !== scroll) {
+      node = node.parent!
+      cx += node.point.x
+      cy += node.point.y
+    }
 
-  //   if (cy > maxy) scroll.scrolly -= maxy - cy
-  //   if (cx > maxx) scroll.scrollx -= maxx - cx
-  // }
+    const maxy = scroll.area.size.h - cursor.size.h
+    const maxx = scroll.area.size.w - cursor.size.w
+
+    if (cy < 0) scroll.scrolly -= -cy
+    if (cx < 0) scroll.scrollx -= -cx
+
+    if (cy > maxy) scroll.scrolly -= maxy - cy
+    if (cx > maxx) scroll.scrollx -= maxx - cx
+  }
 
   keyHandlers: [RegExp, (...groups: string[]) => void][] = [
     [/^(.)$/, (ch) => this.model.insertText(ch)],

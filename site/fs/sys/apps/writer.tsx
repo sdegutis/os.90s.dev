@@ -9,7 +9,9 @@ const model = new api.TextModel(content)
 const panel = await api.Panel.create({ name: "writer" },
   <api.FilePanelView filedata={() => model.getText()} filepath={$filepath} title='writer' size={{ w: 100, h: 70 }}>
     <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
-      <api.TextBox model={model} autofocus />
+      <api.Border padding={2} paddingColor={0x99000099}>
+        <api.TextBox model={model} autofocus />
+      </api.Border>
     </api.Scroll>
   </api.FilePanelView>
 )
