@@ -195,7 +195,7 @@ export class TextBox extends View {
     [/^ctrl alt down$/, () => this.model.addCursorBelow()],
     [/^escape$/, () => this.model.cursors.length > 1
       ? this.model.removeExtraCursors()
-      : false],
+      : true],
     [/^ctrl v$/, () => {
       sys.readClipboardText().then(text => {
         this.model.insertText(text)
@@ -210,7 +210,7 @@ export class TextBox extends View {
       if (m) {
         const result = fn(...m.slice(1))
         this.restartCursorBlink.dispatch()
-        return !!result
+        return !result
       }
     }
     return false
