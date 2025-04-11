@@ -10,8 +10,7 @@ export class TextModel {
   cursors: TextCursor[] = [new TextCursor()]
 
   onCursorsChanged = new Listener()
-  // linesChanged = new Listener()
-
+  onTextChanged = new Listener()
   onLineChanged = new Listener<number>()
 
   constructor(initialText = '') {
@@ -25,7 +24,7 @@ export class TextModel {
   setText(s: string) {
     this.lines = s.split('\n')
     this.labels = this.lines.map(line => Array(line.length).fill(''))
-    // this.linesChanged.dispatch()
+    this.onTextChanged.dispatch()
   }
 
   insert(text: string) {
