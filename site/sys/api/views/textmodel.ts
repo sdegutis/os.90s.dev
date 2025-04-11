@@ -11,7 +11,7 @@ export class TextModel {
 
   onCursorsChanged = new Listener()
   onCursorsMoved = new Listener()
-  onLineChanged = new Listener<number>()
+  onTextChanged = new Listener()
 
   constructor(initialText = '') {
     this.setText(initialText)
@@ -29,7 +29,7 @@ export class TextModel {
       c.row = Math.min(c.row, this.lines.length - 1)
     })
 
-    this.onLineChanged.dispatch(0)
+    this.rehighlight(0)
   }
 
   insertText(text: string) {
@@ -55,7 +55,7 @@ export class TextModel {
       this.lines[c.row] = a + ch + b
       c.col++
       c.end = c.col
-      this.onLineChanged.dispatch(c.row)
+      this.rehighlight(c.row)
     })
   }
 
@@ -65,7 +65,7 @@ export class TextModel {
       this.lines[c.row] = a + '  ' + b
       c.col += 2
       c.end = c.col
-      this.onLineChanged.dispatch(c.row)
+      this.rehighlight(c.row)
     })
   }
 
@@ -77,7 +77,7 @@ export class TextModel {
       this.labels.splice(c.row, 0, [])
       this.moveCursorsAfter(c, c.row, 1)
       c.end = c.col = 0
-      this.onLineChanged.dispatch(c.row - 1)
+      this.rehighlight(c.row - 1)
     })
   }
 
@@ -86,15 +86,14 @@ export class TextModel {
       if (c.col < this.lines[c.row].length) {
         const [a, b] = this.halves(c)
         this.lines[c.row] = a + b.slice(1)
-        this.onLineChanged.dispatch(c.row)
       }
       else if (c.row < this.lines.length - 1) {
         this.lines[c.row] += this.lines[c.row + 1]
         this.lines.splice(c.row + 1, 1)
         this.labels.splice(c.row + 1, 1)
         this.moveCursorsAfter(c, c.row + 1, -1)
-        this.onLineChanged.dispatch(c.row + 1)
       }
+      this.rehighlight(c.row)
     })
   }
 
@@ -122,7 +121,7 @@ export class TextModel {
         c.row--
         c.col = c.end
       }
-      this.onLineChanged.dispatch(c.row)
+      this.rehighlight(c.row)
     })
   }
 
@@ -270,6 +269,10 @@ export class TextModel {
     // this.cursors
     //   .filter(c => c.begin !== undefined)
     //   .map(c => c.begin)
+  }
+
+  private rehighlight(line: number) {
+
   }
 
 }

@@ -30,7 +30,7 @@ export class TextBox extends View {
 
     this.adjust()
 
-    this.model.onLineChanged.watch(() => {
+    this.model.onTextChanged.watch(() => {
       this.adjust()
       this.needsRedraw()
       this.scrollCursorIntoView()
