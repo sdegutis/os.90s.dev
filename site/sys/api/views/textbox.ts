@@ -203,6 +203,12 @@ export class TextBox extends View {
 
     if (key.length === 1) {
       this.model.insert(key)
+      return true
+    }
+
+    if (key === 'right') {
+      this.model.moveCursorsRight()
+      return true
     }
 
     return true

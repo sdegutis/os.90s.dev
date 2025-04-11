@@ -37,6 +37,18 @@ export class TextModel {
     })
   }
 
+  moveCursorsRight() {
+    this.cursors.forEach(c => {
+      if (c.col < this.lines[c.row].length) {
+        c.end = c.col = c.col + 1
+      }
+      else if (c.row < this.lines.length - 1) {
+        c.col = c.end = 0
+        c.row++
+      }
+    })
+  }
+
   private halves(c: TextCursor) {
     let line = this.lines[c.row]
     const first = line.slice(0, c.col)
