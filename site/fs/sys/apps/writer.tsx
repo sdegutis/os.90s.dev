@@ -18,7 +18,7 @@ if ($filepath.val?.endsWith('.jsln')) {
     error: 0x990000ff,
   }, {
     '': [
-      [/0x[0-9]+/, 'number'],
+      [/0x[0-9a-fA-F]+/, 'number'],
       [/[0-9]+/, 'number'],
       [/[a-zA-Z0-9_]+/, 'ident'],
       [/[.=[\]]/, 'punc'],
