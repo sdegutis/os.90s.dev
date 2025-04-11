@@ -86,6 +86,38 @@ export class TextModel {
     })
   }
 
+  moveToBeginningOfLine(selecting = false) {
+    this.doMove(selecting, c => {
+      const firstNonSpace = this.lines[c.row].match(/[^\s]/)?.index ?? 0
+      if (c.col !== firstNonSpace) {
+        c.end = c.col = firstNonSpace
+      }
+      else {
+        c.end = c.col = 0
+      }
+    })
+  }
+
+  moveToBeginningOfDocument(selecting = false) {
+    this.doMove(selecting, c => {
+      c.row = 0
+      c.end = c.col = 0
+    })
+  }
+
+  moveToEndOfLine(selecting = false) {
+    this.doMove(selecting, c => {
+      c.end = c.col = this.lines[c.row].length
+    })
+  }
+
+  moveToEndOfDocument(selecting = false) {
+    this.doMove(selecting, c => {
+      c.row = this.lines.length - 1
+      c.col = c.end = this.lines[c.row].length
+    })
+  }
+
   delete() {
     this.cursors.forEach(c => {
       if (c.col < this.lines[c.row].length) {

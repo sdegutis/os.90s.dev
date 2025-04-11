@@ -196,14 +196,18 @@ export class TextBox extends View {
   // }
 
   keyHandlers: [RegExp, (...groups: string[]) => void][] = [
-    [/(shift )?(right)/, (shift) => this.model.moveCursorsRight(!!shift)],
-    [/(shift )?(left)/, (shift) => this.model.moveCursorsLeft(!!shift)],
-    [/(shift )?(down)/, (shift) => this.model.moveCursorsDown(!!shift)],
-    [/(shift )?(up)/, (shift) => this.model.moveCursorsUp(!!shift)],
-    [/enter/, () => this.onEnter ? this.onEnter() : this.model.insertNewline()],
-    [/delete/, () => this.model.delete()],
-    [/backspace/, () => this.model.backspace()],
-    [/(.)/, (ch) => this.model.insert(ch)],
+    [/^(shift )?(right)$/, (shift) => this.model.moveCursorsRight(!!shift)],
+    [/^(shift )?(left)$/, (shift) => this.model.moveCursorsLeft(!!shift)],
+    [/^(shift )?(down)$/, (shift) => this.model.moveCursorsDown(!!shift)],
+    [/^(shift )?(up)$/, (shift) => this.model.moveCursorsUp(!!shift)],
+    [/^enter$/, () => this.onEnter ? this.onEnter() : this.model.insertNewline()],
+    [/^delete$/, () => this.model.delete()],
+    [/^backspace$/, () => this.model.backspace()],
+    [/^(shift )?home$/, (shift) => this.model.moveToBeginningOfLine(!!shift)],
+    [/^ctrl (shift )?home$/, (shift) => this.model.moveToBeginningOfDocument(!!shift)],
+    [/^(shift )?end$/, (shift) => this.model.moveToEndOfLine(!!shift)],
+    [/^ctrl (shift )?end$/, (shift) => this.model.moveToEndOfDocument(!!shift)],
+    [/^(.)$/, (ch) => this.model.insert(ch)],
   ]
 
   override onKeyPress(key: string): boolean {
@@ -223,33 +227,7 @@ export class TextBox extends View {
     return false
   }
 
-  // override onKeyPress(key: string): boolean {
-  //   return false
-  // }
-
   // override onKeyDown(key: string): boolean {
-  //   if (key === 'Home') {
-  //     const firstNonSpace = this.lines[this.row].match(/[^\s]/)?.index ?? 0
-  //     if (sys.keymap.has('Control')) {
-  //       this.row = 0
-  //       this.end = this.col = 0
-  //     }
-  //     else if (this.col !== firstNonSpace) {
-  //       this.end = this.col = firstNonSpace
-  //     }
-  //     else {
-  //       this.end = this.col = 0
-  //     }
-  //   }
-  //   else if (key === 'End') {
-  //     if (sys.keymap.has('Control')) {
-  //       this.row = this.lines.length - 1
-  //       this.col = this.end = this.lines[this.row].length
-  //     }
-  //     else {
-  //       this.end = this.col = this.lines[this.row].length
-  //     }
-  //   }
   //   else if (key === 'Tab') {
   //     if (this.onTab) {
   //       debounce(() => this.onTab?.())()
