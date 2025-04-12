@@ -1,7 +1,7 @@
-import { config } from "../config.js"
+import { NETHOST } from "../config.js"
 
 export async function POST(path: string, data: string) {
-  return fetch(config.net + path, {
+  return fetch(NETHOST + path, {
     method: 'post',
     body: data,
     credentials: 'include',
@@ -9,7 +9,7 @@ export async function POST(path: string, data: string) {
 }
 
 export async function GET(path: string) {
-  return fetch(config.net + path, {
+  return fetch(NETHOST + path, {
     credentials: 'include',
   }).then(r => r.json())
 }

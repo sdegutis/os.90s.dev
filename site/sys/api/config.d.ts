@@ -1,3 +1,1 @@
-export const config = {
-  net: string,
-}
+export const NETHOST: string

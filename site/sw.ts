@@ -1,7 +1,7 @@
 declare var __wbg_init: () => Promise<void>
 declare var transformSync: typeof import('@swc/wasm-web').transformSync
 declare var opendb: typeof import('./sys/api/util/db.js').opendb
-declare var config: typeof import('./sys/api/config.js').config
+declare var NETHOST: typeof import('./sys/api/config.js').NETHOST
 
 importScripts('./sys/sw/wasm.js')
 importScripts('./sys/sw/db.js')
@@ -91,7 +91,7 @@ async function handleRoute(url: URL, req: Request) {
 
   if (url.pathname.startsWith('/fs/net/')) {
     const path = url.pathname.slice('/fs/usr/'.length)
-    const r = await fetch(`${config.net}/fs/${path}`)
+    const r = await fetch(`${NETHOST}/fs/${path}`)
     const text = await r.text()
 
     if (path.endsWith('.js')) {
