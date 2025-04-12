@@ -110,6 +110,7 @@ class Sys {
     order?: PanelOrdering,
     pos?: Ref<Point> | 'default' | 'center',
     view: View,
+    canFocus?: boolean,
   }) {
     const order = config.order ?? 'normal'
     const point = (!config.pos || config.pos === 'default') ? $({ x: -1, y: -1 }) :
@@ -119,7 +120,9 @@ class Sys {
     const root = config.view
     const { w, h } = root.size
 
-    const [id, x, y, port] = await this.rpc.call('newpanel', [config.name, order, point.val.x, point.val.y, w, h])
+    const canFocus = config.canFocus ?? true
+
+    const [id, x, y, port] = await this.rpc.call('newpanel', [config.name, order, point.val.x, point.val.y, w, h, canFocus])
 
     point.val = { x, y }
     const panel = new Panel(port, id, point, root)
@@ -169,6 +172,14 @@ class Sys {
   async readClipboardText() {
     const [text] = await this.rpc.call('readcliptext', [])
     return text
+  }
+
+  hidePanel(panid: number) {
+    this.rpc.send('hidepanel', [panid])
+  }
+
+  showPanel(panid: number) {
+    this.rpc.send('showpanel', [panid])
   }
 
 }

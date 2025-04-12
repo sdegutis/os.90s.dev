@@ -46,6 +46,7 @@ export class Panel {
     saveSize?: boolean,
     order?: PanelOrdering,
     pos?: Ref<Point> | 'default' | 'center',
+    canFocus?: boolean,
   }, view: View) {
     if (config.name && config.saveSize !== false) {
       const size = await panelnames.get(config.name)
@@ -352,6 +353,22 @@ export class Panel {
   close() {
     this.rpc.send('close', [])
     this.didClose.dispatch()
+  }
+
+  minimize() {
+    sys.hidePanel(this.id)
+  }
+
+  maximize() {
+
+  }
+
+  hide() {
+    sys.hidePanel(this.id)
+  }
+
+  show() {
+    sys.showPanel(this.id)
   }
 
 }

@@ -35,10 +35,20 @@ panelevents.onmessage = msg => {
 
 
 const $panelButtons = $panels.adapt(panels =>
-  panels.map(p =>
-    <api.Button background={p.focused ? 0x99000099 : 0x000000ff} padding={2} onClick={() => { api.sys.focusPanel(p.id) }}>
-      <api.Label text={p.title} />
-    </api.Button>
+  panels.map(p => <api.Button
+    background={p.focused ? 0x99000099 : 0x000000ff}
+    padding={2}
+    onClick={() => {
+      if (p.focused) {
+        api.sys.hidePanel(p.id)
+      }
+      else {
+        api.sys.focusPanel(p.id)
+      }
+    }}
+  >
+    <api.Label text={p.title} />
+  </api.Button>
   )
 )
 
@@ -47,6 +57,7 @@ const desktop = await api.Panel.create({
   saveSize: false,
   order: 'bottom',
   pos: api.$({ x: 0, y: 0 }),
+  canFocus: false,
 }, (
   <api.View size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={api.sysConfig.$bgcolor} />
 ))
@@ -66,6 +77,7 @@ const taskbar = await api.Panel.create({
   saveSize: false,
   order: 'top',
   pos: api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })),
+  canFocus: false,
 }, (
   <api.SpacedX size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x222222ff}>
     <api.GroupX gap={2}>

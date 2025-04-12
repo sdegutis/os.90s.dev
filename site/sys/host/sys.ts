@@ -181,6 +181,7 @@ export class Sys {
 
   private findHovered() {
     for (const panel of Panel.ordered.toReversed()) {
+      if (!panel.visible) continue
       if (this.mouse.x >= panel.x && this.mouse.y >= panel.y &&
         this.mouse.x < panel.x + panel.w &&
         this.mouse.y < panel.y + panel.h
@@ -192,6 +193,7 @@ export class Sys {
   redrawAllPanels() {
     for (const panel of Panel.ordered) {
       if (panel.proc.status === 'dead') continue
+      if (!panel.visible) continue
       if (panel.img) {
         this.ctx.drawImage(panel.img, panel.x, panel.y)
       }
@@ -213,10 +215,13 @@ export class Sys {
   }
 
   focusPanel(panel: Panel) {
+    if (!panel.canFocus) return
+
     if (this.focused !== panel) {
       this.prevFocused = this.focused
       this.focused?.rpc.send('blur', [])
       this.focused = panel
+      this.focused.visible = true
       this.panelevents.postMessage({ type: 'focused', id: panel.id })
       this.focused.rpc.send('focus', [])
       this.updateLocation()

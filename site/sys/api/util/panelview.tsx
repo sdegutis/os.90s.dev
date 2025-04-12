@@ -53,8 +53,8 @@ export function PanelView(data: {
     this.onMouseUp = dragMove(sys.$mouse, panel.$point)
   }
 
-  function minw() { /* panel.min() */ }
-  function maxw() { /* panel.max() */ }
+  function minw() { panel.minimize() }
+  function maxw() { panel.maximize() }
   function axew() { panel.close() }
 
   return (

@@ -52,9 +52,9 @@ export class Process {
         reply([sys.id, this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], opts], [])
       },
 
-      newpanel: (reply, title, ord, x, y, w, h) => {
+      newpanel: (reply, title, ord, x, y, w, h, canfocus) => {
         const chan = new MessageChannel()
-        const p = new Panel({ x, y, w, h }, this, chan.port1, ord, sys)
+        const p = new Panel({ x, y, w, h }, this, chan.port1, ord, sys, canfocus)
         reply([p.id, p.x, p.y, chan.port2], [chan.port2])
 
         this.panels.add(p)
@@ -81,6 +81,14 @@ export class Process {
 
       resize: (w, h) => {
         sys.resize(w, h)
+      },
+
+      hidepanel: (panid) => {
+        this.setPanelVisible(panid, false)
+      },
+
+      showpanel: (panid) => {
+        this.setPanelVisible(panid, true)
       },
 
       askdir: async (reply, opts) => {
@@ -131,6 +139,21 @@ export class Process {
         }
       }
     }, 3000)
+  }
+
+  setPanelVisible(panid: number, visible: boolean) {
+    const panel = Panel.all.get(panid)
+    if (!panel) return
+
+    panel.visible = visible
+
+    if (!visible && this.sys.focused === panel) {
+      const idx = Panel.ordered.indexOf(panel)
+      const nextInLine = Panel.ordered.slice(0, idx).toReversed().find(p => p.visible && p.canFocus)
+      if (nextInLine) this.sys.focusPanel(nextInLine)
+    }
+
+    this.sys.redrawAllPanels()
   }
 
   focus(panel: Panel) {
