@@ -40,7 +40,7 @@ const panel = await api.Panel.create({ name: "readftf" },
           onMouseMove={function (p) { this.firstChild!.onMouseMove?.(p) }}
           onMouseUp={function () { this.firstChild!.onMouseUp?.() }}
         >
-          <api.TextBox editable={false} model={model} />
+          <api.TextBox editable={false} model={model} cursorColor={0x99000099} />
         </api.Border>
       </api.Scroll>
 

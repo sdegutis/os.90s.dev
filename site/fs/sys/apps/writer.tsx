@@ -12,6 +12,12 @@ if ($filepath.val?.endsWith('.jsln')) {
   hl.highlight(model, 0)
 }
 
+if ($filepath.val?.endsWith('.ftf')) {
+  const hl = new api.Highlighter(api.langThemes.ftfTheme1, api.langGrammars.ftfGrammar)
+  model.highlighter = hl
+  hl.highlight(model, 0)
+}
+
 const panel = await api.Panel.create({ name: "writer" },
   <api.FilePanelView filedata={() => model.getText()} filepath={$filepath} title='writer' size={{ w: 100, h: 70 }}>
     <api.Scroll
