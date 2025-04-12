@@ -47,6 +47,7 @@ const msGrammar: LangGrammar = {
     [/^\s*={3,}/, ['header', '@push(header)']],
     [/^\s*-{3,}/, ['header', '@push(header)']],
     [/\*.+?\*/, 'bold'],
+    [/\[\[.+?\]\]/, 'link'],
     [/\/.+?\//, 'italic'],
     [/./, 'text'],
   ],

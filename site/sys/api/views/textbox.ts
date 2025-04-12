@@ -98,18 +98,28 @@ export class TextBox extends View {
 
   override onMouseDown(button: number): void {
     this.focus()
+
+    if (sys.keymap.has('Alt')) {
+      const { row, col } = this.posAtMouse()
+      this.model.addCursor(row, col)
+      return
+    }
+
     this.moveCursor(false)
 
     this.onMouseMove = debounce(() => this.moveCursor(true))
     this.onMouseUp = () => delete this.onMouseMove
   }
 
-  private moveCursor(selecting: boolean) {
+  private posAtMouse() {
     const row = Math.max(0, Math.floor(this.mouse.y / (this.font.ch + this.ygap)))
     const col = Math.max(0, Math.floor(this.mouse.x / (this.font.cw + this.xgap)))
+    return { row, col }
+  }
 
+  private moveCursor(selecting: boolean) {
+    const { row, col } = this.posAtMouse()
     this.model.moveCursorTo(row, col, selecting)
-
     this.restartCursorBlink.dispatch()
     this.scrollCursorIntoView()
   }

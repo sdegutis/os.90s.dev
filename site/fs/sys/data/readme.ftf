@@ -1,12 +1,16 @@
-asdfadf *asdf*
-
 ### header with *bold* text ###
+
 this is the top
 
+asdfadf *asdf*
+and [[what about]] a link
+
 === section ===
+
 and another
 
 --- section ---
+
 cool
 
 asfd #this is NOT a comment

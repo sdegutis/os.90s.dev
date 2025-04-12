@@ -257,18 +257,17 @@ export class TextModel {
   addCursorAbove() {
     const last = this.cursors.at(-1)!
     if (last.row === 0) return
-
-    const next = new TextCursor(last.row - 1, last.col, last.end)
-    this.fixCursorCol(next)
-    this.cursors.push(next)
-    this.onCursorsChanged.dispatch()
+    this.addCursor(last.row - 1, last.col, last.end)
   }
 
   addCursorBelow() {
     const last = this.cursors.at(-1)!
     if (last.row === this.lines.length - 1) return
+    this.addCursor(last.row + 1, last.col, last.end)
+  }
 
-    const next = new TextCursor(last.row + 1, last.col, last.end)
+  addCursor(row: number, col: number, end?: number) {
+    const next = new TextCursor(row, col, end ?? col)
     this.fixCursorCol(next)
     this.cursors.push(next)
     this.onCursorsChanged.dispatch()
