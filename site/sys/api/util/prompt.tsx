@@ -1,7 +1,6 @@
 import { Panel } from "../core/panel.js"
 import { multiplex } from "../core/ref.js"
 import { Border } from "../views/border.js"
-import { Button } from "../views/button.js"
 import { Center } from "../views/center.js"
 import { GroupX, GroupY } from "../views/group.js"
 import { Label } from "../views/label.js"
@@ -14,8 +13,8 @@ export async function showPrompt(panel: Panel, text: string) {
   const prompt = <Label text={text} />
   const textarea = <TextBox autofocus onEnter={ok} /> as TextBox
   const buttons = <GroupX gap={2}>
-    <Button onClick={no} background={0x99000099} padding={2}><Label text={'cancel'} /></Button>
-    <Button onClick={ok} background={0xffffff33} padding={2}><Label text={'ok'} /></Button>
+    <button action={no} style='cancel' text={'cancel'} />
+    <button action={ok} style='submit' text={'ok'} />
   </GroupX>
 
   const scroll = <Scroll

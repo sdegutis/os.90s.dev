@@ -8,8 +8,16 @@ import { JsxAttrs } from "./jsx.js"
 export const components: Record<string, Component<any>> = Object.create(null)
 export type Component<T extends Record<string, any>> = (data: T) => JSX.Element
 
-components['button'] = (data: { action: () => void; text: string }) => {
-  return <Button padding={2} onClick={data.action}>
+components['button'] = (data: {
+  action: () => void
+  text: string
+  style: 'submit' | 'cancel' | undefined
+}) => {
+  const background =
+    data.style === 'submit' ? 0xffffff33 :
+      data.style === 'cancel' ? 0x99000099 :
+        undefined
+  return <Button background={background} padding={2} onClick={data.action}>
     <Label text={data.text} />
   </Button>
 }
@@ -24,10 +32,7 @@ components['implicit'] = (data: { children: string | string[] }) => {
 components['textfield'] = (data: { length?: number } & JsxAttrs<TextBox>) => {
   const length = data.length ?? 50
   const textbox = <TextBox {...data} /> as TextBox
-  const border = <Border
-    padding={2}
-    children={[textbox]}
-  /> as Border
+  const border = <Border padding={2} children={[textbox]} /> as Border
   return <Scroll
     showh={false}
     showv={false}

@@ -12,7 +12,7 @@ export type JsxAttrs<T> = {
     ? ((this: T, ...args: A) => R) | undefined
 
     : `$${K & string}` extends keyof T ? T[`$${K & string}`] extends Ref<infer R>
-    ? MaybeRef<R> : never
+    ? MaybeRef<R> | undefined : never
 
     : T[K]
   )

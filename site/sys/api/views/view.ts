@@ -28,7 +28,7 @@ export class View {
         const rkey = `$${key}`
         this[rkey as keyof this] = val as this[keyof this]
       }
-      else {
+      else if (val !== undefined) {
         this[key as keyof this] = val
       }
 
