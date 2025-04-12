@@ -1,6 +1,5 @@
-import { fs } from "../fs/fs.js"
 import { View } from "../views/view.js"
-import { getConfigs } from "./config.js"
+import { sysConfig } from "./config.js"
 import { Font } from "./font.js"
 import { Panel } from "./panel.js"
 import { $, Ref } from "./ref.js"
@@ -100,13 +99,7 @@ class Sys {
 
     keymap.forEach(k => this.keymap.add(k))
 
-    const config = await getConfigs()
-    this.$font = $(config["sys.font"])
-
-    fs.watchTree('usr/config.jsln', async () => {
-      const config = await getConfigs()
-      this.$font.val = config["sys.font"]
-    })
+    this.$font = sysConfig.$font
   }
 
   async makePanel(config: {

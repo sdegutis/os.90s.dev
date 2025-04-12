@@ -1,9 +1,8 @@
-import { getConfigs } from "../api/core/config.js"
+import { sysConfig } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { $, Ref } from "../api/core/ref.js"
 import { Point } from "../api/core/types.js"
-import { fs } from '../api/fs/fs.js'
 import { updateAccountFromServer } from "../api/util/account.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
@@ -32,15 +31,16 @@ export class Sys {
 
   static async init() {
     updateAccountFromServer()
-    const config = await getConfigs()
-    return new Sys(config)
+    return new Sys()
   }
 
-  private constructor(config: Awaited<ReturnType<typeof getConfigs>>) {
-    const [w, h] = config["sys.size"]
-    this.$size = $({ w, h })
+  private constructor() {
+    this.$size = $(sysConfig.$size.val)
+    sysConfig.$size.watch(size => {
+      this.resize(size.w, size.h)
+    })
 
-    this.$font = $(config["sys.font"])
+    this.$font = sysConfig.$font
 
     const { $point, $scale, canvas, ctx } = setupCanvas(this.$size)
     this.ctx = ctx
@@ -49,18 +49,12 @@ export class Sys {
 
     this.installEventHandlers(canvas, $point, $scale)
 
-    this.launch(config["sys.shell"], {})
-
-    fs.watchTree('usr/config.jsln', async () => {
-      const config = await getConfigs()
-
-      const [w, h] = config["sys.size"]
-      this.resize(w, h)
-
-      this.$font.val = config["sys.font"]
+    this.launch(sysConfig.$shell.val, {})
+    sysConfig.$shell.watch(shell => {
+      this.launch(shell, {})
     })
 
-    for (const path of config["sys.startup"] ?? []) {
+    for (const path of sysConfig.startup ?? []) {
       this.launch(path, {})
     }
 

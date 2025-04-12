@@ -1,56 +1,51 @@
 import { fs } from "../fs/fs.js"
 import { Font } from "./font.js"
 import { JSLN } from "./jsln.js"
+import { $ } from "./ref.js"
 
-async function loadConfigs<T extends Record<string, any>>(
-  kvs: { [K in keyof T]: (o: any) => Promise<T[K] | undefined> }
-) {
-  const paths = [
-    'usr/config.jsln',
-    'sys/default/config.jsln',
-  ]
+const baseConfig = await loadConfig('sys/default/config.jsln') as any
 
-  const files = await Promise.all(paths.map(p => fs.getFile(p)))
-  const configs = files.map(f => JSLN.tryParse(f!)).filter(c => c !== undefined)
-
-  const o = {} as T
-
-  nextKey:
-  for (const [keyPath, validate] of Object.entries(kvs)) {
-    const keys = keyPath.split('.')
-    const last = keys.pop()!
-    nextConfig:
-    for (const config of configs) {
-      try {
-        let node = config
-        for (const key of keys) node = node[key]
-        const userval = node[last] as T[string]
-        const compval = await validate(userval)
-        if (compval === undefined) continue nextConfig
-        (o as any)[keyPath] = compval
-        continue nextKey
-      }
-      catch (e) { }
-    }
-  }
-
-  return o
+export const sysConfig = {
+  $size: $({
+    w: baseConfig.sys.size[0] as number,
+    h: baseConfig.sys.size[1] as number,
+  }),
+  $font: $(new Font((await fs.getFile(baseConfig.sys.font))!)),
+  $shell: $(baseConfig.sys.shell as string),
+  startup: baseConfig.sys.startup as string[] | undefined,
 }
 
-export const getConfigs = () => loadConfigs({
-  'sys.size': async ([w, h]: [number, number]) => {
-    return w > 0 && h > 0 ? [w, h] : undefined
-  },
-  'sys.font': async (path: string) => {
-    const content = await fs.getFile(path)
-    return content ? new Font(content) : undefined
-  },
-  'sys.shell': async (path: string) => {
-    return await fs.getFile(path) ? path : undefined
-  },
-  'sys.startup': async (paths: string[]) => {
-    if (!(paths instanceof Array)) return undefined
-    if (!paths.every(p => typeof p === 'string')) return undefined
-    return paths
-  },
-})
+await loadUsrConfig()
+fs.watchTree('usr/config.jsln', loadUsrConfig)
+
+async function loadUsrConfig() {
+  const usrConfig = await loadConfig('usr/config.jsln') as any
+
+  const w = as(usrConfig?.sys?.size?.[0], 'number') ?? 0
+  const h = as(usrConfig?.sys?.size?.[1], 'number') ?? 0
+  if (w > 0 && h > 0) sysConfig.$size.val = { w, h }
+
+  const fontpath = as(usrConfig?.sys?.font, 'string')
+  if (fontpath) {
+    const fontsrc = await fs.getFile(fontpath)
+    if (fontsrc) sysConfig.$font.val = new Font(fontsrc)
+  }
+
+  const shell = as(usrConfig?.sys?.shell, 'string')
+  if (shell) sysConfig.$shell.val = shell
+}
+
+function as<T extends 'string' | 'number' | 'boolean'>(o: any, as: T) {
+  if (typeof o === as) return o as (
+    T extends 'string' ? string :
+    T extends 'number' ? number :
+    boolean
+  )
+  return undefined
+}
+
+async function loadConfig(path: string) {
+  const content = await fs.getFile(path)
+  if (!content) return undefined
+  return JSLN.tryParse(content)
+}
