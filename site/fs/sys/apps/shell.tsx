@@ -99,8 +99,6 @@ function Clock() {
       api.showMenu([
         { text: '320 x 180', onClick: () => { api.sys.resize(320, 180) } },
         { text: '640 x 360', onClick: () => { api.sys.resize(320 * 2, 180 * 2) } },
-        '-',
-        { text: 'test prompt', onClick: () => { api.showPrompt('testing prompt') } },
       ])
       return
     }
