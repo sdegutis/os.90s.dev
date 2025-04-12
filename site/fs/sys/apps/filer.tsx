@@ -10,14 +10,6 @@ const EMPTY = <api.Border padding={2}>
 
 
 
-const button = (data: { action: () => void, text: string }) => {
-  return <api.Button padding={2} onClick={data.action}>
-    <api.Label text={data.text} />
-  </api.Button>
-}
-
-api.comps['button'] = button
-
 
 
 
