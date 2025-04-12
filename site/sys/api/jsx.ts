@@ -30,7 +30,7 @@ declare global {
   }
 }
 
-export const Fragment = ''
+export const Fragment = 'implicit'
 export const jsxs = createNode
 export const jsx = createNode
 
