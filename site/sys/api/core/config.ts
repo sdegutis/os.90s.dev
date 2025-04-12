@@ -35,13 +35,10 @@ async function loadUsrConfig() {
   if (shell) sysConfig.$shell.val = shell
 }
 
-function as<T extends 'string' | 'number' | 'boolean'>(o: any, as: T) {
-  if (typeof o === as) return o as (
-    T extends 'string' ? string :
-    T extends 'number' ? number :
-    boolean
-  )
-  return undefined
+// clever idea by Alexander Nenashev
+type Primitive = { string: string, number: number, boolean: boolean }
+function as<T extends keyof Primitive>(o: any, as: T) {
+  return (typeof o === as) ? o as Primitive[T] : undefined
 }
 
 async function loadConfig(path: string) {
