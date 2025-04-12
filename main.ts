@@ -20,7 +20,7 @@ const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5"><path d=
 const iconlink = `<link rel="shortcut icon" href="${`data:image/svg+xml,${encodeURIComponent(icon)}`}" />`
 
 const config = {
-  net: 'https://net.90s.dev',
+  net: isDev ? 'http://localhost:8088' : 'https://net.90s.dev',
 }
 
 function processSite() {
@@ -38,8 +38,8 @@ function processSite() {
     files.with('tsconfig\.json').remove()
     files.with(/\.d\.ts$/).remove()
 
-    if (!isDev) files.add('/sys/api/config.ts', `export const config = ${JSON.stringify(config)}`)
-    if (!isDev) files.add('/sys/sw/config.ts', `const config = ${JSON.stringify(config)}`)
+    files.add('/sys/api/config.ts', `export const config = ${JSON.stringify(config)}`)
+    files.add('/sys/sw/config.ts', `const config = ${JSON.stringify(config)}`)
 
     files.with(/\.js$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
     files.with(/\.tsx?$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
