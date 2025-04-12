@@ -47,10 +47,6 @@ export function PanelView(data: {
   const focused = $(false)
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
 
-  function minw() { panel.minimize() }
-  function maxw() { panel.maximize() }
-  function axew() { panel.close() }
-
   return (
     <Margin
       onKeyPress={data.onKeyPress}
@@ -88,9 +84,15 @@ export function PanelView(data: {
           </Border>
           <Border>
             <GroupX>
-              <Button padding={2} onClick={minw}><ImageView bitmap={minImage} /></Button>
-              <Button padding={2} onClick={maxw}><ImageView bitmap={maxImage} /></Button>
-              <CloseB padding={2} onClick={axew}><ImageView bitmap={axeImage} /></CloseB>
+              <Button padding={2} onClick={() => panel.minimize()}>
+                <ImageView bitmap={minImage} />
+              </Button>
+              <Button padding={2} onClick={() => panel.maximize()}>
+                <ImageView bitmap={maxImage} />
+              </Button>
+              <Button padding={2} onClick={() => panel.close()} hoverBackground={0x99000055} pressBackground={0x44000099}>
+                <ImageView bitmap={axeImage} />
+              </Button>
             </GroupX>
           </Border>
         </SpacedX>
@@ -108,10 +110,6 @@ export function PanelView(data: {
     </Margin>
   )
 
-}
-
-function CloseB(data: ConstructorParameters<typeof Button>[0]) {
-  return <Button {...data} hoverBackground={0x99000055} pressBackground={0x44000099} />
 }
 
 function PanelResizer(data: { size: Ref<Size> }) {
