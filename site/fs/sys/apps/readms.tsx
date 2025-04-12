@@ -1,0 +1,28 @@
+import * as api from "/api.js"
+
+let content = ''
+const $filepath = api.$<string | undefined>(api.program.opts["file"])
+if ($filepath.val) content = await api.fs.getFile($filepath.val) ?? ''
+
+const model = new api.TextModel(content)
+
+if ($filepath.val?.endsWith('.jsln')) {
+  const hl = new api.Highlighter(api.langThemes.theme1, api.langGrammars.jslnGrammar)
+  model.highlighter = hl
+  hl.highlight(model, 0)
+}
+
+const panel = await api.Panel.create({ name: "readms" },
+  <api.FilePanelView filedata={() => model.getText()} filepath={$filepath} title='readms' size={{ w: 100, h: 70 }}>
+    <api.Scroll
+      background={0xffffff11}
+      onMouseDown={function (b) { this.content.onMouseDown?.(b) }}
+      onMouseMove={function (p) { this.content.onMouseMove?.(p) }}
+      onMouseUp={function () { this.content.onMouseUp?.() }}
+    >
+      <api.TextBox editable={false} model={model} autofocus />
+    </api.Scroll>
+  </api.FilePanelView>
+)
+
+panel.focusPanel()

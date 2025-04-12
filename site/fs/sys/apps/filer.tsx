@@ -182,6 +182,9 @@ async function handleFile(path: string) {
   else if (path.endsWith('.font')) {
     await api.sys.launch('sys/apps/fontmaker.js', path)
   }
+  else if (path.endsWith('.ms')) {
+    await api.sys.launch('sys/apps/readms.js', path)
+  }
 }
 
 let copying: string | undefined
