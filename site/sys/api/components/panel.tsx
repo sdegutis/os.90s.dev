@@ -41,9 +41,6 @@ export function PanelView(data: {
 }) {
 
   const $size = defRef(data.size ?? $({ w: 200, h: 150 }))
-
-  let panel: Panel
-
   const focused = $(false)
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
 
@@ -54,7 +51,6 @@ export function PanelView(data: {
       padding={1}
       size={$size}
       presented={async function (p) {
-        panel = p
         data.presented?.(p)
       }}
       onPanelFocus={() => focused.val = true}
@@ -62,57 +58,64 @@ export function PanelView(data: {
       background={0x111111ff}
     >
       <PanedYA gap={-0}>
-
-        <SpacedX
-          canMouse
-          onMouseDown={function () {
-            this.onMouseUp = dragMove(sys.$mouse, panel.$point)
-          }}
-          background={0x1199ff33}
-        >
-          <Border>
-            <GroupX gap={1}>
-              <Button onClick={function () {
-                const items = data.menuItems?.()
-                if (items?.length) showMenu(items, {
-                  x: this.screenPoint.x,
-                  y: this.screenPoint.y + this.size.h,
-                })
-              }} padding={2}><ImageView bitmap={mnuImage} /></Button>
-              <Label text={data.title} />
-            </GroupX>
-          </Border>
-          <Border>
-            <GroupX>
-              <Button padding={2} onClick={() => panel.minimize()}>
-                <ImageView bitmap={minImage} />
-              </Button>
-              <Button padding={2} onClick={() => panel.maximize()}>
-                <ImageView bitmap={maxImage} />
-              </Button>
-              <Button padding={2} onClick={() => panel.close()} hoverBackground={0x99000055} pressBackground={0x44000099}>
-                <ImageView bitmap={axeImage} />
-              </Button>
-            </GroupX>
-          </Border>
-        </SpacedX>
-
-        <Margin padding={0}>
-          <Margin background={0x222222ff}>
-            {data.children}
-          </Margin>
-        </Margin>
-
+        <panel-titlebar title={data.title} menuItems={data.menuItems} />
+        <panel-body>{data.children}</panel-body>
       </PanedYA>
-
-      <PanelResizer size={$size} />
-
+      <panel-resizer panelSize={$size} />
     </Margin>
   )
-
 }
 
-function PanelResizer(data: { size: Ref<Size> }) {
+export function PanelTitlebar(data: {
+  title: MaybeRef<string>
+  menuItems?: () => MenuItem[]
+}) {
+  let panel: Panel
+  return <SpacedX
+    presented={p => { panel = p }}
+    canMouse
+    onMouseDown={function () {
+      this.onMouseUp = dragMove(sys.$mouse, panel.$point)
+    }}
+    background={0x1199ff33}
+  >
+    <Border>
+      <GroupX gap={1}>
+        <Button onClick={function () {
+          const items = data.menuItems?.()
+          if (items?.length) showMenu(items, {
+            x: this.screenPoint.x,
+            y: this.screenPoint.y + this.size.h,
+          })
+        }} padding={2}><ImageView bitmap={mnuImage} /></Button>
+        <Label text={data.title} />
+      </GroupX>
+    </Border>
+    <Border>
+      <GroupX>
+        <Button padding={2} onClick={() => panel.minimize()}>
+          <ImageView bitmap={minImage} />
+        </Button>
+        <Button padding={2} onClick={() => panel.maximize()}>
+          <ImageView bitmap={maxImage} />
+        </Button>
+        <Button padding={2} onClick={() => panel.close()} hoverBackground={0x99000055} pressBackground={0x44000099}>
+          <ImageView bitmap={axeImage} />
+        </Button>
+      </GroupX>
+    </Border>
+  </SpacedX>
+}
+
+export function PanelBody(data: { children: any }) {
+  return <Margin padding={0}>
+    <Margin background={0x222222ff}>
+      {data.children}
+    </Margin>
+  </Margin>
+}
+
+export function PanelResizer(data: { panelSize: Ref<Size> }) {
   let panel: Panel
 
   function resizerMouseDown(this: ImageView, button: number) {
@@ -131,7 +134,7 @@ function PanelResizer(data: { size: Ref<Size> }) {
     bitmap={adjImage}
     onMouseEnter={function (this: View) { panel.pushCursor(adjCursor) }}
     onMouseExit={function (this: View) { panel.popCursor(adjCursor) }}
-    point={defRef(data.size).adapt(s => ({
+    point={defRef(data.panelSize).adapt(s => ({
       x: s.w - adjImage.width,
       y: s.h - adjImage.height,
     }))}
