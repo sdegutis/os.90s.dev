@@ -11,6 +11,7 @@ import { Process } from "./process.js"
 
 export class Sys {
 
+  id = crypto.randomUUID()
   private ctx
   mouse = { x: 0, y: 0 }
   keymap = new Set<string>()

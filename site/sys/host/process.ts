@@ -49,7 +49,7 @@ export class Process {
         opts["app"] = path
         this.ready.resolve()
         this.procevents.postMessage({ type: 'init', pid: this.id })
-        reply([this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], opts], [])
+        reply([sys.id, this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], opts], [])
       },
 
       newpanel: (reply, title, ord, x, y, w, h) => {

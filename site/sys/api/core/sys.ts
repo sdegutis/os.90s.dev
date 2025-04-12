@@ -33,10 +33,10 @@ class Program {
     })
 
     const quit = new BroadcastChannel('shell')
-    quit.onmessage = msg => this.terminate()
+    quit.onmessage = msg => { if (msg.data === sys.sysid) this.terminate() }
 
     await Promise.race([isUnlocked.promise, isLocked]).then(need => {
-      if (need) quit.postMessage(true)
+      if (need) quit.postMessage(sys.sysid)
     })
   }
 
@@ -45,6 +45,8 @@ class Program {
 export const program = new Program()
 
 class Sys {
+
+  sysid!: string
 
   keyevents = new BroadcastChannel('keyevents')
 
@@ -85,7 +87,8 @@ class Sys {
       }
     }
 
-    const [id, w, h, keymap, opts] = await this.rpc.call('init', [])
+    const [sysid, id, w, h, keymap, opts] = await this.rpc.call('init', [])
+    this.sysid = sysid
     program.opts = opts
     program.pid = id
     this.size = { w, h }
