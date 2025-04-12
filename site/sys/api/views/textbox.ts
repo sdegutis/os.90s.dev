@@ -214,13 +214,11 @@ export class TextBox extends View {
     [/^escape$/, () => this.model.cursors.length > 1
       ? this.model.removeExtraCursors()
       : true],
-    [/^ctrl v$/, () => {
-      this.ifEditable(() => {
-        sys.readClipboardText().then(text => {
-          this.model.insertText(text)
-        })
+    [/^ctrl v$/, this.ifEditable(() => {
+      sys.readClipboardText().then(text => {
+        this.model.insertText(text)
       })
-    }],
+    })],
   ]
 
   override onKeyPress(key: string): boolean {
