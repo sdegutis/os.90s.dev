@@ -250,16 +250,16 @@ class JSLNEncoder {
 
 export const JSLN = {
 
-  parse: (str: string) => {
+  parse(str: string) {
     return new JSLNParser(str).parse()
   },
 
-  tryParse: (str: string) => {
+  tryParse(str: string) {
     try { return new JSLNParser(str).parse() }
     catch (e) { return undefined }
   },
 
-  stringify: (o: Record<string, any>, stringifiers?: Record<string, (o: any) => string>) => {
+  stringify(o: Record<string, any>, stringifiers?: Record<string, (o: any) => string>) {
     return new JSLNEncoder(o, stringifiers).stringify()
   },
 
