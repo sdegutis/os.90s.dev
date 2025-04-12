@@ -1,9 +1,8 @@
-import { JsxAttrs } from "../core/jsx.js"
 import { Border } from "../views/border.js"
 import { Scroll } from "../views/scroll.js"
 import { TextBox } from "../views/textbox.js"
 
-export function textfield(data: { length?: number } & JsxAttrs<TextBox>) {
+export function textfield(data: { length?: number } & ConstructorParameters<typeof TextBox>[0]) {
   const length = data.length ?? 50
   const textbox = <TextBox {...data} /> as TextBox
   const border = <Border padding={2} children={[textbox]} /> as Border
