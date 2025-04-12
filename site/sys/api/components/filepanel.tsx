@@ -5,7 +5,7 @@ import { fs } from "../fs/fs.js"
 import { showPrompt } from "../util/prompt.js"
 import { PanelView } from "./panel.js"
 
-export function filepanel({
+export function FilePanelComp({
   filepath,
   filedata,
   title,

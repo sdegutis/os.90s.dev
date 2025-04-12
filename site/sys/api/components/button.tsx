@@ -1,7 +1,7 @@
 import { Button } from "../views/button.js"
 import { Label } from "../views/label.js"
 
-export function button(data: {
+export function ButtonComp(data: {
   action: () => void
   text: string
   style: 'submit' | 'cancel' | undefined

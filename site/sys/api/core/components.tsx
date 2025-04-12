@@ -1,14 +1,14 @@
-import { button } from "../components/button.js"
-import { filepanel } from "../components/filepanel.js"
-import { implicit } from "../components/implicit.js"
+import { ButtonComp } from "../components/button.js"
+import { FilePanelComp } from "../components/filepanel.js"
+import { ImplicitComp } from "../components/implicit.js"
 import { PanelView } from "../components/panel.js"
-import { textfield } from "../components/textfield.js"
+import { TextFieldComp } from "../components/textfield.js"
 
 export const components: Record<string, Component<any>> = Object.create(null)
 export type Component<T extends Record<string, any>> = (data: T) => JSX.Element
 
-components['button'] = button
-components['implicit'] = implicit
-components['textfield'] = textfield
-components['filepanel'] = filepanel
+components['button'] = ButtonComp
+components['implicit'] = ImplicitComp
+components['textfield'] = TextFieldComp
+components['filepanel'] = FilePanelComp
 components['panel'] = PanelView
