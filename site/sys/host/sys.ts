@@ -234,7 +234,7 @@ export class Sys {
     }
 
     const q = params.toString().replaceAll('%2F', '/')
-    window.history.replaceState({}, '', '?' + q)
+    window.history.replaceState({}, '', location.origin + '/' + (q ? '?' + q : ''))
   }
 
   removePanel(panel: Panel) {
