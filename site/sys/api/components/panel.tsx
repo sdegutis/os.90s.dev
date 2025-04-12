@@ -4,6 +4,8 @@ import type { Panel } from "../core/panel.js"
 import { $, defRef, MaybeRef, Ref } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import type { Size } from "../core/types.js"
+import { dragMove, dragResize } from "../util/drag.js"
+import { MenuItem, showMenu } from "../util/menu.js"
 import { Border } from "../views/border.js"
 import { Button } from "../views/button.js"
 import { GroupX } from "../views/group.js"
@@ -13,8 +15,6 @@ import { Margin } from "../views/margin.js"
 import { PanedYA } from "../views/paned.js"
 import { SpacedX } from "../views/spaced.js"
 import type { View } from "../views/view.js"
-import { dragMove, dragResize } from "./drag.js"
-import { showMenu, type MenuItem } from "./menu.js"
 
 
 const minImage = new Bitmap([0xffffff33], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])

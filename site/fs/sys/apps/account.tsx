@@ -1,7 +1,7 @@
 import * as api from '/api.js'
 
 const panel = await api.sys.makePanel({ name: 'account' },
-  <api.PanelView title='account' size={{ w: 150, h: 120 }}>
+  <panel title='account' size={{ w: 150, h: 120 }}>
     <api.Margin children={api.$userState.adapt(state => {
       switch (state.type) {
         case 'guest': return [<SigninView />]
@@ -10,7 +10,7 @@ const panel = await api.sys.makePanel({ name: 'account' },
         case 'known': return [<WelcomeView state={state} />]
       }
     })} />
-  </api.PanelView>
+  </panel>
 )
 
 panel.focusPanel()

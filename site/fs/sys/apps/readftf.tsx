@@ -18,7 +18,7 @@ function changePath() {
 }
 
 const panel = await api.sys.makePanel({ name: "readftf" },
-  <api.PanelView title='readftf' size={{ w: 100, h: 70 }}>
+  <panel title='readftf' size={{ w: 100, h: 70 }}>
     <api.PanedYA>
 
       <api.GroupX>
@@ -45,7 +45,7 @@ const panel = await api.sys.makePanel({ name: "readftf" },
       </api.Scroll>
 
     </api.PanedYA>
-  </api.PanelView>
+  </panel>
 )
 
 panel.focusPanel()

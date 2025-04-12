@@ -2,8 +2,8 @@ import type { Panel } from "../core/panel.js"
 import { defRef, multiplex, Ref } from "../core/ref.js"
 import { program, sys } from "../core/sys.js"
 import { fs } from "../fs/fs.js"
-import { PanelView } from "../util/panelview.js"
 import { showPrompt } from "../util/prompt.js"
+import { PanelView } from "./panel.js"
 
 export function filepanel({
   filepath,
@@ -68,9 +68,9 @@ export function filepanel({
     return `${$title.val}: ${filepath.val ?? '[no file]'}`
   })
 
-  return <PanelView
+  return <panel
     {...data}
-    presented={p => {
+    presented={(p: Panel) => {
       panel = p
       presented?.(p)
     }}

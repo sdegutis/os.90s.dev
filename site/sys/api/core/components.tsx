@@ -1,6 +1,7 @@
 import { button } from "../components/button.js"
 import { filepanel } from "../components/filepanel.js"
 import { implicit } from "../components/implicit.js"
+import { PanelView } from "../components/panel.js"
 import { textfield } from "../components/textfield.js"
 
 export const components: Record<string, Component<any>> = Object.create(null)
@@ -10,3 +11,4 @@ components['button'] = button
 components['implicit'] = implicit
 components['textfield'] = textfield
 components['filepanel'] = filepanel
+components['panel'] = PanelView
