@@ -5,7 +5,7 @@ import type { Cursor } from "./cursor.js"
 import { DrawingContext } from "./drawing.js"
 import { JSLN } from "./jsln.js"
 import { Listener } from "./listener.js"
-import { type Ref, multiplex } from "./ref.js"
+import { MaybeRef, type Ref, multiplex } from "./ref.js"
 import { type ClientPanel, type PanelOrdering, type ServerPanel, wRPC } from "./rpc.js"
 import { sys } from "./sys.js"
 import type { Point, Size } from "./types.js"
@@ -45,7 +45,7 @@ export class Panel {
     name: string,
     saveSize?: boolean,
     order?: PanelOrdering,
-    pos?: Ref<Point> | 'default' | 'center',
+    pos?: MaybeRef<Point> | 'default' | 'center',
     canFocus?: boolean,
   }, view: View) {
     if (config.name && config.saveSize !== false) {

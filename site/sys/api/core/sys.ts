@@ -2,7 +2,7 @@ import { View } from "../views/view.js"
 import { sysConfig } from "./config.js"
 import { Font } from "./font.js"
 import { Panel } from "./panel.js"
-import { $, Ref } from "./ref.js"
+import { $, defRef, MaybeRef, Ref } from "./ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "./rpc.js"
 import type { Point, Size } from "./types.js"
 
@@ -108,14 +108,14 @@ class Sys {
   async makePanel(config: {
     name: string,
     order?: PanelOrdering,
-    pos?: Ref<Point> | 'default' | 'center',
+    pos?: MaybeRef<Point> | 'default' | 'center',
     view: View,
     canFocus?: boolean,
   }) {
     const order = config.order ?? 'normal'
     const point = (!config.pos || config.pos === 'default') ? $({ x: -1, y: -1 }) :
       config.pos === 'center' ? $({ x: -2, y: -2 }) :
-        config.pos
+        defRef(config.pos)
 
     const root = config.view
     const { w, h } = root.size
