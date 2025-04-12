@@ -21,21 +21,13 @@ const panel = await api.Panel.create({ name: "readftf" },
   <api.PanelView title='readftf' size={{ w: 100, h: 70 }}>
     <api.PanedYA>
 
-      <api.PanedXA>
-        <api.GroupX>
-          <api.Button padding={2}><api.Label text='<' /></api.Button>
-          <api.Button padding={2}><api.Label text='>' /></api.Button>
-        </api.GroupX>
-        <api.GroupX>
-          <api.Button padding={2}><api.Label text='<' /></api.Button>
-          <api.Button padding={2}><api.Label text='>' /></api.Button>
-        </api.GroupX>
-        {/* <api.Margin padding={2}>
-          <api.Scroll>
-            <api.TextBox onEnter={changePath} model={pathModel} />
-          </api.Scroll>
-        </api.Margin> */}
-      </api.PanedXA>
+      <api.GroupX>
+        <api.Button padding={2}><api.Label text='<' /></api.Button>
+        <api.Button padding={2}><api.Label text='>' /></api.Button>
+        <api.Border padding={2}>
+          <api.TextBox autofocus onEnter={changePath} model={pathModel} />
+        </api.Border>
+      </api.GroupX>
 
       <api.Scroll
         background={0xffffff11}
@@ -48,7 +40,7 @@ const panel = await api.Panel.create({ name: "readftf" },
           onMouseMove={function (p) { this.firstChild!.onMouseMove?.(p) }}
           onMouseUp={function () { this.firstChild!.onMouseUp?.() }}
         >
-          <api.TextBox editable={false} model={model} autofocus />
+          <api.TextBox editable={false} model={model} />
         </api.Border>
       </api.Scroll>
 
