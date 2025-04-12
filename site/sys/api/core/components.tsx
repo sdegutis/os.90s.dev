@@ -14,3 +14,10 @@ comps['button'] = (data: { action: () => void; text: string }) => {
     <Label text={data.text} />
   </Button>
 }
+
+comps['implicit'] = (data: { children: string | string[] }) => {
+  const str = typeof data.children === 'string'
+    ? data.children
+    : data.children.join('')
+  return <Label text={str} />
+}
