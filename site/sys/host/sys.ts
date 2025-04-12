@@ -33,7 +33,26 @@ export class Sys {
 
   static async init() {
     updateAccountFromServer()
-    return new Sys()
+    const sys = new Sys()
+
+    type RunApp = {
+      path: string
+      params: Record<string, string>
+    }
+    const runApps: RunApp[] = []
+    let runApp: RunApp | undefined
+    for (const [k, v] of new URLSearchParams(location.search)) {
+      if (k === 'app') {
+        runApps.push(runApp = { path: v, params: {} })
+      }
+      else if (runApp) {
+        runApp.params[k] = v
+      }
+    }
+
+    for (const app of runApps) {
+      await sys.launch(app.path, app.params)
+    }
   }
 
   private constructor() {
@@ -58,25 +77,6 @@ export class Sys {
 
     for (const path of sysConfig.startup ?? []) {
       this.launch(path, {})
-    }
-
-    type RunApp = {
-      path: string
-      params: Record<string, string>
-    }
-    const runApps: RunApp[] = []
-    let runApp: RunApp | undefined
-    for (const [k, v] of new URLSearchParams(location.search)) {
-      if (k === 'app') {
-        runApps.push(runApp = { path: v, params: {} })
-      }
-      else if (runApp) {
-        runApp.params[k] = v
-      }
-    }
-
-    for (const app of runApps) {
-      this.launch(app.path, app.params)
     }
 
     new BroadcastChannel('procevents').onmessage = msg => {
