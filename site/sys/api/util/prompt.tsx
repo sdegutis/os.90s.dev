@@ -3,6 +3,7 @@ import { TextModel } from "../text/model.js"
 import { Border } from "../views/border.js"
 import { Center } from "../views/center.js"
 import { GroupX, GroupY } from "../views/group.js"
+import { dragMove } from "./drag.js"
 
 export async function showPrompt(panel: Panel, text: string) {
   const result = Promise.withResolvers<string | null>()
@@ -26,6 +27,9 @@ export async function showPrompt(panel: Panel, text: string) {
   >
     <Border
       canMouse
+      onMouseDown={function () {
+        this.onMouseUp = dragMove(panel.$mouse, this.$point)
+      }}
       onKeyPress={key => {
         if (key === 'enter') ok()
         if (key === 'escape') no()
