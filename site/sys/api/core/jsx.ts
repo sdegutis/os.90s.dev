@@ -1,5 +1,5 @@
 import { View } from "../views/view.js"
-import { components } from "./components.js"
+import { composites } from "./composites.js"
 import { MaybeRef, Ref } from "./ref.js"
 
 export type JsxAttrs<T> = {
@@ -44,10 +44,10 @@ function createNode(tag: any, data: Record<string, any>): JSX.Element {
     }
   }
 
-  const comp = components[tag] ?? undefined
+  const comp = composites[tag] ?? undefined
   if (comp) return comp(data)
 
-  throw new Error(`Component "${tag}" not found`)
+  throw new Error(`Composite "${tag}" not found`)
 }
 
 function canConstruct(f: any) {
