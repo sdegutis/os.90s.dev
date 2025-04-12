@@ -3,16 +3,24 @@ import { Font } from "./font.js"
 import { JSLN } from "./jsln.js"
 import { $ } from "./ref.js"
 
-const baseConfig = await loadConfig('sys/default/config.jsln') as any
+const baseConfigData = await loadConfig('sys/default/config.jsln') as any
+const baseConfig = {
+  size: ({
+    w: baseConfigData.sys.size[0] as number,
+    h: baseConfigData.sys.size[1] as number,
+  }),
+  font: new Font((await fs.getFile(baseConfigData.sys.font))!),
+  shell: baseConfigData.sys.shell as string,
+  bgcolor: baseConfigData.sys.bgcolor as number,
+  startup: baseConfigData.sys.startup as string[] | undefined,
+}
 
 export const sysConfig = {
-  $size: $({
-    w: baseConfig.sys.size[0] as number,
-    h: baseConfig.sys.size[1] as number,
-  }),
-  $font: $(new Font((await fs.getFile(baseConfig.sys.font))!)),
-  $shell: $(baseConfig.sys.shell as string),
-  startup: baseConfig.sys.startup as string[] | undefined,
+  $size: $(baseConfig.size),
+  $font: $(baseConfig.font),
+  $shell: $(baseConfig.shell),
+  $bgcolor: $(baseConfig.bgcolor),
+  startup: baseConfig.startup,
 }
 
 await loadUsrConfig()
@@ -23,16 +31,23 @@ async function loadUsrConfig() {
 
   const w = as(usrConfig?.sys?.size?.[0], 'number') ?? 0
   const h = as(usrConfig?.sys?.size?.[1], 'number') ?? 0
-  if (w > 0 && h > 0) sysConfig.$size.val = { w, h }
+  sysConfig.$size.val = (w > 0 && h > 0) ? { w, h } : baseConfig.size
 
   const fontpath = as(usrConfig?.sys?.font, 'string')
   if (fontpath) {
     const fontsrc = await fs.getFile(fontpath)
-    if (fontsrc) sysConfig.$font.val = new Font(fontsrc)
+    sysConfig.$font.val = fontsrc
+      ? new Font(fontsrc)
+      : baseConfig.font
   }
 
   const shell = as(usrConfig?.sys?.shell, 'string')
-  if (shell) sysConfig.$shell.val = shell
+  sysConfig.$shell.val = shell || baseConfig.shell
+
+  const bgcolor = as(usrConfig?.sys?.bgcolor, 'number')
+  sysConfig.$bgcolor.val = (bgcolor !== undefined)
+    ? bgcolor
+    : baseConfig.bgcolor
 }
 
 // clever idea by Alexander Nenashev
