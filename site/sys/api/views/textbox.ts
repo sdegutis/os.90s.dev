@@ -53,6 +53,8 @@ export class TextBox extends View {
   textColor = 0xffffffff
   $textColor = makeRef(this, 'textColor')
 
+  editable = true
+
   xgap = 0
   ygap = 0
 
@@ -177,12 +179,18 @@ export class TextBox extends View {
     if (cx > maxx) scroll.scrollx -= maxx - cx
   }
 
+  ifEditable<T extends (...args: any[]) => any>(fn: T) {
+    return (...args: any[]) => {
+      if (this.editable) return fn(...args)
+    }
+  }
+
   keyHandlers: [RegExp, (...groups: string[]) => void | boolean][] = [
-    [/^(.)$/, (ch) => this.model.insertText(ch)],
-    [/^enter$/, () => this.onEnter ? this.onEnter() : this.model.insertNewline()],
-    [/^delete$/, () => this.model.delete()],
-    [/^tab$/, () => this.model.insertTab()],
-    [/^backspace$/, () => this.model.backspace()],
+    [/^(.)$/, this.ifEditable((ch) => this.model.insertText(ch))],
+    [/^enter$/, this.ifEditable(() => this.onEnter ? this.onEnter() : this.model.insertNewline())],
+    [/^delete$/, this.ifEditable(() => this.model.delete())],
+    [/^tab$/, this.ifEditable(() => this.model.insertTab())],
+    [/^backspace$/, this.ifEditable(() => this.model.backspace())],
     [/^(shift )?(right)$/, (shift) => this.model.moveCursorsRight(!!shift)],
     [/^(shift )?(left)$/, (shift) => this.model.moveCursorsLeft(!!shift)],
     [/^(shift )?(down)$/, (shift) => this.model.moveCursorsDown(!!shift)],
@@ -197,8 +205,10 @@ export class TextBox extends View {
       ? this.model.removeExtraCursors()
       : true],
     [/^ctrl v$/, () => {
-      sys.readClipboardText().then(text => {
-        this.model.insertText(text)
+      this.ifEditable(() => {
+        sys.readClipboardText().then(text => {
+          this.model.insertText(text)
+        })
       })
     }],
   ]
