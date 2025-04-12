@@ -45,9 +45,9 @@ function createNode(tag: any, data: Record<string, any>): JSX.Element {
   }
 
   const comp = components[tag] ?? undefined
-  if (!comp) throw new Error(`Component "${tag}" not found`)
+  if (comp) return comp(data)
 
-  return comp(data)
+  throw new Error(`Component "${tag}" not found`)
 }
 
 function canConstruct(f: any) {
