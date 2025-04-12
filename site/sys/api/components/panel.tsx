@@ -113,7 +113,6 @@ export function PanelView(data: {
 }
 
 function PanelResizer(data: { size: Ref<Size> }) {
-
   let panel: Panel
 
   function resizerMouseDown(this: ImageView, button: number) {
@@ -138,6 +137,4 @@ function PanelResizer(data: { size: Ref<Size> }) {
     }))}
     onMouseDown={resizerMouseDown}
   />
-
 }
-
