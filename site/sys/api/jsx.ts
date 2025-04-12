@@ -1,5 +1,5 @@
-import { getComponent } from "./components.js"
 import { MaybeRef, Ref } from "./core/ref.js"
+import { getComponent } from "./util/components.js"
 import { View } from "./views/view.js"
 
 export type JsxAttrs<T> = {
