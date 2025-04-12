@@ -25,7 +25,7 @@ const panel = await api.Panel.create({ name: "readftf" },
         <api.Button padding={2}><api.Label text='<' /></api.Button>
         <api.Button padding={2}><api.Label text='>' /></api.Button>
         <api.Border padding={2}>
-          <api.TextBox autofocus onEnter={changePath} model={pathModel} />
+          <api.TextBox onEnter={changePath} model={pathModel} />
         </api.Border>
       </api.GroupX>
 
