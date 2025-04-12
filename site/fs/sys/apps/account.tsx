@@ -24,6 +24,7 @@ function makeTextField(data: {
     background={0x00000033}
     onMouseDown={function (...args) { textbox.onMouseDown(...args) }}
     onMouseMove={function (...args) { textbox.onMouseMove?.(...args) }}
+    onMouseUp={function (...args) { textbox.onMouseUp?.(...args) }}
     size={border.$size.adapt(s => ({ w: length, h: border.$size.val.h }))}
     children={[border]}
     {...data.scroll} />
