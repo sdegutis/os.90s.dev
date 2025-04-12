@@ -61,12 +61,12 @@ export class View {
       }
     })
 
-    this.$size.watch(() => {
+    this.$size.watch(debounce(() => {
       this.layout?.()
       this.parent?.childResized()
       this.panel?.needsMouseCheck()
       this.needsRedraw()
-    })
+    }))
 
     this.$point.watch(() => {
       this.panel?.needsMouseCheck()
