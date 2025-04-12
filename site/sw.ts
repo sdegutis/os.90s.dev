@@ -1,11 +1,11 @@
 declare var __wbg_init: () => Promise<void>
 declare var transformSync: typeof import('@swc/wasm-web').transformSync
 declare var opendb: typeof import('./sys/api/util/db.js').opendb
-declare var NETHOST: typeof import('./sys/api/config.js').NETHOST
+declare var NETHOST: typeof import('./sys/api/core/nethost.js').NETHOST
 
 importScripts('./sys/sw/wasm.js')
 importScripts('./sys/sw/db.js')
-importScripts('./sys/sw/config.js')
+importScripts('./sys/sw/nethost.js')
 
 const ready = __wbg_init()
 const usrdb = opendb<{ path: string, content?: string }>('usr', 'path')

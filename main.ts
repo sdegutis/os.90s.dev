@@ -36,8 +36,8 @@ function processSite() {
     files.with('tsconfig\.json').remove()
     files.with(/\.d\.ts$/).remove()
 
-    files.add('/sys/api/config.ts', `export const NETHOST = ${JSON.stringify(NETHOST)}`)
-    files.add('/sys/sw/config.ts', `const NETHOST = ${JSON.stringify(NETHOST)}`)
+    files.add('/sys/api/core/nethost.ts', `export const NETHOST = ${JSON.stringify(NETHOST)}`)
+    files.add('/sys/sw/nethost.ts', `const NETHOST = ${JSON.stringify(NETHOST)}`)
 
     files.with(/\.js$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
     files.with(/\.tsx?$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })

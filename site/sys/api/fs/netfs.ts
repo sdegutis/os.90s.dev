@@ -1,4 +1,4 @@
-import { NETHOST } from "../config.js"
+import { NETHOST } from "../core/nethost.js"
 import { GET, POST } from "../util/net.js"
 import { Drive } from "./drive.js"
 

@@ -1,4 +1,4 @@
-import { NETHOST } from "../config.js"
+import { NETHOST } from "../core/nethost.js"
 
 export async function POST(path: string, data: string) {
   return fetch(NETHOST + path, {
