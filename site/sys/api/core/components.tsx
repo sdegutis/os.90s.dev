@@ -1,4 +1,5 @@
 import { button } from "../components/button.js"
+import { filepanel } from "../components/filepanel.js"
 import { implicit } from "../components/implicit.js"
 import { textfield } from "../components/textfield.js"
 
@@ -8,3 +9,4 @@ export type Component<T extends Record<string, any>> = (data: T) => JSX.Element
 components['button'] = button
 components['implicit'] = implicit
 components['textfield'] = textfield
+components['filepanel'] = filepanel

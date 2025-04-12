@@ -1,10 +1,9 @@
 import { Bitmap } from "../core/bitmap.js"
 import { Cursor } from "../core/cursor.js"
 import type { Panel } from "../core/panel.js"
-import { $, defRef, MaybeRef, multiplex, Ref } from "../core/ref.js"
-import { program, sys } from "../core/sys.js"
+import { $, defRef, MaybeRef, Ref } from "../core/ref.js"
+import { sys } from "../core/sys.js"
 import type { Size } from "../core/types.js"
-import { fs } from "../fs/fs.js"
 import { Border } from "../views/border.js"
 import { Button } from "../views/button.js"
 import { GroupX } from "../views/group.js"
@@ -16,7 +15,6 @@ import { SpacedX } from "../views/spaced.js"
 import type { View } from "../views/view.js"
 import { dragMove, dragResize } from "./drag.js"
 import { showMenu, type MenuItem } from "./menu.js"
-import { showPrompt } from "./prompt.js"
 
 
 const minImage = new Bitmap([0xffffff33], 4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,])
@@ -49,10 +47,6 @@ export function PanelView(data: {
   const focused = $(false)
   const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
 
-  function titleBarMouseDown(this: SpacedX, button: number) {
-    this.onMouseUp = dragMove(sys.$mouse, panel.$point)
-  }
-
   function minw() { panel.minimize() }
   function maxw() { panel.maximize() }
   function axew() { panel.close() }
@@ -73,7 +67,13 @@ export function PanelView(data: {
     >
       <PanedYA gap={-0}>
 
-        <SpacedX canMouse onMouseDown={titleBarMouseDown} background={0x1199ff33}>
+        <SpacedX
+          canMouse
+          onMouseDown={function () {
+            this.onMouseUp = dragMove(sys.$mouse, panel.$point)
+          }}
+          background={0x1199ff33}
+        >
           <Border>
             <GroupX gap={1}>
               <Button onClick={function () {
@@ -143,78 +143,3 @@ function PanelResizer(data: { size: Ref<Size> }) {
 
 }
 
-
-export function FilePanelView({
-  filepath,
-  filedata,
-  title,
-  menuItems,
-  onKeyPress,
-  presented,
-  ...data
-}: Parameters<typeof PanelView>[0] & {
-  filepath: Ref<string | undefined>,
-  filedata: () => string,
-}) {
-  let panel: Panel
-
-  async function load() {
-    const path = await showPrompt(panel, 'file path?')
-    if (!path) return
-    sys.launch(program.opts["app"], path)
-  }
-
-  async function save() {
-    if (!filepath.val) return saveAs()
-    fs.putFile(filepath.val, filedata())
-  }
-
-  async function saveAs() {
-    const path = await askFilePath()
-    if (!path) return
-    filepath.val = path
-    fs.putFile(filepath.val, filedata())
-    sys.noteCurrentFile(filepath.val)
-  }
-
-  async function askFilePath() {
-    return await showPrompt(panel, 'file path?') ?? undefined
-  }
-
-  const fileMenu = () => {
-    const items = menuItems?.() ?? []
-    if (items.length > 0) {
-      items.push('-')
-    }
-    items.push(
-      { text: 'load...', onClick: load },
-      { text: 'save as...', onClick: saveAs },
-      { text: 'save', onClick: save },
-    )
-    return items
-  }
-
-  const keyHandler = (key: string) => {
-    if (key === 'ctrl o') { load(); return true }
-    if (key === 'ctrl s') { save(); return true }
-    if (key === 'ctrl S') { saveAs(); return true }
-    return onKeyPress?.(key) ?? false
-  }
-
-  const $title = defRef(title)
-
-  const filetitle = multiplex([filepath, $title], () => {
-    return `${$title.val}: ${filepath.val ?? '[no file]'}`
-  })
-
-  return <PanelView
-    {...data}
-    presented={p => {
-      panel = p
-      presented?.(p)
-    }}
-    onKeyPress={keyHandler}
-    title={filetitle}
-    menuItems={fileMenu}
-  />
-}

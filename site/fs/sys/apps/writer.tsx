@@ -19,7 +19,7 @@ if ($filepath.val?.endsWith('.ftf')) {
 }
 
 const panel = await api.sys.makePanel({ name: "writer" },
-  <api.FilePanelView filedata={() => model.getText()} filepath={$filepath} title='writer' size={{ w: 100, h: 70 }}>
+  <filepanel filedata={() => model.getText()} filepath={$filepath} title='writer' size={{ w: 100, h: 70 }}>
     <api.Scroll
       background={0xffffff11}
       onMouseDown={function (b) { this.content.onMouseDown?.(b) }}
@@ -28,7 +28,7 @@ const panel = await api.sys.makePanel({ name: "writer" },
     >
       <api.TextBox model={model} autofocus />
     </api.Scroll>
-  </api.FilePanelView>
+  </filepanel>
 )
 
 panel.focusPanel()
