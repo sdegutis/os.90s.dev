@@ -19,7 +19,11 @@ const panel = await api.Panel.create({ name: "readftf" },
       onMouseMove={function (p) { this.content.onMouseMove?.(p) }}
       onMouseUp={function () { this.content.onMouseUp?.() }}
     >
-      <api.Border padding={4}>
+      <api.Border padding={4}
+        onMouseDown={function (b) { this.firstChild!.onMouseDown?.(b) }}
+        onMouseMove={function (p) { this.firstChild!.onMouseMove?.(p) }}
+        onMouseUp={function () { this.firstChild!.onMouseUp?.() }}
+      >
         <api.TextBox editable={false} model={model} autofocus />
       </api.Border>
     </api.Scroll>
