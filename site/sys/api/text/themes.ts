@@ -24,6 +24,7 @@ const msTheme1: LangTheme = {
   headerbold: 0xffff00ff,
   italic: 0xffff9999,
   link: 0x0099ff99,
+  quote: 0x9999ff99,
 }
 
 export const langThemes = {

@@ -43,11 +43,12 @@ const jslnGrammar: LangGrammar = {
 
 const msGrammar: LangGrammar = {
   'start': [
+    [/^\s*""/, ['quote', '@push(quote)']],
     [/^\s*#/, ['header', '@push(header)']],
     [/^\s*={3,}/, ['header', '@push(header)']],
     [/^\s*-{3,}/, ['header', '@push(header)']],
     [/\*.+?\*/, 'bold'],
-    [/\[\[.+?\]\]/, 'link'],
+    [/\[\[.+?\](\(.+?\))?\]/, 'link'],
     [/\/.+?\//, 'italic'],
     [/./, 'text'],
   ],
@@ -55,6 +56,10 @@ const msGrammar: LangGrammar = {
     [/^/, ['text', '@pop()']],
     [/\*.+?\*/, 'headerbold'],
     [/./, 'header'],
+  ],
+  'quote': [
+    [/^/, ['text', '@pop()']],
+    [/./, 'quote'],
   ],
 }
 

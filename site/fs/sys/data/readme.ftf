@@ -1,9 +1,12 @@
 ### header with *bold* text ###
 
+"" this
+"" that
+
 this is the top
 
 asdfadf *asdf*
-and [[what about]] a link
+and [[what about](./readme2.ftf)] a link
 
 === section ===
 
