@@ -4,6 +4,7 @@ import { DrawingContext } from "../api/core/drawing.js"
 import { $, Ref } from "../api/core/ref.js"
 import { Point } from "../api/core/types.js"
 import { updateAccountFromServer } from "../api/util/account.js"
+import { debounce } from "../api/util/throttle.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 import { Process } from "./process.js"
@@ -58,9 +59,27 @@ export class Sys {
       this.launch(path, {})
     }
 
-    if (location.pathname.startsWith('/run/')) {
-      const app = location.pathname.slice('/run/'.length)
-      this.launch(app, Object.fromEntries(new URLSearchParams(location.search)))
+    type RunApp = {
+      path: string
+      params: Record<string, string>
+    }
+    const runApps: RunApp[] = []
+    let runApp: RunApp | undefined
+    for (const [k, v] of new URLSearchParams(location.search)) {
+      if (k === 'app') {
+        runApps.push(runApp = { path: v, params: {} })
+      }
+      else if (runApp) {
+        runApp.params[k] = v
+      }
+    }
+
+    for (const app of runApps) {
+      this.launch(app.path, app.params)
+    }
+
+    new BroadcastChannel('procevents').onmessage = msg => {
+      this.updateLocation()
     }
   }
 
@@ -195,18 +214,27 @@ export class Sys {
       this.focused = panel
       this.panelevents.postMessage({ type: 'focused', id: panel.id })
       this.focused.rpc.send('focus', [])
-      this.reflectCurrentApp()
+      this.updateLocation()
     }
     panel.moveToFront()
   }
 
-  reflectCurrentApp() {
-    if (!this.focused) return
+  updateLocation = debounce(() => this.#updateLocation(), 33)
+  #updateLocation() {
+    const params = new URLSearchParams()
+    const apps = Panel.ordered
+      .values()
+      .map(p => p.proc)
+      .filter(p => !p.path.endsWith('/shell.js'))
+      .toArray()
 
-    const cur = this.focused.proc
-    let path = `/run/${cur.path}`
-    if (cur.file) path += '?file=' + cur.file
-    window.history.replaceState({}, '', path)
+    for (const app of apps) {
+      params.append('app', app.path)
+      if (app.file) params.append('file', app.file)
+    }
+
+    const q = params.toString().replaceAll('%2F', '/')
+    window.history.replaceState({}, '', '?' + q)
   }
 
   removePanel(panel: Panel) {
@@ -227,6 +255,7 @@ export class Sys {
 
     this.checkUnderMouse()
 
+    this.updateLocation()
     this.redrawAllPanels()
   }
 

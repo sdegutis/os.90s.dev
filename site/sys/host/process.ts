@@ -90,7 +90,7 @@ export class Process {
 
       thisfile: (file) => {
         this.file = file
-        this.sys.reflectCurrentApp()
+        this.sys.updateLocation()
       },
 
       getprocs: (reply) => {
