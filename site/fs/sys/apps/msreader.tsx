@@ -6,11 +6,10 @@ if ($filepath.val) content = await api.fs.getFile($filepath.val) ?? ''
 
 const model = new api.TextModel(content)
 
-if ($filepath.val?.endsWith('.ms')) {
-  const hl = new api.Highlighter(api.langThemes.theme1, api.langGrammars.msGrammar)
-  model.highlighter = hl
-  hl.highlight(model, 0)
-}
+const hl = new api.Highlighter(api.langThemes.msTheme1, api.langGrammars.msGrammar)
+model.highlighter = hl
+// hl.log = true
+hl.highlight(model, 0)
 
 const panel = await api.Panel.create({ name: "msreader" },
   <api.FilePanelView filedata={() => model.getText()} filepath={$filepath} title='msreader' size={{ w: 100, h: 70 }}>

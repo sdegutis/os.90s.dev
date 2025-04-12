@@ -15,6 +15,18 @@ const theme1: LangTheme = {
   error: 0x990000ff,
 }
 
+const msTheme1: LangTheme = {
+  text: 0x777777ff,
+  comment: 0x00990077,
+  error: 0x990000ff,
+  bold: 0xffffffff,
+  header: 0xff9900ff,
+  headerbold: 0xffff00ff,
+  italic: 0xffff9999,
+  link: 0x0099ff99,
+}
+
 export const langThemes = {
   theme1,
+  msTheme1,
 }
