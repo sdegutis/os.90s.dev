@@ -1,7 +1,7 @@
 import { Bitmap } from "../core/bitmap.js"
 import { Cursor } from "../core/cursor.js"
 import type { Panel } from "../core/panel.js"
-import { $, defRef, MaybeRef, Ref } from "../core/ref.js"
+import { $, defRef, MaybeRef } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import type { Size } from "../core/types.js"
 import { dragMove, dragResize } from "../util/drag.js"
@@ -47,7 +47,7 @@ export function PanelView(data: {
         <panel-titlebar title={data.title} menuItems={data.menuItems} />
         <panel-body>{data.children}</panel-body>
       </PanedYA>
-      <panel-resizer panelSize={$size} />
+      <panel-resizer />
     </Margin>
   )
 }
@@ -119,7 +119,7 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
   0, 1, 1, 1, 0,
 ]))
 
-export function PanelResizer(data: { panelSize: Ref<Size> }) {
+export function PanelResizer() {
   let panel: Panel
 
   function resizerMouseDown(this: ImageView, button: number) {
@@ -134,14 +134,20 @@ export function PanelResizer(data: { panelSize: Ref<Size> }) {
 
   return <ImageView
     canMouse
-    presented={p => panel = p}
+    presented={function (p) {
+      panel = p
+      const move = () => {
+        this.point = {
+          x: panel.size.w - adjImage.width,
+          y: panel.size.h - adjImage.height,
+        }
+      }
+      move()
+      panel.$size.watch(move)
+    }}
     bitmap={adjImage}
     onMouseEnter={function (this: View) { panel.pushCursor(adjCursor) }}
     onMouseExit={function (this: View) { panel.popCursor(adjCursor) }}
-    point={defRef(data.panelSize).adapt(s => ({
-      x: s.w - adjImage.width,
-      y: s.h - adjImage.height,
-    }))}
     onMouseDown={resizerMouseDown}
   />
 }
