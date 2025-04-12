@@ -56,7 +56,7 @@ export class TextModel {
   }
 
   getText() {
-    return this.lines.join('\n')
+    return this.lines.map(line => line.text).join('\n')
   }
 
   setText(s: string) {
