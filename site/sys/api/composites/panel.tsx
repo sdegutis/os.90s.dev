@@ -120,22 +120,9 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
 ]))
 
 export function PanelResizer() {
-  let panel: Panel
-
-  function resizerMouseDown(this: ImageView, button: number) {
-    panel.pushCursor(adjCursor)
-    const done = dragResize(panel.$mouse, panel.$size)
-    this.onMouseUp = () => {
-      panel.popCursor(adjCursor)
-      done()
-      delete this.onMouseUp
-    }
-  }
-
   return <ImageView
     canMouse
-    presented={function (p) {
-      panel = p
+    presented={function (panel) {
       const move = () => {
         this.point = {
           x: panel.size.w - adjImage.width,
@@ -146,8 +133,17 @@ export function PanelResizer() {
       panel.$size.watch(move)
     }}
     bitmap={adjImage}
-    onMouseEnter={function (this: View) { panel.pushCursor(adjCursor) }}
-    onMouseExit={function (this: View) { panel.popCursor(adjCursor) }}
-    onMouseDown={resizerMouseDown}
+    onMouseEnter={function () { this.panel!.pushCursor(adjCursor) }}
+    onMouseExit={function () { this.panel!.popCursor(adjCursor) }}
+    onMouseDown={function (b) {
+      const panel = this.panel!
+      panel.pushCursor(adjCursor)
+      const done = dragResize(panel.$mouse, panel.$size)
+      this.onMouseUp = () => {
+        panel.popCursor(adjCursor)
+        done()
+        delete this.onMouseUp
+      }
+    }}
   />
 }
