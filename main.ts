@@ -14,7 +14,7 @@ swc1 = swc1.replace('import.meta.url', `location.origin + '/sys/sw/'`)
 
 const tree = new immaculata.LiveTree('site', import.meta.url)
 
-const copyright = `Copyright ©️ ${new Date().getFullYear()} Novo Cantico LLC. All rights reserved.`
+const copyright = `Copyright ©️ ${new Date().getFullYear()}. You're welcome and encouraged to use and learn from all the code here.`
 
 const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5"><path d="M1 0 L3 2 1 4 Z" fill="#19f" /></svg>`
 const iconlink = `<link rel="shortcut icon" href="${`data:image/svg+xml,${encodeURIComponent(icon)}`}" />`
