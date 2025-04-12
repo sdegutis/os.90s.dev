@@ -3,6 +3,12 @@
 "" this
 "" that
 
+and some code in >file< is:
+
+> line 1
+> line 2
+> run()
+
 this is the top
 
 asdfadf *asdf*

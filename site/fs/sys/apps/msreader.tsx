@@ -19,7 +19,9 @@ const panel = await api.Panel.create({ name: "msreader" },
       onMouseMove={function (p) { this.content.onMouseMove?.(p) }}
       onMouseUp={function () { this.content.onMouseUp?.() }}
     >
-      <api.TextBox editable={false} model={model} autofocus />
+      <api.Border padding={4}>
+        <api.TextBox editable={false} model={model} autofocus />
+      </api.Border>
     </api.Scroll>
   </api.FilePanelView>
 )

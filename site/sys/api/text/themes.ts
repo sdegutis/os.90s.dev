@@ -25,6 +25,8 @@ const msTheme1: LangTheme = {
   italic: 0xffff9999,
   link: 0x0099ff99,
   quote: 0x9999ff99,
+  code: 0xff99ff99,
+  codeblock: 0x00990099,
 }
 
 export const langThemes = {
