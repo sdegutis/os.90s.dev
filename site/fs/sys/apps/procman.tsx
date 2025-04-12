@@ -35,7 +35,7 @@ const panel = await api.sys.makePanel({ name: "procman" },
     <api.PanedYA>
       <api.GroupX>
         <api.Button onClick={async () => {
-          const path = await api.showPrompt('path to run?')
+          const path = await api.showPrompt(panel, 'path to run?')
           if (path) api.sys.launch(path)
         }}>
           <api.Label text="run" />

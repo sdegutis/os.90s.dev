@@ -162,14 +162,14 @@ async function showMenuForFolder(path: string) {
 }
 
 async function newFile() {
-  const name = await api.showPrompt('file name?')
+  const name = await api.showPrompt(panel, 'file name?')
   if (!name) return
   const full = [...$dirs.val, name].join('')
   await api.fs.putFile(full, '')
 }
 
 async function newFolder() {
-  const name = await api.showPrompt('folder name?')
+  const name = await api.showPrompt(panel, 'folder name?')
   if (!name) return
   const full = [...$dirs.val, name].join('')
   await api.fs.putDir(full)

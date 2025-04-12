@@ -8,6 +8,11 @@ export class Center extends View {
     this.setup(config)
   }
 
+  override init(): void {
+    super.init()
+    this.layout()
+  }
+
   override layout(): void {
     for (const child of this.children) {
       child.point = {

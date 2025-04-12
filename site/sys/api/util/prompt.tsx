@@ -1,18 +1,18 @@
+import { Panel } from "../core/panel.js"
 import { multiplex } from "../core/ref.js"
-import { sys } from "../core/sys.js"
 import { Border } from "../views/border.js"
 import { Button } from "../views/button.js"
+import { Center } from "../views/center.js"
 import { GroupX, GroupY } from "../views/group.js"
 import { Label } from "../views/label.js"
 import { Scroll } from "../views/scroll.js"
 import { TextBox } from "../views/textbox.js"
-import { dragMove } from "./drag.js"
 
-export async function showPrompt(text: string) {
+export async function showPrompt(panel: Panel, text: string) {
   const result = Promise.withResolvers<string | null>()
 
   const prompt = <Label text={text} />
-  const textarea = <TextBox onEnter={ok} /> as TextBox
+  const textarea = <TextBox autofocus onEnter={ok} /> as TextBox
   const buttons = <GroupX gap={2}>
     <Button onClick={no} background={0x99000099} padding={2}><Label text={'cancel'} /></Button>
     <Button onClick={ok} background={0xffffff33} padding={2}><Label text={'ok'} /></Button>
@@ -38,17 +38,10 @@ export async function showPrompt(text: string) {
 
   const dialog = <Border
     canMouse
-    onPanelBlur={() => {
-      panel.focusPanel()
-      no()
-    }}
     onKeyPress={key => {
       if (key === 'enter') ok()
       if (key === 'escape') no()
       return true
-    }}
-    onMouseDown={function (b) {
-      this.onMouseUp = dragMove(sys.$mouse, panel.$point)
     }}
     background={0x222222ff} padding={1} paddingColor={0x005599ff}>
     <Border padding={3}>
@@ -64,15 +57,18 @@ export async function showPrompt(text: string) {
     </Border>
   </Border>
 
-  const panel = await sys.makePanel({ name: 'prompt', pos: 'center' }, dialog)
+  const host = <Center
+    canMouse
+    size={panel.root.$size}
+    background={0x00000077}
+    onMouseDown={no}
+  >{dialog}</Center>
 
-  panel.focusPanel()
-  dialog.focus()
+  const close = () => panel.root.children = panel.root.children.filter(c => c !== host)
+  function ok() { close(); result.resolve(textarea.model.getText()) }
+  function no() { close(); result.resolve(null) }
 
-  textarea.focus()
-
-  function ok() { panel.close(); result.resolve(textarea.model.getText()) }
-  function no() { panel.close(); result.resolve(null) }
+  panel.root.children = [...panel.root.children, host]
 
   return result.promise
 }

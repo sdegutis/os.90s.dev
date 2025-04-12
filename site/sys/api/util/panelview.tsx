@@ -159,7 +159,7 @@ export function FilePanelView({
   let panel: Panel
 
   async function load() {
-    const path = await showPrompt('file path?')
+    const path = await showPrompt(panel, 'file path?')
     if (!path) return
     sys.launch(program.opts["app"], path)
   }
@@ -178,7 +178,7 @@ export function FilePanelView({
   }
 
   async function askFilePath() {
-    return await showPrompt('file path?') ?? undefined
+    return await showPrompt(panel, 'file path?') ?? undefined
   }
 
   const fileMenu = () => {
