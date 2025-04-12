@@ -75,7 +75,9 @@ async function jsResponse(url: URL, text: string) {
 async function handleRoute(url: URL, req: Request) {
   if (url.pathname.startsWith('/fs/sys/')) {
     if (url.pathname.endsWith('.js')) {
-      let text = await fetch(req).then(r => r.text())
+      const res = await fetch(req)
+      if (res.status !== 200) return res
+      const text = await res.text()
       return await jsResponse(url, text)
     }
     return fetch(req)
