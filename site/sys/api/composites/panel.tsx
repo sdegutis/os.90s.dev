@@ -57,7 +57,7 @@ export function PanelView(data: {
       onPanelBlur={() => focused.val = false}
       background={0x111111ff}
     >
-      <PanedYA gap={-0}>
+      <PanedYA>
         <panel-titlebar title={data.title} menuItems={data.menuItems} />
         <panel-body>{data.children}</panel-body>
       </PanedYA>
