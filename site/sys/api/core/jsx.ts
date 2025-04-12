@@ -1,5 +1,5 @@
 import { View } from "../views/view.js"
-import { getComponent } from "./components.js"
+import { components } from "./components.js"
 import { MaybeRef, Ref } from "./ref.js"
 
 export type JsxAttrs<T> = {
@@ -44,7 +44,7 @@ function createNode(tag: any, data: Record<string, any>): JSX.Element {
     }
   }
 
-  const comp = getComponent(tag)
+  const comp = components[tag] ?? undefined
   if (!comp) throw new Error(`Component "${tag}" not found`)
 
   return comp(data)
