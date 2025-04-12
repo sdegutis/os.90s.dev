@@ -31,6 +31,8 @@ export class Sys {
   $size
   get size() { return this.$size.val }
 
+  initialAppsLoaded = false
+
   static async init() {
     updateAccountFromServer()
     const sys = new Sys()
@@ -53,6 +55,8 @@ export class Sys {
     for (const app of runApps) {
       await sys.launch(app.path, app.params)
     }
+
+    sys.initialAppsLoaded = true
   }
 
   private constructor() {
@@ -222,6 +226,8 @@ export class Sys {
 
   updateLocation = debounce(() => this.#updateLocation(), 33)
   #updateLocation() {
+    if (!this.initialAppsLoaded) return
+
     const params = new URLSearchParams()
     const apps = Panel.ordered
       .values()
