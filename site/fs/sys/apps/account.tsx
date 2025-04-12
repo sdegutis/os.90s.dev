@@ -2,37 +2,6 @@ import * as api from '/api.js'
 
 
 
-function makeTextField(data: {
-  textbox?: api.JsxAttrs<api.TextBox>,
-  border?: api.JsxAttrs<api.Border>,
-  scroll?: api.JsxAttrs<api.Scroll>,
-  length?: number,
-}) {
-
-  const length = data.length ?? 50
-
-  const textbox = <api.TextBox {...data.textbox} /> as api.TextBox
-
-  const border = <api.Border
-    padding={2}
-    children={[textbox]}
-    {...data.border} /> as api.Border
-
-  const scroll = <api.Scroll
-    showh={false}
-    showv={false}
-    background={0x00000033}
-    onMouseDown={function (...args) { textbox.onMouseDown(...args) }}
-    onMouseMove={function (...args) { textbox.onMouseMove?.(...args) }}
-    onMouseUp={function (...args) { textbox.onMouseUp?.(...args) }}
-    size={border.$size.adapt(s => ({ w: length, h: border.$size.val.h }))}
-    children={[border]}
-    {...data.scroll} />
-
-  return { scroll, border, textbox }
-
-}
-
 
 function SimpleForm(data: {
   label: string,
@@ -40,19 +9,16 @@ function SimpleForm(data: {
 }) {
   const $error = api.$('')
 
+  const model = new api.TextModel()
+
   function wrapSubmit(onSubmit: (val: string) => Promise<string | void>) {
     return async () => {
-      const error = await onSubmit(field.textbox.model.getText())
+      const error = await onSubmit(model.getText())
       if (error) $error.val = error
     }
   }
 
   const defaultButton = Object.values(data.buttons).at(-1)!
-
-  const field = makeTextField({
-    textbox: { onEnter: wrapSubmit(defaultButton), autofocus: true },
-    border: { padding: 2 },
-  })
 
   return (
     <api.Center>
@@ -62,7 +28,7 @@ function SimpleForm(data: {
           <api.Border padding={2}>
             <api.Label color={0xffffff33} text={data.label} />
           </api.Border>
-          {field.scroll}
+          <textfield model={model} onEnter={wrapSubmit(defaultButton)} autofocus />
         </api.GroupX>
 
         <api.GroupX
