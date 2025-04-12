@@ -6,14 +6,14 @@ if ($filepath.val) content = await api.fs.getFile($filepath.val) ?? ''
 
 const model = new api.TextModel(content)
 
-if ($filepath.val?.endsWith('.jsln')) {
-  const hl = new api.Highlighter(api.langThemes.theme1, api.langGrammars.jslnGrammar)
+if ($filepath.val?.endsWith('.ms')) {
+  const hl = new api.Highlighter(api.langThemes.theme1, api.langGrammars.msGrammar)
   model.highlighter = hl
   hl.highlight(model, 0)
 }
 
-const panel = await api.Panel.create({ name: "readms" },
-  <api.FilePanelView filedata={() => model.getText()} filepath={$filepath} title='readms' size={{ w: 100, h: 70 }}>
+const panel = await api.Panel.create({ name: "msreader" },
+  <api.FilePanelView filedata={() => model.getText()} filepath={$filepath} title='msreader' size={{ w: 100, h: 70 }}>
     <api.Scroll
       background={0xffffff11}
       onMouseDown={function (b) { this.content.onMouseDown?.(b) }}

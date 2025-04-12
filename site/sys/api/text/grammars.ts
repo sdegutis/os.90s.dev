@@ -41,6 +41,13 @@ const jslnGrammar: LangGrammar = {
   ],
 }
 
+const msGrammar: LangGrammar = {
+  'start': [
+    [/.+/, ''],
+  ],
+}
+
 export const langGrammars = {
   jslnGrammar,
+  msGrammar,
 }

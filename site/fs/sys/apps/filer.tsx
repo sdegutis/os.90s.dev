@@ -183,7 +183,7 @@ async function handleFile(path: string) {
     await api.sys.launch('sys/apps/fontmaker.js', path)
   }
   else if (path.endsWith('.ms')) {
-    await api.sys.launch('sys/apps/readms.js', path)
+    await api.sys.launch('sys/apps/msreader.js', path)
   }
 }
 
