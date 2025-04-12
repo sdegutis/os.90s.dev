@@ -8,17 +8,16 @@ const EMPTY = <api.Border padding={2}>
 </api.Border>
 
 
-
-
-
-
-
-
-
 const $drives = api.$<string[]>(api.fs.drives())
 
-
 const $dirs = api.$<string[]>([])
+api.fs.watchTree('', () => $dirs.val = [...$dirs.val])
+
+const initpath = api.program.opts['file'] as string
+$dirs.val = initpath?.split('/').slice(0, -1).map(p => p + '/') ?? ['usr/']
+$dirs.watch(dirs => api.sys.noteCurrentFile(dirs.join('')))
+
+const $items = await $dirs.adaptAsync(dirs => api.fs.getDir(dirs.join('')))
 
 const $driveButtons = $drives.adapt(drives => drives.map(d => d + '/').map(d =>
   <api.Button padding={2} onClick={(b) => {
@@ -30,17 +29,6 @@ const $driveButtons = $drives.adapt(drives => drives.map(d => d + '/').map(d =>
   </api.Button>
 ))
 
-
-api.fs.watchTree('', () => $dirs.val = [...$dirs.val])
-
-
-
-const initpath = api.program.opts['file'] as string
-$dirs.val = initpath?.split('/').slice(0, -1).map(p => p + '/') ?? ['usr/']
-$dirs.watch(dirs => api.sys.noteCurrentFile(dirs.join('')))
-
-
-
 const $breadcrumbs = $dirs.adapt(dirs =>
   dirs.map((part, idx) =>
     <api.Button padding={2} onClick={() => $dirs.val = dirs.slice(0, idx + 1)}>
@@ -48,8 +36,6 @@ const $breadcrumbs = $dirs.adapt(dirs =>
     </api.Button>
   )
 )
-
-const $items = await $dirs.adaptAsync(dirs => api.fs.getDir(dirs.join('')))
 
 const $itemButtons = $items.adapt(items => {
   if (items.length === 0) return [EMPTY]
@@ -59,27 +45,6 @@ const $itemButtons = $items.adapt(items => {
       : <FileItem base={$dirs.val} name={name} />
   )
 })
-
-
-
-
-
-async function newFile() {
-  const name = await api.showPrompt('file name?')
-  if (!name) return
-  const full = [...$dirs.val, name].join('')
-  await api.fs.putFile(full, '')
-}
-
-async function newFolder() {
-  const name = await api.showPrompt('folder name?')
-  if (!name) return
-  const full = [...$dirs.val, name].join('')
-  await api.fs.putDir(full)
-}
-
-
-
 
 const panel = await api.Panel.create({ name: 'filer' },
   <api.PanelView title='filer' size={{ w: 150, h: 120 }}>
@@ -194,4 +159,18 @@ async function showMenuForFolder(path: string) {
     { text: 'delete', onClick: () => { api.fs.delDir(path) } },
     { text: 'copy', onClick: () => { copying = path } },
   ])
+}
+
+async function newFile() {
+  const name = await api.showPrompt('file name?')
+  if (!name) return
+  const full = [...$dirs.val, name].join('')
+  await api.fs.putFile(full, '')
+}
+
+async function newFolder() {
+  const name = await api.showPrompt('folder name?')
+  if (!name) return
+  const full = [...$dirs.val, name].join('')
+  await api.fs.putDir(full)
 }
