@@ -1,4 +1,3 @@
-import { Panel } from "../core/panel.js"
 import { sys } from "../core/sys.js"
 import { Border } from "../views/border.js"
 import { Button } from "../views/button.js"
@@ -62,7 +61,7 @@ export async function showMenu(items: MenuItem[], from = sys.mouse) {
     from = { ...from, x: from.x - root.size.w }
   }
 
-  const panel = await Panel.create({ name: 'menu', pos: from, order: 'top' }, root)
+  const panel = await sys.makePanel({ name: 'menu', pos: from, order: 'top' }, root)
 
   panel.focusPanel()
   root.focus()

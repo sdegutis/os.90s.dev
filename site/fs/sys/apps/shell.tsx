@@ -52,7 +52,7 @@ const $panelButtons = $panels.adapt(panels =>
   )
 )
 
-const desktop = await api.Panel.create({
+const desktop = await api.sys.makePanel({
   name: 'desktop',
   saveSize: false,
   order: 'bottom',
@@ -72,7 +72,7 @@ async function showRun(this: api.Button) {
   ], this.screenPoint)
 }
 
-const taskbar = await api.Panel.create({
+const taskbar = await api.sys.makePanel({
   name: 'taskbar',
   saveSize: false,
   order: 'top',

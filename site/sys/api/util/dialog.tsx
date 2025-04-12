@@ -1,4 +1,3 @@
-import { Panel } from "../core/panel.js"
 import { sys } from "../core/sys.js"
 import { Border } from "../views/border.js"
 import { Button } from "../views/button.js"
@@ -38,7 +37,7 @@ export async function showDialog(text: string) {
     </Border>
   </Border>
 
-  const panel = await Panel.create({ name: 'dialog', pos: 'center' }, dialog)
+  const panel = await sys.makePanel({ name: 'dialog', pos: 'center' }, dialog)
 
   panel.focusPanel()
   dialog.focus()

@@ -1,3 +1,4 @@
+import { kvs } from "../util/kvs.js"
 import { View } from "../views/view.js"
 import { sysConfig } from "./config.js"
 import { Font } from "./font.js"
@@ -43,6 +44,8 @@ class Program {
 }
 
 export const program = new Program()
+
+const panelnames = await kvs<Size>('panels')
 
 class Sys {
 
@@ -107,17 +110,22 @@ class Sys {
 
   async makePanel(config: {
     name: string,
+    saveSize?: boolean,
     order?: PanelOrdering,
     pos?: MaybeRef<Point> | 'default' | 'center',
-    view: View,
     canFocus?: boolean,
-  }) {
+  }, root: View) {
+    if (config.name && config.saveSize !== false) {
+      const size = await panelnames.get(config.name)
+      if (size) { root.$size.val = size }
+      root.$size.watch((size => panelnames.set(config.name!, size)))
+    }
+
     const order = config.order ?? 'normal'
     const point = (!config.pos || config.pos === 'default') ? $({ x: -1, y: -1 }) :
       config.pos === 'center' ? $({ x: -2, y: -2 }) :
         defRef(config.pos)
 
-    const root = config.view
     const { w, h } = root.size
 
     const canFocus = config.canFocus ?? true

@@ -30,7 +30,7 @@ procevents.onmessage = msg => {
   }
 }
 
-const panel = await api.Panel.create({ name: "procman" },
+const panel = await api.sys.makePanel({ name: "procman" },
   <api.PanelView title='procman' size={{ w: 100, h: 70 }}>
     <api.PanedYA>
       <api.GroupX>

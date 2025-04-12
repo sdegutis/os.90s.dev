@@ -26,7 +26,7 @@ class MyView extends api.View {
 
 }
 
-const panel = await api.Panel.create({ name: "testdraw" },
+const panel = await api.sys.makePanel({ name: "testdraw" },
   <api.PanelView title='test draw' size={{ w: 100, h: 70 }}>
     <MyView />
   </api.PanelView>

@@ -18,7 +18,7 @@ if ($filepath.val?.endsWith('.ftf')) {
   hl.highlight(model, 0)
 }
 
-const panel = await api.Panel.create({ name: "writer" },
+const panel = await api.sys.makePanel({ name: "writer" },
   <api.FilePanelView filedata={() => model.getText()} filepath={$filepath} title='writer' size={{ w: 100, h: 70 }}>
     <api.Scroll
       background={0xffffff11}

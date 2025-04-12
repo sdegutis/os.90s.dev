@@ -157,7 +157,7 @@ function WelcomeView({ state }: { state: api.UserStateKnown }) {
 
 }
 
-const panel = await api.Panel.create({ name: 'account' },
+const panel = await api.sys.makePanel({ name: 'account' },
   <api.PanelView title='account' size={{ w: 150, h: 120 }}>
     <api.Margin children={api.$userState.adapt(state => {
       switch (state.type) {

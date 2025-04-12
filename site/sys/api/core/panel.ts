@@ -1,16 +1,13 @@
-import { kvs } from "../util/kvs.js"
 import { debounce } from "../util/throttle.js"
 import type { View } from "../views/view.js"
 import type { Cursor } from "./cursor.js"
 import { DrawingContext } from "./drawing.js"
 import { JSLN } from "./jsln.js"
 import { Listener } from "./listener.js"
-import { MaybeRef, type Ref, multiplex } from "./ref.js"
-import { type ClientPanel, type PanelOrdering, type ServerPanel, wRPC } from "./rpc.js"
+import { type Ref, multiplex } from "./ref.js"
+import { type ClientPanel, type ServerPanel, wRPC } from "./rpc.js"
 import { sys } from "./sys.js"
 import type { Point, Size } from "./types.js"
-
-const panelnames = await kvs<Size>('panels')
 
 export class Panel {
 
@@ -40,22 +37,6 @@ export class Panel {
   private hovered: View | null = null
   private clicking: View | null = null
   private focused: View | null = null
-
-  static async create(config: {
-    name: string,
-    saveSize?: boolean,
-    order?: PanelOrdering,
-    pos?: MaybeRef<Point> | 'default' | 'center',
-    canFocus?: boolean,
-  }, view: View) {
-    if (config.name && config.saveSize !== false) {
-      const size = await panelnames.get(config.name)
-      if (size) { view.$size.val = size }
-      view.$size.watch((size => panelnames.set(config.name!, size)))
-    }
-
-    return await sys.makePanel({ view, ...config })
-  }
 
   constructor(port: MessagePort, id: number, point: Ref<Point>, root: View) {
     Panel.all.set(id, this)

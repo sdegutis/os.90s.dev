@@ -1,4 +1,3 @@
-import { Panel } from "../core/panel.js"
 import { multiplex } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import { Border } from "../views/border.js"
@@ -65,7 +64,7 @@ export async function showPrompt(text: string) {
     </Border>
   </Border>
 
-  const panel = await Panel.create({ name: 'prompt', pos: 'center' }, dialog)
+  const panel = await sys.makePanel({ name: 'prompt', pos: 'center' }, dialog)
 
   panel.focusPanel()
   dialog.focus()

@@ -46,7 +46,7 @@ const $itemButtons = $items.adapt(items => {
   )
 })
 
-const panel = await api.Panel.create({ name: 'filer' },
+const panel = await api.sys.makePanel({ name: 'filer' },
   <api.PanelView title='filer' size={{ w: 150, h: 120 }}>
     <api.SplitXA pos={30}>
       <Sidebar />

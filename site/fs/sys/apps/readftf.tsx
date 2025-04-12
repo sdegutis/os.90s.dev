@@ -17,7 +17,7 @@ function changePath() {
 
 }
 
-const panel = await api.Panel.create({ name: "readftf" },
+const panel = await api.sys.makePanel({ name: "readftf" },
   <api.PanelView title='readftf' size={{ w: 100, h: 70 }}>
     <api.PanedYA>
 
