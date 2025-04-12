@@ -7,7 +7,10 @@ import { debounce } from "../util/throttle.js"
 
 export class View {
 
+  #initwarntimer
+
   constructor(config?: JsxAttrs<View>) {
+    this.#initwarntimer = setTimeout(() => console.warn(`View subclass didn't call init`))
     this.setup(config)
   }
 
@@ -35,6 +38,8 @@ export class View {
   }
 
   init() {
+    clearTimeout(this.#initwarntimer)
+
     this.$parent.watch((parent) => {
       if (parent) this.adopted?.(parent)
     })
