@@ -29,7 +29,7 @@ async function compile(url: URL, tsx: string) {
       }
     }
   }).code
-  return transformed.replace('/FAKEIMPORT/jsx-runtime', '/sys/api/jsx.js')
+  return transformed.replace('/FAKEIMPORT/jsx-runtime', '/sys/api/core/jsx.js')
 }
 
 

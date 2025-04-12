@@ -1,7 +1,7 @@
 import type { DrawingContext } from "../core/drawing.js"
+import { JsxAttrs } from "../core/jsx.js"
 import { makeRef } from "../core/ref.js"
 import { sys } from "../core/sys.js"
-import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
 export class Label extends View {

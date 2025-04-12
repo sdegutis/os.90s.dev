@@ -119,5 +119,5 @@ function compileTsx(file: { text: string, path: string }) {
       }
     }
   }).code
-  file.text = file.text.replace(`${placeholder}/jsx-runtime`, '/sys/api/jsx.js')
+  file.text = file.text.replace(`${placeholder}/jsx-runtime`, '/sys/api/core/jsx.js')
 }

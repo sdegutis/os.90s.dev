@@ -1,6 +1,6 @@
-import { getComponent } from "./core/components.js"
-import { MaybeRef, Ref } from "./core/ref.js"
-import { View } from "./views/view.js"
+import { View } from "../views/view.js"
+import { getComponent } from "./components.js"
+import { MaybeRef, Ref } from "./ref.js"
 
 export type JsxAttrs<T> = {
   [K in keyof T as K extends `$${string}` ? never : K]?: (

@@ -1,6 +1,6 @@
 import type { DrawingContext } from "../core/drawing.js"
+import { JsxAttrs } from "../core/jsx.js"
 import { $, makeRef } from "../core/ref.js"
-import { JsxAttrs } from "../jsx.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { View } from "./view.js"

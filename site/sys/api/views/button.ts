@@ -1,6 +1,6 @@
 import type { DrawingContext } from "../core/drawing.js"
+import { JsxAttrs } from "../core/jsx.js"
 import { makeRef } from "../core/ref.js"
-import { JsxAttrs } from "../jsx.js"
 import { Border } from "./border.js"
 
 export class Button extends Border {

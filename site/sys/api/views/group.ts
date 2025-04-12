@@ -1,6 +1,6 @@
+import { JsxAttrs } from "../core/jsx.js"
 import { makeRef } from "../core/ref.js"
 import type { Size } from "../core/types.js"
-import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
 export class Group extends View {

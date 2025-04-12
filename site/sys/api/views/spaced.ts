@@ -1,5 +1,5 @@
+import { JsxAttrs } from "../core/jsx.js"
 import { makeRef } from "../core/ref.js"
-import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
 export class Spaced extends View {

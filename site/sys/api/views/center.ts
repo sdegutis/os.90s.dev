@@ -1,4 +1,4 @@
-import { JsxAttrs } from "../jsx.js"
+import { JsxAttrs } from "../core/jsx.js"
 import { View } from "./view.js"
 
 export class Center extends View {

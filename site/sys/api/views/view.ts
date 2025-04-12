@@ -1,8 +1,8 @@
 import type { DrawingContext } from "../core/drawing.js"
+import { JsxAttrs } from "../core/jsx.js"
 import type { Panel } from "../core/panel.js"
 import { makeRef, multiplex, Ref } from "../core/ref.js"
 import { type Point, type Size, arrayEquals, pointEquals, sizeEquals } from "../core/types.js"
-import { JsxAttrs } from "../jsx.js"
 import { debounce } from "../util/throttle.js"
 
 export class View {

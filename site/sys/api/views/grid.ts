@@ -1,6 +1,6 @@
+import { JsxAttrs } from "../core/jsx.js"
 import { makeRef } from "../core/ref.js"
 import type { Point } from "../core/types.js"
-import { JsxAttrs } from "../jsx.js"
 import { View } from "./view.js"
 
 export class Grid extends View {

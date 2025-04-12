@@ -1,6 +1,6 @@
+import { JsxAttrs } from "../core/jsx.js"
 import { $, makeRef, multiplex } from "../core/ref.js"
 import { sys } from "../core/sys.js"
-import { JsxAttrs } from "../jsx.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { Button } from "./button.js"
