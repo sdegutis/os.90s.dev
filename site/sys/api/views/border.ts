@@ -22,7 +22,6 @@ export class Border extends Margin {
       w: this.left + (this.firstChild?.size.w ?? 0) + this.right,
       h: this.up + (this.firstChild?.size.h ?? 0) + this.down,
     }
-    this.layout()
   }
 
   override layout(): void {
