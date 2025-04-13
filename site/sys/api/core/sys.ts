@@ -125,7 +125,7 @@ class Sys {
     const [id, x, y, port] = await this.rpc.call('newpanel', [
       config.name,
       config.order ?? 'normal',
-      initpos?.x, initpos?.y,
+      initpos?.x ?? -1, initpos?.y ?? -1,
       root.size.w, root.size.h,
       config.canFocus ?? true
     ])
