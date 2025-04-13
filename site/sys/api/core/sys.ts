@@ -112,7 +112,7 @@ class Sys {
     name: string,
     saveSize?: boolean,
     order?: PanelOrdering,
-    pos?: MaybeRef<Point> | 'default',
+    pos?: MaybeRef<Point>,
     canFocus?: boolean,
   }, root: View) {
     if (config.name && config.saveSize !== false) {
@@ -122,7 +122,7 @@ class Sys {
     }
 
     const order = config.order ?? 'normal'
-    const point = (!config.pos || config.pos === 'default') ? $({ x: -1, y: -1 }) :
+    const point = (!config.pos) ? $({ x: -1, y: -1 }) :
       defRef(config.pos)
 
     const { w, h } = root.size
