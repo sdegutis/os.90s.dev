@@ -40,12 +40,12 @@ export class Panel {
   private clicking: View | null = null
   private focused: View | null = null
 
-  constructor(port: MessagePort, id: number, point: Ref<Point>, root: View) {
+  constructor(port: MessagePort, id: number, root: View) {
     Panel.all.set(id, this)
 
     this.id = id
 
-    this.$point = point
+    this.$point = root.$point
     this.$size = root.$size
 
     this.$mouse = multiplex([sys.$mouse, this.$point], () => ({
@@ -63,7 +63,7 @@ export class Panel {
       this.blit()
     }))
 
-    point.watch((point) => {
+    this.$point.watch((point) => {
       this.rpc.send('adjust', [point.x, point.y, this.size.w, this.size.h])
       this.checkUnderMouse()
     })

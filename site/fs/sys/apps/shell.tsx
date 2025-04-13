@@ -56,11 +56,18 @@ const desktop = await api.sys.makePanel({
   name: 'desktop',
   saveSize: false,
   order: 'bottom',
-  pos: { x: 0, y: 0 },
   canFocus: false,
 }, (
-  <api.View size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))} background={api.sysConfig.$bgcolor} />
+  <api.Margin
+    size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))}
+    background={api.sysConfig.$bgcolor}
+    padding={1}
+    paddingColor={0xffffff11}
+  />
 ))
+
+desktop.point = { x: 0, y: 0 }
+
 
 async function showRun(this: api.Button) {
   const sysApps = await api.fs.getDir('sys/apps/')
@@ -76,10 +83,12 @@ const taskbar = await api.sys.makePanel({
   name: 'taskbar',
   saveSize: false,
   order: 'top',
-  pos: api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })),
   canFocus: false,
 }, (
-  <api.SpacedX size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))} background={0x222222ff}>
+  <api.SpacedX
+    size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))}
+    background={0x222222ff}
+  >
     <api.GroupX gap={2}>
       <api.Button padding={2} onClick={showRun}>
         <api.Label text="run" />
@@ -89,6 +98,8 @@ const taskbar = await api.sys.makePanel({
     <Clock />
   </api.SpacedX>
 ))
+
+taskbar.$point.defer(api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })))
 
 function Clock() {
   let date = false

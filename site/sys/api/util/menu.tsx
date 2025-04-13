@@ -34,6 +34,7 @@ export async function showMenu(items: MenuItem[], from = sys.mouse) {
 
   const root = (
     <Border
+      point={from}
       onKeyPress={key => {
         if (key === 'escape') panel.close()
         return true
@@ -53,15 +54,15 @@ export async function showMenu(items: MenuItem[], from = sys.mouse) {
     </Border>
   )
 
-  if (from.y + root.size.h > sys.size.h) {
-    from = { ...from, y: from.y - root.size.h }
+  if (root.point.y + root.size.h > sys.size.h) {
+    root.point = { ...root.point, y: root.point.y - root.size.h }
   }
 
-  if (from.x + root.size.w > sys.size.w) {
-    from = { ...from, x: from.x - root.size.w }
+  if (root.point.x + root.size.w > sys.size.w) {
+    root.point = { ...root.point, x: root.point.x - root.size.w }
   }
 
-  const panel = await sys.makePanel({ name: 'menu', pos: from, order: 'top' }, root)
+  const panel = await sys.makePanel({ name: 'menu', order: 'top' }, root)
 
   panel.focusPanel()
   root.focus()

@@ -72,6 +72,8 @@ export class Ref<T> {
   }
 
   defer(other: Ref<T>) {
+    while (other.defers) other = other.defers
+
     this.val = other.val
     this.defers = other
 

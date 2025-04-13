@@ -3,7 +3,7 @@ import { View } from "../views/view.js"
 import { sysConfig } from "./config.js"
 import { Font } from "./font.js"
 import { Panel } from "./panel.js"
-import { $, defRef, MaybeRef, Ref } from "./ref.js"
+import { $, Ref } from "./ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "./rpc.js"
 import type { Point, Size } from "./types.js"
 
@@ -112,7 +112,6 @@ class Sys {
     name: string,
     saveSize?: boolean,
     order?: PanelOrdering,
-    pos?: MaybeRef<Point>,
     canFocus?: boolean,
   }, root: View) {
     if (config.name && config.saveSize !== false) {
@@ -121,19 +120,16 @@ class Sys {
       root.$size.watch((size => panelnames.set(config.name!, size)))
     }
 
-    const initpos = config.pos ? defRef(config.pos).val : undefined
     const [id, x, y, port] = await this.rpc.call('newpanel', [
       config.name,
       config.order ?? 'normal',
-      initpos?.x ?? -1, initpos?.y ?? -1,
+      root.point.x, root.point.y,
       root.size.w, root.size.h,
       config.canFocus ?? true
     ])
 
-    const point = $({ x, y })
-    if (config.pos instanceof Ref) point.defer(config.pos)
-
-    const panel = new Panel(port, id, point, root)
+    root.point = { x, y }
+    const panel = new Panel(port, id, root)
 
     program.panels.add(panel)
     panel.didClose.watch(() => {
