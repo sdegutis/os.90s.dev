@@ -25,8 +25,9 @@ export class View {
       }
 
       if (val instanceof Ref) {
-        const rkey = `$${key}`
-        this[rkey as keyof this] = val as this[keyof this]
+        const rkey = `$${key}` as keyof this
+        const initRef = this[rkey] as Ref<any>
+        initRef.defer(val)
       }
       else if (val !== undefined) {
         this[key as keyof this] = val
