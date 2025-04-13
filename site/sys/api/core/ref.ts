@@ -72,6 +72,7 @@ export class Ref<T> {
   }
 
   defer(other: Ref<T>) {
+    this.val = other.val
     this.defers = other
 
     this.listener.list.forEach(fn => other.listener.list.add(fn))
