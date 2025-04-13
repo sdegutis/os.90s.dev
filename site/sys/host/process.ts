@@ -54,7 +54,7 @@ export class Process {
 
       newpanel: (reply, title, ord, x, y, w, h, canfocus) => {
         const chan = new MessageChannel()
-        const p = new Panel({ x, y, w, h }, this, chan.port1, ord, sys, canfocus)
+        const p = new Panel(x, y, w, h, this, chan.port1, ord, canfocus)
         reply([p.id, p.x, p.y, chan.port2], [chan.port2])
 
         this.panels.add(p)

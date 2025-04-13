@@ -121,17 +121,18 @@ class Sys {
       root.$size.watch((size => panelnames.set(config.name!, size)))
     }
 
-    const order = config.order ?? 'normal'
-    const point = (!config.pos) ? $({ x: -1, y: -1 }) :
-      defRef(config.pos)
+    const initpos = config.pos ? defRef(config.pos).val : undefined
+    const [id, x, y, port] = await this.rpc.call('newpanel', [
+      config.name,
+      config.order ?? 'normal',
+      initpos?.x, initpos?.y,
+      root.size.w, root.size.h,
+      config.canFocus ?? true
+    ])
 
-    const { w, h } = root.size
+    const point = $({ x, y })
+    if (config.pos instanceof Ref) point.defer(config.pos)
 
-    const canFocus = config.canFocus ?? true
-
-    const [id, x, y, port] = await this.rpc.call('newpanel', [config.name, order, point.val.x, point.val.y, w, h, canFocus])
-
-    point.val = { x, y }
     const panel = new Panel(port, id, point, root)
 
     program.panels.add(panel)

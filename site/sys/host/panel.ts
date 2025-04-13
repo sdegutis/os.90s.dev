@@ -3,9 +3,6 @@ import { DrawingContext } from "../api/core/drawing.js"
 import { Listener } from "../api/core/listener.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../api/core/rpc.js"
 import type { Process } from "./process.js"
-import type { Sys } from "./sys.js"
-
-type Rect = { x: number, y: number, w: number, h: number }
 
 export class Panel {
 
@@ -32,17 +29,22 @@ export class Panel {
   canFocus
   visible = true
 
-  constructor(rect: Rect, proc: Process, port: MessagePort, pos: PanelOrdering, sys: Sys, canFocus: boolean) {
+  constructor(
+    x: number | undefined,
+    y: number | undefined,
+    w: number,
+    h: number,
+    proc: Process,
+    port: MessagePort,
+    pos: PanelOrdering,
+    canFocus: boolean
+  ) {
     this.proc = proc
     this.port = port
     this.pos = pos
-
     this.canFocus = canFocus
-
-    this.x = rect.x
-    this.y = rect.y
-    this.w = rect.w
-    this.h = rect.h
+    this.w = w
+    this.h = h
 
     Panel.all.set(this.id = ++Panel.id, this)
 
@@ -51,13 +53,14 @@ export class Panel {
         Panel.ordered.findLastIndex(p => p.pos !== 'top') + 1
     Panel.ordered.splice(posi, 0, this)
 
-    const positioning = (this.x === -1 || this.y === -1) ? 'default' :
-      'given'
-
-    if (positioning === 'default') {
+    if (x === undefined || y === undefined) {
       const cascadeFrom = Panel.ordered.findLast(p => p.pos === 'normal' && p !== this)
       this.x = (cascadeFrom?.x ?? 0) + 10
       this.y = (cascadeFrom?.y ?? 0) + 10
+    }
+    else {
+      this.x = x
+      this.y = y
     }
 
     this.rpc = new wRPC<ServerPanel, ClientPanel>(port, {
