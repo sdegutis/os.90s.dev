@@ -4,7 +4,7 @@ import type { Cursor } from "./cursor.js"
 import { DrawingContext } from "./drawing.js"
 import { JSLN } from "./jsln.js"
 import { Listener } from "./listener.js"
-import { type Ref, multiplex } from "./ref.js"
+import { type Ref, makeRef, multiplex } from "./ref.js"
 import { type ClientPanel, type ServerPanel, wRPC } from "./rpc.js"
 import { sys } from "./sys.js"
 import type { Point, Size } from "./types.js"
@@ -29,7 +29,9 @@ export class Panel {
   rpc
   root
   didClose = new Listener()
+
   isFocused = false
+  $isFocused = makeRef(this, 'isFocused')
 
   readonly ctx = new DrawingContext()
 
