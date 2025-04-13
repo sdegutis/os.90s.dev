@@ -59,10 +59,6 @@ export class Panel {
       this.x = (cascadeFrom?.x ?? 0) + 10
       this.y = (cascadeFrom?.y ?? 0) + 10
     }
-    else if (positioning === 'center') {
-      this.x = Math.round(sys.size.w / 2 - this.w / 2)
-      this.y = Math.round(sys.size.h / 2 - this.h / 2)
-    }
 
     this.rpc = new wRPC<ServerPanel, ClientPanel>(port, {
 
