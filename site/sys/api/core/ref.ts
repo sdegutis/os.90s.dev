@@ -16,10 +16,7 @@ export class Ref<T> {
   }
 
   get val() {
-    if (this.defers) {
-      return this.defers.val
-    }
-
+    if (this.defers) return this.defers.val
     return this._val
   }
 
@@ -37,17 +34,13 @@ export class Ref<T> {
   }
 
   watch(fn: (data: T, old: T) => void): ListenerDone {
-    if (this.defers) {
-      return this.defers.watch(fn)
-    }
+    if (this.defers) return this.defers.watch(fn)
 
     return this.listener.watch(([data, old]) => fn(data, old))
   }
 
   intercept(fn: (data: T) => T, deps: Ref<any>[] = []): ListenerDone {
-    if (this.defers) {
-      return this.defers.intercept(fn)
-    }
+    if (this.defers) return this.defers.intercept(fn)
 
     this.interceptors.add(fn)
     this.val = fn(this.val)
@@ -58,9 +51,7 @@ export class Ref<T> {
   }
 
   adapt<U>(fn: (data: T, old: T) => U): Ref<U> {
-    if (this.defers) {
-      return this.defers.adapt(fn)
-    }
+    if (this.defers) return this.defers.adapt(fn)
 
     const r = $(fn(this._val, this._val))
     this.watch((data, old) => r.val = fn(data, old))
@@ -68,9 +59,7 @@ export class Ref<T> {
   }
 
   async adaptAsync<U>(fn: (data: T, old: T) => Promise<U>): Promise<Ref<U>> {
-    if (this.defers) {
-      return this.defers.adaptAsync(fn)
-    }
+    if (this.defers) return this.defers.adaptAsync(fn)
 
     const init: U = await fn(this._val, this._val)
     const r = $(init)
