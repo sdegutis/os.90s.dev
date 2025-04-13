@@ -52,8 +52,7 @@ export class Panel {
     Panel.ordered.splice(posi, 0, this)
 
     const positioning = (this.x === -1 || this.y === -1) ? 'default' :
-      (this.x === -2 || this.y === -2) ? 'center' :
-        'given'
+      'given'
 
     if (positioning === 'default') {
       const cascadeFrom = Panel.ordered.findLast(p => p.pos === 'normal' && p !== this)
