@@ -9,6 +9,63 @@ import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
 import { Process } from "./process.js"
 
+
+new EventSource('/_reload').onmessage = () => location.reload()
+
+const $a = $(1)
+const $b = $(2)
+const $c = $b.adapt(a => [a.toFixed(2)])
+$c.watch(c => console.log('ADAPTED C iS EQUAL ===', c))
+console.log('a', $a.val)
+console.log('b', $b.val)
+console.log('c', $c.val, "\n\n\n")
+
+$a.watch(a => console.log('a is now', a))
+$b.watch(b => console.log('b is now', b))
+console.log('a', $a.val)
+console.log('b', $b.val)
+console.log('c', $c.val, "\n\n\n")
+
+$a.val = 11
+console.log('a', $a.val)
+console.log('b', $b.val)
+console.log('c', $c.val, "\n\n\n")
+
+$b.val = 22
+console.log('a', $a.val)
+console.log('b', $b.val)
+console.log('c', $c.val, "\n\n\n")
+
+console.log('===== DEFER =====')
+$a.defer($b)
+console.log('a', $a.val)
+console.log('b', $b.val)
+console.log('c', $c.val, "\n\n\n")
+
+$a.val = 33
+console.log('a', $a.val)
+console.log('b', $b.val)
+console.log('c', $c.val, "\n\n\n")
+
+$b.val = 44
+console.log('a', $a.val)
+console.log('b', $b.val)
+console.log('c', $c.val, "\n\n\n")
+
+$a.watch(a => console.log('a again is now', a))
+$b.val = 55
+console.log('a', $a.val)
+console.log('b', $b.val)
+console.log('c', $c.val, "\n\n\n")
+
+$b.watch(b => console.log('b again is now', b))
+$b.val = 66
+console.log('a', $a.val)
+console.log('b', $b.val)
+console.log('c', $c.val, "\n\n\n")
+
+
+
 export class Sys {
 
   id = crypto.randomUUID()

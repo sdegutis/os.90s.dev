@@ -2,7 +2,7 @@ export type ListenerDone = () => void
 
 export class Listener<T = void, U = void> {
 
-  private list = new Set<(data: T) => U>()
+  list = new Set<(data: T) => U>()
 
   dispatch(data: T) {
     for (const fn of this.list) {
