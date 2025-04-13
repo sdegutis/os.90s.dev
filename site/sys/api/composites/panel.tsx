@@ -25,17 +25,13 @@ export function PanelView(data: {
   onKeyPress?: (key: string) => boolean,
   menuItems?: () => MenuItem[],
 }) {
-
-  const $size = defRef(data.size ?? $({ w: 200, h: 150 }))
   const focused = $(false)
-  const borderColor = focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)
-
   return (
     <Margin
       onKeyPress={data.onKeyPress}
-      paddingColor={borderColor}
+      paddingColor={focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)}
       padding={1}
-      size={$size}
+      size={defRef(data.size ?? $({ w: 200, h: 150 }))}
       presented={async function (p) {
         data.presented?.(p)
       }}
