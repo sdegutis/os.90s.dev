@@ -3,7 +3,7 @@ import { Cursor } from "../core/cursor.js"
 import type { Panel } from "../core/panel.js"
 import { $, defRef, MaybeRef } from "../core/ref.js"
 import { sys } from "../core/sys.js"
-import type { Size } from "../core/types.js"
+import type { Point, Size } from "../core/types.js"
 import { dragMove, dragResize } from "../util/drag.js"
 import { MenuItem, showMenu } from "../util/menu.js"
 import { Border } from "../views/border.js"
@@ -119,14 +119,10 @@ export function PanelResizer() {
   return <ImageView
     canMouse
     presented={function (panel) {
-      const move = () => {
-        this.point = {
-          x: panel.size.w - adjImage.width,
-          y: panel.size.h - adjImage.height,
-        }
-      }
-      move()
-      panel.$size.watch(move)
+      this.$point.defer(panel.$size.adapt<Point>(s => ({
+        x: s.w - this.size.w,
+        y: s.h - this.size.h,
+      })))
     }}
     bitmap={adjImage}
     onMouseEnter={function () { this.panel!.pushCursor(adjCursor) }}
