@@ -3,7 +3,7 @@ import { fsPathOf, Grid, Label } from "/api.js"
 
 export default (browser: Browser) => {
   return <DocsPage browser={browser} current={fsPathOf(import.meta.url)}>
-    <Grid xgap={2} ygap={4}>
+    <Grid xgap={2} ygap={4} flow>
       <Label text={'hi'} />
       <Label text={'ho'} />
       <>hello world</>
