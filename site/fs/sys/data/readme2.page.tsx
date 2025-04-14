@@ -6,9 +6,9 @@ export interface Browser {
 
 export default (browser: Browser) => {
   return <GroupY>
-    <>hello world</>
+    <>hello world 2!!</>
     <button action={() => {
-      browser.load(import.meta.resolve('./readme2.page.js'))
-    }} text='load other page' />
+      browser.load(import.meta.resolve('./readme.page.js'))
+    }} text='back to first page' />
   </GroupY>
 }

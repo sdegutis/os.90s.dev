@@ -6,10 +6,18 @@ const $path = api.$<string>('')
 const emptyPage = <api.Label text='[no page]' color={0x777777ff} />
 const $page = api.$([emptyPage])
 
+const browser: Browser = {
+  load: str => {
+    const absPrefix = `${location.origin}/fs/`
+    if (str.startsWith(absPrefix)) str = str.slice(absPrefix.length)
+    $path.val = str
+  },
+}
+
 $path.watch(async path => {
   if (!path) $page.val = [emptyPage]
   const mod = await import('/fs/' + path)
-  $page.val = [mod.default]
+  $page.val = [mod.default(browser)]
 })
 
 const initial = api.program.opts["file"]
@@ -41,3 +49,7 @@ const panel = await api.sys.makePanel({ name: "browser" },
 )
 
 panel.focusPanel()
+
+export interface Browser {
+  load(str: string): void
+}
