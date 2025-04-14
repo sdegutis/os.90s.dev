@@ -25,6 +25,7 @@ if (initial) $path.val = initial
 
 const pathModel = new api.TextModel($path.val)
 const changePath = () => $path.val = pathModel.getText()
+$path.watch(path => pathModel.setText(path))
 
 const panel = await api.sys.makePanel({ name: "browser" },
   <panel title='browser' size={{ w: 100, h: 70 }}>
