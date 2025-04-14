@@ -13,6 +13,29 @@ const $panels = api.$<{
   focused: boolean,
 }[]>([])
 
+const focused: number[] = []
+
+function pushFocused(id: number) {
+  if (id === taskbar.id || id === desktop.id) return
+
+  const idx = focused.indexOf(id)
+  if (idx !== -1) focused.splice(idx, 1)
+  focused.push(id)
+
+  console.log(focused)
+}
+
+function removeFocused(id: number) {
+  const idx = focused.indexOf(id)
+  if (idx !== -1) focused.splice(idx, 1)
+}
+
+function nextToFocus(id: number) {
+  const idx = focused.indexOf(id)
+  const rest = focused.toSpliced(idx, 1)
+  return rest.at(-1)
+}
+
 const panelevents = new BroadcastChannel('panelevents')
 panelevents.onmessage = msg => {
   const { type, pid, id, title } = msg.data
@@ -25,11 +48,13 @@ panelevents.onmessage = msg => {
     ]
   }
   else if (type === 'closed') {
+    removeFocused(id)
     const idx = $panels.val.findIndex(p => p.id === id)
     if (idx === -1) return
     $panels.val = $panels.val.toSpliced(idx, 1)
   }
   else if (type === 'focused') {
+    pushFocused(id)
     const idx = $panels.val.findIndex(p => p.id === id)
     if (idx === -1) return
     const panel = $panels.val[idx]
@@ -45,6 +70,8 @@ const $panelButtons = $panels.adapt(panels =>
     onClick={() => {
       if (p.focused) {
         api.sys.hidePanel(p.id)
+        const toFocus = nextToFocus(p.id)
+        if (toFocus) api.sys.focusPanel(toFocus)
       }
       else {
         api.sys.focusPanel(p.id)
