@@ -14,6 +14,8 @@ function gotoPage(path: string) {
   const i = $pathi.val + 1
   $paths.val = [...$paths.val.slice(0, i), path]
   $pathi.val = $paths.val.length - 1
+
+  api.sys.noteCurrentFile(path)
 }
 
 const browser: Browser = {
