@@ -1,7 +1,9 @@
 import * as api from "/api.js"
 await api.appReady
 
-const $path = api.$<string>('')
+const $paths = api.$<string[]>([''])
+const $pathi = api.$(0)
+const $path = api.multiplex([$paths, $pathi], () => $paths.val[$pathi.val])
 
 const emptyPage = <api.Label text='[no page]' color={0x777777ff} />
 const $page = api.$([emptyPage])
@@ -10,31 +12,45 @@ const browser: Browser = {
   load: str => {
     const absPrefix = `${location.origin}/fs/`
     if (str.startsWith(absPrefix)) str = str.slice(absPrefix.length)
-    $path.val = str
+
+    $paths.val = [...$paths.val, str]
+    $pathi.val = $paths.val.length - 1
   },
 }
 
 $path.watch(async path => {
-  if (!path) $page.val = [emptyPage]
+  if (!path) {
+    $page.val = [emptyPage]
+    return
+  }
   const mod = await api.runJsFile(path)
   $page.val = [mod.default(browser)]
 })
 
-const initial = api.program.opts["file"]
-if (initial) $path.val = initial
+const pathModel = new api.TextModel($paths.val[0]!)
+const goto = () => $paths.val = [...$paths.val, pathModel.getText()]
+$path.watch(path => {
+  console.log({ path })
+  return pathModel.setText(path)
+})
 
-const pathModel = new api.TextModel($path.val)
-const changePath = () => $path.val = pathModel.getText()
-$path.watch(path => pathModel.setText(path))
+const initial = api.program.opts["file"]
+if (initial) {
+  $paths.val = [...$paths.val, initial]
+  $pathi.val = $paths.val.length - 1
+}
+
+function goPrev() { $pathi.val = Math.max($pathi.val - 1, 0) }
+function goNext() { $pathi.val = Math.min($pathi.val + 1, $paths.val.length - 1) }
 
 const panel = await api.sys.makePanel({ name: "browser" },
   <panel title='browser' size={{ w: 100, h: 70 }}>
     <api.PanedYA>
 
       <api.GroupX>
-        <button>{`<`}</button>
-        <button>{`>`}</button>
-        <textfield length={150} onEnter={changePath} model={pathModel} />
+        <button action={goPrev}>{`<`}</button>
+        <button action={goNext}>{`>`}</button>
+        <textfield length={150} onEnter={goto} model={pathModel} />
       </api.GroupX>
 
       <api.Scroll
