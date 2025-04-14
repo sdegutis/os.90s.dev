@@ -7,7 +7,7 @@ import { Listener } from "./listener.js"
 import { type Ref, makeRef, multiplex } from "./ref.js"
 import { type ClientPanel, type ServerPanel, wRPC } from "./rpc.js"
 import { sys } from "./sys.js"
-import type { Point, Size } from "./types.js"
+import { type Point, type Size, pointEquals, sizeEquals } from "./types.js"
 
 export class Panel {
 
@@ -348,8 +348,23 @@ export class Panel {
     sys.hidePanel(this.id)
   }
 
-  maximize() {
+  private unmaxed?: (Point & Size) | undefined
 
+  maximize() {
+    const isMax = pointEquals(this.point, sys.desktop) && sizeEquals(this.size, sys.desktop)
+    if (isMax) {
+      if (this.unmaxed) {
+        this.point = this.unmaxed
+        this.size = this.unmaxed
+        delete this.unmaxed
+      }
+    }
+    else {
+      this.unmaxed = { ...this.point, ...this.size }
+
+      this.point = sys.desktop
+      this.size = sys.desktop
+    }
   }
 
   hide() {

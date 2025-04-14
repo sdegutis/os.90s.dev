@@ -75,6 +75,8 @@ class Sys {
   get size() { return this.$size.val }
   set size(s: Size) { this.$size.val = s }
 
+  desktop!: Point & Size
+
   sysevents = new BroadcastChannel('sysevents')
 
   async init() {
@@ -90,16 +92,23 @@ class Sys {
       }
     }
 
-    const [sysid, id, w, h, keymap, opts] = await this.rpc.call('init', [])
+    const [sysid, id, w, h, desktop, keymap, opts] = await this.rpc.call('init', [])
     this.sysid = sysid
     program.opts = opts
     program.pid = id
     this.size = { w, h }
 
+    this.desktop = desktop
+
     this.sysevents.addEventListener('message', msg => {
       if (msg.data.type === 'resized') {
         const [w, h] = msg.data.size
         this.size = { w, h }
+      }
+      else if (msg.data.type === 'desktop') {
+        this.desktop = msg.data.desktop
+
+        console.log('got desktop', this.desktop, opts)
       }
     })
 
@@ -184,6 +193,10 @@ class Sys {
 
   showPanel(panid: number) {
     this.rpc.send('showpanel', [panid])
+  }
+
+  setWorkspaceArea(point: Point, size: Size) {
+    this.rpc.send('setdesktop', [point.x, point.y, size.w, size.h])
   }
 
 }

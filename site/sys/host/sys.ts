@@ -3,7 +3,7 @@ import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { runJsFile } from "../api/core/open.js"
 import { $, Ref } from "../api/core/ref.js"
-import { Point } from "../api/core/types.js"
+import { Point, Size } from "../api/core/types.js"
 import { updateAccountFromServer } from "../api/util/account.js"
 import { debounce } from "../api/util/throttle.js"
 import { setupCanvas } from "./canvas.js"
@@ -32,6 +32,9 @@ export class Sys {
 
   $size
   get size() { return this.$size.val }
+
+  desktop: Point & Size
+
 
   initialAppsLoaded = false
 
@@ -68,6 +71,8 @@ export class Sys {
     })
 
     this.$font = sysConfig.$font
+
+    this.desktop = { x: 0, y: 0, ...this.size }
 
     const { $point, $scale, canvas, ctx } = setupCanvas(this.$size)
     this.ctx = ctx
@@ -276,6 +281,12 @@ export class Sys {
   useCursor(c: Cursor | null) {
     cursor = c ?? defaultCursor
     this.redrawAllPanels()
+  }
+
+  setDesktop(x: number, y: number, w: number, h: number) {
+    this.desktop = { x, y, w, h }
+    this.sysevents.postMessage({ type: 'desktop', desktop: { x, y, w, h } })
+    console.log(this.desktop)
   }
 
   private showLoadingScreen() {

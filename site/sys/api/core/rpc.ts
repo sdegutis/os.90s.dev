@@ -1,13 +1,16 @@
+import { Point, Size } from "./types.js"
+
 export type PanelOrdering = 'normal' | 'bottom' | 'top'
 
 export interface ServerProgram {
-  init(): Promise<[sysid: string, id: number, w: number, h: number, keymap: string[], opts: Record<string, any>]>
+  init(): Promise<[sysid: string, id: number, w: number, h: number, desktop: Point & Size, keymap: string[], opts: Record<string, any>]>
   newpanel(title: string, ord: PanelOrdering, x: number, y: number, w: number, h: number, canfocus: boolean): Promise<[id: number, x: number, y: number, port: MessagePort]>
   focuspanel(id: number): void
   terminate(pid: number): void
   hidepanel(panid: number): void
   showpanel(panid: number): void
   resize(w: number, h: number): void
+  setdesktop(x: number, y: number, w: number, h: number): void
   thisfile(path: string): void
   getprocs(): Promise<[procs: { pid: number, path: string }[]]>
   launch(path: string, opts: Record<string, any>): Promise<[number]>

@@ -49,7 +49,7 @@ export class Process {
         opts["app"] = path
         this.ready.resolve()
         this.procevents.postMessage({ type: 'init', pid: this.id })
-        reply([sys.id, this.id, this.sys.size.w, this.sys.size.h, [...this.sys.keymap], opts], [])
+        reply([sys.id, this.id, this.sys.size.w, this.sys.size.h, this.sys.desktop, [...this.sys.keymap], opts], [])
       },
 
       newpanel: (reply, title, ord, x, y, w, h, canfocus) => {
@@ -111,6 +111,10 @@ export class Process {
       readcliptext: async (reply) => {
         const text = await navigator.clipboard.readText()
         reply([text])
+      },
+
+      setdesktop: (x, y, w, h) => {
+        this.sys.setDesktop(x, y, w, h)
       },
 
     })

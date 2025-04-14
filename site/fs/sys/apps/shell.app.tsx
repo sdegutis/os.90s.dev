@@ -1,6 +1,9 @@
 import * as api from "/api.js"
 await api.appReady
 
+const desktopSize = api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))
+api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
+
 await api.program.becomeShell()
 
 const $panels = api.$<{
@@ -60,7 +63,7 @@ const desktop = await api.sys.makePanel({
   canFocus: false,
 }, (
   <api.Margin
-    size={api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))}
+    size={desktopSize}
     background={api.sysConfig.$bgcolor}
     padding={1}
     paddingColor={0xffffff11}
