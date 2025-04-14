@@ -80,7 +80,7 @@ if (isDev) {
   server.notFound = () => '/404.html'
 
   tree.watch({
-    ignored: (str) => str.includes('/out/') || str.endsWith('/site/fs/api.ts')
+    ignored: (str) => str.includes('/out/') || str === '/fs/api.ts'
   }, async (paths) => {
     const start = Date.now()
     try { server.files = await processSite() }
