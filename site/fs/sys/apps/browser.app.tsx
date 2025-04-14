@@ -10,13 +10,17 @@ const emptyPage = <api.Center>
 </api.Center>
 const $page = api.$([emptyPage])
 
-const browser: Browser = {
-  load: str => {
-    const absPrefix = `${location.origin}/fs/`
-    if (str.startsWith(absPrefix)) str = str.slice(absPrefix.length)
+function gotoPage(path: string) {
+  const i = $pathi.val + 1
+  $paths.val = [...$paths.val.slice(0, i), path]
+  $pathi.val = $paths.val.length - 1
+}
 
-    $paths.val = [...$paths.val, str]
-    $pathi.val = $paths.val.length - 1
+const browser: Browser = {
+  load: path => {
+    const absPrefix = `${location.origin}/fs/`
+    if (path.startsWith(absPrefix)) path = path.slice(absPrefix.length)
+    gotoPage(path)
   },
 }
 
@@ -30,7 +34,7 @@ $path.watch(async path => {
 })
 
 const pathModel = new api.TextModel($paths.val[0]!)
-const goto = () => $paths.val = [...$paths.val, pathModel.getText()]
+const goto = () => gotoPage(pathModel.getText())
 $path.watch(path => {
   console.log({ path })
   return pathModel.setText(path)
