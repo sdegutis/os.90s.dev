@@ -84,7 +84,7 @@ function Main() {
       <api.Scroll background={0xffffff11} onMouseDown={mouseDownFileArea}>
         <api.GroupY gap={-2} align={'+'} children={$itemButtons} />
       </api.Scroll>
-      <api.GroupX background={0x00000033}>
+      <api.GroupX background={0x00000033} gap={7}>
         <button action={newFile}>new file</button>
         <button action={newFolder}>new folder</button>
       </api.GroupX>
