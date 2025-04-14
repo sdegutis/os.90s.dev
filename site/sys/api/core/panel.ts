@@ -354,16 +354,15 @@ export class Panel {
     const isMax = pointEquals(this.point, sys.desktop) && sizeEquals(this.size, sys.desktop)
     if (isMax) {
       if (this.unmaxed) {
-        this.point = this.unmaxed
-        this.size = this.unmaxed
+        this.point = { x: this.unmaxed.x, y: this.unmaxed.y }
+        this.size = { w: this.unmaxed.w, h: this.unmaxed.h }
         delete this.unmaxed
       }
     }
     else {
       this.unmaxed = { ...this.point, ...this.size }
-
-      this.point = sys.desktop
-      this.size = sys.desktop
+      this.point = { x: sys.desktop.x, y: sys.desktop.y }
+      this.size = { w: sys.desktop.w, h: sys.desktop.h }
     }
   }
 

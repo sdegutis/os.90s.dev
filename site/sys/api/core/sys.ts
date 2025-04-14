@@ -94,11 +94,10 @@ class Sys {
 
     const [sysid, id, w, h, desktop, keymap, opts] = await this.rpc.call('init', [])
     this.sysid = sysid
+    this.size = { w, h }
+    this.desktop = desktop
     program.opts = opts
     program.pid = id
-    this.size = { w, h }
-
-    this.desktop = desktop
 
     this.sysevents.addEventListener('message', msg => {
       if (msg.data.type === 'resized') {

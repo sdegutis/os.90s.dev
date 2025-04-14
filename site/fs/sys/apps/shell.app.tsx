@@ -21,8 +21,6 @@ function pushFocused(id: number) {
   const idx = focused.indexOf(id)
   if (idx !== -1) focused.splice(idx, 1)
   focused.push(id)
-
-  console.log(focused)
 }
 
 function removeFocused(id: number) {
