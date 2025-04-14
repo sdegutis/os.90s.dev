@@ -17,7 +17,7 @@ import { SpacedX } from "../views/spaced.js"
 import type { View } from "../views/view.js"
 
 
-export function PanelView(data: {
+export function PanelViewComp(data: {
   title: MaybeRef<string>,
   children: View,
   size?: MaybeRef<Size>,
@@ -54,7 +54,7 @@ const maxImage = new Bitmap([0xffffff33], 4, [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1
 const axeImage = new Bitmap([0xffffff33], 4, [1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1,])
 const mnuImage = new Bitmap([0xffffff33], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1])
 
-export function PanelTitlebar(data: {
+export function PanelTitlebarComp(data: {
   title: MaybeRef<string>
   menuItems?: () => MenuItem[]
 }) {
@@ -96,7 +96,7 @@ export function PanelTitlebar(data: {
 }
 
 
-export function PanelBody(data: { children: any }) {
+export function PanelBodyComp(data: { children: any }) {
   return <Margin padding={0}>
     <Margin background={0x222222ff}>
       {data.children}
@@ -115,7 +115,7 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
   0, 1, 1, 1, 0,
 ]))
 
-export function PanelResizer() {
+export function PanelResizerComp() {
   return <ImageView
     canMouse
     presented={function (panel) {

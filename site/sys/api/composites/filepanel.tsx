@@ -3,7 +3,7 @@ import { defRef, multiplex, Ref } from "../core/ref.js"
 import { program, sys } from "../core/sys.js"
 import { fs } from "../fs/fs.js"
 import { showPrompt } from "../util/prompt.js"
-import { PanelView } from "./panel.js"
+import { PanelViewComp } from "./panel.js"
 
 export function FilePanelComp({
   filepath,
@@ -13,7 +13,7 @@ export function FilePanelComp({
   onKeyPress,
   presented,
   ...data
-}: Parameters<typeof PanelView>[0] & {
+}: Parameters<typeof PanelViewComp>[0] & {
   filepath: Ref<string | undefined>,
   filedata: () => string,
 }) {
