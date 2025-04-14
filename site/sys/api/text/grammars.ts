@@ -6,6 +6,7 @@ const jslnGrammar: LangGrammar = {
     [/\./, 'punc'],
     [/=/, ['punc', '@push(val)']],
     [/#/, ['comment', 'comment']],
+    [/\[\]/, 'key'],
     [/[ \t]+/, ''],
   ],
   'comment': [
