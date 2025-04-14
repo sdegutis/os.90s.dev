@@ -26,7 +26,6 @@ export class Panel {
   didAdjust = new Listener()
   didRedraw = new Listener()
 
-  canFocus
   visible = true
 
   constructor(
@@ -35,12 +34,10 @@ export class Panel {
     proc: Process,
     port: MessagePort,
     pos: PanelOrdering,
-    canFocus: boolean
   ) {
     this.proc = proc
     this.port = port
     this.pos = pos
-    this.canFocus = canFocus
     this.w = w
     this.h = h
 

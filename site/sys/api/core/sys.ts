@@ -121,7 +121,6 @@ class Sys {
     name: string,
     saveSize?: boolean,
     order?: PanelOrdering,
-    canFocus?: boolean,
   }, root: View) {
     if (config.name && config.saveSize !== false) {
       const size = await panelnames.get(config.name)
@@ -134,7 +133,6 @@ class Sys {
       config.order ?? 'normal',
       root.point.x, root.point.y,
       root.size.w, root.size.h,
-      config.canFocus ?? true
     ])
 
     root.point = { x, y }

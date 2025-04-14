@@ -60,7 +60,6 @@ const desktop = await api.sys.makePanel({
   name: 'desktop',
   saveSize: false,
   order: 'bottom',
-  canFocus: false,
 }, (
   <api.Margin
     size={desktopSize}
@@ -87,7 +86,6 @@ const taskbar = await api.sys.makePanel({
   name: 'taskbar',
   saveSize: false,
   order: 'top',
-  canFocus: false,
 }, (
   <api.SpacedX
     size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))}

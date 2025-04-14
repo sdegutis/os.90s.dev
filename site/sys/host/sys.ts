@@ -222,8 +222,6 @@ export class Sys {
   }
 
   focusPanel(panel: Panel) {
-    if (!panel.canFocus) return
-
     if (this.focused !== panel) {
       this.prevFocused = this.focused
       this.focused?.rpc.send('blur', [])
