@@ -10,7 +10,7 @@ const pages = {
 }
 
 function Sidebar(data: { current: string, browser: Browser }) {
-  return <GroupY align={'+'}>
+  return <GroupY align={'+'} background={0x00000033}>
     {Object.entries(pages).map(([title, path]) => {
       return <Button padding={2} onClick={() => data.browser.load(path)}>
         <Label text={title} color={data.current === path
