@@ -35,10 +35,7 @@ $path.watch(async path => {
 
 const pathModel = new api.TextModel($paths.val[0]!)
 const goto = () => gotoPage(pathModel.getText())
-$path.watch(path => {
-  console.log({ path })
-  return pathModel.setText(path)
-})
+$path.watch(path => pathModel.setText(path))
 
 const initial = api.program.opts["file"]
 if (initial) {
