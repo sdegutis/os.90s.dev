@@ -1,3 +1,3 @@
 this is the /second/ page
 
-[[go back](./readme.ftf)]
+[[go back](./readme.txt)]

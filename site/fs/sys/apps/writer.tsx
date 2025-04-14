@@ -16,8 +16,8 @@ if ($filepath.val?.endsWith('.jsln')) {
   hl.highlight(model, 0)
 }
 
-if ($filepath.val?.endsWith('.ftf')) {
-  const hl = new api.Highlighter(api.langThemes.ftfTheme1, api.langGrammars.ftfGrammar)
+if ($filepath.val?.endsWith('.txt')) {
+  const hl = new api.Highlighter(api.langThemes.txtTheme1, api.langGrammars.txtGrammar)
   model.highlighter = hl
   hl.highlight(model, 0)
 }

@@ -140,8 +140,8 @@ async function handleFile(path: string) {
   else if (path.endsWith('.font')) {
     await api.sys.launch('sys/apps/fontmaker.js', path)
   }
-  else if (path.endsWith('.ftf')) {
-    await api.sys.launch('sys/apps/readftf.js', path)
+  else if (path.endsWith('.txt')) {
+    await api.sys.launch('sys/apps/readtxt.js', path)
   }
 }
 

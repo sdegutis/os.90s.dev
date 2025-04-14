@@ -42,7 +42,7 @@ const jslnGrammar: LangGrammar = {
   ],
 }
 
-const ftfGrammar: LangGrammar = {
+const txtGrammar: LangGrammar = {
   'start': [
     [/^\s*""/, ['quote', '@push(quote)']],
     [/^\s*> /, ['codeblock', '@push(codeblock)']],
@@ -72,5 +72,5 @@ const ftfGrammar: LangGrammar = {
 
 export const langGrammars = {
   jslnGrammar,
-  ftfGrammar,
+  txtGrammar,
 }

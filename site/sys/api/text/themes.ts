@@ -15,7 +15,7 @@ const theme1: LangTheme = {
   error: 0x990000ff,
 }
 
-const ftfTheme1: LangTheme = {
+const txtTheme1: LangTheme = {
   text: 0x777777ff,
   comment: 0x00990077,
   error: 0x990000ff,
@@ -31,5 +31,5 @@ const ftfTheme1: LangTheme = {
 
 export const langThemes = {
   theme1,
-  ftfTheme1,
+  txtTheme1,
 }

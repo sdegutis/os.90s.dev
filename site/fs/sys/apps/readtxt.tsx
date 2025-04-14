@@ -7,7 +7,7 @@ if ($filepath.val) content = await api.fs.getFile($filepath.val) ?? ''
 
 const model = new api.TextModel(content)
 
-const hl = new api.Highlighter(api.langThemes.ftfTheme1, api.langGrammars.ftfGrammar)
+const hl = new api.Highlighter(api.langThemes.txtTheme1, api.langGrammars.txtGrammar)
 model.highlighter = hl
 // hl.log = true
 hl.highlight(model, 0)
@@ -18,8 +18,8 @@ function changePath() {
 
 }
 
-const panel = await api.sys.makePanel({ name: "readftf" },
-  <panel title='readftf' size={{ w: 100, h: 70 }}>
+const panel = await api.sys.makePanel({ name: "readtxt" },
+  <panel title='readtxt' size={{ w: 100, h: 70 }}>
     <api.PanedYA>
 
       <api.GroupX>

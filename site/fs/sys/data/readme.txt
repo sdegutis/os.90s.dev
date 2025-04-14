@@ -12,7 +12,7 @@ and some code in >file< is:
 this is the top
 
 asdfadf *asdf*
-and [[what about](./readme2.ftf)] a link
+and [[what about](./readme2.txt)] a link
 
 === section ===
 
