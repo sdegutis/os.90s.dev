@@ -2,6 +2,7 @@ import { fs } from "../fs/fs.js"
 import { Font } from "./font.js"
 import { JSLN } from "./jsln.js"
 import { $ } from "./ref.js"
+import { as } from "./typesafe.js"
 
 const baseConfigData = await loadConfig('sys/default/config.jsln') as any
 const baseConfig = {
@@ -23,14 +24,6 @@ export const sysConfig = {
   $bgcolor: $(baseConfig.bgcolor),
   startup: baseConfig.startup,
   prelude: baseConfig.prelude,
-}
-
-const converters = {
-  number: (o: any) => (typeof o === 'number' ? o : undefined),
-  string: (o: any) => (typeof o === 'string' ? o : undefined),
-  boolean: (o: any) => (typeof o === 'boolean' ? o : undefined),
-  numbers: (o: any) => (o instanceof Array && o.every(c => typeof c === 'number') ? o : undefined),
-  strings: (o: any) => (o instanceof Array && o.every(c => typeof c === 'string') ? o : undefined),
 }
 
 await loadUsrConfig()
@@ -62,11 +55,6 @@ async function loadUsrConfig() {
   sysConfig.$bgcolor.val = (bgcolor !== undefined)
     ? bgcolor
     : baseConfig.bgcolor
-}
-
-function as<K extends keyof typeof converters>(o: any, as: K) {
-  const c = converters[as]
-  return c(o) as ReturnType<typeof converters[K]>
 }
 
 async function loadConfig(path: string) {
