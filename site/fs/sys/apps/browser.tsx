@@ -2,8 +2,6 @@ import * as api from "/api.js"
 await api.appReady
 
 const $path = api.$<string>('')
-const pathModel = new api.TextModel($path.val)
-const changePath = () => $path.val = pathModel.getText()
 
 const emptyPage = <api.Label text='[no page]' color={0x777777ff} />
 const $page = api.$([emptyPage])
@@ -16,6 +14,9 @@ $path.watch(async path => {
 
 const initial = api.program.opts["file"]
 if (initial) $path.val = initial
+
+const pathModel = new api.TextModel($path.val)
+const changePath = () => $path.val = pathModel.getText()
 
 const panel = await api.sys.makePanel({ name: "browser" },
   <panel title='browser' size={{ w: 100, h: 70 }}>
