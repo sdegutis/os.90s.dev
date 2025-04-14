@@ -16,7 +16,7 @@ const browser: Browser = {
 
 $path.watch(async path => {
   if (!path) $page.val = [emptyPage]
-  const mod = await import('/fs/' + path)
+  const mod = await api.runJsFile(path)
   $page.val = [mod.default(browser)]
 })
 

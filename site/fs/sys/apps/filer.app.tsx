@@ -141,7 +141,7 @@ async function handleFile(path: string) {
     await api.sys.launch(path)
   }
   else if (path.endsWith('.js')) {
-    await import('/fs/' + path + '?decache=' + Date.now())
+    await api.runJsFile(path)
   }
   else if (path.endsWith('.font')) {
     await api.sys.launch('sys/apps/fontmaker.app.js', path)

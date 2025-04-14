@@ -2,6 +2,7 @@ import { sysConfig } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { $, Ref } from "../api/core/ref.js"
+import { runJsFile } from "../api/core/runjs.js"
 import { Point } from "../api/core/types.js"
 import { updateAccountFromServer } from "../api/util/account.js"
 import { debounce } from "../api/util/throttle.js"
@@ -81,7 +82,7 @@ export class Sys {
     })
 
     for (const path of sysConfig.startup ?? []) {
-      this.launch(path, {})
+      runJsFile(path)
     }
 
     new BroadcastChannel('procevents').onmessage = msg => {

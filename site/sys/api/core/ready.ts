@@ -1,4 +1,5 @@
 import { sysConfig } from "./config.js"
+import { runJsFile } from "./runjs.js"
 
 const init = Promise.withResolvers<void>()
 
@@ -7,7 +8,7 @@ export const appReady = init.promise
 async function loadPreludes() {
   for (const path of sysConfig.prelude ?? []) {
     try {
-      await import('/fs/' + path)
+      await runJsFile(path)
     }
     catch (e) {
       console.error(`Prelude failed:`, path)
