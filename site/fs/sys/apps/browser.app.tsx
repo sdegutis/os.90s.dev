@@ -29,8 +29,19 @@ $path.watch(async path => {
     $page.val = [emptyPage]
     return
   }
-  const mod = await api.runJsFile(path)
-  $page.val = [mod.default(browser)]
+  try {
+    const mod = await api.runJsFile(path)
+    $page.val = [mod.default(browser)]
+  }
+  catch (e) {
+    console.error(e)
+    $page.val = [<api.Center>
+      <api.GroupY gap={2}>
+        <api.Label color={0x990000ff} text='Error loading page' />
+        <api.Label text={String(e)} />
+      </api.GroupY>
+    </api.Center>]
+  }
 })
 
 const pathModel = new api.TextModel($paths.val[0]!)
