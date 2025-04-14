@@ -1,7 +1,8 @@
 import { Bitmap } from "../core/bitmap.js"
 import { Cursor } from "../core/cursor.js"
 import type { Panel } from "../core/panel.js"
-import { $, defRef, MaybeRef } from "../core/ref.js"
+import { preferences } from "../core/preferences.js"
+import { $, defRef, MaybeRef, Ref } from "../core/ref.js"
 import { sys } from "../core/sys.js"
 import type { Point, Size } from "../core/types.js"
 import { dragMove, dragResize } from "../util/drag.js"
@@ -95,9 +96,24 @@ export function PanelTitlebarComp(data: {
   </SpacedX>
 }
 
+preferences['panel-body-gap'] = 0
+preferences['panel-body-gap-color'] = 0x00000000
 
-export function PanelBodyComp(data: { children: any }) {
-  return <Margin padding={0}>
+export function PanelBodyComp(data: {
+  children: any
+  panelFocused: Ref<boolean>
+}) {
+  return <Margin
+    padding={preferences['panel-body-gap']}
+    paddingColor={
+      data.panelFocused.adapt(f => {
+        return preferences[f
+          ? 'panel-body-gap-color-focused'
+          : 'panel-body-gap-color-unfocused'
+        ] ?? preferences['panel-body-gap-color']
+      })
+    }
+  >
     <Margin background={0x222222ff}>
       {data.children}
     </Margin>
