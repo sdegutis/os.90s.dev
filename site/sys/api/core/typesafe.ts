@@ -6,7 +6,13 @@ export const typesafe = {
   strings: (o: any) => (o instanceof Array && o.every(c => typeof c === 'string') ? o : undefined),
 }
 
-export function as<K extends keyof typeof typesafe>(o: any, as: K) {
+export function as<K extends keyof typeof typesafe>(o: any, fn: string, as: K) {
   const c = typesafe[as]
-  return c(o) as ReturnType<typeof typesafe[K]>
+  try {
+    const v = new Function('o', `return o.${fn}`)(o)
+    return c(v) as ReturnType<typeof typesafe[K]>
+  }
+  catch (e) {
+    return undefined
+  }
 }

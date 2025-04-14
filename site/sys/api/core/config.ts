@@ -32,12 +32,12 @@ fs.watchTree('usr/config.jsln', loadUsrConfig)
 async function loadUsrConfig() {
   const usrConfig = await loadConfig('usr/config.jsln') as any
 
-  const dims = as(usrConfig?.sys?.size?.[0], 'numbers')
+  const dims = as(usrConfig, 'sys.size[0]', 'numbers')
   const w = dims?.[0]
   const h = dims?.[1]
   sysConfig.$size.val = (w && h) ? { w, h } : baseConfig.size
 
-  const fontpath = as(usrConfig?.sys?.font, 'string')
+  const fontpath = as(usrConfig, 'sys.font', 'string')
   if (fontpath) {
     const fontsrc = await fs.getFile(fontpath)
     sysConfig.$font.val = fontsrc
@@ -45,13 +45,13 @@ async function loadUsrConfig() {
       : baseConfig.font
   }
 
-  const shell = as(usrConfig?.sys?.shell, 'string')
+  const shell = as(usrConfig, 'sys.shell', 'string')
   sysConfig.$shell.val = shell || baseConfig.shell
 
-  const prelude = as(usrConfig?.sys?.prelude, 'strings')
+  const prelude = as(usrConfig, 'sys.prelude', 'strings')
   sysConfig.prelude = prelude || baseConfig.prelude
 
-  const bgcolor = as(usrConfig?.sys?.bgcolor, 'number')
+  const bgcolor = as(usrConfig, 'sys.bgcolor', 'number')
   sysConfig.$bgcolor.val = (bgcolor !== undefined)
     ? bgcolor
     : baseConfig.bgcolor
