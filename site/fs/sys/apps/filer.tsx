@@ -134,7 +134,10 @@ function FileItem({ base, name }: { base: string[], name: string }) {
 }
 
 async function handleFile(path: string) {
-  if (path.endsWith('.js')) {
+  if (path.endsWith('.page.js')) {
+    await api.sys.launch('sys/apps/browser.js', path)
+  }
+  else if (path.endsWith('.js')) {
     await api.sys.launch(path)
   }
   else if (path.endsWith('.font')) {
