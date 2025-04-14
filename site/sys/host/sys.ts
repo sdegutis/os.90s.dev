@@ -284,7 +284,6 @@ export class Sys {
   setDesktop(x: number, y: number, w: number, h: number) {
     this.desktop = { x, y, w, h }
     this.sysevents.postMessage({ type: 'desktop', desktop: { x, y, w, h } })
-    console.log(this.desktop)
   }
 
   private showLoadingScreen() {

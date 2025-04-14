@@ -107,8 +107,6 @@ class Sys {
       }
       else if (msg.data.type === 'desktop') {
         this.desktop = msg.data.desktop
-
-        console.log('got desktop', this.desktop, opts)
       }
     })
 
