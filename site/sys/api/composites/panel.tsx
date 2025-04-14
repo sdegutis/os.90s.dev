@@ -60,12 +60,10 @@ export function PanelTitlebarComp(data: {
   title: MaybeRef<string>
   menuItems?: () => MenuItem[]
 }) {
-  let panel: Panel
   return <SpacedX
-    presented={p => { panel = p }}
     canMouse
     onMouseDown={function () {
-      this.onMouseUp = dragMove(sys.$mouse, panel.$point)
+      this.onMouseUp = dragMove(sys.$mouse, this.panel!.$point)
     }}
     background={0x1199ff33}
   >
@@ -83,13 +81,13 @@ export function PanelTitlebarComp(data: {
     </Border>
     <Border>
       <GroupX>
-        <Button padding={2} onClick={() => panel.minimize()}>
+        <Button padding={2} onClick={function () { this.panel!.minimize() }}>
           <ImageView bitmap={minImage} />
         </Button>
-        <Button padding={2} onClick={() => panel.maximize()}>
+        <Button padding={2} onClick={function () { this.panel!.maximize() }}>
           <ImageView bitmap={maxImage} />
         </Button>
-        <Button padding={2} onClick={() => panel.close()} hoverBackground={0x99000055} pressBackground={0x44000099}>
+        <Button padding={2} onClick={function () { this.panel!.close() }} hoverBackground={0x99000055} pressBackground={0x44000099}>
           <ImageView bitmap={axeImage} />
         </Button>
       </GroupX>
