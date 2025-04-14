@@ -5,7 +5,9 @@ const $paths = api.$<string[]>([''])
 const $pathi = api.$(0)
 const $path = api.multiplex([$paths, $pathi], () => $paths.val[$pathi.val])
 
-const emptyPage = <api.Label text='[no page]' color={0x777777ff} />
+const emptyPage = <api.Center>
+  <api.Label text='[no page]' color={0x777777ff} />
+</api.Center>
 const $page = api.$([emptyPage])
 
 const browser: Browser = {
