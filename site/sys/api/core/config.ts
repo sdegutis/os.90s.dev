@@ -13,6 +13,7 @@ const baseConfig = {
   shell: baseConfigData.sys.shell as string,
   bgcolor: baseConfigData.sys.bgcolor as number,
   startup: baseConfigData.sys.startup as string[] | undefined,
+  prelude: baseConfigData.sys.prelude as string[] | undefined,
 }
 
 export const sysConfig = {
@@ -21,6 +22,15 @@ export const sysConfig = {
   $shell: $(baseConfig.shell),
   $bgcolor: $(baseConfig.bgcolor),
   startup: baseConfig.startup,
+  prelude: baseConfig.prelude,
+}
+
+const converters = {
+  number: (o: any) => (typeof o === 'number' ? o : undefined),
+  string: (o: any) => (typeof o === 'string' ? o : undefined),
+  boolean: (o: any) => (typeof o === 'boolean' ? o : undefined),
+  numbers: (o: any) => (o instanceof Array && o.every(c => typeof c === 'number') ? o : undefined),
+  strings: (o: any) => (o instanceof Array && o.every(c => typeof c === 'string') ? o : undefined),
 }
 
 await loadUsrConfig()
@@ -29,9 +39,10 @@ fs.watchTree('usr/config.jsln', loadUsrConfig)
 async function loadUsrConfig() {
   const usrConfig = await loadConfig('usr/config.jsln') as any
 
-  const w = as(usrConfig?.sys?.size?.[0], 'number') ?? 0
-  const h = as(usrConfig?.sys?.size?.[1], 'number') ?? 0
-  sysConfig.$size.val = (w > 0 && h > 0) ? { w, h } : baseConfig.size
+  const dims = as(usrConfig?.sys?.size?.[0], 'numbers')
+  const w = dims?.[0]
+  const h = dims?.[1]
+  sysConfig.$size.val = (w && h) ? { w, h } : baseConfig.size
 
   const fontpath = as(usrConfig?.sys?.font, 'string')
   if (fontpath) {
@@ -44,16 +55,18 @@ async function loadUsrConfig() {
   const shell = as(usrConfig?.sys?.shell, 'string')
   sysConfig.$shell.val = shell || baseConfig.shell
 
+  const prelude = as(usrConfig?.sys?.prelude, 'strings')
+  sysConfig.prelude = prelude || baseConfig.prelude
+
   const bgcolor = as(usrConfig?.sys?.bgcolor, 'number')
   sysConfig.$bgcolor.val = (bgcolor !== undefined)
     ? bgcolor
     : baseConfig.bgcolor
 }
 
-// clever idea by Alexander Nenashev
-type Primitive = { string: string, number: number, boolean: boolean }
-function as<T extends keyof Primitive>(o: any, as: T) {
-  return (typeof o === as) ? o as Primitive[T] : undefined
+function as<K extends keyof typeof converters>(o: any, as: K) {
+  const c = converters[as]
+  return c(o) as ReturnType<typeof converters[K]>
 }
 
 async function loadConfig(path: string) {
