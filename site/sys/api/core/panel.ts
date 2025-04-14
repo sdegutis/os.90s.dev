@@ -62,19 +62,34 @@ export class Panel {
     this.ctx.canvas.width = root.$size.val.w
     this.ctx.canvas.height = root.$size.val.h
 
-    root.$size.watch(debounce((size) => {
-      this.rpc.send('adjust', [this.point.x, this.point.y, size.w, size.h])
+    let externallyAdjusted = false
+
+    this.$size.watch(debounce((size) => {
+      if (externallyAdjusted) return
+
+      sys.adjustPanel(this.id, this.point.x, this.point.y, size.w, size.h)
       this.ctx.canvas.width = size.w
       this.ctx.canvas.height = size.h
       this.blit()
     }))
 
     this.$point.watch((point) => {
-      this.rpc.send('adjust', [point.x, point.y, this.size.w, this.size.h])
+      if (externallyAdjusted) return
+
+      sys.adjustPanel(this.id, point.x, point.y, this.size.w, this.size.h)
       this.checkUnderMouse()
     })
 
     this.rpc = new wRPC<ClientPanel, ServerPanel>(port, {
+
+      adjusted: (x, y, w, h) => {
+        externallyAdjusted = true
+        const point = { x, y }
+        const size = { w, h }
+        if (!pointEquals(this.point, point)) this.point = point
+        if (!sizeEquals(this.size, size)) this.size = size
+        externallyAdjusted = false
+      },
 
       focus: () => {
         this.isFocused = true

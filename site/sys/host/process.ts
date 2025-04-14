@@ -61,8 +61,20 @@ export class Process {
 
         this.sys.panelevents.postMessage({ type: 'new', pid: this.id, id: p.id, title })
 
-        p.didAdjust.watch(() => sys.redrawAllPanels())
         p.didRedraw.watch(() => sys.redrawAllPanels())
+      },
+
+      adjust: (panid, x, y, w, h) => {
+        const panel = Panel.all.get(panid)
+        if (!panel) return
+
+        panel.x = x
+        panel.y = y
+        panel.w = w
+        panel.h = h
+        panel.rpc.send('adjusted', [x, y, w, h])
+
+        sys.redrawAllPanels()
       },
 
       focuspanel: (id) => {

@@ -5,7 +5,7 @@ import { Font } from "./font.js"
 import { Panel } from "./panel.js"
 import { $, Ref } from "./ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "./rpc.js"
-import type { Point, Size } from "./types.js"
+import { sizeEquals, type Point, type Size } from "./types.js"
 
 class Program {
 
@@ -99,6 +99,8 @@ class Sys {
     program.opts = opts
     program.pid = id
 
+    this.$size.equals = sizeEquals
+
     this.sysevents.addEventListener('message', msg => {
       if (msg.data.type === 'resized') {
         const [w, h] = msg.data.size
@@ -180,6 +182,10 @@ class Sys {
   async readClipboardText() {
     const [text] = await this.rpc.call('readcliptext', [])
     return text
+  }
+
+  adjustPanel(panid: number, x: number, y: number, w: number, h: number) {
+    this.rpc.send('adjust', [panid, x, y, w, h])
   }
 
   hidePanel(panid: number) {

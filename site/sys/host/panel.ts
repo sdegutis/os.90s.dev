@@ -23,7 +23,6 @@ export class Panel {
   rpc
   pos
 
-  didAdjust = new Listener()
   didRedraw = new Listener()
 
   visible = true
@@ -59,14 +58,6 @@ export class Panel {
     }
 
     this.rpc = new wRPC<ServerPanel, ClientPanel>(port, {
-
-      adjust: (x, y, w, h) => {
-        this.x = x
-        this.y = y
-        this.w = w
-        this.h = h
-        this.didAdjust.dispatch()
-      },
 
       blit: (img) => {
         this.img?.close()

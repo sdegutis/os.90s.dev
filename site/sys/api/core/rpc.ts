@@ -5,6 +5,7 @@ export type PanelOrdering = 'normal' | 'bottom' | 'top'
 export interface ServerProgram {
   init(): Promise<[sysid: string, id: number, w: number, h: number, desktop: Point & Size, keymap: string[], opts: Record<string, any>]>
   newpanel(title: string, ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, x: number, y: number, port: MessagePort]>
+  adjust(panid: number, x: number, y: number, w: number, h: number): void
   focuspanel(id: number): void
   terminate(pid: number): void
   hidepanel(panid: number): void
@@ -23,7 +24,6 @@ export interface ClientProgram {
 }
 
 export interface ServerPanel {
-  adjust(x: number, y: number, w: number, h: number): void
   blit(img: ImageBitmap): void
   close(): void
   focus(): void
@@ -31,6 +31,7 @@ export interface ServerPanel {
 }
 
 export interface ClientPanel {
+  adjusted(x: number, y: number, w: number, h: number): void
   focus(): void
   blur(): void
   mouseentered(): void
