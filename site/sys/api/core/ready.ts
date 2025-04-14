@@ -1,5 +1,5 @@
 import { sysConfig } from "./config.js"
-import { runJsFile } from "./runjs.js"
+import { runJsFile } from "./open.js"
 
 const init = Promise.withResolvers<void>()
 
