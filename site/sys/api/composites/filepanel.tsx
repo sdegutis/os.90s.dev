@@ -5,16 +5,19 @@ import { fs } from "../fs/fs.js"
 import { showPrompt } from "../util/prompt.js"
 import { PanelViewComp } from "./panel.js"
 
+export interface FilePanelFileRep {
+  $path: Ref<string | undefined>,
+  getContents: () => string,
+}
+
 export function FilePanelComp({
-  filepath,
-  filedata,
+  file,
   menuItems,
   onKeyPress,
   presented,
   ...data
 }: Parameters<typeof PanelViewComp>[0] & {
-  filepath: Ref<string | undefined>,
-  filedata: () => string,
+  file: FilePanelFileRep,
 }) {
   let panel: Panel
 
@@ -25,16 +28,16 @@ export function FilePanelComp({
   }
 
   async function save() {
-    if (!filepath.val) return saveAs()
-    fs.putFile(filepath.val, filedata())
+    if (!file.$path.val) return saveAs()
+    fs.putFile(file.$path.val, file.getContents())
   }
 
   async function saveAs() {
     const path = await askFilePath()
     if (!path) return
-    filepath.val = path
-    fs.putFile(filepath.val, filedata())
-    sys.noteCurrentFile(filepath.val)
+    file.$path.val = path
+    fs.putFile(file.$path.val, file.getContents())
+    sys.noteCurrentFile(file.$path.val)
   }
 
   async function askFilePath() {
@@ -68,8 +71,8 @@ export function FilePanelComp({
       presented?.(p)
 
       const $name = p.$name
-      p.$name = multiplex([filepath, $name], () => {
-        return `${$name.val}: ${filepath.val ?? '[no file]'}`
+      p.$name = multiplex([file.$path, $name], () => {
+        return `${$name.val}: ${file.$path.val ?? '[no file]'}`
       })
 
     }}

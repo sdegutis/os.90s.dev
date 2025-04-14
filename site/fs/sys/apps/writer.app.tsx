@@ -22,8 +22,13 @@ if ($filepath.val?.endsWith('.txt')) {
   hl.highlight(model, 0)
 }
 
+const file = {
+  getContents: () => model.getText(),
+  $path: $filepath,
+}
+
 const panel = await api.sys.makePanel({ name: "writer" },
-  <filepanel filedata={() => model.getText()} filepath={$filepath} size={{ w: 100, h: 70 }}>
+  <filepanel file={file} size={{ w: 100, h: 70 }}>
     <api.Scroll
       background={0xffffff11}
       onMouseDown={function (b) { this.content.onMouseDown?.(b) }}
