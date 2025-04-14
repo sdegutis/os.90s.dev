@@ -85,8 +85,8 @@ function Main() {
         <api.GroupY gap={-2} align={'+'} children={$itemButtons} />
       </api.Scroll>
       <api.GroupX background={0x00000033}>
-        <button action={newFile} text='new file' />
-        <button action={newFolder} text='new folder' />
+        <button action={newFile}>new file</button>
+        <button action={newFolder}>new folder</button>
       </api.GroupX>
     </api.PanedYB>
 

@@ -12,8 +12,8 @@ export async function showPrompt(panel: Panel, text: string) {
 
   const prompt = <>{text}</>
   const buttons = <GroupX gap={2}>
-    <button action={no} style='cancel' text={'cancel'} />
-    <button action={ok} style='submit' text={'ok'} />
+    <button action={no} style='cancel'>cancel</button>
+    <button action={ok} style='submit'>ok</button>
   </GroupX>
 
   const length = Math.max(buttons.size.w, prompt.size.w)

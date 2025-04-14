@@ -31,8 +31,8 @@ const panel = await api.sys.makePanel({ name: "browser" },
     <api.PanedYA>
 
       <api.GroupX>
-        <button text='<' />
-        <button text='>' />
+        <button>{`<`}</button>
+        <button>{`>`}</button>
         <textfield length={150} onEnter={changePath} model={pathModel} />
       </api.GroupX>
 

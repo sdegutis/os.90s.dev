@@ -9,6 +9,6 @@ export default (browser: Browser) => {
     <>hello world 2!!</>
     <button action={() => {
       browser.load(import.meta.resolve('./readme.page.js'))
-    }} text='back to first page' />
+    }}>back to first page</button>
   </GroupY>
 }
