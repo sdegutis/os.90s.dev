@@ -21,7 +21,7 @@ function Sidebar(data: { current: string, browser: Browser }) {
 }
 
 export function DocsPage(data: { current: string, browser: Browser, children: View }) {
-  return <SplitXA pos={30}>
+  return <SplitXA pos={30} background={0x222222ff}>
     <Sidebar current={data.current} browser={data.browser} />
     {data.children}
   </SplitXA>

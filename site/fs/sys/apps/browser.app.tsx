@@ -5,7 +5,7 @@ const $paths = api.$<string[]>([])
 const $pathi = api.$(-1)
 const $path = api.multiplex([$paths, $pathi], () => $paths.val[$pathi.val])
 
-const emptyPage = <api.Center>
+const emptyPage = <api.Center background={0x111111ff}>
   <api.Label text='[no page]' color={0x777777ff} />
 </api.Center>
 const $page = api.$<api.View>(null!)
@@ -52,7 +52,7 @@ gotoPage('')
 const initial = api.program.opts["file"]
 if (initial) gotoPage(api.program.opts["file"])
 
-const navbar = <api.GroupX>
+const navbar = <api.GroupX background={0x222222ff}>
   <button action={goPrev}>{`<`}</button>
   <button action={goNext}>{`>`}</button>
   <textfield length={150} onEnter={goto} model={pathModel} />
@@ -65,7 +65,8 @@ function goNext() { $pathi.val = Math.min($pathi.val + 1, $paths.val.length - 1)
 const panel = await api.sys.makePanel({ name: "browser" },
   <panel title='browser' size={{ w: 100, h: 70 }}>
     <api.PanedYA
-      background={0xffffff11}
+      background={0x000000ff}
+      gap={1}
       children={$page.adapt(page => [navbar, page])}
     />
   </panel>

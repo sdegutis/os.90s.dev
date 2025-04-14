@@ -1,7 +1,15 @@
 import { Ref } from "../core/ref.js"
-import { Grid } from "../views/grid.js"
 import { Label } from "../views/label.js"
 import { View } from "../views/view.js"
+
+class Flow extends View {
+
+  override adjust(): void {
+    const w = this.parent?.size.w
+    console.log('in here', w)
+  }
+
+}
 
 export function ImplicitComp(data: { children: any }) {
   let children = data.children
@@ -12,7 +20,11 @@ export function ImplicitComp(data: { children: any }) {
 
     for (const child of children) {
       if (typeof child === 'string') {
-        normalized.push(<Label text={child} />)
+        for (const line of child.split('\n')) {
+          for (const word of line.split(/[\t \r]/)) {
+            normalized.push(<Label text={word} />)
+          }
+        }
       }
       else {
         normalized.push(child)
@@ -22,5 +34,5 @@ export function ImplicitComp(data: { children: any }) {
     children = normalized
   }
 
-  return <Grid flow xgap={3} ygap={1} children={children} />
+  return <Flow children={children} />
 }
