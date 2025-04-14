@@ -1,4 +1,5 @@
-import { Browser, DocsPage } from "./common.js"
+import { Browser } from "../apps/browser.app.js"
+import { DocsPage } from "./common.js"
 import { fsPathOf, Label } from "/api.js"
 
 export default (browser: Browser) => {

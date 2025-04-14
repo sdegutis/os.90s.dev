@@ -1,8 +1,5 @@
+import { type Browser } from "../apps/browser.app.js"
 import { Button, GroupY, Label, Scroll, SplitXA, View } from "/api.js"
-
-export interface Browser {
-  load(str: string): void
-}
 
 const pages = {
   Main: 'sys/docs/readme.page.js',
