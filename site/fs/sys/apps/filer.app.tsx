@@ -135,16 +135,19 @@ function FileItem({ base, name }: { base: string[], name: string }) {
 
 async function handleFile(path: string) {
   if (path.endsWith('.page.js')) {
-    await api.sys.launch('sys/apps/browser.js', path)
+    await api.sys.launch('sys/apps/browser.app.js', path)
   }
-  else if (path.endsWith('.js')) {
+  else if (path.endsWith('.app.js')) {
     await api.sys.launch(path)
   }
+  else if (path.endsWith('.js')) {
+    await import('/fs/' + path + '?decache=' + Date.now())
+  }
   else if (path.endsWith('.font')) {
-    await api.sys.launch('sys/apps/fontmaker.js', path)
+    await api.sys.launch('sys/apps/fontmaker.app.js', path)
   }
   else if (path.endsWith('.txt')) {
-    await api.sys.launch('sys/apps/readtxt.js', path)
+    await api.sys.launch('sys/apps/readtxt.app.js', path)
   }
 }
 
@@ -152,7 +155,7 @@ let copying: string | undefined
 
 async function showMenuForFile(path: string) {
   api.showMenu([
-    { text: 'edit', onClick: () => { api.sys.launch('sys/apps/writer.js', path) } },
+    { text: 'edit', onClick: () => { api.sys.launch('sys/apps/writer.app.js', path) } },
     { text: 'delete', onClick: () => { api.fs.delFile(path) } },
     { text: 'copy', onClick: () => { copying = path } },
   ])

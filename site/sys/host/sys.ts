@@ -238,7 +238,7 @@ export class Sys {
     const apps = Panel.ordered
       .values()
       .map(p => p.proc)
-      .filter(p => !p.path.endsWith('/shell.js'))
+      .filter(p => !p.path.endsWith('/shell.app.js'))
       .toArray()
 
     for (const app of apps) {
