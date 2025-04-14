@@ -50,19 +50,19 @@ export class Ref<T> {
     return () => this.interceptors.delete(fn)
   }
 
-  adapt<U>(fn: (data: T, old: T) => U): Ref<U> {
-    if (this.defers) return this.defers.adapt(fn)
+  adapt<U>(fn: (data: T, old: T) => U, equals?: Equals<U>): Ref<U> {
+    if (this.defers) return this.defers.adapt(fn, equals)
 
-    const r = $(fn(this._val, this._val))
+    const r = $(fn(this._val, this._val), equals)
     this.watch((data, old) => r.val = fn(data, old))
     return r
   }
 
-  async adaptAsync<U>(fn: (data: T, old: T) => Promise<U>): Promise<Ref<U>> {
-    if (this.defers) return this.defers.adaptAsync(fn)
+  async adaptAsync<U>(fn: (data: T, old: T) => Promise<U>, equals?: Equals<U>): Promise<Ref<U>> {
+    if (this.defers) return this.defers.adaptAsync(fn, equals)
 
     const init: U = await fn(this._val, this._val)
-    const r = $(init)
+    const r = $(init, equals)
     this.watch(async (data, old) => r.val = await fn(data, old))
     return r
   }
@@ -82,7 +82,7 @@ export class Ref<T> {
 
 }
 
-export const $ = <T>(val: T) => new Ref(val)
+export const $ = <T>(val: T, equals?: Equals<T>) => new Ref(val, equals)
 
 export function multiplex<T>(refs: Ref<any>[], fn: () => T) {
   const ref = $(fn())
