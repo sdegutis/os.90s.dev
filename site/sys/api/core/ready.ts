@@ -7,7 +7,7 @@ export const appReady = init.promise
 async function loadPreludes() {
   for (const path of sysConfig.prelude ?? []) {
     try {
-      await import(path)
+      await import('/fs/' + path)
     }
     catch (e) {
       console.error(`Prelude failed:`, path)
