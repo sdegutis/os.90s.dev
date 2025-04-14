@@ -58,14 +58,16 @@ const navbar = <api.GroupX>
   <textfield length={150} onEnter={goto} model={pathModel} />
 </api.GroupX>
 
-const $children = $page.adapt(page => [navbar, page])
 
 function goPrev() { $pathi.val = Math.max($pathi.val - 1, 0) }
 function goNext() { $pathi.val = Math.min($pathi.val + 1, $paths.val.length - 1) }
 
 const panel = await api.sys.makePanel({ name: "browser" },
   <panel title='browser' size={{ w: 100, h: 70 }}>
-    <api.PanedYA children={$children} background={0xffffff11} />
+    <api.PanedYA
+      background={0xffffff11}
+      children={$page.adapt(page => [navbar, page])}
+    />
   </panel>
 )
 
