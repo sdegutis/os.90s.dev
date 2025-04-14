@@ -1,5 +1,5 @@
 import type { Panel } from "../core/panel.js"
-import { defRef, multiplex, Ref } from "../core/ref.js"
+import { multiplex, Ref } from "../core/ref.js"
 import { program, sys } from "../core/sys.js"
 import { fs } from "../fs/fs.js"
 import { showPrompt } from "../util/prompt.js"
@@ -8,7 +8,6 @@ import { PanelViewComp } from "./panel.js"
 export function FilePanelComp({
   filepath,
   filedata,
-  title,
   menuItems,
   onKeyPress,
   presented,
@@ -62,20 +61,19 @@ export function FilePanelComp({
     return onKeyPress?.(key) ?? false
   }
 
-  const $title = defRef(title)
-
-  const filetitle = multiplex([filepath, $title], () => {
-    return `${$title.val}: ${filepath.val ?? '[no file]'}`
-  })
-
   return <panel
     {...data}
     presented={(p: Panel) => {
       panel = p
       presented?.(p)
+
+      const $name = p.$name
+      p.$name = multiplex([filepath, $name], () => {
+        return `${$name.val}: ${filepath.val ?? '[no file]'}`
+      })
+
     }}
     onKeyPress={keyHandler}
-    title={filetitle}
     menuItems={fileMenu}
   />
 }

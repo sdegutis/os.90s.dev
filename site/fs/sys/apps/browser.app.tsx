@@ -63,7 +63,7 @@ function goPrev() { $pathi.val = Math.max($pathi.val - 1, 0) }
 function goNext() { $pathi.val = Math.min($pathi.val + 1, $paths.val.length - 1) }
 
 const panel = await api.sys.makePanel({ name: "browser" },
-  <panel title='browser' size={{ w: 100, h: 70 }}>
+  <panel size={{ w: 100, h: 70 }}>
     <api.PanedYA
       background={0x000000ff}
       gap={1}

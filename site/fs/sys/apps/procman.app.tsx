@@ -32,7 +32,7 @@ procevents.onmessage = msg => {
 }
 
 const panel = await api.sys.makePanel({ name: "procman" },
-  <panel title='procman' size={{ w: 100, h: 70 }}>
+  <panel size={{ w: 100, h: 70 }}>
     <api.PanedYA>
       <api.GroupX>
         <api.Button onClick={async () => {

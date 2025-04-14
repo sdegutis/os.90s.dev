@@ -19,32 +19,33 @@ import type { View } from "../views/view.js"
 
 
 export function PanelViewComp(data: {
-  title: MaybeRef<string>,
   children: View,
   size?: MaybeRef<Size>,
   presented?: (panel: Panel) => void,
   onKeyPress?: (key: string) => boolean,
   menuItems?: () => MenuItem[],
 }) {
-  const focused = $(false)
+  const $focused = $(false)
+  const $title = $('')
   return (
     <Margin
       onKeyPress={data.onKeyPress}
-      paddingColor={focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)}
+      paddingColor={$focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)}
       padding={1}
       size={defRef(data.size ?? $({ w: 200, h: 150 }))}
       presented={async function (p) {
         data.presented?.(p)
+        $title.defer(p.$name)
       }}
-      onPanelFocus={() => focused.val = true}
-      onPanelBlur={() => focused.val = false}
+      onPanelFocus={() => $focused.val = true}
+      onPanelBlur={() => $focused.val = false}
       background={0x111111ff}
     >
       <PanedYA>
-        <panel-titlebar panelFocused={focused} title={data.title} menuItems={data.menuItems} />
-        <panel-body panelFocused={focused}>{data.children}</panel-body>
+        <panel-titlebar panelFocused={$focused} title={$title} menuItems={data.menuItems} />
+        <panel-body panelFocused={$focused}>{data.children}</panel-body>
       </PanedYA>
-      <panel-resizer panelFocused={focused} />
+      <panel-resizer panelFocused={$focused} />
     </Margin>
   )
 }

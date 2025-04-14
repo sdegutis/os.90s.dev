@@ -129,7 +129,7 @@ class Sys {
     ])
 
     root.point = { x, y }
-    const panel = new Panel(port, id, root)
+    const panel = new Panel(port, id, root, config.name)
 
     program.panels.add(panel)
     panel.didClose.watch(() => {

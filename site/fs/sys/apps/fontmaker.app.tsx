@@ -85,7 +85,7 @@ function rebuildNow() {
 
 
 const panel = await api.sys.makePanel({ name: "fontmaker" },
-  <filepanel filedata={() => fontsrc} filepath={filepath} title='font maker' size={{ w: 240, h: 140 }}>
+  <filepanel filedata={() => fontsrc} filepath={filepath} size={{ w: 240, h: 140 }}>
     <api.PanedYB>
       <api.Scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <api.Border padding={zoom}>

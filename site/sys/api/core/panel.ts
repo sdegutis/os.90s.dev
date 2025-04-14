@@ -25,6 +25,9 @@ export class Panel {
   get mouse() { return this.$mouse.val }
   set mouse(p: Point) { this.$mouse.val = p }
 
+  name
+  $name
+
   id
   rpc
   root
@@ -40,10 +43,13 @@ export class Panel {
   private clicking: View | null = null
   private focused: View | null = null
 
-  constructor(port: MessagePort, id: number, root: View) {
+  constructor(port: MessagePort, id: number, root: View, name: string) {
     Panel.all.set(id, this)
 
     this.id = id
+
+    this.name = name
+    this.$name = makeRef(this, 'name')
 
     this.$point = root.$point
     this.$size = root.$size

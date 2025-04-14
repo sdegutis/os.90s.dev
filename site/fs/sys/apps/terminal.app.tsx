@@ -29,7 +29,7 @@ function submit() {
 }
 
 const panel = await api.sys.makePanel({ name: "terminal" },
-  <panel title='terminal' size={{ w: 100, h: 70 }}>
+  <panel size={{ w: 100, h: 70 }}>
     <api.Scroll background={0xffffff11} onMouseDown={function (b) { this.content.onMouseDown?.(b) }}>
       <api.GroupY align={'a'} children={$lines.adapt(ls => [...ls, textarea])} />
     </api.Scroll>

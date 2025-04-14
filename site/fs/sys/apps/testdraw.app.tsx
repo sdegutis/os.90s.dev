@@ -28,7 +28,7 @@ class MyView extends api.View {
 }
 
 const panel = await api.sys.makePanel({ name: "testdraw" },
-  <panel title='test draw' size={{ w: 100, h: 70 }}>
+  <panel size={{ w: 100, h: 70 }}>
     <MyView />
   </panel>
 )

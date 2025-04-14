@@ -23,7 +23,7 @@ if ($filepath.val?.endsWith('.txt')) {
 }
 
 const panel = await api.sys.makePanel({ name: "writer" },
-  <filepanel filedata={() => model.getText()} filepath={$filepath} title='writer' size={{ w: 100, h: 70 }}>
+  <filepanel filedata={() => model.getText()} filepath={$filepath} size={{ w: 100, h: 70 }}>
     <api.Scroll
       background={0xffffff11}
       onMouseDown={function (b) { this.content.onMouseDown?.(b) }}
