@@ -60,10 +60,25 @@ export function PanelTitlebarComp(data: {
   title: MaybeRef<string>
   menuItems?: () => MenuItem[]
 }) {
+  let clicks = 0
+  let counter: number | undefined
+
+  function click() {
+    clicks++
+    clearTimeout(counter)
+    counter = setTimeout(() => { clicks = 0 }, 333)
+  }
+
   return <SpacedX
     canMouse
     onMouseDown={function () {
-      this.onMouseUp = dragMove(sys.$mouse, this.panel!.$point)
+      click()
+      if (clicks === 1) {
+        this.onMouseUp = dragMove(sys.$mouse, this.panel!.$point)
+      }
+      else if (clicks === 2) {
+        this.panel!.maximize()
+      }
     }}
     background={0x1199ff33}
   >
@@ -81,13 +96,13 @@ export function PanelTitlebarComp(data: {
     </Border>
     <Border>
       <GroupX>
-        <Button padding={2} onClick={function () { this.panel!.minimize() }}>
+        <Button padding={2} onClick={function () { this.panel?.minimize() }}>
           <ImageView bitmap={minImage} />
         </Button>
-        <Button padding={2} onClick={function () { this.panel!.maximize() }}>
+        <Button padding={2} onClick={function () { this.panel?.maximize() }}>
           <ImageView bitmap={maxImage} />
         </Button>
-        <Button padding={2} onClick={function () { this.panel!.close() }} hoverBackground={0x99000055} pressBackground={0x44000099}>
+        <Button padding={2} onClick={function () { this.panel?.close() }} hoverBackground={0x99000055} pressBackground={0x44000099}>
           <ImageView bitmap={axeImage} />
         </Button>
       </GroupX>
