@@ -33,7 +33,7 @@ function WelcomeView({ state }: { state: api.UserStateKnown }) {
       </api.GroupX>
 
       <api.Center>
-        <>Welcome, {state.username}!</>
+        <api.Label text={`Welcome, ${state.username}!`} />
       </api.Center>
 
     </api.PanedYA>

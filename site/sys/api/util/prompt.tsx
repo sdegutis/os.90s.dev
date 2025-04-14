@@ -3,6 +3,7 @@ import { TextModel } from "../text/model.js"
 import { Border } from "../views/border.js"
 import { Center } from "../views/center.js"
 import { GroupX, GroupY } from "../views/group.js"
+import { Label } from "../views/label.js"
 import { dragMove } from "./drag.js"
 
 export async function showPrompt(panel: Panel, text: string) {
@@ -10,7 +11,7 @@ export async function showPrompt(panel: Panel, text: string) {
 
   const model = new TextModel()
 
-  const prompt = <>{text}</>
+  const prompt = <Label text={text} />
   const buttons = <GroupX gap={2}>
     <button action={no} style='cancel'>cancel</button>
     <button action={ok} style='submit'>ok</button>
