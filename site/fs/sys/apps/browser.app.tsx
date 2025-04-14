@@ -1,21 +1,19 @@
 import * as api from "/api.js"
 await api.appReady
 
-const $paths = api.$<string[]>([''])
-const $pathi = api.$(0)
+const $paths = api.$<string[]>([])
+const $pathi = api.$(-1)
 const $path = api.multiplex([$paths, $pathi], () => $paths.val[$pathi.val])
 
 const emptyPage = <api.Center>
   <api.Label text='[no page]' color={0x777777ff} />
 </api.Center>
-const $page = api.$([emptyPage])
+const $page = api.$<api.View>(null!)
 
 function gotoPage(path: string) {
   const i = $pathi.val + 1
   $paths.val = [...$paths.val.slice(0, i), path]
   $pathi.val = $paths.val.length - 1
-
-  api.sys.noteCurrentFile(path)
 }
 
 const browser: Browser = {
@@ -26,58 +24,48 @@ const browser: Browser = {
   },
 }
 
-$path.watch(async path => {
+$path.watch(path => {
+  api.sys.noteCurrentFile(path)
   if (!path) {
-    $page.val = [emptyPage]
+    $page.val = emptyPage
     return
   }
-  try {
-    const mod = await api.runJsFile(path)
-    $page.val = [mod.default(browser)]
-  }
-  catch (e) {
+  api.runJsFile(path).then(mod => {
+    $page.val = mod.default(browser)
+  }).catch(e => {
     console.error(e)
-    $page.val = [<api.Center>
+    $page.val = <api.Center>
       <api.GroupY gap={2}>
         <api.Label color={0x990000ff} text='Error loading page' />
         <api.Label text={String(e)} />
       </api.GroupY>
-    </api.Center>]
-  }
+    </api.Center>
+  })
 })
 
 const pathModel = new api.TextModel($paths.val[0]!)
 const goto = () => gotoPage(pathModel.getText())
 $path.watch(path => pathModel.setText(path))
 
+gotoPage('')
+
 const initial = api.program.opts["file"]
-if (initial) {
-  $paths.val = [...$paths.val, initial]
-  $pathi.val = $paths.val.length - 1
-}
+if (initial) gotoPage(api.program.opts["file"])
+
+const navbar = <api.GroupX>
+  <button action={goPrev}>{`<`}</button>
+  <button action={goNext}>{`>`}</button>
+  <textfield length={150} onEnter={goto} model={pathModel} />
+</api.GroupX>
+
+const $children = $page.adapt(page => [navbar, page])
 
 function goPrev() { $pathi.val = Math.max($pathi.val - 1, 0) }
 function goNext() { $pathi.val = Math.min($pathi.val + 1, $paths.val.length - 1) }
 
 const panel = await api.sys.makePanel({ name: "browser" },
   <panel title='browser' size={{ w: 100, h: 70 }}>
-    <api.PanedYA>
-
-      <api.GroupX>
-        <button action={goPrev}>{`<`}</button>
-        <button action={goNext}>{`>`}</button>
-        <textfield length={150} onEnter={goto} model={pathModel} />
-      </api.GroupX>
-
-      <api.Scroll
-        background={0xffffff11}
-        onMouseDown={function (b) { this.content.onMouseDown?.(b) }}
-        onMouseMove={function (p) { this.content.onMouseMove?.(p) }}
-        onMouseUp={function () { this.content.onMouseUp?.() }}
-        children={$page}
-      />
-
-    </api.PanedYA>
+    <api.PanedYA children={$children} background={0xffffff11} />
   </panel>
 )
 
