@@ -1,4 +1,5 @@
 import * as api from "/api.js"
+await api.appReady
 
 const procevents = new BroadcastChannel('procevents')
 

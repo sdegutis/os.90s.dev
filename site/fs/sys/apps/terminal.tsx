@@ -1,6 +1,7 @@
 import * as api from "/api.js"
+await api.appReady
 
-(self as any).api = api
+{ (self as any).api = api }
 
 const $lines = api.$<api.View[]>([])
 const textarea = <api.TextBox autofocus onEnter={submit} /> as api.TextBox

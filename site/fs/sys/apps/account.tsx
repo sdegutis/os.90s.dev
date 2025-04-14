@@ -1,4 +1,5 @@
 import * as api from '/api.js'
+await api.appReady
 
 const panel = await api.sys.makePanel({ name: 'account' },
   <panel title='account' size={{ w: 150, h: 120 }}>

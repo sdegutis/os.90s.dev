@@ -1,17 +1,5 @@
 import * as api from "/api.js"
-
-api.composites['panel-body'] = function PanelBodyComp(data: {
-  children: any
-  panelFocused: api.Ref<boolean>
-}) {
-  return <api.Margin padding={3} paddingColor={
-    data.panelFocused.adapt<number>(b => b ? 0x000000ff : 0x222222ff)
-  }>
-    <api.Margin background={0x222222ff}>
-      {data.children}
-    </api.Margin>
-  </api.Margin>
-}
+await api.appReady
 
 let content = ''
 const $filepath = api.$<string | undefined>(api.program.opts["file"])
