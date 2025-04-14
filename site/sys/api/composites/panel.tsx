@@ -40,10 +40,10 @@ export function PanelViewComp(data: {
       background={0x111111ff}
     >
       <PanedYA>
-        <panel-titlebar title={data.title} menuItems={data.menuItems} />
-        <panel-body>{data.children}</panel-body>
+        <panel-titlebar panelFocused={focused} title={data.title} menuItems={data.menuItems} />
+        <panel-body panelFocused={focused}>{data.children}</panel-body>
       </PanedYA>
-      <panel-resizer />
+      <panel-resizer panelFocused={focused} />
     </Margin>
   )
 }
