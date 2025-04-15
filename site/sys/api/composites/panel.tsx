@@ -70,14 +70,9 @@ export function PanelTitlebarComp(data: {
     counter = setTimeout(() => { clicks = 0 }, 333)
   }
 
-  const panelItems: MenuItem[] = [
-    {
-      text: 'view source',
-      onClick: () => {
-        sys.launch('sys/apps/writer.app.js', currentAppPath)
-      }
-    }
-  ]
+  const showSource = () => {
+    sys.launch('sys/apps/writer.app.js', currentAppPath)
+  }
 
   return <SpacedX
     canMouse
@@ -95,6 +90,10 @@ export function PanelTitlebarComp(data: {
     <Border>
       <GroupX gap={1}>
         <Button onClick={function () {
+          const panelItems: MenuItem[] = [
+            { text: 'view source', onClick: showSource },
+          ]
+
           const items = data.menuItems?.()
           if (items) panelItems.push('-', ...items)
 
