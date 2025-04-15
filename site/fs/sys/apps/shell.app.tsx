@@ -4,8 +4,6 @@ await api.appReady
 const desktopSize = api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }), api.sizeEquals)
 api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
 
-await api.program.becomeShell()
-
 type Panel = {
   title: string
   id: number
@@ -17,6 +15,56 @@ type Panel = {
 }
 
 const $panels = api.$<Panel[]>([])
+
+const panelevents = new BroadcastChannel('panelevents')
+panelevents.onmessage = (msg => {
+  const data = msg.data as api.PanelEvent
+  const { type } = data
+
+  if (type === 'new') {
+    const { pid, id, title, point, size } = data
+
+    if (pid === api.program.pid) return
+    if (title === 'menu') return
+
+    $panels.val = [
+      ...$panels.val,
+      { pid, id, title, point, size, focused: false, visible: true },
+    ]
+
+    positionPanel(id)
+  }
+  else if (type === 'adjusted') {
+    const { id, point, size } = data
+    $panels.val = $panels.val.map(p => p.id === id ? { ...p, point, size } : p)
+    savePanel(id)
+  }
+  else if (type === 'toggled') {
+    const { id, visible } = data
+    $panels.val = $panels.val.map(p => p.id === id ? { ...p, visible } : p)
+    savePanel(id)
+  }
+  else if (type === 'closed') {
+    const { id } = data
+    const idx = $panels.val.findIndex(p => p.id === id)
+    if (idx === -1) return
+    $panels.val = $panels.val.toSpliced(idx, 1)
+  }
+  else if (type === 'focused') {
+    const { id } = data
+    const idx = $panels.val.findIndex(p => p.id === id)
+    if (idx === -1) return
+    const panel = $panels.val[idx]
+    $panels.val = $panels.val.map(p => ({ ...p, focused: panel === p }))
+  }
+})
+
+const initial = await api.sys.getPanels()
+$panels.val = initial.filter(p => (p.pid !== api.program.pid))
+$panels.val.forEach(p => positionPanel(p.id))
+
+await api.program.becomeShell()
+
 
 const $focused = $panels.adapt(panels => {
   const focused = panels.find(p => p.focused)
@@ -153,57 +201,6 @@ const taskbar = await api.sys.makePanel({
 
 taskbar.$point.defer(api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 }), api.pointEquals))
 
-
-const panelevents = new BroadcastChannel('panelevents')
-panelevents.onmessage = (msg => {
-  const data = msg.data as api.PanelEvent
-
-  const { type, id } = data
-  if (id === desktop.id || id === taskbar.id) return
-
-  if (type === 'new') {
-    const { pid, id, title, point, size } = data
-
-    if (title === 'menu') return
-
-    $panels.val = [
-      ...$panels.val,
-      { pid, id, title, point, size, focused: false, visible: true },
-    ]
-
-    positionPanel(id)
-  }
-  else if (type === 'adjusted') {
-    const { id, point, size } = data
-    $panels.val = $panels.val.map(p => p.id === id ? { ...p, point, size } : p)
-    savePanel(id)
-  }
-  else if (type === 'toggled') {
-    const { id, visible } = data
-    $panels.val = $panels.val.map(p => p.id === id ? { ...p, visible } : p)
-    savePanel(id)
-  }
-  else if (type === 'closed') {
-    const { id } = data
-    const idx = $panels.val.findIndex(p => p.id === id)
-    if (idx === -1) return
-    $panels.val = $panels.val.toSpliced(idx, 1)
-  }
-  else if (type === 'focused') {
-    const { id } = data
-    const idx = $panels.val.findIndex(p => p.id === id)
-    if (idx === -1) return
-    const panel = $panels.val[idx]
-    $panels.val = $panels.val.map(p => ({ ...p, focused: panel === p }))
-  }
-})
-
-
-const initial = await api.sys.getPanels()
-$panels.val = initial.filter(p => (p.id !== desktop.id && p.id !== taskbar.id))
-
-
-$panels.val.forEach(p => positionPanel(p.id))
 
 
 
