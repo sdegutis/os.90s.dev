@@ -11,61 +11,78 @@ const $panels = api.$<{
   id: number,
   pid: number,
   focused: boolean,
+  point: api.Point,
+  size: api.Size,
 }[]>([])
 
-const focused: number[] = []
+const $focused = $panels.adapt(panels => {
+  const focused = panels.find(p => p.focused)
+  if (!focused) return panels
 
-function pushFocused(id: number) {
-  if (id === taskbar.id || id === desktop.id) return
+  return panels
+    .toSpliced(panels.indexOf(focused), 1)
+    .toSpliced(panels.length - 1, 0, focused)
+})
 
-  const idx = focused.indexOf(id)
-  if (idx !== -1) focused.splice(idx, 1)
-  focused.push(id)
-}
+const panelnames = await api.kvs<api.Size>('panels')
 
-function removeFocused(id: number) {
-  const idx = focused.indexOf(id)
-  if (idx !== -1) focused.splice(idx, 1)
-}
+async function positionPanel(id: number) {
+  const panel = $panels.val.find(p => p.id === id)
+  if (!panel) return
 
-function nextToFocus(id: number) {
-  const idx = focused.indexOf(id)
-  const rest = focused.toSpliced(idx, 1)
-  return rest.at(-1)
+  const { title, point } = panel
+
+  let cascadedPoint: api.Point | undefined
+  if (point.x === 0 && point.y === 0) {
+    const from = $focused.val.find(p => p.focused)
+    if (from) cascadedPoint = { x: from.point.x + 10, y: from.point.y + 10 }
+  }
+
+  const savedSize = await panelnames.get(title)
+
+  if (cascadedPoint || savedSize) {
+    const nextPoint = cascadedPoint ?? point
+    const nextSize = savedSize ?? panel.size
+    api.sys.adjustPanel(id, nextPoint.x, nextPoint.y, nextSize.w, nextSize.h)
+    $panels.val = $panels.val.map(p => p.id === id ? { ...p, point: nextPoint, size: nextSize } : p)
+  }
 }
 
 const panelevents = new BroadcastChannel('panelevents')
-panelevents.onmessage = msg => {
-  const { type, pid } = msg.data
-  if (pid === api.program.pid) return
+panelevents.onmessage = (msg => {
+  const { type, id } = msg.data as api.PanelEvent
+  if (id === desktop.id || id === taskbar.id) return
 
   if (type === 'new') {
-    const { id, title } = msg.data
+    const { pid, id, title, point, size } = msg.data
+    console.log('new', id, point, size)
+
     $panels.val = [
-      ...$panels.val.map(p => ({ ...p, focused: false })),
-      { pid, id, title, focused: true },
+      ...$panels.val,
+      { pid, id, title, point, size, focused: false },
     ]
+
+    positionPanel(id)
   }
   else if (type === 'adjusted') {
     const { id, point, size } = msg.data
-    // console.log(id, point, size)
+    console.log('adjusting', id, point, size)
+    $panels.val = $panels.val.map(p => p.id === id ? { ...p, point, size } : p)
   }
   else if (type === 'closed') {
     const { id } = msg.data
-    removeFocused(id)
     const idx = $panels.val.findIndex(p => p.id === id)
     if (idx === -1) return
     $panels.val = $panels.val.toSpliced(idx, 1)
   }
   else if (type === 'focused') {
     const { id } = msg.data
-    pushFocused(id)
     const idx = $panels.val.findIndex(p => p.id === id)
     if (idx === -1) return
     const panel = $panels.val[idx]
     $panels.val = $panels.val.map(p => ({ ...p, focused: panel === p }))
   }
-}
+})
 
 
 const $panelButtons = $panels.adapt(panels =>
@@ -75,8 +92,8 @@ const $panelButtons = $panels.adapt(panels =>
     onClick={() => {
       if (p.focused) {
         api.sys.hidePanel(p.id)
-        const toFocus = nextToFocus(p.id)
-        if (toFocus) api.sys.focusPanel(toFocus)
+        // const toFocus = nextToFocus(p.id)
+        // if (toFocus) api.sys.focusPanel(toFocus)
       }
       else {
         api.sys.focusPanel(p.id)
@@ -90,7 +107,6 @@ const $panelButtons = $panels.adapt(panels =>
 
 const desktop = await api.sys.makePanel({
   name: 'desktop',
-  saveSize: false,
   order: 'bottom',
 }, (
   <api.Margin
@@ -116,7 +132,6 @@ async function showRun(this: api.Button) {
 
 const taskbar = await api.sys.makePanel({
   name: 'taskbar',
-  saveSize: false,
   order: 'top',
 }, (
   <api.SpacedX
