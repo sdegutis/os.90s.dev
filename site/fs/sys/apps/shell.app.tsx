@@ -73,29 +73,33 @@ async function positionPanel(id: number) {
 }
 
 
-const $panelButtons = $panels.adapt(panels =>
-  panels.map(p => <api.Button
-    background={p.focused ? 0x99000099 : 0x000000ff}
-    padding={2}
-    onClick={() => {
-      if (p.focused) {
-        api.sys.hidePanel(p.id)
+const $buttons = $panels.adapt(panels =>
+  panels.map(p => {
+    console.log(p.focused)
+    return <api.Button
+      background={p.focused ? 0x99000099 : 0x000000ff}
+      padding={2}
+      onClick={() => {
+        if (p.focused) {
+          api.sys.hidePanel(p.id)
 
-        $panels.val = $panels.val.map(panel => panel.id === p.id ? {
-          ...panel,
-          visible: false
-        } : panel)
+          $panels.val = $panels.val.map(panel => panel.id === p.id ? {
+            ...panel,
+            visible: false,
+            focused: false,
+          } : panel)
 
-        const toFocus = $panels.val.findLast(panel => panel !== p && panel.visible)
-        if (toFocus) api.sys.focusPanel(toFocus.id)
-      }
-      else {
-        api.sys.focusPanel(p.id)
-      }
-    }}
-  >
-    <api.Label text={p.title} />
-  </api.Button>
+          const toFocus = $panels.val.findLast(panel => panel !== p && panel.visible)
+          if (toFocus) api.sys.focusPanel(toFocus.id)
+        }
+        else {
+          api.sys.focusPanel(p.id)
+        }
+      }}
+    >
+      <api.Label text={p.title} />
+    </api.Button>
+  }
   )
 )
 
@@ -136,7 +140,7 @@ const taskbar = await api.sys.makePanel({
       <api.Button padding={2} onClick={showRun}>
         <api.Label text="run" />
       </api.Button>
-      <api.GroupX gap={2} children={$panelButtons} />
+      <api.GroupX gap={2} children={$buttons} />
     </api.GroupX>
     <Clock />
   </api.SpacedX>
@@ -148,6 +152,8 @@ taskbar.$point.defer(api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 }), api.point
 const panelevents = new BroadcastChannel('panelevents')
 panelevents.onmessage = (msg => {
   const data = msg.data as api.PanelEvent
+
+  console.log(data)
 
   const { type, id } = data
   if (id === desktop.id || id === taskbar.id) return
