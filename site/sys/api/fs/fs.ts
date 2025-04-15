@@ -15,9 +15,9 @@ class FS {
     this.#drives.set('usr', new UsrDrive())
     this.#drives.set('net', new NetDrive())
 
-    const syncfs = new BroadcastChannel('syncfs')
-    this.#syncfs = (path, op) => syncfs.postMessage([path, op])
-    syncfs.onmessage = (e) => this.#notify(...e.data as [string, string], false)
+    const fsevents = new BroadcastChannel('fsevents')
+    this.#syncfs = (path, op) => fsevents.postMessage([path, op])
+    fsevents.onmessage = (e) => this.#notify(...e.data as [string, string], false)
   }
 
   drives() {
