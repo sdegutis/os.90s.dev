@@ -1,8 +1,9 @@
 import * as api from "/api.js"
 await api.appReady
 
-api.preferences['panel-body-gap'] = 3
-api.preferences['panel-body-gap-color-focused'] = 0x990000ff
+api.preferences['panel-body-gap'] = 2
+// api.preferences['panel-body-gap-color'] = 0x333333ff
+// api.preferences['panel-body-gap-color-focused'] = 0x990000ff
 
 let content = ''
 const $filepath = api.$<string | undefined>(api.program.opts["file"])
