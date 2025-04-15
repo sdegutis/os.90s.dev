@@ -242,6 +242,7 @@ export class Sys {
     const params = new URLSearchParams()
     const apps = Panel.ordered
       .values()
+      .filter(p => p.visible)
       .map(p => p.proc)
       .filter(p => !p.path.endsWith('/shell.app.js'))
       .toArray()
