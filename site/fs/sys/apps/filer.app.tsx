@@ -95,7 +95,16 @@ function Main() {
 
 function Sidebar() {
   return <api.View background={0x00000077}>
-    <api.GroupY align={'+'} children={$driveButtons} />
+    <api.GroupY align={'a'}>
+      <api.GroupY align={'+'} children={$driveButtons} />
+      {/* <button action={async function (this: api.View) {
+        const name = await api.showPrompt(this.panel!, 'drive name?')
+        if (!name) return
+        const folder = await api.sys.askdir()
+        console.log(folder)
+        console.log('mount', name)
+      }}>mount</button> */}
+    </api.GroupY>
   </api.View>
 }
 
