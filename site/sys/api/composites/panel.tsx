@@ -1,5 +1,6 @@
 import { Bitmap } from "../core/bitmap.js"
 import { Cursor } from "../core/cursor.js"
+import { currentAppPath } from "../core/open.js"
 import type { Panel } from "../core/panel.js"
 import { preferences } from "../core/preferences.js"
 import { $, defRef, MaybeRef, Ref } from "../core/ref.js"
@@ -69,6 +70,15 @@ export function PanelTitlebarComp(data: {
     counter = setTimeout(() => { clicks = 0 }, 333)
   }
 
+  const panelItems: MenuItem[] = [
+    {
+      text: 'view source',
+      onClick: () => {
+        sys.launch('sys/apps/writer.app.js', currentAppPath)
+      }
+    }
+  ]
+
   return <SpacedX
     canMouse
     onMouseDown={function () {
@@ -86,7 +96,9 @@ export function PanelTitlebarComp(data: {
       <GroupX gap={1}>
         <Button onClick={function () {
           const items = data.menuItems?.()
-          if (items?.length) showMenu(items, {
+          if (items) panelItems.push('-', ...items)
+
+          showMenu(panelItems, {
             x: this.screenPoint.x,
             y: this.screenPoint.y + this.size.h,
           })
