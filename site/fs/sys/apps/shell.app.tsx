@@ -6,14 +6,16 @@ api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
 
 await api.program.becomeShell()
 
-const $panels = api.$<{
-  title: string,
-  id: number,
-  pid: number,
-  focused: boolean,
-  point: api.Point,
-  size: api.Size,
-}[]>([])
+type Panel = {
+  title: string
+  id: number
+  pid: number
+  focused: boolean
+  point: api.Point
+  size: api.Size
+}
+
+const $panels = api.$<Panel[]>([])
 
 const $focused = $panels.adapt(panels => {
   const focused = panels.find(p => p.focused)
@@ -30,31 +32,31 @@ function savePanel(id: number) {
   const panel = $panels.val.find(p => p.id === id)
   if (!panel) return
 
-  // const highest = $panels.val.toSorted()
+  const key = keyForPanel(panel)
+  const pos = { ...panel.point, ...panel.size }
+  panelSizes.set(key, pos)
+}
 
-  panelSizes.set(panel.title, { ...panel.point, ...panel.size })
+function keyForPanel(panel: Panel) {
+  const sameNames = $panels.val.filter(p => p.title === panel.title)
+  const idx = sameNames.findIndex(p => p.id === panel.id)
+  return `${panel.title}[${idx}]`
 }
 
 async function positionPanel(id: number) {
   const panel = $panels.val.find(p => p.id === id)
   if (!panel) return
 
-  const { title, point } = panel
-
   let cascadedPoint: api.Point | undefined
-  if (point.x === 0 && point.y === 0) {
+  if (panel.point.x === 0 && panel.point.y === 0) {
     const from = $focused.val.findLast(p => p.id !== panel.id)
     if (from) cascadedPoint = { x: from.point.x + 10, y: from.point.y + 10 }
   }
 
-  const saved = await panelSizes.get(title)
+  const saved = await panelSizes.get(keyForPanel(panel))
 
   if (cascadedPoint || saved) {
-    const useSavedPoint = $panels.val.filter(p => p.title === title).length === 1
-    const nextPoint =
-      (useSavedPoint && saved) ? saved :
-        (cascadedPoint ?? point)
-
+    const nextPoint = saved ? saved : (cascadedPoint ?? panel.point)
     const nextSize = saved ?? panel.size
 
     api.sys.adjustPanel(id, nextPoint.x, nextPoint.y, nextSize.w, nextSize.h)
@@ -65,6 +67,8 @@ async function positionPanel(id: number) {
       size: { w: nextSize.w, h: nextSize.h },
     } : p)
   }
+
+  savePanel(id)
 }
 
 
@@ -134,13 +138,6 @@ const taskbar = await api.sys.makePanel({
 taskbar.$point.defer(api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 }), api.pointEquals))
 
 
-const initial = await api.sys.getPanels()
-$panels.val = initial
-  .filter(p => (p.id !== desktop.id && p.id !== taskbar.id))
-  .map(({ pid, id, title, point, size }) =>
-    ({ pid, id, title, point, size, focused: false }))
-
-
 const panelevents = new BroadcastChannel('panelevents')
 panelevents.onmessage = (msg => {
   const { type, id } = msg.data as api.PanelEvent
@@ -148,7 +145,6 @@ panelevents.onmessage = (msg => {
 
   if (type === 'new') {
     const { pid, id, title, point, size } = msg.data
-    // console.log('new', id, point, size)
 
     $panels.val = [
       ...$panels.val,
@@ -159,7 +155,6 @@ panelevents.onmessage = (msg => {
   }
   else if (type === 'adjusted') {
     const { id, point, size } = msg.data
-    // console.log('adjusting', id, point, size)
     $panels.val = $panels.val.map(p => p.id === id ? { ...p, point, size } : p)
     savePanel(id)
   }
@@ -177,6 +172,18 @@ panelevents.onmessage = (msg => {
     $panels.val = $panels.val.map(p => ({ ...p, focused: panel === p }))
   }
 })
+
+
+const initial = await api.sys.getPanels()
+$panels.val = initial
+  .filter(p => (p.id !== desktop.id && p.id !== taskbar.id))
+  .map(({ pid, id, title, point, size }) =>
+    ({ pid, id, title, point, size, focused: false }))
+
+$panels.val.forEach(p => positionPanel(p.id))
+
+
+
 
 function Clock() {
   let date = false
