@@ -129,8 +129,14 @@ export class Process {
       },
 
       askdir: async (reply, opts) => {
-        const folder = await self.showDirectoryPicker(opts)
-        reply([folder], [])
+        try {
+          const folder = await self.showDirectoryPicker(opts)
+          reply([folder])
+        }
+        catch (e) {
+          console.error(e)
+          reply([null])
+        }
       },
 
       thisfile: (file) => {
