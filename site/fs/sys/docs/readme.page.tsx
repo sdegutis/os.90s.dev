@@ -1,6 +1,6 @@
 import { Browser } from "../apps/browser.app.js"
 import { DocsPage } from "./common.js"
-import { fsPathOf, View } from "/api.js"
+import { fsPathOf, GroupX, GroupY, Label, Scroll, View } from "/api.js"
 
 export default (browser: Browser) => {
   return <DocsPage browser={browser} current={fsPathOf(import.meta.url)}>
@@ -43,11 +43,6 @@ export default (browser: Browser) => {
 
 class Flow extends View {
 
-  override adjust(): void {
-    const w = this.parent?.size.w
-    console.log('in here', w)
-  }
-
 }
 
 interface Template {
@@ -68,19 +63,32 @@ function lang(array: TemplateStringsArray, ...args: any[]) {
     compiled.set(array, fn = compile(whole.join('')))
   }
   const children = fn.eval(args)
-  return <View children={children} />
+  return <Scroll>
+    <GroupY align={'a'} children={children} />
+  </Scroll>
 }
 
 function compile(src: string): Template {
   let match
   if (match = src.match(/^(\n+)( +)/)) {
-    console.log(match)
     const r = new RegExp(`\n {1,${match[2].length}}`, 'g')
     src = src.replace(r, '\n')
   }
   src = src.trim()
 
-  console.log(src.split('\n'))
+  const lines = src.split('\n')
 
-  return { eval() { return [] } }
+  return {
+    eval() {
+      return lines.map(line =>
+        <GroupX gap={3} children={(line.split(/ +/)).map(word =>
+          <Label text={word} color={
+            line.startsWith('#') ? 0x999900ff :
+              word.startsWith('*') ? 0x009900ff :
+                word.startsWith('/') ? 0x009999ff :
+                  0xccccccff
+          } />
+        )} />)
+    }
+  }
 }
