@@ -103,7 +103,7 @@ export class Scroll extends View {
     this.$scrolly.watch(() => this.constrainContent())
   }
 
-  scrollBy: number = 6
+  scrollBy: number = 6 * 3
 
   scrollx = 0; $scrollx = makeRef(this, 'scrollx')
   scrolly = 0; $scrolly = makeRef(this, 'scrolly')
