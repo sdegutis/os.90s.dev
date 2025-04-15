@@ -10,7 +10,7 @@ export class View {
   #initwarntimer
 
   constructor(config?: JsxAttrs<View>) {
-    this.#initwarntimer = setTimeout(() => console.warn(`View subclass didn't call init`))
+    this.#initwarntimer = setTimeout(() => console.warn(`View subclass didn't call super.init() and now bad things will happen`))
     this.setup(config)
   }
 
