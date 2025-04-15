@@ -75,7 +75,6 @@ async function positionPanel(id: number) {
 
 const $buttons = $panels.adapt(panels =>
   panels.map(p => {
-    console.log(p.focused)
     return <api.Button
       background={p.focused ? 0x99000099 : 0x000000ff}
       padding={2}
@@ -90,7 +89,6 @@ const $buttons = $panels.adapt(panels =>
           } : panel)
 
           const toFocus = $panels.val.findLast(panel => panel !== p && panel.visible)
-          console.log(toFocus)
           if (toFocus) api.sys.focusPanel(toFocus.id)
         }
         else {
@@ -159,8 +157,6 @@ taskbar.$point.defer(api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 }), api.point
 const panelevents = new BroadcastChannel('panelevents')
 panelevents.onmessage = (msg => {
   const data = msg.data as api.PanelEvent
-
-  console.log(data)
 
   const { type, id } = data
   if (id === desktop.id || id === taskbar.id) return
