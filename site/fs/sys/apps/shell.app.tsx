@@ -90,10 +90,17 @@ const $buttons = $panels.adapt(panels =>
           } : panel)
 
           const toFocus = $panels.val.findLast(panel => panel !== p && panel.visible)
+          console.log(toFocus)
           if (toFocus) api.sys.focusPanel(toFocus.id)
         }
         else {
           api.sys.focusPanel(p.id)
+
+          $panels.val = $panels.val.map(panel => panel.id === p.id ? {
+            ...panel,
+            visible: true,
+            focused: true,
+          } : panel)
         }
       }}
     >
