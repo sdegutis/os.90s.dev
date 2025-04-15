@@ -146,6 +146,8 @@ panelevents.onmessage = (msg => {
   if (type === 'new') {
     const { pid, id, title, point, size } = msg.data
 
+    if (title === 'menu') return
+
     $panels.val = [
       ...$panels.val,
       { pid, id, title, point, size, focused: false },
