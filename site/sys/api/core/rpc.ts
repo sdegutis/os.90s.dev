@@ -14,6 +14,7 @@ export interface ServerProgram {
   setdesktop(x: number, y: number, w: number, h: number): void
   thisfile(path: string): void
   getprocs(): Promise<[procs: { pid: number, path: string }[]]>
+  getpanels(): Promise<[panels: PanelEvent[]]>
   launch(path: string, opts: Record<string, any>): Promise<[number]>
   askdir(opts: DirectoryPickerOptions | undefined): Promise<[dir: FileSystemDirectoryHandle | null]>
   readcliptext(): Promise<[text: string]>

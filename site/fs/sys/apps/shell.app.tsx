@@ -122,6 +122,14 @@ const taskbar = await api.sys.makePanel({
 
 taskbar.$point.defer(api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 }), api.pointEquals))
 
+
+const initial = await api.sys.getPanels()
+$panels.val = initial
+  .filter(p => (p.id !== desktop.id && p.id !== taskbar.id))
+  .map(({ pid, id, title, point, size }) =>
+    ({ pid, id, title, point, size, focused: false }))
+
+
 const panelevents = new BroadcastChannel('panelevents')
 panelevents.onmessage = (msg => {
   const { type, id } = msg.data as api.PanelEvent

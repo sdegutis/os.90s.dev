@@ -18,6 +18,7 @@ export class Panel {
 
   img?: ImageBitmap
 
+  title
   proc
   port
   rpc
@@ -28,12 +29,14 @@ export class Panel {
   visible = true
 
   constructor(
+    title: string,
     x: number, y: number,
     w: number, h: number,
     proc: Process,
     port: MessagePort,
     pos: PanelOrdering,
   ) {
+    this.title = title
     this.proc = proc
     this.port = port
     this.pos = pos

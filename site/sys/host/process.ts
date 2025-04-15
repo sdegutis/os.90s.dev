@@ -54,7 +54,7 @@ export class Process {
 
       newpanel: (reply, title, ord, x, y, w, h) => {
         const chan = new MessageChannel()
-        const p = new Panel(x, y, w, h, this, chan.port1, ord)
+        const p = new Panel(title, x, y, w, h, this, chan.port1, ord)
         reply([p.id, chan.port2], [chan.port2])
 
         this.panels.add(p)
@@ -89,6 +89,17 @@ export class Process {
         } as PanelEvent)
 
         sys.redrawAllPanels()
+      },
+
+      getpanels: (reply) => {
+        reply([Panel.ordered.map(p => ({
+          type: 'new',
+          pid: this.id,
+          id: p.id,
+          title: p.title,
+          point: { x: p.x, y: p.y },
+          size: { w: p.w, h: p.h },
+        } as PanelEvent))])
       },
 
       focuspanel: (id) => {
