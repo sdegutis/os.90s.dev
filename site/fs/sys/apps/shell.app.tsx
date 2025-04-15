@@ -56,43 +56,6 @@ async function positionPanel(id: number) {
   }
 }
 
-const panelevents = new BroadcastChannel('panelevents')
-panelevents.onmessage = (msg => {
-  const { type, id } = msg.data as api.PanelEvent
-  if (id === desktop.id || id === taskbar.id) return
-
-  if (type === 'new') {
-    const { pid, id, title, point, size } = msg.data
-    // console.log('new', id, point, size)
-
-    $panels.val = [
-      ...$panels.val,
-      { pid, id, title, point, size, focused: false },
-    ]
-
-    positionPanel(id)
-  }
-  else if (type === 'adjusted') {
-    const { id, point, size } = msg.data
-    // console.log('adjusting', id, point, size)
-    $panels.val = $panels.val.map(p => p.id === id ? { ...p, point, size } : p)
-    savePanel(id)
-  }
-  else if (type === 'closed') {
-    const { id } = msg.data
-    const idx = $panels.val.findIndex(p => p.id === id)
-    if (idx === -1) return
-    $panels.val = $panels.val.toSpliced(idx, 1)
-  }
-  else if (type === 'focused') {
-    const { id } = msg.data
-    const idx = $panels.val.findIndex(p => p.id === id)
-    if (idx === -1) return
-    const panel = $panels.val[idx]
-    $panels.val = $panels.val.map(p => ({ ...p, focused: panel === p }))
-  }
-})
-
 
 const $panelButtons = $panels.adapt(panels =>
   panels.map(p => <api.Button
@@ -158,6 +121,43 @@ const taskbar = await api.sys.makePanel({
 ))
 
 taskbar.$point.defer(api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 }), api.pointEquals))
+
+const panelevents = new BroadcastChannel('panelevents')
+panelevents.onmessage = (msg => {
+  const { type, id } = msg.data as api.PanelEvent
+  if (id === desktop.id || id === taskbar.id) return
+
+  if (type === 'new') {
+    const { pid, id, title, point, size } = msg.data
+    // console.log('new', id, point, size)
+
+    $panels.val = [
+      ...$panels.val,
+      { pid, id, title, point, size, focused: false },
+    ]
+
+    positionPanel(id)
+  }
+  else if (type === 'adjusted') {
+    const { id, point, size } = msg.data
+    // console.log('adjusting', id, point, size)
+    $panels.val = $panels.val.map(p => p.id === id ? { ...p, point, size } : p)
+    savePanel(id)
+  }
+  else if (type === 'closed') {
+    const { id } = msg.data
+    const idx = $panels.val.findIndex(p => p.id === id)
+    if (idx === -1) return
+    $panels.val = $panels.val.toSpliced(idx, 1)
+  }
+  else if (type === 'focused') {
+    const { id } = msg.data
+    const idx = $panels.val.findIndex(p => p.id === id)
+    if (idx === -1) return
+    const panel = $panels.val[idx]
+    $panels.val = $panels.val.map(p => ({ ...p, focused: panel === p }))
+  }
+})
 
 function Clock() {
   let date = false
