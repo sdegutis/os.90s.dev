@@ -64,7 +64,7 @@ export class View {
 
     this.$size.watch(debounce(() => {
       this.layout?.()
-      this.parent?.childResized()
+      this.parent?._childResized(this)
       this.panel?.needsMouseCheck()
       this.needsRedraw()
     }))
@@ -165,10 +165,11 @@ export class View {
     this.drawBackground(ctx, this.background)
   }
 
-  protected childResized = debounce(() => {
+  private _childResized = debounce((child: View) => this.childResized(child))
+  protected childResized(child: View) {
     this.adjust?.()
     this.layout?.()
-  })
+  }
 
   protected drawBackground(ctx: DrawingContext, bg: number) {
     ctx.fillRect(0, 0, this.size.w, this.size.h, bg)
