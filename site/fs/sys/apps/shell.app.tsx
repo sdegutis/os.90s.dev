@@ -24,13 +24,14 @@ const $focused = $panels.adapt(panels => {
     .toSpliced(panels.length - 1, 0, focused)
 })
 
-const panelnames = await api.kvs<api.Size>('panels')
+const panelSizes = await api.kvs<api.Size>('panelsizes')
+const panelPoints = await api.kvs<api.Point>('panelpoints')
 
 function savePanel(id: number) {
   const panel = $panels.val.find(p => p.id === id)
   if (!panel) return
 
-  panelnames.set(panel.title, panel.size)
+  panelSizes.set(panel.title, panel.size)
 }
 
 async function positionPanel(id: number) {
@@ -45,7 +46,7 @@ async function positionPanel(id: number) {
     if (from) cascadedPoint = { x: from.point.x + 10, y: from.point.y + 10 }
   }
 
-  const savedSize = await panelnames.get(title)
+  const savedSize = await panelSizes.get(title)
 
   if (cascadedPoint || savedSize) {
     const nextPoint = cascadedPoint ?? point
