@@ -24,14 +24,15 @@ const $focused = $panels.adapt(panels => {
     .toSpliced(panels.length - 1, 0, focused)
 })
 
-const panelSizes = await api.kvs<api.Size>('panelsizes')
-const panelPoints = await api.kvs<api.Point>('panelpoints')
+const panelSizes = await api.kvs<api.Point & api.Size>('panels')
 
 function savePanel(id: number) {
   const panel = $panels.val.find(p => p.id === id)
   if (!panel) return
 
-  panelSizes.set(panel.title, panel.size)
+  // const highest = $panels.val.toSorted()
+
+  panelSizes.set(panel.title, { ...panel.point, ...panel.size })
 }
 
 async function positionPanel(id: number) {
@@ -42,17 +43,27 @@ async function positionPanel(id: number) {
 
   let cascadedPoint: api.Point | undefined
   if (point.x === 0 && point.y === 0) {
-    const from = $focused.val.find(p => p.focused)
+    const from = $focused.val.findLast(p => p.id !== panel.id)
     if (from) cascadedPoint = { x: from.point.x + 10, y: from.point.y + 10 }
   }
 
-  const savedSize = await panelSizes.get(title)
+  const saved = await panelSizes.get(title)
 
-  if (cascadedPoint || savedSize) {
-    const nextPoint = cascadedPoint ?? point
-    const nextSize = savedSize ?? panel.size
+  if (cascadedPoint || saved) {
+    const useSavedPoint = $panels.val.filter(p => p.title === title).length === 1
+    const nextPoint =
+      (useSavedPoint && saved) ? saved :
+        (cascadedPoint ?? point)
+
+    const nextSize = saved ?? panel.size
+
     api.sys.adjustPanel(id, nextPoint.x, nextPoint.y, nextSize.w, nextSize.h)
-    $panels.val = $panels.val.map(p => p.id === id ? { ...p, point: nextPoint, size: nextSize } : p)
+
+    $panels.val = $panels.val.map(p => p.id === id ? {
+      ...p,
+      point: { x: nextPoint.x, y: nextPoint.y },
+      size: { w: nextSize.w, h: nextSize.h },
+    } : p)
   }
 }
 
