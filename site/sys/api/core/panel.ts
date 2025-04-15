@@ -54,6 +54,9 @@ export class Panel {
     this.$point = root.$point
     this.$size = root.$size
 
+    this.$point.equals = pointEquals
+    this.$size.equals = sizeEquals
+
     this.$mouse = multiplex([sys.$mouse, this.$point], () => ({
       x: sys.mouse.x - this.point.x,
       y: sys.mouse.y - this.point.y,
@@ -62,20 +65,27 @@ export class Panel {
     this.ctx.canvas.width = root.$size.val.w
     this.ctx.canvas.height = root.$size.val.h
 
-    let externallyAdjusted = false
+    const internalAdjusts = new Set<string>()
+    const addInternalAdjust = () => {
+      const key = [this.point.x, this.point.y, this.size.w, this.size.h].join(',')
+      internalAdjusts.add(key)
+    }
+    const wasInternalAdjust = (x: number, y: number, w: number, h: number) => {
+      const key = [x, y, w, h].join(',')
+      return internalAdjusts.delete(key)
+    }
 
     this.$size.watch(debounce((size) => {
-      if (externallyAdjusted) return
-
+      addInternalAdjust()
       sys.adjustPanel(this.id, this.point.x, this.point.y, size.w, size.h)
       this.ctx.canvas.width = size.w
       this.ctx.canvas.height = size.h
+      this.checkUnderMouse()
       this.blit()
     }))
 
     this.$point.watch((point) => {
-      if (externallyAdjusted) return
-
+      addInternalAdjust()
       sys.adjustPanel(this.id, point.x, point.y, this.size.w, this.size.h)
       this.checkUnderMouse()
     })
@@ -83,12 +93,22 @@ export class Panel {
     this.rpc = new wRPC<ClientPanel, ServerPanel>(port, {
 
       adjusted: (x, y, w, h) => {
-        externallyAdjusted = true
+        if (wasInternalAdjust(x, y, w, h)) return
+
         const point = { x, y }
         const size = { w, h }
-        if (!pointEquals(this.point, point)) this.point = point
-        if (!sizeEquals(this.size, size)) this.size = size
-        externallyAdjusted = false
+
+        const pointChanged = !pointEquals(this.point, point)
+        const sizeChanged = !sizeEquals(this.size, size)
+
+        if (pointChanged) this.point = point
+        if (sizeChanged) this.size = size
+
+        this.ctx.canvas.width = size.w
+        this.ctx.canvas.height = size.h
+
+        if (pointChanged || sizeChanged) this.checkUnderMouse()
+        if (sizeChanged) this.blit()
       },
 
       focus: () => {
