@@ -1,10 +1,6 @@
 import { Browser } from "../apps/browser.app.js"
 import { DocsPage } from "./common.js"
-import { fs, fsPathOf, View } from "/api.js"
-
-const path = fsPathOf(import.meta.resolve('./pages/main.txt'))
-const file = await fs.getFile(path)
-console.log(compile(file!))
+import { fsPathOf, View } from "/api.js"
 
 export default (browser: Browser) => {
   return <DocsPage browser={browser} current={fsPathOf(import.meta.url)}>
@@ -69,7 +65,6 @@ function lang(array: TemplateStringsArray, ...args: any[]) {
       whole.push(`$${i}`)
     }
     whole.pop()
-    console.log(whole.join(''))
     compiled.set(array, fn = compile(whole.join('')))
   }
   const children = fn.eval(args)
@@ -77,5 +72,15 @@ function lang(array: TemplateStringsArray, ...args: any[]) {
 }
 
 function compile(src: string): Template {
+  let match
+  if (match = src.match(/^(\n+)( +)/)) {
+    console.log(match)
+    const r = new RegExp(`\n {1,${match[2].length}}`, 'g')
+    src = src.replace(r, '\n')
+  }
+  src = src.trim()
+
+  console.log(src.split('\n'))
+
   return { eval() { return [] } }
 }
