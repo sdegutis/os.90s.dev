@@ -2,6 +2,16 @@ import { Point, Size } from "./types.js"
 
 export type PanelOrdering = 'normal' | 'bottom' | 'top'
 
+export type PanelInfo = {
+  pid: number
+  id: number
+  title: string
+  point: Point
+  size: Size
+  visible: boolean
+  focused: boolean
+}
+
 export interface ServerProgram {
   init(): Promise<[sysid: string, id: number, w: number, h: number, desktop: Point & Size, keymap: string[], opts: Record<string, any>]>
   newpanel(title: string, ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, port: MessagePort]>
@@ -14,7 +24,7 @@ export interface ServerProgram {
   setdesktop(x: number, y: number, w: number, h: number): void
   thisfile(path: string): void
   getprocs(): Promise<[procs: { pid: number, path: string }[]]>
-  getpanels(): Promise<[panels: PanelEvent[]]>
+  getpanels(): Promise<[panels: PanelInfo[]]>
   launch(path: string, opts: Record<string, any>): Promise<[number]>
   askdir(opts: DirectoryPickerOptions | undefined): Promise<[dir: FileSystemDirectoryHandle | null]>
   readcliptext(): Promise<[text: string]>
@@ -45,9 +55,10 @@ export interface ClientPanel {
 }
 
 export type PanelEvent =
-  | { type: 'new', pid: number, id: number, title: string, point: Point, size: Size }
+  | { type: 'new' } & PanelInfo
   | { type: 'focused', id: number }
   | { type: 'closed', id: number }
+  | { type: 'toggled', id: number, visible: boolean }
   | { type: 'adjusted', id: number, point: Point, size: Size }
 
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }

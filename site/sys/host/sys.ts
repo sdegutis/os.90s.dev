@@ -228,7 +228,9 @@ export class Sys {
       this.focused?.rpc.send('blur', [])
       this.focused = panel
       this.focused.visible = true
-      this.panelevents.postMessage({ type: 'focused', id: panel.id } as PanelEvent)
+      this.panelevents.postMessage({
+        type: 'focused', id: panel.id
+      } satisfies PanelEvent)
       this.focused.rpc.send('focus', [])
       this.updateLocation()
     }

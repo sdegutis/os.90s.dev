@@ -1,5 +1,5 @@
 import type { Cursor } from "../api/core/cursor.js"
-import { PanelEvent, wRPC, type ClientProgram, type ServerProgram } from "../api/core/rpc.js"
+import { PanelEvent, PanelInfo, wRPC, type ClientProgram, type ServerProgram } from "../api/core/rpc.js"
 import { Panel } from "./panel.js"
 import type { Sys } from "./sys.js"
 
@@ -66,7 +66,9 @@ export class Process {
           title,
           point: { x, y },
           size: { w, h },
-        } as PanelEvent)
+          visible: true,
+          focused: false,
+        } satisfies PanelEvent)
 
         p.didRedraw.watch(() => sys.redrawAllPanels())
       },
@@ -86,20 +88,21 @@ export class Process {
           id: panid,
           point: { x, y },
           size: { w, h },
-        } as PanelEvent)
+        } satisfies PanelEvent)
 
         sys.redrawAllPanels()
       },
 
       getpanels: (reply) => {
         reply([Panel.ordered.map(p => ({
-          type: 'new',
           pid: this.id,
           id: p.id,
           title: p.title,
           point: { x: p.x, y: p.y },
           size: { w: p.w, h: p.h },
-        } as PanelEvent))])
+          focused: p === this.sys.focused,
+          visible: p.visible,
+        } satisfies PanelInfo))])
       },
 
       focuspanel: (id) => {
@@ -193,6 +196,11 @@ export class Process {
     if (!panel) return
 
     panel.visible = visible
+    this.sys.panelevents.postMessage({
+      type: 'toggled',
+      id: panel.id,
+      visible,
+    } satisfies PanelEvent)
 
     if (!visible && this.sys.focused === panel) {
       const idx = Panel.ordered.indexOf(panel)
@@ -223,7 +231,7 @@ export class Process {
   }
 
   closePanel(panel: Panel) {
-    this.sys.panelevents.postMessage({ type: 'closed', id: panel.id } as PanelEvent)
+    this.sys.panelevents.postMessage({ type: 'closed', id: panel.id } satisfies PanelEvent)
     panel.closePort()
     this.sys.removePanel(panel)
     this.panels.delete(panel)

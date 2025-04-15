@@ -144,7 +144,7 @@ class Sys {
 
   async getPanels() {
     const [panels] = await this.rpc.call('getpanels', [])
-    return panels.filter(p => p.type === 'new')
+    return panels
   }
 
   focusPanel(id: number) {

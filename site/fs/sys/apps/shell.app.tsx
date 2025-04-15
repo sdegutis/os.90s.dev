@@ -11,6 +11,7 @@ type Panel = {
   id: number
   pid: number
   focused: boolean
+  visible: boolean
   point: api.Point
   size: api.Size
 }
@@ -140,34 +141,41 @@ taskbar.$point.defer(api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 }), api.point
 
 const panelevents = new BroadcastChannel('panelevents')
 panelevents.onmessage = (msg => {
-  const { type, id } = msg.data as api.PanelEvent
+  const data = msg.data as api.PanelEvent
+
+  const { type, id } = data
   if (id === desktop.id || id === taskbar.id) return
 
   if (type === 'new') {
-    const { pid, id, title, point, size } = msg.data
+    const { pid, id, title, point, size } = data
 
     if (title === 'menu') return
 
     $panels.val = [
       ...$panels.val,
-      { pid, id, title, point, size, focused: false },
+      { pid, id, title, point, size, focused: false, visible: true },
     ]
 
     positionPanel(id)
   }
   else if (type === 'adjusted') {
-    const { id, point, size } = msg.data
+    const { id, point, size } = data
     $panels.val = $panels.val.map(p => p.id === id ? { ...p, point, size } : p)
     savePanel(id)
   }
+  else if (type === 'toggled') {
+    const { id, visible } = data
+    $panels.val = $panels.val.map(p => p.id === id ? { ...p, visible } : p)
+    savePanel(id)
+  }
   else if (type === 'closed') {
-    const { id } = msg.data
+    const { id } = data
     const idx = $panels.val.findIndex(p => p.id === id)
     if (idx === -1) return
     $panels.val = $panels.val.toSpliced(idx, 1)
   }
   else if (type === 'focused') {
-    const { id } = msg.data
+    const { id } = data
     const idx = $panels.val.findIndex(p => p.id === id)
     if (idx === -1) return
     const panel = $panels.val[idx]
@@ -177,10 +185,8 @@ panelevents.onmessage = (msg => {
 
 
 const initial = await api.sys.getPanels()
-$panels.val = initial
-  .filter(p => (p.id !== desktop.id && p.id !== taskbar.id))
-  .map(({ pid, id, title, point, size }) =>
-    ({ pid, id, title, point, size, focused: false }))
+$panels.val = initial.filter(p => (p.id !== desktop.id && p.id !== taskbar.id))
+
 
 $panels.val.forEach(p => positionPanel(p.id))
 
