@@ -1,12 +1,22 @@
 import { Browser } from "../apps/browser.app.js"
 import { DocsPage } from "./common.js"
-import { fsPathOf, View } from "/api.js"
+import { fs, fsPathOf, View } from "/api.js"
+
+const path = fsPathOf(import.meta.resolve('./pages/main.txt'))
+const file = await fs.getFile(path)
+console.log(compile(file!))
 
 export default (browser: Browser) => {
   return <DocsPage browser={browser} current={fsPathOf(import.meta.url)}>
     {lang`
       # this is a header
 
+      ### the whole thing
+
+
+
+      
+      
       hello world
       *very* cool
       
@@ -44,15 +54,28 @@ class Flow extends View {
 
 }
 
+interface Template {
+  eval(data: any): View[]
+}
+
+const compiled = new Map<TemplateStringsArray, Template>()
+
 function lang(array: TemplateStringsArray, ...args: any[]) {
-
-  for (let i = 0; i < array.length; i++) {
-    const chunk = array[i]
-    const arg = args[i]
-
-    console.log([chunk])
-    console.log([arg])
+  let fn = compiled.get(array)
+  if (!fn) {
+    const whole: string[] = []
+    for (let i = 0; i < array.length; i++) {
+      whole.push(array[i])
+      whole.push(`$${i}`)
+    }
+    whole.pop()
+    console.log(whole.join(''))
+    compiled.set(array, fn = compile(whole.join('')))
   }
+  const children = fn.eval(args)
+  return <View children={children} />
+}
 
-  return <View />
+function compile(src: string): Template {
+  return { eval() { return [] } }
 }

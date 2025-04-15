@@ -11,12 +11,10 @@ export class TextSpan {
 
   text: string
   state: string
-  meta?: string | undefined
 
-  constructor(text: string, state: string, meta?: string) {
+  constructor(text: string, state: string) {
     this.text = text
     this.state = state
-    this.meta = meta
   }
 
 }
