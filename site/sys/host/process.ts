@@ -208,6 +208,7 @@ export class Process {
       if (nextInLine) this.sys.focusPanel(nextInLine)
     }
 
+    this.sys.updateLocation()
     this.sys.redrawAllPanels()
   }
 
