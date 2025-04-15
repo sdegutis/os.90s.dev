@@ -74,6 +74,13 @@ export class Process {
         panel.h = h
         panel.rpc.send('adjusted', [x, y, w, h])
 
+        sys.panelevents.postMessage({
+          type: 'adjusted',
+          id: panid,
+          point: { x, y },
+          size: { w, h },
+        })
+
         sys.redrawAllPanels()
       },
 

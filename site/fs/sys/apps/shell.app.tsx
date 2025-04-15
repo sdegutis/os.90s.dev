@@ -36,22 +36,29 @@ function nextToFocus(id: number) {
 
 const panelevents = new BroadcastChannel('panelevents')
 panelevents.onmessage = msg => {
-  const { type, pid, id, title } = msg.data
+  const { type, pid } = msg.data
   if (pid === api.program.pid) return
 
   if (type === 'new') {
+    const { id, title } = msg.data
     $panels.val = [
       ...$panels.val.map(p => ({ ...p, focused: false })),
       { pid, id, title, focused: true },
     ]
   }
+  else if (type === 'adjusted') {
+    const { id, point, size } = msg.data
+    // console.log(id, point, size)
+  }
   else if (type === 'closed') {
+    const { id } = msg.data
     removeFocused(id)
     const idx = $panels.val.findIndex(p => p.id === id)
     if (idx === -1) return
     $panels.val = $panels.val.toSpliced(idx, 1)
   }
   else if (type === 'focused') {
+    const { id } = msg.data
     pushFocused(id)
     const idx = $panels.val.findIndex(p => p.id === id)
     if (idx === -1) return
