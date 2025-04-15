@@ -3,6 +3,7 @@ import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { runJsFile } from "../api/core/open.js"
 import { $, Ref } from "../api/core/ref.js"
+import { PanelEvent } from "../api/core/rpc.js"
 import { Point, Size } from "../api/core/types.js"
 import { updateAccountFromServer } from "../api/util/account.js"
 import { debounce } from "../api/util/throttle.js"
@@ -227,7 +228,7 @@ export class Sys {
       this.focused?.rpc.send('blur', [])
       this.focused = panel
       this.focused.visible = true
-      this.panelevents.postMessage({ type: 'focused', id: panel.id })
+      this.panelevents.postMessage({ type: 'focused', id: panel.id } as PanelEvent)
       this.focused.rpc.send('focus', [])
       this.updateLocation()
     }

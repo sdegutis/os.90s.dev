@@ -37,6 +37,8 @@ export class Panel {
     this.proc = proc
     this.port = port
     this.pos = pos
+    this.x = x
+    this.y = y
     this.w = w
     this.h = h
 
@@ -46,16 +48,6 @@ export class Panel {
       pos === 'top' ? Panel.ordered.length :
         Panel.ordered.findLastIndex(p => p.pos !== 'top') + 1
     Panel.ordered.splice(posi, 0, this)
-
-    if (x === 0 && y === 0) {
-      const cascadeFrom = Panel.ordered.findLast(p => p.pos === 'normal' && p !== this)
-      this.x = (cascadeFrom?.x ?? 0) + 10
-      this.y = (cascadeFrom?.y ?? 0) + 10
-    }
-    else {
-      this.x = x
-      this.y = y
-    }
 
     this.rpc = new wRPC<ServerPanel, ClientPanel>(port, {
 

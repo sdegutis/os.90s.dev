@@ -1,5 +1,5 @@
 import type { Cursor } from "../api/core/cursor.js"
-import { wRPC, type ClientProgram, type ServerProgram } from "../api/core/rpc.js"
+import { PanelEvent, wRPC, type ClientProgram, type ServerProgram } from "../api/core/rpc.js"
 import { Panel } from "./panel.js"
 import type { Sys } from "./sys.js"
 
@@ -55,11 +55,18 @@ export class Process {
       newpanel: (reply, title, ord, x, y, w, h) => {
         const chan = new MessageChannel()
         const p = new Panel(x, y, w, h, this, chan.port1, ord)
-        reply([p.id, p.x, p.y, chan.port2], [chan.port2])
+        reply([p.id, chan.port2], [chan.port2])
 
         this.panels.add(p)
 
-        this.sys.panelevents.postMessage({ type: 'new', pid: this.id, id: p.id, title })
+        this.sys.panelevents.postMessage({
+          type: 'new',
+          pid: this.id,
+          id: p.id,
+          title,
+          point: { x, y },
+          size: { w, h },
+        } as PanelEvent)
 
         p.didRedraw.watch(() => sys.redrawAllPanels())
       },
@@ -79,7 +86,7 @@ export class Process {
           id: panid,
           point: { x, y },
           size: { w, h },
-        })
+        } as PanelEvent)
 
         sys.redrawAllPanels()
       },
@@ -199,7 +206,7 @@ export class Process {
   }
 
   closePanel(panel: Panel) {
-    this.sys.panelevents.postMessage({ type: 'closed', id: panel.id })
+    this.sys.panelevents.postMessage({ type: 'closed', id: panel.id } as PanelEvent)
     panel.closePort()
     this.sys.removePanel(panel)
     this.panels.delete(panel)

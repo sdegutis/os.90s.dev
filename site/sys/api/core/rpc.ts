@@ -4,7 +4,7 @@ export type PanelOrdering = 'normal' | 'bottom' | 'top'
 
 export interface ServerProgram {
   init(): Promise<[sysid: string, id: number, w: number, h: number, desktop: Point & Size, keymap: string[], opts: Record<string, any>]>
-  newpanel(title: string, ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, x: number, y: number, port: MessagePort]>
+  newpanel(title: string, ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, port: MessagePort]>
   adjust(panid: number, x: number, y: number, w: number, h: number): void
   focuspanel(id: number): void
   terminate(pid: number): void
@@ -42,6 +42,12 @@ export interface ClientPanel {
   wheel(x: number, y: number): void
   needblit(): void
 }
+
+export type PanelEvent =
+  | { type: 'new', pid: number, id: number, title: string, point: Point, size: Size }
+  | { type: 'focused', id: number }
+  | { type: 'closed', id: number }
+  | { type: 'adjusted', id: number, point: Point, size: Size }
 
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }
 

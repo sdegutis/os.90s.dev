@@ -1,4 +1,3 @@
-import { kvs } from "../util/kvs.js"
 import { View } from "../views/view.js"
 import { sysConfig } from "./config.js"
 import { Font } from "./font.js"
@@ -44,8 +43,6 @@ class Program {
 }
 
 export const program = new Program()
-
-const panelnames = await kvs<Size>('panels')
 
 class Sys {
 
@@ -118,23 +115,15 @@ class Sys {
 
   async makePanel(config: {
     name: string,
-    saveSize?: boolean,
     order?: PanelOrdering,
   }, root: View) {
-    if (config.name && config.saveSize !== false) {
-      const size = await panelnames.get(config.name)
-      if (size) { root.$size.val = size }
-      root.$size.watch((size => panelnames.set(config.name!, size)))
-    }
-
-    const [id, x, y, port] = await this.rpc.call('newpanel', [
+    const [id, port] = await this.rpc.call('newpanel', [
       config.name,
       config.order ?? 'normal',
       root.point.x, root.point.y,
       root.size.w, root.size.h,
     ])
 
-    root.point = { x, y }
     const panel = new Panel(port, id, root, config.name)
 
     program.panels.add(panel)
