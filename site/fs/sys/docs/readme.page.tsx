@@ -9,10 +9,6 @@ export default (browser: Browser) => {
 
       ### the whole thing
 
-
-
-      
-      
       hello world
       *very* cool
       
@@ -86,9 +82,7 @@ function compile(src: string): Template {
             line.startsWith('#') ? 0x999900ff :
               word.startsWith('*') ? 0x009900ff :
                 word.startsWith('/') ? 0x009999ff :
-                  0xccccccff
-          } />
-        )} />)
+                  0xccccccff} />)} />)
     }
   }
 }
