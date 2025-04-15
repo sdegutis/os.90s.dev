@@ -1,7 +1,7 @@
 import * as api from "/api.js"
 await api.appReady
 
-const desktopSize = api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }))
+const desktopSize = api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }), api.sizeEquals)
 api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
 
 await api.program.becomeShell()
@@ -113,7 +113,7 @@ const taskbar = await api.sys.makePanel({
   order: 'top',
 }, (
   <api.SpacedX
-    size={api.sys.$size.adapt(s => ({ ...s, h: 10 }))}
+    size={api.sys.$size.adapt(s => ({ ...s, h: 10 }), api.sizeEquals)}
     background={0x222222ff}
   >
     <api.GroupX gap={2}>
@@ -126,7 +126,7 @@ const taskbar = await api.sys.makePanel({
   </api.SpacedX>
 ))
 
-taskbar.$point.defer(api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 })))
+taskbar.$point.defer(api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 }), api.pointEquals))
 
 function Clock() {
   let date = false

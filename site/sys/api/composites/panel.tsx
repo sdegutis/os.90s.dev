@@ -4,7 +4,7 @@ import type { Panel } from "../core/panel.js"
 import { preferences } from "../core/preferences.js"
 import { $, defRef, MaybeRef, Ref } from "../core/ref.js"
 import { sys } from "../core/sys.js"
-import type { Point, Size } from "../core/types.js"
+import { sizeEquals, type Point, type Size } from "../core/types.js"
 import { dragMove, dragResize } from "../util/drag.js"
 import { MenuItem, showMenu } from "../util/menu.js"
 import { Border } from "../views/border.js"
@@ -32,7 +32,7 @@ export function PanelViewComp(data: {
       onKeyPress={data.onKeyPress}
       paddingColor={$focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)}
       padding={1}
-      size={defRef(data.size ?? $({ w: 200, h: 150 }))}
+      size={defRef(data.size ?? $({ w: 200, h: 150 }, sizeEquals))}
       presented={async function (p) {
         data.presented?.(p)
         $title.defer(p.$name)
