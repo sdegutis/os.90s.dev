@@ -26,6 +26,13 @@ const $focused = $panels.adapt(panels => {
 
 const panelnames = await api.kvs<api.Size>('panels')
 
+function savePanel(id: number) {
+  const panel = $panels.val.find(p => p.id === id)
+  if (!panel) return
+
+  panelnames.set(panel.title, panel.size)
+}
+
 async function positionPanel(id: number) {
   const panel = $panels.val.find(p => p.id === id)
   if (!panel) return
@@ -55,7 +62,7 @@ panelevents.onmessage = (msg => {
 
   if (type === 'new') {
     const { pid, id, title, point, size } = msg.data
-    console.log('new', id, point, size)
+    // console.log('new', id, point, size)
 
     $panels.val = [
       ...$panels.val,
@@ -66,8 +73,9 @@ panelevents.onmessage = (msg => {
   }
   else if (type === 'adjusted') {
     const { id, point, size } = msg.data
-    console.log('adjusting', id, point, size)
+    // console.log('adjusting', id, point, size)
     $panels.val = $panels.val.map(p => p.id === id ? { ...p, point, size } : p)
+    savePanel(id)
   }
   else if (type === 'closed') {
     const { id } = msg.data
