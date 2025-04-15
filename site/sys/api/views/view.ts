@@ -165,8 +165,8 @@ export class View {
     this.drawBackground(ctx, this.background)
   }
 
-  private _childResized = debounce((child: View) => this.childResized(child))
-  protected childResized(child: View) {
+  private _childResized = debounce((child: View) => this.onChildResized(child))
+  protected onChildResized(child: View) {
     this.adjust?.()
     this.layout?.()
   }
