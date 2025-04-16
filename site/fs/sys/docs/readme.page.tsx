@@ -71,6 +71,7 @@ function twis(array: TemplateStringsArray, ...args: any[]) {
 
 type TwisSpan =
   | { type: 'break' }
+  | { type: 'variable', key: string }
   | { type: 'plain', text: string }
   | { type: 'bold', text: string }
   | { type: 'italic', text: string }
@@ -88,7 +89,7 @@ class Twis {
     return new Twis()
   }
 
-  eval() {
+  replaceVariables() {
 
   }
 
