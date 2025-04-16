@@ -4,8 +4,13 @@ import { fsPathOf, GroupX, GroupY, Label, Scroll, View } from "/api.js"
 
 export default (browser: Browser) => {
   return <DocsPage browser={browser} current={fsPathOf(import.meta.url)}>
-    {lang`
-      # this is a header
+    {twis`
+      ### 90s.dev ###
+
+      welcome to 90s.dev, a retrofuturistic dev env
+      which makes programming fun again.
+      
+      
 
       ### the whole thing
 
@@ -47,7 +52,7 @@ interface Template {
 
 const compiled = new Map<TemplateStringsArray, Template>()
 
-function lang(array: TemplateStringsArray, ...args: any[]) {
+function twis(array: TemplateStringsArray, ...args: any[]) {
   let fn = compiled.get(array)
   if (!fn) {
     const whole: string[] = []
@@ -59,9 +64,34 @@ function lang(array: TemplateStringsArray, ...args: any[]) {
     compiled.set(array, fn = compile(whole.join('')))
   }
   const children = fn.eval(args)
-  return <Scroll>
+  return <Scroll background={0xffffff11}>
     <GroupY align={'a'} children={children} />
   </Scroll>
+}
+
+type TwisSpan =
+  | { type: 'break' }
+  | { type: 'plain', text: string }
+  | { type: 'bold', text: string }
+  | { type: 'italic', text: string }
+  | { type: 'code', text: string }
+  | { type: 'link', text: string, path: string }
+  | { type: 'codeblock', text: string }
+  | { type: 'quote', text: string }
+  | { type: 'header', text: string }
+  | { type: 'subheader', text: string }
+  | { type: 'subsubheader', text: string }
+
+class Twis {
+
+  static compile(src: string): Twis {
+    return new Twis()
+  }
+
+  eval() {
+
+  }
+
 }
 
 function compile(src: string): Template {
@@ -70,7 +100,9 @@ function compile(src: string): Template {
     const r = new RegExp(`\n {1,${match[2].length}}`, 'g')
     src = src.replace(r, '\n')
   }
-  src = src.trim()
+  src = src.trim().replaceAll('\r', '')
+
+  console.log(src)
 
   const lines = src.split('\n')
 
@@ -79,10 +111,24 @@ function compile(src: string): Template {
       return lines.map(line =>
         <GroupX gap={3} children={(line.split(/ +/)).map(word =>
           <Label text={word} color={
-            line.startsWith('#') ? 0x999900ff :
-              word.startsWith('*') ? 0x009900ff :
-                word.startsWith('/') ? 0x009999ff :
-                  0xccccccff} />)} />)
+            line.startsWith('#') ? 0xff9900ff :
+              word.startsWith('*') ? 0xffffffff :
+                word.startsWith('/') ? 0xffff9999 :
+                  0x777777ff} />)} />)
     }
   }
+}
+
+const twisTheme1 = {
+  text: 0x777777ff,
+  comment: 0x00990077,
+  error: 0x990000ff,
+  bold: 0xffffffff,
+  header: 0xff9900ff,
+  headerbold: 0xffff00ff,
+  italic: 0xffff9999,
+  link: 0x0099ff99,
+  quote: 0x9999ff99,
+  code: 0xff99ff99,
+  codeblock: 0x00990099,
 }
