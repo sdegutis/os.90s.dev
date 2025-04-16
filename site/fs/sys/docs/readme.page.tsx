@@ -4,13 +4,18 @@ import { fsPathOf, GroupX, GroupY, Label, Scroll, View } from "/api.js"
 
 export default (browser: Browser) => {
   return <DocsPage browser={browser} current={fsPathOf(import.meta.url)}>
-    {twis`
+    {twism`
       ### 90s.dev ###
 
       welcome to 90s.dev, a retrofuturistic dev env
       which makes programming fun again.
       
-      
+      1. its so good
+      2. its really good
+      3. its the best
+
+      - what is this
+      - what is that
 
       ### the whole thing
 
@@ -52,7 +57,7 @@ interface Template {
 
 const compiled = new Map<TemplateStringsArray, Template>()
 
-function twis(array: TemplateStringsArray, ...args: any[]) {
+function twism(array: TemplateStringsArray, ...args: any[]) {
   let fn = compiled.get(array)
   if (!fn) {
     const whole: string[] = []
@@ -69,7 +74,7 @@ function twis(array: TemplateStringsArray, ...args: any[]) {
   </Scroll>
 }
 
-type TwisSpan =
+type TwismNode =
   | { type: 'break' }
   | { type: 'variable', key: string }
   | { type: 'plain', text: string }
@@ -77,16 +82,17 @@ type TwisSpan =
   | { type: 'italic', text: string }
   | { type: 'code', text: string }
   | { type: 'link', text: string, path: string }
+  | { type: 'bullet', text: string, number?: number }
   | { type: 'codeblock', text: string }
   | { type: 'quote', text: string }
   | { type: 'header', text: string }
   | { type: 'subheader', text: string }
   | { type: 'subsubheader', text: string }
 
-class Twis {
+class Twism {
 
-  static compile(src: string): Twis {
-    return new Twis()
+  static compile(src: string): Twism {
+    return new Twism()
   }
 
   replaceVariables() {
