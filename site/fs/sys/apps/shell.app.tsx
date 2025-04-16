@@ -198,7 +198,7 @@ const taskbar = await api.sys.makePanel({
       <button action={showRun}>run</button>
       <api.GroupX gap={2} children={$buttons} />
     </api.GroupX>
-    <api.GroupX>
+    <api.GroupX gap={2}>
       <Clock />
       <ScreenSize />
     </api.GroupX>
@@ -223,9 +223,9 @@ function ScreenSize() {
   })
 
   const toggle = () => $i.val = 1 - $i.val
-  return <button action={toggle}>
+  return <api.Button padding={2} background={0x00000033} onClick={toggle}>
     <api.Label text={$text} />
-  </button>
+  </api.Button>
 }
 
 function Clock() {
@@ -238,7 +238,7 @@ function Clock() {
     ).toLowerCase())
   setInterval(() => $time.val = new Date(), 1000)
   const toggle = () => $date.val = !$date.val
-  return <button action={toggle}>
+  return <api.Button padding={2} background={0x00000033} onClick={toggle}>
     <api.Label text={$text} />
-  </button>
+  </api.Button>
 }
