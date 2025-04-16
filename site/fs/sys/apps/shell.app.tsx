@@ -240,7 +240,7 @@ function ScreenSize() {
   ]
   const $i = api.$(0)
   const $size = $i.adapt(i => sizes[i])
-  const $text = $size.adapt(([w, h]) => `${w} x ${h}`)
+  const $text = $size.adapt(([w, h]) => `${w} * ${h}`)
 
   $size.watch(([w, h]) => {
     api.sys.resize(w, h)
