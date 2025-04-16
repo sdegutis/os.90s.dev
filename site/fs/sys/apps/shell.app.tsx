@@ -12,6 +12,7 @@ api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
 class Panel {
 
   $focused
+  $visible
   $name
 
   constructor(
@@ -24,7 +25,12 @@ class Panel {
     public size: api.Size,
   ) {
     this.$focused = api.makeRef(this, 'focused')
+    this.$visible = api.makeRef(this, 'visible')
     this.$name = api.makeRef(this, 'name')
+
+    this.$visible.watch(v => {
+      if (!v) this.focused = false
+    })
   }
 
   hide() {
