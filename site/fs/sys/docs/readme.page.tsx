@@ -118,9 +118,11 @@ class Twism {
       src = src.replace(r, '\n')
     }
     this.#s = src.trim().replaceAll('\r', '')
+    console.log('done2')
     while (this.#i < this.#s.length) {
       this.#any()
     }
+    console.log('done')
   }
 
   withVars(vars: Record<string, any>) {

@@ -71,7 +71,7 @@ export function PanelTitlebarComp(data: {
   }
 
   const showSource = () => {
-    sys.launch('sys/apps/writer.app.js', currentAppPath)
+    sys.launch('sys/apps/editor.app.js', currentAppPath)
   }
 
   return <SpacedX

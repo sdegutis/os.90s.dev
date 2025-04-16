@@ -28,7 +28,7 @@ const file = {
   $path: $filepath,
 }
 
-const panel = await api.sys.makePanel({ name: "writer" },
+const panel = await api.sys.makePanel({ name: "editor" },
   <filepanel file={file} size={{ w: 100, h: 70 }}>
     <api.Scroll
       background={0xffffff11}
