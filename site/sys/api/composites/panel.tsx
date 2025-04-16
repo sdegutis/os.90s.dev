@@ -97,9 +97,9 @@ export function PanelTitlebarComp(data: {
           const items = data.menuItems?.()
           if (items) panelItems.push('-', ...items)
 
-          showMenu(panelItems, {
-            x: this.screenPoint.x,
-            y: this.screenPoint.y + this.size.h,
+          showMenu(this.panel!, panelItems, {
+            x: this.panelOffset.x,
+            y: this.panelOffset.y + this.size.h,
           })
         }} padding={2}><ImageView bitmap={mnuImage} /></Button>
         <Label text={data.title} />

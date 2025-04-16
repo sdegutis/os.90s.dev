@@ -1,4 +1,5 @@
-import { sys } from "../core/sys.js"
+import { Panel } from "../core/panel.js"
+import { Point } from "../core/types.js"
 import { Border } from "../views/border.js"
 import { Button } from "../views/button.js"
 import { GroupY } from "../views/group.js"
@@ -10,7 +11,7 @@ export type MenuItem = { text: string, onClick(): void, disabled?: boolean } | '
 const borderColor = 0x444444ff
 const bgColor = 0x333333ff
 
-export async function showMenu(items: MenuItem[], from = sys.mouse) {
+export async function showMenu(panel: Panel, items: MenuItem[], from?: Point) {
   const group = (
     <GroupY gap={0} align={'+'}>
       {items.flatMap(item => {
@@ -24,7 +25,7 @@ export async function showMenu(items: MenuItem[], from = sys.mouse) {
         return <Button padding={2} onClick={() => {
           if (item.disabled) return
           item.onClick()
-          panel.close()
+          close()
         }}>
           <Label text={item.text} />
         </Button>
@@ -32,17 +33,14 @@ export async function showMenu(items: MenuItem[], from = sys.mouse) {
     </GroupY>
   )
 
-  const root = (
+  const menu = (
     <Border
       onKeyPress={key => {
-        if (key === 'escape') panel.close()
+        if (key === 'escape') close()
         return true
       }}
       canFocus={true}
-      onPanelBlur={() => {
-        panel.focusPanel()
-        panel.close()
-      }}
+      onPanelBlur={() => { close() }}
       paddingColor={borderColor}
       padding={1}
       background={bgColor}
@@ -53,13 +51,20 @@ export async function showMenu(items: MenuItem[], from = sys.mouse) {
     </Border>
   )
 
-  const point = { ...from }
-  if (point.y + root.size.h > sys.size.h) point.y -= root.size.h
-  if (point.x + root.size.w > sys.size.w) point.x -= root.size.w
-  root.point = point
+  let pos = { ...(from ?? panel.mouse) }
+  if (pos.y + menu.size.h > panel.size.h) pos.y -= menu.size.h
+  if (pos.x + menu.size.w > panel.size.w) pos.x -= menu.size.w
+  menu.point = pos
 
-  const panel = await sys.makePanel({ name: 'menu', order: 'top' }, root)
+  const root = <View
+    background={0x00000033}
+    canMouse
+    onMouseDown={() => close()}
+    size={panel.$size}
+  >
+    {menu}
+  </View>
 
-  panel.focusPanel()
-  root.focus()
+  const close = () => panel.root.children = panel.root.children.filter(v => v !== root)
+  panel.root.children = [...panel.root.children, root]
 }

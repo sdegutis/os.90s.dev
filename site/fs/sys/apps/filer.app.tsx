@@ -60,9 +60,9 @@ panel.focusPanel()
 
 function Main() {
 
-  function mouseDownFileArea(b: number) {
+  function mouseDownFileArea(this: api.View, b: number) {
     if (b === 2) {
-      api.showMenu([
+      api.showMenu(this.panel!, [
         {
           text: 'paste',
           disabled: copying === undefined,
@@ -110,10 +110,10 @@ function Sidebar() {
 
 function FolderItem({ base, name }: { base: string[], name: string }) {
   return (
-    <api.Button padding={2} onClick={(b) => {
+    <api.Button padding={2} onClick={function (b) {
       const path = [...base, name]
       if (b === 0) $dirs.val = path
-      else showMenuForFolder(path.join(''))
+      else showMenuForFolder(this, path.join(''))
     }}>
       <api.GroupX gap={2}>
         <api.Border>
@@ -127,10 +127,10 @@ function FolderItem({ base, name }: { base: string[], name: string }) {
 
 function FileItem({ base, name }: { base: string[], name: string }) {
   return (
-    <api.Button padding={2} onClick={(b) => {
+    <api.Button padding={2} onClick={function (b) {
       const path = [...base, name].join('')
       if (b === 0) handleFile(path)
-      else showMenuForFile(path)
+      else showMenuForFile(this, path)
     }}>
       <api.GroupX gap={2}>
         <api.Border>
@@ -162,16 +162,16 @@ async function handleFile(path: string) {
 
 let copying: string | undefined
 
-async function showMenuForFile(path: string) {
-  api.showMenu([
+async function showMenuForFile(view: api.View, path: string) {
+  api.showMenu(view.panel!, [
     { text: 'edit', onClick: () => { api.sys.launch('sys/apps/writer.app.js', path) } },
     { text: 'delete', onClick: () => { api.fs.delFile(path) } },
     { text: 'copy', onClick: () => { copying = path } },
   ])
 }
 
-async function showMenuForFolder(path: string) {
-  api.showMenu([
+async function showMenuForFolder(view: api.View, path: string) {
+  api.showMenu(view.panel!, [
     { text: 'delete', onClick: () => { api.fs.delDir(path) } },
     { text: 'copy', onClick: () => { copying = path } },
   ])
