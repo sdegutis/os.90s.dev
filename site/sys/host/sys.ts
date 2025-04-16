@@ -58,9 +58,8 @@ export class Sys {
       }
     }
 
-    for (const app of runApps) {
-      await sys.launch(app.path, app.params)
-    }
+    const launches = runApps.map(app => sys.launch(app.path, app.params))
+    await Promise.all(launches)
 
     sys.initialAppsLoaded = true
   }
