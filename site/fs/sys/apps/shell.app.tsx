@@ -1,7 +1,10 @@
 import * as api from "/api.js"
 await api.appReady
 
-const $bgcolor = api.$usrConfig.adapt(config => api.as(config, 'shell.bgcolor', 'number') ?? 0x004433ff)
+const $bgcolor = api.$usrConfig.adapt(config => {
+  const c = api.as(config, 'shell.bgcolor', api.as.number)
+  return c ?? 0x004433ff
+})
 
 const desktopSize = api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }), api.sizeEquals)
 api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)

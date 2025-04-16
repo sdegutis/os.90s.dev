@@ -32,12 +32,12 @@ async function _load() {
 
 $usrConfig.watch(async (usrConfig) => {
 
-  const dims = as(usrConfig, 'sys.size', 'numbers')
+  const dims = as(usrConfig, 'sys.size', as.numbers)
   const w = dims?.[0]
   const h = dims?.[1]
   sysConfig.$size.val = (w && h) ? { w, h } : baseConfig.size
 
-  const fontpath = as(usrConfig, 'sys.font', 'string')
+  const fontpath = as(usrConfig, 'sys.font', as.string)
   if (fontpath) {
     const fontsrc = await fs.getFile(fontpath)
     sysConfig.$font.val = fontsrc
@@ -45,10 +45,10 @@ $usrConfig.watch(async (usrConfig) => {
       : baseConfig.font
   }
 
-  const shell = as(usrConfig, 'sys.shell', 'string')
+  const shell = as(usrConfig, 'sys.shell', as.string)
   sysConfig.$shell.val = shell || baseConfig.shell
 
-  const prelude = as(usrConfig, 'sys.prelude', 'strings')
+  const prelude = as(usrConfig, 'sys.prelude', as.strings)
   sysConfig.prelude = prelude || baseConfig.prelude
 
 })
