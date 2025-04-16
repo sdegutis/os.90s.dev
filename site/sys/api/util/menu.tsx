@@ -57,6 +57,11 @@ export async function showMenu(panel: Panel, items: MenuItem[], from?: Point) {
   menu.point = pos
 
   const root = <View
+    onKeyPress={key => {
+      if (key === 'escape') { close(); return true }
+      return false
+    }}
+    canFocus
     background={0x00000033}
     canMouse
     onMouseDown={() => close()}
@@ -65,6 +70,11 @@ export async function showMenu(panel: Panel, items: MenuItem[], from?: Point) {
     {menu}
   </View>
 
-  const close = () => panel.root.children = panel.root.children.filter(v => v !== root)
-  panel.root.children = [...panel.root.children, root]
+  const focused = panel.focused
+  const close = () => {
+    panel.root.removeChild(root)
+    focused?.focus()
+  }
+  panel.root.addChild(root)
+  root.focus()
 }

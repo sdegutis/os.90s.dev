@@ -193,4 +193,16 @@ export class View {
     }
   }
 
+  addChild(child: View, i = this.children.length) {
+    this.children = this.children.toSpliced(i, 0, child)
+  }
+
+  removeChild(child: View) {
+    this.children = this.children.filter(v => v !== child)
+  }
+
+  remove() {
+    this.parent?.removeChild(this)
+  }
+
 }

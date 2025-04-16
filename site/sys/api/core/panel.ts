@@ -41,7 +41,7 @@ export class Panel {
   private hoveredTree = new Set<View>()
   private hovered: View | null = null
   private clicking: View | null = null
-  private focused: View | null = null
+  focused: View | null = null
 
   constructor(port: MessagePort, id: number, root: View, name: string) {
     Panel.all.set(id, this)
