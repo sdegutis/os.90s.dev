@@ -32,7 +32,7 @@ async function _load() {
 
 $usrConfig.watch(async (usrConfig) => {
 
-  const dims = as(usrConfig, 'sys.size', as.numbers)
+  const dims = as(usrConfig, 'sys.size', as.numbers(2))
   const w = dims?.[0]
   const h = dims?.[1]
   sysConfig.$size.val = (w && h) ? { w, h } : baseConfig.size
@@ -48,7 +48,7 @@ $usrConfig.watch(async (usrConfig) => {
   const shell = as(usrConfig, 'sys.shell', as.string)
   sysConfig.$shell.val = shell || baseConfig.shell
 
-  const prelude = as(usrConfig, 'sys.prelude', as.strings)
+  const prelude = as(usrConfig, 'sys.prelude', as.strings())
   sysConfig.prelude = prelude || baseConfig.prelude
 
 })
