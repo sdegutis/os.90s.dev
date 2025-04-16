@@ -27,6 +27,18 @@ class Panel {
     this.$name = api.makeRef(this, 'name')
   }
 
+  hide() {
+    this.visible = false
+    this.focused = false
+    api.sys.hidePanel(this.id)
+  }
+
+  focus() {
+    this.visible = true
+    this.focused = true
+    api.sys.focusPanel(this.id)
+  }
+
   save() {
     savedPanelInfo.set(this.name, { ...this.point, ...this.size })
   }
@@ -151,25 +163,12 @@ const $buttons = $panels.adapt(panels =>
       padding={2}
       onClick={() => {
         if (p.focused) {
-          api.sys.hidePanel(p.id)
-
-          const panel = findPanel(p.id)
-          if (panel) {
-            panel.visible = false
-            panel.focused = false
-          }
-
+          findPanel(p.id)?.hide()
           const toFocus = $panels.val.findLast(panel => panel !== p && panel.visible)
           if (toFocus) api.sys.focusPanel(toFocus.id)
         }
         else {
-          api.sys.focusPanel(p.id)
-
-          const panel = findPanel(p.id)
-          if (panel) {
-            panel.visible = true
-            panel.focused = true
-          }
+          findPanel(p.id)?.focus()
         }
       }}
     >
