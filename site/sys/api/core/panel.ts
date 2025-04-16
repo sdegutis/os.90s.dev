@@ -51,6 +51,10 @@ export class Panel {
     this.name = name
     this.$name = makeRef(this, 'name')
 
+    this.$name.watch(name => {
+      this.rpc.send('renamed', [name])
+    })
+
     this.$point = root.$point
     this.$size = root.$size
 

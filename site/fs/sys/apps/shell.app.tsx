@@ -10,7 +10,7 @@ const desktopSize = api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }), api.sizeEq
 api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
 
 type Panel = {
-  title: string
+  name: string
   id: number
   pid: number
   focused: boolean
@@ -29,14 +29,14 @@ panelevents.onmessage = (msg => {
   const { type } = data
 
   if (type === 'new') {
-    const { pid, id, title, point, size } = data
+    const { pid, id, name, point, size } = data
 
     if (pid === api.program.pid) return
-    if (title === 'menu') return
+    if (name === 'menu') return
 
     $panels.val = [
       ...$panels.val,
-      { pid, id, title, point, size, focused: false, visible: true },
+      { pid, id, name, point, size, focused: false, visible: true },
     ]
 
     positionPanel(id)
@@ -45,6 +45,11 @@ panelevents.onmessage = (msg => {
     const { id, point, size } = data
     $panels.val = $panels.val.map(p => p.id === id ? { ...p, point, size } : p)
     savePanel(id)
+  }
+  else if (type === 'renamed') {
+    console.log('got it', data)
+    const { id, name } = data
+    $panels.val = $panels.val.map(p => p.id === id ? { ...p, name } : p)
   }
   else if (type === 'toggled') {
     const { id, visible } = data
@@ -93,9 +98,9 @@ function savePanel(id: number) {
 }
 
 function keyForPanel(panel: Panel) {
-  const sameNames = $panels.val.filter(p => p.title === panel.title)
+  const sameNames = $panels.val.filter(p => p.name === panel.name)
   const idx = sameNames.findIndex(p => p.id === panel.id)
-  return `${panel.title}[${idx}]`
+  return `${panel.name}[${idx}]`
 }
 
 async function positionPanel(id: number) {
@@ -156,7 +161,7 @@ const $buttons = $panels.adapt(panels =>
         }
       }}
     >
-      <api.Label text={p.title} />
+      <api.Label text={p.name} />
     </api.Button>
   }
   )

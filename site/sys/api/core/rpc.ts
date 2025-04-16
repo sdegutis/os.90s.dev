@@ -5,7 +5,7 @@ export type PanelOrdering = 'normal' | 'bottom' | 'top'
 export type PanelInfo = {
   pid: number
   id: number
-  title: string
+  name: string
   point: Point
   size: Size
   visible: boolean
@@ -36,6 +36,7 @@ export interface ClientProgram {
 
 export interface ServerPanel {
   blit(img: ImageBitmap): void
+  renamed(name: string): void
   close(): void
   focus(): void
   cursor(data: string): void
@@ -57,6 +58,7 @@ export interface ClientPanel {
 export type PanelEvent =
   | { type: 'new' } & PanelInfo
   | { type: 'focused', id: number }
+  | { type: 'renamed', id: number, name: string }
   | { type: 'closed', id: number }
   | { type: 'toggled', id: number, visible: boolean }
   | { type: 'adjusted', id: number, point: Point, size: Size }

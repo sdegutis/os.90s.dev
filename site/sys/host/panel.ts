@@ -1,7 +1,7 @@
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { Listener } from "../api/core/listener.js"
-import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../api/core/rpc.js"
+import { PanelEvent, wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../api/core/rpc.js"
 import type { Process } from "./process.js"
 
 export class Panel {
@@ -53,6 +53,15 @@ export class Panel {
     Panel.ordered.splice(posi, 0, this)
 
     this.rpc = new wRPC<ServerPanel, ClientPanel>(port, {
+
+      renamed: (name) => {
+        this.name = name
+        proc.sys.panelevents.postMessage({
+          type: 'renamed',
+          id: this.id,
+          name,
+        } satisfies PanelEvent)
+      },
 
       blit: (img) => {
         this.img?.close()

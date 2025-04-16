@@ -3,7 +3,7 @@ import { Cursor } from "../core/cursor.js"
 import { currentAppPath } from "../core/open.js"
 import type { Panel } from "../core/panel.js"
 import { preferences } from "../core/preferences.js"
-import { $, defRef, MaybeRef, multiplex, Ref } from "../core/ref.js"
+import { $, defRef, MaybeRef, Ref } from "../core/ref.js"
 import { program, sys } from "../core/sys.js"
 import { sizeEquals, type Point, type Size } from "../core/types.js"
 import { fs } from "../fs/fs.js"
@@ -94,10 +94,15 @@ export function PanelViewComp(data: {
         panel = p
         data.presented?.(p)
 
+        const initial = p.name
+        $title.defer(p.$name)
+
         const file = data.file
-        $title.defer(!file ? p.$name : multiplex([file.$path, (p.$name)], () => {
-          return `${p.$name.val}: ${file.$path.val ?? '[no file]'}`
-        }))
+        if (file) {
+          p.$name.defer(file.$path.adapt(() =>
+            `${initial}: ${file.$path.val ?? '[no file]'}`
+          ))
+        }
       }}
       onPanelFocus={() => $focused.val = true}
       onPanelBlur={() => $focused.val = false}

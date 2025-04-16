@@ -63,7 +63,7 @@ export class Process {
           type: 'new',
           pid: this.id,
           id: p.id,
-          title: name,
+          name,
           point: { x, y },
           size: { w, h },
           visible: true,
@@ -97,7 +97,7 @@ export class Process {
         reply([Panel.ordered.map(p => ({
           pid: this.id,
           id: p.id,
-          title: p.name,
+          name: p.name,
           point: { x: p.x, y: p.y },
           size: { w: p.w, h: p.h },
           focused: p === this.sys.focused,
