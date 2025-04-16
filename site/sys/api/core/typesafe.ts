@@ -1,6 +1,10 @@
-export function as<T>(o: any, fn: string, as: (o: any) => T | undefined) {
+const cached = new Map<string, Function>()
+
+export function as<T>(o: any, path: string, as: (o: any) => T | undefined) {
   try {
-    const v = new Function('o', `return o.${fn}`)(o)
+    let fn = cached.get(path)
+    if (!fn) cached.set(path, fn = new Function('o', `return o.${path}`))
+    const v = fn(o)
     return as(v) as T | undefined
   }
   catch (e) {
