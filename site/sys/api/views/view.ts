@@ -47,18 +47,16 @@ export class View {
 
     this.$panel.watch((panel) => {
       if (panel) {
-        multiplex([this.$panelOffset, panel.$mouse], () => {
-          this.mouse = {
-            x: panel.mouse.x - this.panelOffset.x,
-            y: panel.mouse.y - this.panelOffset.y,
-          }
-        })
+        this.$mouse.defer(multiplex([this.$panelOffset, panel.$mouse], () => ({
+          x: panel.mouse.x - this.panelOffset.x,
+          y: panel.mouse.y - this.panelOffset.y,
+        })))
 
         this.presented?.(panel)
 
         if (this.autofocus) {
           setTimeout(() => {
-          this.focus()
+            this.focus()
           })
         }
       }
