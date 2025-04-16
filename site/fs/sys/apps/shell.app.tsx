@@ -173,7 +173,7 @@ const $buttons = $panels.adapt(panels =>
         }
       }}
     >
-      <api.Label text={p.name} />
+      <api.Label text={p.name.match(/^[^:]+/)?.[0]} />
     </api.Button>
   }
   )
