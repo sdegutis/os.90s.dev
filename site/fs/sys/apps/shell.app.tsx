@@ -161,6 +161,8 @@ const $buttons = $panels.adapt(panels =>
   )
 )
 
+const desktopButtons = <api.GroupY align={'a'} gap={2} />
+
 const desktop = await api.sys.makePanel({
   name: 'desktop',
   order: 'bottom',
@@ -168,23 +170,28 @@ const desktop = await api.sys.makePanel({
   <api.Margin
     size={desktopSize}
     background={$bgcolor}
-    padding={1}
-    paddingColor={0xffffff11}
-  />
+    padding={2}
+  // paddingColor={0xffffff11}
+  >
+    {desktopButtons}
+  </api.Margin>
 ))
 
 desktop.point = { x: 0, y: 0 }
 
+const sysApps = await api.fs.getDir('sys/apps/')
 
-async function showRun(this: api.Button) {
-  const sysApps = await api.fs.getDir('sys/apps/')
-  const usrApps = await api.fs.getDir('usr/apps/')
-  api.showMenu([
-    ...sysApps.map(app => ({ text: app, onClick: () => { api.sys.launch(`sys/apps/${app}`) } })),
-    '-',
-    ...usrApps.map(app => ({ text: app, onClick: () => { api.sys.launch(`usr/apps/${app}`) } })),
-  ], this.screenPoint)
-}
+desktopButtons.children = sysApps.map(app =>
+  <api.Button
+    padding={2}
+    // background={0xffffff11}
+    onClick={() => api.sys.launch(`sys/apps/${app}`)}
+  >
+    <api.Label text={app} />
+  </api.Button>
+)
+
+const showRun = () => api.sys.launch('sys/apps/filer.app.js', 'sys/apps/')
 
 const taskbar = await api.sys.makePanel({
   name: 'taskbar',
