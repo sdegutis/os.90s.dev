@@ -96,7 +96,7 @@ class FS {
     return [this.#drives.get(drivename)!, parts]
   }
 
-  async copy(from: string, to: string) {
+  async copyIntoDir(from: string, to: string) {
     const parts = from.split('/')
 
     if (from.endsWith('/')) {

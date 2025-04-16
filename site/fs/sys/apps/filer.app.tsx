@@ -68,7 +68,7 @@ function Main() {
           disabled: copying === undefined,
           onClick: async () => {
             const curdir = $dirs.val.join('')
-            await api.fs.copy(copying!, curdir)
+            await api.fs.copyIntoDir(copying!, curdir)
             copying = undefined
           }
         },
@@ -166,6 +166,7 @@ async function showMenuForFile(view: api.View, path: string) {
   api.showMenu(view.panel!, [
     { text: 'edit', onClick: () => { api.sys.launch('sys/apps/editor.app.js', path) } },
     { text: 'delete', onClick: () => { api.fs.delFile(path) } },
+    { text: 'rename', onClick: () => { rename(path) } },
     { text: 'copy', onClick: () => { copying = path } },
   ])
 }
@@ -173,8 +174,30 @@ async function showMenuForFile(view: api.View, path: string) {
 async function showMenuForFolder(view: api.View, path: string) {
   api.showMenu(view.panel!, [
     { text: 'delete', onClick: () => { api.fs.delDir(path) } },
+    { text: 'rename', onClick: () => { rename(path) } },
     { text: 'copy', onClick: () => { copying = path } },
   ])
+}
+
+async function rename(path: string) {
+  let name = await api.showPrompt(panel, 'new path?')
+  if (!name) return
+
+  if (name.indexOf('/') === -1) name = path.split('/').with(-1, name).join('/')
+
+  console.log('copy', [path, name])
+  // return
+
+  if (path.endsWith('/')) {
+    // const success = api.fs.copy(path, name)
+    // if (!success) return
+    // api.fs.delDir(path)
+  }
+  else {
+    // const success = api.fs.copy(path, name)
+    // if (!success) return
+    // api.fs.delFile(path)
+  }
 }
 
 async function newFile() {
