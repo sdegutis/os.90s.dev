@@ -29,7 +29,7 @@ const file = {
 }
 
 const panel = await api.sys.makePanel({ name: "editor" },
-  <filepanel file={file} size={{ w: 100, h: 70 }}>
+  <panel file={file} size={{ w: 100, h: 70 }}>
     <api.Scroll
       background={0xffffff11}
       onMouseDown={function (b) { this.content.onMouseDown?.(b) }}
@@ -38,7 +38,7 @@ const panel = await api.sys.makePanel({ name: "editor" },
     >
       <api.TextBox model={model} autofocus />
     </api.Scroll>
-  </filepanel>
+  </panel>
 )
 
 panel.focusPanel()

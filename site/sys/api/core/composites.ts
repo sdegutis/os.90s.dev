@@ -1,5 +1,4 @@
 import { ButtonComp } from "../composites/button.js"
-import { FilePanelComp } from "../composites/filepanel.js"
 import { ImplicitComp } from "../composites/implicit.js"
 import { PanelBodyComp, PanelResizerComp, PanelTitlebarComp, PanelViewComp } from "../composites/panel.js"
 import { TextFieldComp } from "../composites/textfield.js"
@@ -11,7 +10,6 @@ export type Composite<T extends Record<string, any>> = (data: T) => JSX.Element
 composites['button'] = ButtonComp
 composites['implicit'] = ImplicitComp
 composites['textfield'] = TextFieldComp
-composites['filepanel'] = FilePanelComp
 composites['panel'] = PanelViewComp
 composites['panel-resizer'] = PanelResizerComp
 composites['panel-body'] = PanelBodyComp

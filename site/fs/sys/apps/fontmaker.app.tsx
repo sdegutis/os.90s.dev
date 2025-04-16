@@ -89,7 +89,7 @@ const file = {
 }
 
 const panel = await api.sys.makePanel({ name: "fontmaker" },
-  <filepanel file={file} size={{ w: 240, h: 140 }}>
+  <panel file={file} size={{ w: 240, h: 140 }}>
     <api.PanedYB>
       <api.Scroll draw={makeStripeDrawer()} background={0xffffff11}>
         <api.Border padding={zoom}>
@@ -137,7 +137,7 @@ const panel = await api.sys.makePanel({ name: "fontmaker" },
         </api.GroupY>
       </api.Border>
     </api.PanedYB>
-  </filepanel>
+  </panel>
 )
 
 function Slider({ val, min, max }: { val: api.Ref<number>, min: number, max: number }) {

@@ -3,11 +3,13 @@ import { Cursor } from "../core/cursor.js"
 import { currentAppPath } from "../core/open.js"
 import type { Panel } from "../core/panel.js"
 import { preferences } from "../core/preferences.js"
-import { $, defRef, MaybeRef, Ref } from "../core/ref.js"
-import { sys } from "../core/sys.js"
+import { $, defRef, MaybeRef, multiplex, Ref } from "../core/ref.js"
+import { program, sys } from "../core/sys.js"
 import { sizeEquals, type Point, type Size } from "../core/types.js"
+import { fs } from "../fs/fs.js"
 import { dragMove, dragResize } from "../util/drag.js"
 import { MenuItem, showMenu } from "../util/menu.js"
+import { showPrompt } from "../util/prompt.js"
 import { Border } from "../views/border.js"
 import { Button } from "../views/button.js"
 import { GroupX } from "../views/group.js"
@@ -20,14 +22,68 @@ import type { View } from "../views/view.js"
 
 
 export function PanelViewComp(data: {
+  file?: PanelFile,
   children: View,
   size?: MaybeRef<Size>,
   presented?: (panel: Panel) => void,
   onKeyPress?: (key: string) => boolean,
   menuItems?: () => MenuItem[],
 }) {
+
+  if (data.file) {
+    const file = data.file
+
+    async function load() {
+      const path = await showPrompt(panel, 'file path?')
+      if (!path) return
+      sys.launch(program.opts["app"], path)
+    }
+
+    async function save() {
+      if (!file.$path.val) return saveAs()
+      fs.putFile(file.$path.val, file.getContents())
+    }
+
+    async function saveAs() {
+      const path = await askFilePath()
+      if (!path) return
+      file.$path.val = path
+      fs.putFile(file.$path.val, file.getContents())
+      sys.noteCurrentFile(file.$path.val)
+    }
+
+    async function askFilePath() {
+      return await showPrompt(panel, 'file path?') ?? undefined
+    }
+
+    const oldMenuItems = data.menuItems
+    data.menuItems = () => {
+      const items = oldMenuItems?.() ?? []
+      if (items.length > 0) {
+        items.push('-')
+      }
+      items.push(
+        { text: 'load...', onClick: load },
+        { text: 'save as...', onClick: saveAs },
+        { text: 'save', onClick: save },
+      )
+      return items
+    }
+
+    const oldKeyPress = data.onKeyPress
+    data.onKeyPress = (key: string) => {
+      if (key === 'ctrl o') { load(); return true }
+      if (key === 'ctrl s') { save(); return true }
+      if (key === 'ctrl S') { saveAs(); return true }
+      return oldKeyPress?.(key) ?? false
+    }
+
+  }
+
   const $focused = $(false)
   const $title = $('')
+  let panel: Panel
+
   return (
     <Margin
       onKeyPress={data.onKeyPress}
@@ -35,8 +91,13 @@ export function PanelViewComp(data: {
       padding={1}
       size={defRef(data.size ?? $({ w: 200, h: 150 }, sizeEquals))}
       presented={async function (p) {
+        panel = p
         data.presented?.(p)
-        $title.defer(p.$name)
+
+        const file = data.file
+        $title.defer(!file ? p.$name : multiplex([file.$path, (p.$name)], () => {
+          return `${p.$name.val}: ${file.$path.val ?? '[no file]'}`
+        }))
       }}
       onPanelFocus={() => $focused.val = true}
       onPanelBlur={() => $focused.val = false}
@@ -179,4 +240,10 @@ export function PanelResizerComp() {
       }
     }}
   />
+}
+
+
+export interface PanelFile {
+  $path: Ref<string | undefined>,
+  getContents: () => string,
 }
