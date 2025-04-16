@@ -52,9 +52,9 @@ export class Process {
         reply([sys.id, this.id, this.sys.size.w, this.sys.size.h, this.sys.desktop, [...this.sys.keymap], opts], [])
       },
 
-      newpanel: (reply, title, ord, x, y, w, h) => {
+      newpanel: (reply, name, ord, x, y, w, h) => {
         const chan = new MessageChannel()
-        const p = new Panel(title, x, y, w, h, this, chan.port1, ord)
+        const p = new Panel(name, x, y, w, h, this, chan.port1, ord)
         reply([p.id, chan.port2], [chan.port2])
 
         this.panels.add(p)
@@ -63,7 +63,7 @@ export class Process {
           type: 'new',
           pid: this.id,
           id: p.id,
-          title,
+          title: name,
           point: { x, y },
           size: { w, h },
           visible: true,
@@ -97,7 +97,7 @@ export class Process {
         reply([Panel.ordered.map(p => ({
           pid: this.id,
           id: p.id,
-          title: p.title,
+          title: p.name,
           point: { x: p.x, y: p.y },
           size: { w: p.w, h: p.h },
           focused: p === this.sys.focused,
