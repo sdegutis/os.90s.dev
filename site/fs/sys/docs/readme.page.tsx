@@ -1,6 +1,6 @@
 import { Browser } from "../apps/browser.app.js"
 import { DocsPage } from "./common.js"
-import { fsPathOf, GroupX, GroupY, Label, Scroll, View } from "/api.js"
+import { fsPathOf, GroupY, Scroll, View } from "/api.js"
 
 export default (browser: Browser) => {
   return <DocsPage browser={browser} current={fsPathOf(import.meta.url)}>
@@ -51,11 +51,7 @@ class Flow extends View {
 
 }
 
-interface Template {
-  eval(data: any): View[]
-}
-
-const compiled = new Map<TemplateStringsArray, Template>()
+const compiled = new Map<TemplateStringsArray, Twism>()
 
 function twism(array: TemplateStringsArray, ...args: any[]) {
   let fn = compiled.get(array)
@@ -66,17 +62,37 @@ function twism(array: TemplateStringsArray, ...args: any[]) {
       whole.push(`$${i}`)
     }
     whole.pop()
-    compiled.set(array, fn = compile(whole.join('')))
+    compiled.set(array, fn = new Twism(whole.join('')))
   }
-  const children = fn.eval(args)
+  const children = toView(fn.withVars(args))
   return <Scroll background={0xffffff11}>
     <GroupY align={'a'} children={children} />
   </Scroll>
 }
 
+function toView(twism: TwismNode[]) {
+
+
+
+  // const lines = src.split('\n')
+
+  // return {
+  //   eval() {
+  //     return lines.map(line =>
+  //       <GroupX gap={3} children={(line.split(/ +/)).map(word =>
+  //         <Label text={word} color={
+  //           line.startsWith('#') ? 0xff9900ff :
+  //             word.startsWith('*') ? 0xffffffff :
+  //               word.startsWith('/') ? 0xffff9999 :
+  //                 0x777777ff} />)} />)
+  //   }
+  // }
+  return <View />
+}
+
 type TwismNode =
   | { type: 'break' }
-  | { type: 'variable', key: string }
+  | { type: 'variable', key: string, val: any }
   | { type: 'plain', text: string }
   | { type: 'bold', text: string }
   | { type: 'italic', text: string }
@@ -91,39 +107,31 @@ type TwismNode =
 
 class Twism {
 
-  static compile(src: string): Twism {
-    return new Twism()
+  nodes: TwismNode[] = []
+
+  constructor(src: string) {
+    this.compile(src)
   }
 
-  replaceVariables() {
-
-  }
-
-}
-
-function compile(src: string): Template {
-  let match
-  if (match = src.match(/^(\n+)( +)/)) {
-    const r = new RegExp(`\n {1,${match[2].length}}`, 'g')
-    src = src.replace(r, '\n')
-  }
-  src = src.trim().replaceAll('\r', '')
-
-  console.log(src)
-
-  const lines = src.split('\n')
-
-  return {
-    eval() {
-      return lines.map(line =>
-        <GroupX gap={3} children={(line.split(/ +/)).map(word =>
-          <Label text={word} color={
-            line.startsWith('#') ? 0xff9900ff :
-              word.startsWith('*') ? 0xffffffff :
-                word.startsWith('/') ? 0xffff9999 :
-                  0x777777ff} />)} />)
+  compile(src: string) {
+    let match
+    if (match = src.match(/^(\n+)( +)/)) {
+      const r = new RegExp(`\n {1,${match[2].length}}`, 'g')
+      src = src.replace(r, '\n')
     }
+    src = src.trim().replaceAll('\r', '')
+
+    console.log(src)
+
   }
+
+  withVars(vars: Record<string, any>) {
+    return this.nodes.map(node => {
+      if (node.type === 'variable') return { ...node, val: vars[node.key] }
+      return node
+    })
+  }
+
 }
 
 const twisTheme1 = {
