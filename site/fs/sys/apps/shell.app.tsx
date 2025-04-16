@@ -66,13 +66,6 @@ panelevents.onmessage = (msg => {
   }
 })
 
-const initial = await api.sys.getPanels()
-$panels.val = initial.filter(p => (p.pid !== api.program.pid))
-$panels.val.forEach(p => positionPanel(p.id))
-
-await api.program.becomeShell()
-
-
 const $focused = $panels.adapt(panels => {
   const focused = panels.find(p => p.focused)
   if (!focused) return panels
@@ -81,6 +74,14 @@ const $focused = $panels.adapt(panels => {
     .toSpliced(panels.indexOf(focused), 1)
     .toSpliced(panels.length - 1, 0, focused)
 })
+
+const initial = await api.sys.getPanels()
+$panels.val = initial.filter(p => (p.pid !== api.program.pid))
+$panels.val.forEach(p => positionPanel(p.id))
+
+await api.program.becomeShell()
+
+
 
 function savePanel(id: number) {
   const panel = $panels.val.find(p => p.id === id)
