@@ -50,6 +50,7 @@ panelevents.onmessage = (msg => {
     console.log('got it', data)
     const { id, name } = data
     $panels.val = $panels.val.map(p => p.id === id ? { ...p, name } : p)
+    repositionPanel(id)
   }
   else if (type === 'toggled') {
     const { id, visible } = data
@@ -92,15 +93,26 @@ function savePanel(id: number) {
   const panel = $panels.val.find(p => p.id === id)
   if (!panel) return
 
-  const key = keyForPanel(panel)
+  const key = panel.name
   const pos = { ...panel.point, ...panel.size }
   savedPanelInfo.set(key, pos)
 }
 
-function keyForPanel(panel: Panel) {
-  const sameNames = $panels.val.filter(p => p.name === panel.name)
-  const idx = sameNames.findIndex(p => p.id === panel.id)
-  return `${panel.name}[${idx}]`
+async function repositionPanel(id: number) {
+  const panel = $panels.val.find(p => p.id === id)
+  if (!panel) return
+
+  const saved = await savedPanelInfo.get(panel.name)
+
+  if (saved) {
+    api.sys.adjustPanel(id, saved.x, saved.y, saved.w, saved.h)
+
+    $panels.val = $panels.val.map(p => p.id === id ? {
+      ...p,
+      point: { x: saved.x, y: saved.y },
+      size: { w: saved.w, h: saved.h },
+    } : p)
+  }
 }
 
 async function positionPanel(id: number) {
@@ -113,7 +125,7 @@ async function positionPanel(id: number) {
     if (from) cascadedPoint = { x: from.point.x + 10, y: from.point.y + 10 }
   }
 
-  const saved = await savedPanelInfo.get(keyForPanel(panel))
+  const saved = await savedPanelInfo.get(panel.name)
 
   if (cascadedPoint || saved) {
     const nextPoint = saved ? saved : (cascadedPoint ?? panel.point)
