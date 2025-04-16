@@ -1,6 +1,8 @@
 import * as api from "/api.js"
 await api.appReady
 
+const $bgcolor = api.$usrConfig.adapt(config => api.as(config, 'sys.bgcolor', 'number') ?? 0x004433ff)
+
 const desktopSize = api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }), api.sizeEquals)
 api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
 
@@ -162,7 +164,7 @@ const desktop = await api.sys.makePanel({
 }, (
   <api.Margin
     size={desktopSize}
-    background={api.sysConfig.$bgcolor}
+    background={$bgcolor}
     padding={1}
     paddingColor={0xffffff11}
   />

@@ -12,7 +12,6 @@ const baseConfig = {
   }),
   font: new Font((await fs.getFile(baseConfigData.sys.font))!),
   shell: baseConfigData.sys.shell as string,
-  bgcolor: baseConfigData.sys.bgcolor as number,
   startup: baseConfigData.sys.startup as string[] | undefined,
   prelude: baseConfigData.sys.prelude as string[] | undefined,
 }
@@ -21,18 +20,19 @@ export const sysConfig = {
   $size: $(baseConfig.size),
   $font: $(baseConfig.font),
   $shell: $(baseConfig.shell),
-  $bgcolor: $(baseConfig.bgcolor),
   startup: baseConfig.startup,
   prelude: baseConfig.prelude,
 }
 
-await loadUsrConfig()
-fs.watchTree('usr/config.jsln', loadUsrConfig)
+export const $usrConfig = $<Record<string, any> | undefined>(undefined)
 
-async function loadUsrConfig() {
-  const usrConfig = await loadConfig('usr/config.jsln') as any
+async function _load() {
+  $usrConfig.val = await loadConfig('usr/config.jsln')
+}
 
-  const dims = as(usrConfig, 'sys.size[0]', 'numbers')
+$usrConfig.watch(async (usrConfig) => {
+
+  const dims = as(usrConfig, 'sys.size', 'numbers')
   const w = dims?.[0]
   const h = dims?.[1]
   sysConfig.$size.val = (w && h) ? { w, h } : baseConfig.size
@@ -51,11 +51,10 @@ async function loadUsrConfig() {
   const prelude = as(usrConfig, 'sys.prelude', 'strings')
   sysConfig.prelude = prelude || baseConfig.prelude
 
-  const bgcolor = as(usrConfig, 'sys.bgcolor', 'number')
-  sysConfig.$bgcolor.val = (bgcolor !== undefined)
-    ? bgcolor
-    : baseConfig.bgcolor
-}
+})
+
+await _load()
+fs.watchTree('usr/config.jsln', _load)
 
 async function loadConfig(path: string) {
   const content = await fs.getFile(path)
