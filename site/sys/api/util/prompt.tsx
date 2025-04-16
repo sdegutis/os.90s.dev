@@ -50,11 +50,11 @@ export async function showPrompt(panel: Panel, text: string) {
     </Border>
   </Center>
 
-  const close = () => panel.root.children = panel.root.children.filter(c => c !== host)
+  const close = () => panel.root.removeChild(host)
   function ok() { close(); result.resolve(model.getText()) }
   function no() { close(); result.resolve(null) }
 
-  panel.root.children = [...panel.root.children, host]
+  panel.root.addChild(host)
 
   return result.promise
 }
