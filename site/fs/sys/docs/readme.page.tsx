@@ -108,21 +108,19 @@ type TwismNode =
 class Twism {
 
   nodes: TwismNode[] = []
+  #s: string
+  #i = 0
 
   constructor(src: string) {
-    this.compile(src)
-  }
-
-  compile(src: string) {
     let match
     if (match = src.match(/^(\n+)( +)/)) {
       const r = new RegExp(`\n {1,${match[2].length}}`, 'g')
       src = src.replace(r, '\n')
     }
-    src = src.trim().replaceAll('\r', '')
-
-    console.log(src)
-
+    this.#s = src.trim().replaceAll('\r', '')
+    while (this.#i < this.#s.length) {
+      this.#any()
+    }
   }
 
   withVars(vars: Record<string, any>) {
@@ -131,6 +129,16 @@ class Twism {
       return node
     })
   }
+
+  #any() {
+    const ch = this.#ch()
+    switch (ch) {
+      // case ''
+    }
+    this.#i++
+  }
+
+  #ch() { return this.#s[this.#i] }
 
 }
 

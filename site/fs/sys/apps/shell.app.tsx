@@ -195,12 +195,13 @@ const taskbar = await api.sys.makePanel({
     background={0x222222ff}
   >
     <api.GroupX gap={2}>
-      <api.Button padding={2} onClick={showRun}>
-        <api.Label text="run" />
-      </api.Button>
+      <button action={showRun}>run</button>
       <api.GroupX gap={2} children={$buttons} />
     </api.GroupX>
-    <Clock />
+    <api.GroupX>
+      <Clock />
+      <ScreenSize />
+    </api.GroupX>
   </api.SpacedX>
 ))
 
@@ -208,36 +209,36 @@ taskbar.$point.defer(api.sys.$size.adapt(s => ({ x: 0, y: s.h - 10 }), api.point
 
 
 
+function ScreenSize() {
+  const sizes = [
+    [320, 180],
+    [320 * 2, 180 * 2],
+  ]
+  const $i = api.$(0)
+  const $size = $i.adapt(i => sizes[i])
+  const $text = $size.adapt(([w, h]) => `${w} x ${h}`)
 
+  $size.watch(([w, h]) => {
+    api.sys.resize(w, h)
+  })
+
+  const toggle = () => $i.val = 1 - $i.val
+  return <button action={toggle}>
+    <api.Label text={$text} />
+  </button>
+}
 
 function Clock() {
-  let date = false
-  let time = api.$('')
-
-  function toggle(this: api.View, b: number) {
-    if (b === 2) {
-      api.showMenu([
-        { text: '320 x 180', onClick: () => { api.sys.resize(320, 180) } },
-        { text: '640 x 360', onClick: () => { api.sys.resize(320 * 2, 180 * 2) } },
-      ])
-      return
-    }
-
-    date = !date
-    udpateTime()
-  }
-
-  const udpateTime = () => {
-    const d = new Date()
-    time.val = (date ? d.toLocaleString() : d.toLocaleTimeString()).toLowerCase()
-  }
-
-  setInterval(udpateTime, 1000)
-  udpateTime()
-
-  return (
-    <api.Button padding={2} canMouse onClick={toggle}>
-      <api.Label text={time} />
-    </api.Button>
-  )
+  const $date = api.$(false)
+  const $time = api.$(new Date())
+  const $text = api.multiplex([$date, $time], () =>
+    ($date.val
+      ? $time.val.toLocaleString()
+      : $time.val.toLocaleTimeString()
+    ).toLowerCase())
+  setInterval(() => $time.val = new Date(), 1000)
+  const toggle = () => $date.val = !$date.val
+  return <button action={toggle}>
+    <api.Label text={$text} />
+  </button>
 }
