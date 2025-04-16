@@ -21,6 +21,8 @@ type Panel = {
 
 const $panels = api.$<Panel[]>([])
 
+const savedPanelInfo = await api.kvs<api.Point & api.Size>('panels')
+
 const panelevents = new BroadcastChannel('panelevents')
 panelevents.onmessage = (msg => {
   const data = msg.data as api.PanelEvent
@@ -79,8 +81,6 @@ const $focused = $panels.adapt(panels => {
     .toSpliced(panels.indexOf(focused), 1)
     .toSpliced(panels.length - 1, 0, focused)
 })
-
-const savedPanelInfo = await api.kvs<api.Point & api.Size>('panels')
 
 function savePanel(id: number) {
   const panel = $panels.val.find(p => p.id === id)
