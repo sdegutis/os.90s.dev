@@ -9,14 +9,60 @@ const $bgcolor = api.$usrConfig.adapt(config => {
 const desktopSize = api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }), api.sizeEquals)
 api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
 
-type Panel = {
-  name: string
-  id: number
-  pid: number
-  focused: boolean
-  visible: boolean
-  point: api.Point
-  size: api.Size
+class Panel {
+
+  $focused
+  $name
+
+  constructor(
+    public name: string,
+    public id: number,
+    public pid: number,
+    public focused: boolean,
+    public visible: boolean,
+    public point: api.Point,
+    public size: api.Size,
+  ) {
+    this.$focused = api.makeRef(this, 'focused')
+    this.$name = api.makeRef(this, 'name')
+  }
+
+  save() {
+    savedPanelInfo.set(this.name, { ...this.point, ...this.size })
+  }
+
+  async position() {
+    let cascadedPoint: api.Point | undefined
+    if (this.point.x === 0 && this.point.y === 0) {
+      const from = $focused.val.findLast(p => p.id !== this.id)
+      if (from) cascadedPoint = { x: from.point.x + 10, y: from.point.y + 10 }
+    }
+
+    const saved = await savedPanelInfo.get(this.name)
+
+    if (cascadedPoint || saved) {
+      const nextPoint = saved ? saved : (cascadedPoint ?? this.point)
+      const nextSize = saved ?? this.size
+      this.adjust(nextPoint.x, nextPoint.y, nextSize.w, nextSize.h)
+    }
+
+    this.save()
+  }
+
+  async reposition() {
+    const saved = await savedPanelInfo.get(this.name)
+    if (!saved) return false
+
+    this.adjust(saved.x, saved.y, saved.w, saved.h)
+    return true
+  }
+
+  adjust(x: number, y: number, w: number, h: number) {
+    api.sys.adjustPanel(this.id, x, y, w, h)
+    this.point = { x, y }
+    this.size = { w, h }
+  }
+
 }
 
 const $panels = api.$<Panel[]>([])
@@ -29,47 +75,51 @@ panelevents.onmessage = (msg => {
   const { type } = data
 
   if (type === 'new') {
-    const { pid, id, name, point, size } = data
+    const { pid, id, name, point, size, focused, visible } = data
 
     if (pid === api.program.pid) return
     if (name === 'menu') return
 
-    $panels.val = [
-      ...$panels.val,
-      { pid, id, name, point, size, focused: false, visible: true },
-    ]
+    const panel = new Panel(name, id, pid, focused, visible, point, size)
+    $panels.val = [...$panels.val, panel]
 
-    positionPanel(id)
+    panel.position()
+
+    return
   }
-  else if (type === 'adjusted') {
-    const { id, point, size } = data
-    $panels.val = $panels.val.map(p => p.id === id ? { ...p, point, size } : p)
-    savePanel(id)
+
+  const panel = findPanel(data.id)
+  if (!panel) return
+
+  if (type === 'adjusted') {
+    panel.point = data.point
+    panel.size = data.size
+    panel.save()
   }
   else if (type === 'renamed') {
-    const { id, name } = data
-    $panels.val = $panels.val.map(p => p.id === id ? { ...p, name } : p)
-    repositionPanel(id)
+    panel.name = data.name
+    if (!panel.reposition()) {
+      panel.save()
+    }
   }
   else if (type === 'toggled') {
-    const { id, visible } = data
-    $panels.val = $panels.val.map(p => p.id === id ? { ...p, visible } : p)
-    savePanel(id)
+    panel.visible = data.visible
+    panel.save()
   }
   else if (type === 'closed') {
-    const { id } = data
-    const idx = $panels.val.findIndex(p => p.id === id)
-    if (idx === -1) return
+    const idx = $panels.val.findIndex(p => p === panel)
     $panels.val = $panels.val.toSpliced(idx, 1)
   }
   else if (type === 'focused') {
-    const { id } = data
-    const idx = $panels.val.findIndex(p => p.id === id)
-    if (idx === -1) return
-    const panel = $panels.val[idx]
-    $panels.val = $panels.val.map(p => ({ ...p, focused: panel === p }))
+    for (const p of $panels.val) {
+      p.focused = p === panel
+    }
   }
 })
+
+function findPanel(id: number) {
+  return $panels.val.find(p => p.id === id)
+}
 
 const $focused = $panels.adapt(panels => {
   const focused = panels.find(p => p.focused)
@@ -80,83 +130,34 @@ const $focused = $panels.adapt(panels => {
     .toSpliced(panels.length - 1, 0, focused)
 })
 
-const initial = await api.sys.getPanels()
-$panels.val = initial.filter(p => (p.pid !== api.program.pid))
-$panels.val.forEach(p => positionPanel(p.id))
+$panels.val = (await api.sys.getPanels())
+  .map(p => new Panel(p.name, p.id, p.pid, p.focused, p.visible, p.point, p.size))
+  .filter(p => (p.pid !== api.program.pid))
+
+$panels.val.forEach(p => p.position())
 
 await api.program.becomeShell()
 
 
 
-function savePanel(id: number) {
-  const panel = $panels.val.find(p => p.id === id)
-  if (!panel) return
 
-  const key = panel.name
-  const pos = { ...panel.point, ...panel.size }
-  savedPanelInfo.set(key, pos)
-}
 
-async function repositionPanel(id: number) {
-  const panel = $panels.val.find(p => p.id === id)
-  if (!panel) return
-
-  const saved = await savedPanelInfo.get(panel.name)
-
-  if (saved) {
-    api.sys.adjustPanel(id, saved.x, saved.y, saved.w, saved.h)
-
-    $panels.val = $panels.val.map(p => p.id === id ? {
-      ...p,
-      point: { x: saved.x, y: saved.y },
-      size: { w: saved.w, h: saved.h },
-    } : p)
-  }
-}
-
-async function positionPanel(id: number) {
-  const panel = $panels.val.find(p => p.id === id)
-  if (!panel) return
-
-  let cascadedPoint: api.Point | undefined
-  if (panel.point.x === 0 && panel.point.y === 0) {
-    const from = $focused.val.findLast(p => p.id !== panel.id)
-    if (from) cascadedPoint = { x: from.point.x + 10, y: from.point.y + 10 }
-  }
-
-  const saved = await savedPanelInfo.get(panel.name)
-
-  if (cascadedPoint || saved) {
-    const nextPoint = saved ? saved : (cascadedPoint ?? panel.point)
-    const nextSize = saved ?? panel.size
-
-    api.sys.adjustPanel(id, nextPoint.x, nextPoint.y, nextSize.w, nextSize.h)
-
-    $panels.val = $panels.val.map(p => p.id === id ? {
-      ...p,
-      point: { x: nextPoint.x, y: nextPoint.y },
-      size: { w: nextSize.w, h: nextSize.h },
-    } : p)
-  }
-
-  savePanel(id)
-}
 
 
 const $buttons = $panels.adapt(panels =>
   panels.map(p => {
     return <api.Button
-      background={p.focused ? 0x99000099 : 0x000000ff}
+      background={p.$focused.adapt<number>(focused => focused ? 0x99000099 : 0x000000ff)}
       padding={2}
       onClick={() => {
         if (p.focused) {
           api.sys.hidePanel(p.id)
 
-          $panels.val = $panels.val.map(panel => panel.id === p.id ? {
-            ...panel,
-            visible: false,
-            focused: false,
-          } : panel)
+          const panel = findPanel(p.id)
+          if (panel) {
+            panel.visible = false
+            panel.focused = false
+          }
 
           const toFocus = $panels.val.findLast(panel => panel !== p && panel.visible)
           if (toFocus) api.sys.focusPanel(toFocus.id)
@@ -164,15 +165,15 @@ const $buttons = $panels.adapt(panels =>
         else {
           api.sys.focusPanel(p.id)
 
-          $panels.val = $panels.val.map(panel => panel.id === p.id ? {
-            ...panel,
-            visible: true,
-            focused: true,
-          } : panel)
+          const panel = findPanel(p.id)
+          if (panel) {
+            panel.visible = true
+            panel.focused = true
+          }
         }
       }}
     >
-      <api.Label text={p.name.match(/^[^:]+/)?.[0]} />
+      <api.Label text={p.$name.adapt(name => name.match(/^[^:]+/)?.[0]!)} />
     </api.Button>
   }
   )
