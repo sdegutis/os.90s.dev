@@ -33,8 +33,8 @@ async function _load() {
 $usrConfig.watch(async (usrConfig) => {
 
   const dims = as(usrConfig, 'sys.size', as.numbers(2))
-  const w = dims?.[0]
-  const h = dims?.[1]
+  const w = dims![0]
+  const h = dims![1]
   sysConfig.$size.val = (w && h) ? { w, h } : baseConfig.size
 
   const fontpath = as(usrConfig, 'sys.font', as.string)
