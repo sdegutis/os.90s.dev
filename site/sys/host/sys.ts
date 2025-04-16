@@ -320,7 +320,7 @@ const defaultCursor = Cursor.fromString(`
 offx=1
 offy=1
 colors[]=0x000000ff
-colors[]=0xffff77ff
+colors[]=0xffffffff
 pixels=
 
 1 1 1 1
