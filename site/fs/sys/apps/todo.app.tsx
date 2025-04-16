@@ -3,13 +3,15 @@ await api.appReady
 
 interface Item {
   text: string
-  done: boolean
+  done: api.Ref<boolean>
 }
 
 const model = new api.TextModel()
 
 const $items = api.$<Item[]>([])
-const $itemViews = $items.adapt<api.View[]>(items => items.map(item => <ItemView item={item} />))
+const $itemViews = $items.adapt<api.View[]>(items => {
+  return items.map(item => <ItemView item={item} />)
+})
 
 const panel = await api.sys.makePanel({ name: "todo" },
   <panel size={{ w: 70, h: 50 }}>
@@ -36,7 +38,7 @@ function add() {
   const text = model.getText()
   if (!text) return
 
-  $items.val = [...$items.val, { done: false, text }]
+  $items.val = [...$items.val, { done: api.$(false), text }]
   model.setText('')
 }
 
@@ -45,18 +47,18 @@ function clear() {
 }
 
 function inverse() {
-  $items.val.forEach(it => it.done = !it.done)
+  $items.val.forEach(it => it.done.val = !it.done.val)
 }
 
 function ItemView({ item }: { item: Item }) {
   function toggleDone() {
-    item.done = !item.done
+    item.done.val = !item.done.val
   }
 
   return (
     <api.Button onClick={toggleDone}>
       <api.GroupX gap={2}>
-        <api.Label color={0xffffff77} text={item.done ? 'x' : 'o'} />
+        <api.Label color={0xffffff77} text={item.done.adapt<string>(done => done ? 'x' : 'o')} />
         <api.Label text={item.text} />
       </api.GroupX>
     </api.Button>
