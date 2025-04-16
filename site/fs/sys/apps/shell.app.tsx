@@ -47,7 +47,6 @@ panelevents.onmessage = (msg => {
     savePanel(id)
   }
   else if (type === 'renamed') {
-    console.log('got it', data)
     const { id, name } = data
     $panels.val = $panels.val.map(p => p.id === id ? { ...p, name } : p)
     repositionPanel(id)
