@@ -99,7 +99,7 @@ type TwismNode =
   | { type: 'code', text: string }
   | { type: 'link', text: string, path: string }
   | { type: 'bullet', text: string, number?: number }
-  | { type: 'codeblock', text: string }
+  | { type: 'codeblock', text: string, filename?: string }
   | { type: 'quote', text: string }
   | { type: 'header', text: string }
   | { type: 'subheader', text: string }
@@ -154,6 +154,7 @@ const twisTheme1 = {
   italic: 0xffff9999,
   link: 0x0099ff99,
   quote: 0x9999ff99,
-  code: 0xff99ff99,
+  bullet: 0xff99ff99,
+  code: 0x00990099,
   codeblock: 0x00990099,
 }

@@ -11,7 +11,7 @@
 
 and some code in >file< is:
 
-> (typescript)
+> (example.tsx)
 > line 2
 > run()
 
