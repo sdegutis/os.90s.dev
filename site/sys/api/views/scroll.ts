@@ -131,7 +131,7 @@ export class Scroll extends View {
   override onWheel(px: number, py: number): void {
     px = px / 100 * this.scrollBy
     py = py / 100 * this.scrollBy
-    if (sys.keymap.has('Shift')) [px, py] = [py, px]
+    if (sys.pressedKeys.has('Shift')) [px, py] = [py, px]
     this.scrollx += px
     this.scrolly += py
   }

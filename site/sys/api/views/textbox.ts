@@ -99,7 +99,7 @@ export class TextBox extends View {
   override onMouseDown(button: number): void {
     this.focus()
 
-    if (sys.keymap.has('Alt')) {
+    if (sys.pressedKeys.has('Alt')) {
       const { row, col } = this.posAtMouse()
       this.model.addCursor(row, col)
       return

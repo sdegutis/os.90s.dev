@@ -239,9 +239,9 @@ export class Panel {
     if (this.#ctrlKeys.has(key)) return
 
     const keys = []
-    if (sys.keymap.has('Control')) keys.push('ctrl')
-    if (sys.keymap.has('Alt')) keys.push('alt')
-    if (sys.keymap.has('Shift') && key.length > 1 && key !== key.toLowerCase()) {
+    if (sys.pressedKeys.has('Control')) keys.push('ctrl')
+    if (sys.pressedKeys.has('Alt')) keys.push('alt')
+    if (sys.pressedKeys.has('Shift') && key.length > 1 && key !== key.toLowerCase()) {
       keys.push('shift')
     }
 

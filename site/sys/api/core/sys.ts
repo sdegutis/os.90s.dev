@@ -58,7 +58,7 @@ class Sys {
 
   })
 
-  keymap = new Set<string>()
+  pressedKeys = new Set<string>()
 
   readonly $mouse: Ref<Point> = $({ x: 0, y: 0 })
   get mouse() { return this.$mouse.val }
@@ -80,11 +80,11 @@ class Sys {
     this.keyevents.onmessage = msg => {
       const [fn, key] = msg.data
       if (fn === 'keydown') {
-        this.keymap.add(key)
+        this.pressedKeys.add(key)
         program.focusedPanel?.onKeyDown(key)
       }
       else if (fn === 'keyup') {
-        this.keymap.delete(key)
+        this.pressedKeys.delete(key)
         program.focusedPanel?.onKeyUp(key)
       }
     }
@@ -108,7 +108,7 @@ class Sys {
       }
     })
 
-    keymap.forEach(k => this.keymap.add(k))
+    keymap.forEach(k => this.pressedKeys.add(k))
 
     this.$font = sysConfig.$font
   }
