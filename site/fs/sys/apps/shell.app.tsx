@@ -180,7 +180,7 @@ const desktop = await api.sys.makePanel({
 
 desktop.point = { x: 0, y: 0 }
 
-const sysApps = await api.fs.getDir('sys/apps/')
+const sysApps = (await api.fs.getDir('sys/apps/'))!
 
 desktopButtons.children = sysApps.map(app =>
   <api.Button

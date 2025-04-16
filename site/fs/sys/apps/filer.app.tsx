@@ -39,7 +39,7 @@ const $breadcrumbs = $dirs.adapt(dirs =>
 )
 
 const $itemButtons = $items.adapt(items => {
-  if (items.length === 0) return [EMPTY]
+  if (!items || items.length === 0) return [EMPTY]
   return items.map(name =>
     name.endsWith('/')
       ? <FolderItem base={$dirs.val} name={name} />
@@ -68,7 +68,14 @@ function Main() {
           disabled: copying === undefined,
           onClick: async () => {
             const curdir = $dirs.val.join('')
-            await api.fs.copyIntoDir(copying!, curdir)
+            const from = copying!
+
+            let to = api.pathFns.adopt(curdir, api.pathFns.orphan(from)!)
+            if (api.pathFns.parent(from) === curdir) {
+              to = await api.fs.uniqueFilename(to)
+            }
+
+            await api.fs.copy(from, to)
             copying = undefined
           }
         },
@@ -179,25 +186,10 @@ async function showMenuForFolder(view: api.View, path: string) {
   ])
 }
 
-async function rename(path: string) {
-  let name = await api.showPrompt(panel, 'new path?')
-  if (!name) return
-
-  if (name.indexOf('/') === -1) name = path.split('/').with(-1, name).join('/')
-
-  console.log('copy', [path, name])
-  // return
-
-  if (path.endsWith('/')) {
-    // const success = api.fs.copy(path, name)
-    // if (!success) return
-    // api.fs.delDir(path)
-  }
-  else {
-    // const success = api.fs.copy(path, name)
-    // if (!success) return
-    // api.fs.delFile(path)
-  }
+async function rename(from: string) {
+  let to = await api.showPrompt(panel, 'new path?')
+  if (!to) return
+  await api.fs.move(from, to)
 }
 
 async function newFile() {

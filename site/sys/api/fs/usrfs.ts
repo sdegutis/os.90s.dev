@@ -10,9 +10,11 @@ const db = await opendb<{
 
 export class UsrDrive implements Drive {
 
-  async getDir(path: string[]): Promise<string[]> {
+  async getDir(path: string[]): Promise<string[] | null> {
     const all = await db.all()
     const parent = path.join('/')
+    if (parent !== '' && !all.some(f => f.path === parent)) return null
+
     return all.filter(it => it.dir === parent).map(it => it.file)
   }
 

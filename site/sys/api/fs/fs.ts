@@ -24,10 +24,11 @@ class FS {
     return this.#drives.keys().toArray()
   }
 
-  async getDir(path: string): Promise<string[]> {
+  async getDir(path: string): Promise<string[] | null> {
     if (!path.endsWith('/')) path += '/'
     const [drive, parts] = this.#split(path)
     const items = await drive.getDir(parts)
+    if (!items) return null
     items.sort((a, b) => {
       if (a.endsWith('/') && !(b.endsWith('/'))) return -1
       if (b.endsWith('/') && !(a.endsWith('/'))) return +1
@@ -96,49 +97,59 @@ class FS {
     return [this.#drives.get(drivename)!, parts]
   }
 
-  async copyIntoDir(from: string, to: string) {
-    const parts = from.split('/')
+  async move(from: string, to: string) {
+    const isDir = pathFns.isDir(from)
+    const isRel = pathFns.isRel(to)
+
+    if (isRel) to = pathFns.adopt(pathFns.parent(from)!, to)
+    if (isDir && !pathFns.isDir(to)) to += '/'
+
+    const success = await this.copy(from, to)
+    if (!success) return
 
     if (from.endsWith('/')) {
-      const last = parts.at(-2)
-      const dest = to + last
-      await this.#mkdirp(dest)
-      await this.#copyTree(from, dest + '/')
+      await this.delDir(from)
     }
     else {
-      const last = parts.at(-1)
+      await this.delFile(from)
+    }
+  }
+
+  async copy(from: string, to: string) {
+    if (pathFns.isDir(from)) {
+      const children = await this.getDir(from)
+      if (!children) return false
+
+      if (!pathFns.isDir(to)) to += '/'
+
+      await this.putDir(to)
+      for (const name of children) {
+        await this.copy(from + name, to + name)
+      }
+    }
+    else {
       const content = await this.getFile(from)
       if (content === null) return false
-      let dest = to + last
-      while (await this.getFile(dest) !== null) {
-        dest = dest.match(/\.[^\/]+$/)
-          ? dest.replace(/\.[^\/]+$/, '_$&')
-          : dest + '_'
-      }
-      await this.putFile(dest, content)
+
+      await this.putFile(await this.uniqueFilename(to), content)
     }
     return true
   }
 
-  async #copyTree(from: string, to: string) {
-    for (const name of await this.getDir(from)) {
-      if (name.endsWith('/')) {
-        await this.#mkdirp(to + name)
-        await this.#copyTree(from + name, to + name)
-      }
-      else {
-        await this.putFile(to + name, (await this.getFile(from + name))!)
-      }
+  async get(path: string) {
+    if (pathFns.isDir(path)) {
+      return this.getDir(path)
+    }
+    else {
+      return this.getFile(path)
     }
   }
 
-  async #mkdirp(path: string) {
-    if (path.endsWith('/')) path = path.replace(/\/+$/, '')
-    const [drive, parts] = this.#split(path)
-
-    for (let i = 0; i < parts.length; i++) {
-      await drive.putDir(parts.slice(0, i + 1))
+  async uniqueFilename(ideal: string) {
+    while (await this.get(ideal) !== null) {
+      ideal = ideal.replace(/(\.\w+)?\/?$/, '_$&')
     }
+    return ideal
   }
 
   watchTree(path: string, fn: () => void) {
@@ -150,3 +161,12 @@ class FS {
 }
 
 export const fs = new FS()
+
+export const pathFns = {
+  normalize: (path: string) => path.replace(/\/{2,}/g, '/'),
+  orphan: (path: string) => path.match(/\/(\w+\/?)$/)?.[1],
+  parent: (path: string) => path.match(/(\w+\/(?!$))+/)?.[0],
+  adopt: (parent: string, orphan: string) => pathFns.normalize(parent) + orphan,
+  isDir: (path: string) => path.endsWith('/'),
+  isRel: (path: string) => path.indexOf('/') === -1 || path.indexOf('/') === path.length - 1,
+}
