@@ -57,7 +57,9 @@ export class View {
         this.presented?.(panel)
 
         if (this.autofocus) {
+          setTimeout(() => {
           this.focus()
+          })
         }
       }
     })
