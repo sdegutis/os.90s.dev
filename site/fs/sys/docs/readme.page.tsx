@@ -235,8 +235,6 @@ class Twism {
   #restline() { return this.#consume(this.#rrl) }
 
   #quote() {
-    if (this.#peek(2) !== '""') return false
-
     const lines: string[] = []
     while (this.#peek(2) === '""') {
       this.#i += 2
@@ -244,14 +242,13 @@ class Twism {
       lines.push(this.#restline() ?? '')
       this.#i++
     }
-    this.nodes.push({ type: 'quote', text: lines.join('\n') })
 
-    return true
+    const succeeded = lines.length > 0
+    if (succeeded) this.nodes.push({ type: 'quote', text: lines.join('\n') })
+    return succeeded
   }
 
   #codeblock() {
-    if (this.#peek(1) !== '>') return false
-
     const lines: string[] = []
     while (this.#peek() === '>') {
       this.#i += 1
@@ -259,27 +256,23 @@ class Twism {
       lines.push(this.#restline() ?? '')
       this.#i++
     }
-    this.nodes.push({ type: 'codeblock', text: lines.join('\n') })
-
-    return true
+    const succeeded = lines.length > 0
+    if (succeeded) this.nodes.push({ type: 'codeblock', text: lines.join('\n') })
+    return succeeded
   }
 
   #listitem() {
-    if (this.#peek(2) !== '- ') return false
-
+    let start = this.#i
     while (this.#peek(2) === '- ') {
       this.#i += 2
       const text = this.#restline()!
       this.#i++
       this.nodes.push({ type: 'bullet', text })
     }
-
-    return true
+    return this.#i !== start
   }
 
   #listitemn() {
-    if (!this.#match(this.#rln)) return false
-
     let m
     while (m = this.#match(this.#rln)) {
       this.#i += m[0].length
@@ -287,8 +280,7 @@ class Twism {
       this.#i++
       this.nodes.push({ type: 'bullet', text, number: +m[1] })
     }
-
-    return true
+    return m
   }
 
 
