@@ -236,16 +236,15 @@ class Twism {
 
   #quote() {
     const lines: string[] = []
-    while (this.#peek(2) === '""') {
-      this.#i += 2
+    let m
+    while (m = this.#consume(/^""/y)) {
       this.#skipspace()
       lines.push(this.#restline() ?? '')
       this.#i++
     }
 
-    const succeeded = lines.length > 0
-    if (succeeded) this.nodes.push({ type: 'quote', text: lines.join('\n') })
-    return succeeded
+    if (m) this.nodes.push({ type: 'quote', text: lines.join('\n') })
+    return m
   }
 
   #codeblock() {
