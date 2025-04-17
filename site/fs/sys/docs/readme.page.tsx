@@ -9,14 +9,22 @@ export default (browser: Browser) => {
 
 ### header text ###
 
-"" this
-"" that
+"" this is the first line
+"" so good
+"" that is the second
 
-1. this
-2. that
+"" unrelated quote
+""
+""
+"" yes, it's good?
 
-- this
-- that
+1. this one
+2. that two
+
+- this is the first
+- that is the second
+- and the third
+- fourth
 
 and some code in >file< is:
 
@@ -130,7 +138,7 @@ function toView(twism: TwismNode[]) {
 }
 
 type TwismNode =
-  | { type: 'break' }
+  | { type: 'break', lines: number }
   | { type: 'variable', key: string, val: any }
   | { type: 'plain', text: string }
   | { type: 'bold', text: string }
@@ -161,7 +169,8 @@ class Twism {
     while (this.#i < this.#s.length) {
       this.#start()
     }
-    console.log('done', this.nodes)
+    console.log('done')
+    this.nodes.forEach(n => console.log(n))
   }
 
   withVars(vars: Record<string, any>) {
@@ -175,17 +184,25 @@ class Twism {
     if (this.#peek(4) === '### ') return this.#header('#', this.#rh1, 'header')
     if (this.#peek(4) === '=== ') return this.#header('=', this.#rh2, 'subheader')
     if (this.#peek(4) === '--- ') return this.#header('-', this.#rh3, 'subsubheader')
-    if (this.#peek(3) === '"" ') return this.#blockquote()
-    if (this.#peek(2) === '> ') return this.#codeblock()
+    if (this.#peek(2) === '""') return this.#quote()
+    if (this.#peek(1) === '>') return this.#codeblock()
     if (this.#peek(2) === '- ') return this.#listitem()
-    if (this.#peek(5).match(this.#rln)) return this.#listitemn()
-    if (this.#consume(this.#rnl)) return this.#newline()
-
-    this.#i++
+    if (this.#match(this.#rln)) return this.#listitemn()
+    if (this.#match(this.#rnl)) return this.#break()
+    return this.#paragraph()
   }
 
-  #newline() {
-    this.nodes.push({ type: 'break' })
+  #break() {
+    const m = this.#consume(this.#rnl)!
+    this.nodes.push({ type: 'break', lines: m.length })
+  }
+
+  #paragraph() {
+
+    const text = this.#restline()!
+    this.nodes.push({ type: 'plain', text })
+
+    // this.#i++
   }
 
   #rnl = /\n+/y
@@ -213,16 +230,39 @@ class Twism {
     return text
   }
 
-  #blockquote() {
-    this.#i++
+  #rrl = /[^\n]+/y
+
+  #restline() { return this.#consume(this.#rrl) }
+
+  #quote() {
+    const lines: string[] = []
+    while (this.#peek(2) === '""') {
+      this.#i += 2
+      this.#skipspace()
+      lines.push(this.#restline() ?? '')
+      this.#i++
+    }
+    this.nodes.push({ type: 'quote', text: lines.join('\n') })
   }
 
   #codeblock() {
-    this.#i++
+    const lines: string[] = []
+    while (this.#peek() === '>') {
+      this.#i += 1
+      this.#skipspace()
+      lines.push(this.#restline() ?? '')
+      this.#i++
+    }
+    this.nodes.push({ type: 'codeblock', text: lines.join('\n') })
   }
 
   #listitem() {
-    this.#i++
+    while (this.#peek(2) === '- ') {
+      this.#i += 2
+      const text = this.#restline()!
+      this.#i++
+      this.nodes.push({ type: 'bullet', text })
+    }
   }
 
   #listitemn() {
@@ -234,11 +274,15 @@ class Twism {
     while (this.#peek() === ' ') this.#i++
   }
 
-  #consume(r: RegExp) {
+  #match(r: RegExp) {
     r.lastIndex = this.#i
-    const m = r.exec(this.#s)
-    if (m) this.#i += m[0].length
-    return m?.[0]
+    return r.exec(this.#s)?.[0]
+  }
+
+  #consume(r: RegExp) {
+    const m = this.#match(r)
+    if (m) this.#i += m.length
+    return m
   }
 
   #mustconsume(r: RegExp, e: string) {
