@@ -210,7 +210,7 @@ class Twism {
   #rh2 = /={3,}/y
   #rh3 = /-{3,}/y
 
-  #header(tok: string) {
+  #header(tok: '#' | '=' | '-') {
     const marker = tok === '#' ? this.#rh1 : tok === '=' ? this.#rh2 : this.#rh3
     if (!this.#consume(marker)) return false
     this.#skipspace()
