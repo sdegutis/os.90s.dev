@@ -121,7 +121,7 @@ function twism(array: TemplateStringsArray, ...args: any[]) {
   </Scroll>
 }
 
-function toView(twism: TwismLine[]) {
+function toView(twism: TwismNode[]) {
 
 
 
@@ -141,6 +141,7 @@ function toView(twism: TwismLine[]) {
   return <View />
 }
 
+
 type TwismSpan =
   | { type: 'variable', key: string, val: any }
   | { type: 'plain', text: string }
@@ -158,9 +159,25 @@ type TwismLine =
   | { type: 'subheader', text: string }
   | { type: 'subsubheader', text: string }
 
+
+type TwismNode =
+  | { type: 'break', lines: number }
+  | { type: 'variable', key: string, val: any }
+  | { type: 'plain', text: string }
+  | { type: 'bold', text: string }
+  | { type: 'italic', text: string }
+  | { type: 'code', text: string }
+  | { type: 'link', text: string, path: string }
+  | { type: 'bullet', text: string, number?: number }
+  | { type: 'codeblock', text: string, filename?: string }
+  | { type: 'quote', text: string }
+  | { type: 'header', text: string }
+  | { type: 'subheader', text: string }
+  | { type: 'subsubheader', text: string }
+
 class Twism {
 
-  nodes: TwismLine[] = []
+  nodes: TwismNode[] = []
   #s: string
   #i = 0
 
