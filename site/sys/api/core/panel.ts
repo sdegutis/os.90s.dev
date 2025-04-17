@@ -3,7 +3,7 @@ import type { View } from "../views/view.js"
 import type { Cursor } from "./cursor.js"
 import { DrawingContext } from "./drawing.js"
 import { JSLN } from "./jsln.js"
-import { Listener } from "./listener.js"
+import { Listener, ListenerDone } from "./listener.js"
 import { type Ref, makeRef, multiplex } from "./ref.js"
 import { type ClientPanel, type ServerPanel, wRPC } from "./rpc.js"
 import { sys } from "./sys.js"
@@ -94,6 +94,8 @@ export class Panel {
       this.checkUnderMouse()
     })
 
+    let doneWatchingKeyPresses: ListenerDone
+
     this.rpc = new wRPC<ClientPanel, ServerPanel>(port, {
 
       adjusted: (x, y, w, h) => {
@@ -119,12 +121,16 @@ export class Panel {
         this.isFocused = true
         this.root.onPanelFocus?.()
         this.focused?.onFocus?.()
+        doneWatchingKeyPresses = sys.onKeyPress.watch((key) => {
+          this.handleKeyPress(key)
+        })
       },
 
       blur: () => {
         this.isFocused = false
         this.root.onPanelBlur?.()
         this.focused?.onBlur?.()
+        doneWatchingKeyPresses?.()
       },
 
       mouseentered: () => {
@@ -223,7 +229,6 @@ export class Panel {
 
   onKeyDown(key: string) {
     this.focused?.onKeyDown?.(key)
-    this.handleKeyPress(key)
   }
 
   onKeyUp(key: string) {
@@ -231,30 +236,16 @@ export class Panel {
     this.focused?.onKeyUp?.(key)
   }
 
-  #ctrlKeys = new Set(['Control', 'Alt', 'Shift'])
-
   #repeater: number | undefined
 
   private handleKeyPress(key: string) {
-    if (this.#ctrlKeys.has(key)) return
-
-    const keys = []
-    if (sys.pressedKeys.has('Control')) keys.push('ctrl')
-    if (sys.pressedKeys.has('Alt')) keys.push('alt')
-    if (sys.pressedKeys.has('Shift') && key.length > 1 && key !== key.toLowerCase()) {
-      keys.push('shift')
-    }
-
-    key = key.replace(/^Arrow/, '')
-    if (key.length > 1) key = key.toLowerCase()
-    keys.push(key)
-    const finalkey = keys.join(' ')
+    const modified = key.includes(' ') && key !== ' '
 
     let node = this.focused
     while (node) {
-      if (node?.onKeyPress?.(finalkey)) {
-        if (keys.length === 1) {
-          const repeat = () => node!.onKeyPress!(finalkey)
+      if (node?.onKeyPress?.(key)) {
+        if (!modified) {
+          const repeat = () => node!.onKeyPress!(key)
           clearTimeout(this.#repeater)
           this.#repeater = setTimeout(() => {
             this.#repeater = setInterval(repeat, 50)
@@ -264,7 +255,6 @@ export class Panel {
       }
       node = node.parent
     }
-
   }
 
   private checkUnderMouse() {

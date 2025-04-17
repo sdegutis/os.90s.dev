@@ -1,6 +1,7 @@
 import { View } from "../views/view.js"
 import { sysConfig } from "./config.js"
 import { Font } from "./font.js"
+import { Listener } from "./listener.js"
 import { Panel } from "./panel.js"
 import { $, Ref } from "./ref.js"
 import { wRPC, type ClientProgram, type PanelOrdering, type ServerProgram } from "./rpc.js"
@@ -60,6 +61,8 @@ class Sys {
 
   pressedKeys = new Set<string>()
 
+  onKeyPress = new Listener<string>()
+
   readonly $mouse: Ref<Point> = $({ x: 0, y: 0 })
   get mouse() { return this.$mouse.val }
   set mouse(p: Point) { this.$mouse.val = p }
@@ -82,6 +85,7 @@ class Sys {
       if (fn === 'keydown') {
         this.pressedKeys.add(key)
         program.focusedPanel?.onKeyDown(key)
+        this.handleKeyPress(key)
       }
       else if (fn === 'keyup') {
         this.pressedKeys.delete(key)
@@ -111,6 +115,26 @@ class Sys {
     keymap.forEach(k => this.pressedKeys.add(k))
 
     this.$font = sysConfig.$font
+  }
+
+  #ctrlKeys = new Set(['Control', 'Alt', 'Shift'])
+
+  private handleKeyPress(key: string) {
+    if (this.#ctrlKeys.has(key)) return
+
+    const keys = []
+    if (sys.pressedKeys.has('Control')) keys.push('ctrl')
+    if (sys.pressedKeys.has('Alt')) keys.push('alt')
+    if (sys.pressedKeys.has('Shift') && key.length > 1 && key !== key.toLowerCase()) {
+      keys.push('shift')
+    }
+
+    key = key.replace(/^Arrow/, '')
+    if (key.length > 1) key = key.toLowerCase()
+    keys.push(key)
+    const finalkey = keys.join(' ')
+
+    this.onKeyPress.dispatch(finalkey)
   }
 
   async makePanel(config: {

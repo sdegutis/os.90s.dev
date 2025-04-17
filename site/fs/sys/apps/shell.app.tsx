@@ -157,6 +157,13 @@ $panels.val.forEach(p => p.position())
 await api.program.becomeShell()
 
 
+api.sys.onKeyPress.watch(key => {
+  if (key === 'ctrl `') {
+    const next = $focused.val.findLast(p => !p.focused)
+    next?.focus()
+  }
+})
+
 
 
 
