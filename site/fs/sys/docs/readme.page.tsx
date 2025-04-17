@@ -200,13 +200,16 @@ class Twism {
   }
 
   #paragraph() {
+    const lines: string[] = []
     while (this.#match(/[^\n]/y)) {
       const text = this.#restline()!
-      this.nodes.push({ type: 'plain', text })
+      lines.push(text)
       this.#i++
       if (this.#i === this.#s.length) break
     }
-    return true
+    const success = lines.length > 0
+    if (success) this.nodes.push({ type: 'plain', text: lines.join('\n') })
+    return success
   }
 
   #header(tok: '#' | '=' | '-') {
