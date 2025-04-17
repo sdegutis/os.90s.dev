@@ -205,22 +205,20 @@ class Twism {
 
   #rnl = /\n+/y
   #rln = /(\d+)\. /y
-  #rh1 = /[^#\n]+/y
-  #rh2 = /[^=\n]+/y
-  #rh3 = /[^-\n]+/y
+  #rrl = /[^\n]+/y
+  #rh1 = /#{3,}/y
+  #rh2 = /={3,}/y
+  #rh3 = /-{3,}/y
 
   #header(tok: string) {
-    const r = tok === '#' ? this.#rh1 : tok === '=' ? this.#rh2 : this.#rh3
-    const type = tok === '#' ? 'header' : tok === '=' ? 'subheader' : 'subsubheader'
-
-    if (this.#peek(4) !== tok.repeat(3) + ' ') return false
-
-    this.#i += 4
-    this.#skipspace()
-    const text = this.#mustconsume(r, `Expected text, got ${this.#peek()}`).trimEnd()
+    const marker = tok === '#' ? this.#rh1 : tok === '=' ? this.#rh2 : this.#rh3
+    if (!this.#consume(marker)) return false
     this.#skipspace()
 
-    while (this.#peek() === tok) this.#i++
+    let i = this.#i
+    while (this.#i < this.#s.length && !this.#match(marker)) this.#i++
+    const text = this.#s.slice(i, this.#i).trimEnd()
+    this.#consume(marker)
 
     const last = this.#peek()
     if (last !== '\n' && last !== undefined) {
@@ -228,12 +226,11 @@ class Twism {
     }
     this.#i++
 
+    const type = tok === '#' ? 'header' : tok === '=' ? 'subheader' : 'subsubheader'
     this.nodes.push({ type, text })
 
     return true
   }
-
-  #rrl = /[^\n]+/y
 
   #restline() { return this.#consume(this.#rrl) }
 
@@ -307,12 +304,6 @@ class Twism {
   #consume(r: RegExp) {
     const m = this.#match(r)?.[0]
     if (m) this.#i += m.length
-    return m
-  }
-
-  #mustconsume(r: RegExp, e: string) {
-    const m = this.#consume(r)
-    if (!m) throw new Error(e)
     return m
   }
 
