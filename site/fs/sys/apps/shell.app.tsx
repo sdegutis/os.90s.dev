@@ -7,7 +7,12 @@ const $bgcolor = api.$usrConfig.adapt(config => {
 })
 
 const desktopSize = api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }), api.sizeEquals)
-api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
+
+const setWorkspaceSize = () => api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
+setWorkspaceSize()
+desktopSize.watch(setWorkspaceSize)
+
+
 
 class Panel {
 
