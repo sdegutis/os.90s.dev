@@ -192,7 +192,7 @@ class Twism {
   }
 
   #break() {
-    const m = this.#consume(this.#rnl)!
+    const m = this.#consume(/\n+/y)!
     if (m) this.nodes.push({ type: 'break', lines: m.length })
     return m
   }
@@ -203,15 +203,8 @@ class Twism {
     return true
   }
 
-  #rnl = /\n+/y
-  #rln = /(\d+)\. /y
-  #rrl = /[^\n]+/y
-  #rh1 = /#{3,}/y
-  #rh2 = /={3,}/y
-  #rh3 = /-{3,}/y
-
   #header(tok: '#' | '=' | '-') {
-    const marker = tok === '#' ? this.#rh1 : tok === '=' ? this.#rh2 : this.#rh3
+    const marker = tok === '#' ? /#{3,}/y : tok === '=' ? /={3,}/y : /-{3,}/y
     if (!this.#consume(marker)) return false
     this.#skipspace()
 
@@ -232,7 +225,7 @@ class Twism {
     return true
   }
 
-  #restline() { return this.#consume(this.#rrl) }
+  #restline() { return this.#consume(/[^\n]+/y) }
 
   #quote() {
     const lines: string[] = []
@@ -273,7 +266,7 @@ class Twism {
 
   #listitemn() {
     let m
-    while (m = this.#match(this.#rln)) {
+    while (m = this.#match(/(\d+)\. /y)) {
       this.#i += m[0].length
       const text = this.#restline()!
       this.#i++
