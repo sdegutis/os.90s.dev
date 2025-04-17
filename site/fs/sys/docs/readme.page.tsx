@@ -13,11 +13,6 @@ export default (browser: Browser) => {
 "" so good
 "" that is the second
 
-"" unrelated quote
-""
-""
-"" yes, it's good?
-
 1. this one
 3. adf
 2. that two
@@ -33,6 +28,11 @@ and some code in >file< is:
 > line 2
 > run()
 
+"" unrelated quote
+""
+""
+"" yes, it's good?
+
 === section, part 2? ===
 
 and another
@@ -41,7 +41,6 @@ without newliens
 
 asdfadf *asdf*
 and [[what about](./readme2.txt)] a link
-
 
 this is the top
 
