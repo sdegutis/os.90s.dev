@@ -17,6 +17,7 @@ export default (browser: Browser) => {
 3. adf
 2. that two
 
+
 - this is the first
 - that is the second
 - and the third
@@ -34,6 +35,7 @@ and some code in >file< is:
 "" yes, it's good?
 
 === section, part 2? ===
+
 
 and another
 longer paragraph
@@ -194,8 +196,8 @@ class Twism {
   }
 
   #break() {
-    const m = this.#consume(/\n+/y)!
-    if (m) this.nodes.push({ type: 'break', lines: m.length })
+    const m = this.#consume(/\n+/y)
+    if (m && m.length > 1) this.nodes.push({ type: 'break', lines: m.length })
     return m
   }
 
