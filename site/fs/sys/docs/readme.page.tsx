@@ -165,10 +165,21 @@ class Twism {
       src = src.replace(r, '\n')
     }
     this.#s = src.trim().replaceAll('\r', '')
+
     console.log('done2', this.#s.split('\n'))
+
     while (this.#i < this.#s.length) {
-      this.#start()
+      if (this.#header('#')) continue
+      if (this.#header('=')) continue
+      if (this.#header('-')) continue
+      if (this.#quote()) continue
+      if (this.#codeblock()) continue
+      if (this.#listitem()) continue
+      if (this.#listitemn()) continue
+      if (this.#break()) continue
+      if (this.#paragraph()) continue
     }
+
     console.log('done')
     this.nodes.forEach(n => console.log(n))
   }
@@ -180,29 +191,16 @@ class Twism {
     })
   }
 
-  #start() {
-    if (this.#peek(4) === '### ') return this.#header('#', this.#rh1, 'header')
-    if (this.#peek(4) === '=== ') return this.#header('=', this.#rh2, 'subheader')
-    if (this.#peek(4) === '--- ') return this.#header('-', this.#rh3, 'subsubheader')
-    if (this.#peek(2) === '""') return this.#quote()
-    if (this.#peek(1) === '>') return this.#codeblock()
-    if (this.#peek(2) === '- ') return this.#listitem()
-    if (this.#match(this.#rln)) return this.#listitemn()
-    if (this.#match(this.#rnl)) return this.#break()
-    return this.#paragraph()
-  }
-
   #break() {
     const m = this.#consume(this.#rnl)!
-    this.nodes.push({ type: 'break', lines: m.length })
+    if (m) this.nodes.push({ type: 'break', lines: m.length })
+    return m
   }
 
   #paragraph() {
-
     const text = this.#restline()!
     this.nodes.push({ type: 'plain', text })
-
-    // this.#i++
+    return true
   }
 
   #rnl = /\n+/y
@@ -211,7 +209,12 @@ class Twism {
   #rh2 = /[^=\n]+/y
   #rh3 = /[^-\n]+/y
 
-  #header<N extends TwismNode>(tok: string, r: RegExp, type: N extends { text: string } ? N['type'] extends `${string}header` ? N['type'] : never : never) {
+  #header(tok: string) {
+    const r = tok === '#' ? this.#rh1 : tok === '=' ? this.#rh2 : this.#rh3
+    const type = tok === '#' ? 'header' : tok === '=' ? 'subheader' : 'subsubheader'
+
+    if (this.#peek(4) !== tok.repeat(3) + ' ') return false
+
     this.#i += 4
     this.#skipspace()
     const text = this.#mustconsume(r, `Expected text, got ${this.#peek()}`).trimEnd()
@@ -227,7 +230,7 @@ class Twism {
 
     this.nodes.push({ type, text })
 
-    return text
+    return true
   }
 
   #rrl = /[^\n]+/y
@@ -235,6 +238,8 @@ class Twism {
   #restline() { return this.#consume(this.#rrl) }
 
   #quote() {
+    if (this.#peek(2) !== '""') return false
+
     const lines: string[] = []
     while (this.#peek(2) === '""') {
       this.#i += 2
@@ -243,9 +248,13 @@ class Twism {
       this.#i++
     }
     this.nodes.push({ type: 'quote', text: lines.join('\n') })
+
+    return true
   }
 
   #codeblock() {
+    if (this.#peek(1) !== '>') return false
+
     const lines: string[] = []
     while (this.#peek() === '>') {
       this.#i += 1
@@ -254,18 +263,26 @@ class Twism {
       this.#i++
     }
     this.nodes.push({ type: 'codeblock', text: lines.join('\n') })
+
+    return true
   }
 
   #listitem() {
+    if (this.#peek(2) !== '- ') return false
+
     while (this.#peek(2) === '- ') {
       this.#i += 2
       const text = this.#restline()!
       this.#i++
       this.nodes.push({ type: 'bullet', text })
     }
+
+    return true
   }
 
   #listitemn() {
+    if (!this.#match(this.#rln)) return false
+
     let m
     while (m = this.#match(this.#rln)) {
       this.#i += m[0].length
@@ -273,6 +290,8 @@ class Twism {
       this.#i++
       this.nodes.push({ type: 'bullet', text, number: +m[1] })
     }
+
+    return true
   }
 
 
