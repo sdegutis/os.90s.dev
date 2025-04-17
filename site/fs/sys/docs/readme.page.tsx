@@ -206,7 +206,7 @@ class Twism {
   }
 
   #rnl = /\n+/y
-  #rln = /\d+\. /y
+  #rln = /(\d+)\. /y
   #rh1 = /[^#\n]+/y
   #rh2 = /[^=\n]+/y
   #rh3 = /[^-\n]+/y
@@ -266,7 +266,13 @@ class Twism {
   }
 
   #listitemn() {
-    this.#i++
+    let m
+    while (m = this.#match(this.#rln)) {
+      this.#i += m[0].length
+      const text = this.#restline()!
+      this.#i++
+      this.nodes.push({ type: 'bullet', text, number: +m[1] })
+    }
   }
 
 
@@ -276,11 +282,11 @@ class Twism {
 
   #match(r: RegExp) {
     r.lastIndex = this.#i
-    return r.exec(this.#s)?.[0]
+    return r.exec(this.#s)
   }
 
   #consume(r: RegExp) {
-    const m = this.#match(r)
+    const m = this.#match(r)?.[0]
     if (m) this.#i += m.length
     return m
   }
