@@ -19,6 +19,7 @@ export default (browser: Browser) => {
 "" yes, it's good?
 
 1. this one
+3. adf
 2. that two
 
 - this is the first
@@ -35,6 +36,8 @@ and some code in >file< is:
 === section, part 2? ===
 
 and another
+longer paragraph
+without newliens
 
 asdfadf *asdf*
 and [[what about](./readme2.txt)] a link
@@ -198,8 +201,12 @@ class Twism {
   }
 
   #paragraph() {
-    const text = this.#restline()!
-    this.nodes.push({ type: 'plain', text })
+    while (this.#match(/[^\n]/y)) {
+      const text = this.#restline()!
+      this.nodes.push({ type: 'plain', text })
+      this.#i++
+      if (this.#i === this.#s.length) break
+    }
     return true
   }
 
@@ -255,7 +262,7 @@ class Twism {
     let start = this.#i
     while (this.#peek(2) === '- ') {
       this.#i += 2
-      const text = this.#restline()!
+      const text = this.#restline() ?? ''
       this.#i++
       this.nodes.push({ type: 'bullet', text })
     }
@@ -265,9 +272,9 @@ class Twism {
   #listitemn() {
     const start = this.#i
     let m
-    while (m = this.#match(/(\d+)\. /y)) {
+    while (m = this.#match(/(\d+)\.( |$)/ym)) {
       this.#i += m[0].length
-      const text = this.#restline()!
+      const text = this.#restline() ?? ''
       this.#i++
       this.nodes.push({ type: 'bullet', text, number: +m[1] })
     }
