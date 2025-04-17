@@ -227,15 +227,15 @@ class Twism {
 
   #quote() {
     const lines: string[] = []
-    let m
-    while (m = this.#consume(/^""/y)) {
+    while (this.#consume(/""/y)) {
       this.#skipspace()
       lines.push(this.#restline() ?? '')
       this.#i++
     }
 
-    if (m) this.nodes.push({ type: 'quote', text: lines.join('\n') })
-    return m
+    const success = lines.length > 0
+    if (success) this.nodes.push({ type: 'quote', text: lines.join('\n') })
+    return success
   }
 
   #codeblock() {
@@ -263,6 +263,7 @@ class Twism {
   }
 
   #listitemn() {
+    const start = this.#i
     let m
     while (m = this.#match(/(\d+)\. /y)) {
       this.#i += m[0].length
@@ -270,7 +271,7 @@ class Twism {
       this.#i++
       this.nodes.push({ type: 'bullet', text, number: +m[1] })
     }
-    return m
+    return start !== this.#i
   }
 
 
