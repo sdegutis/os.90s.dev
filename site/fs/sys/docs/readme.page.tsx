@@ -225,8 +225,6 @@ class Twism {
     return true
   }
 
-  #restline() { return this.#consume(/[^\n]+/y) }
-
   #quote() {
     const lines: string[] = []
     let m
@@ -276,10 +274,6 @@ class Twism {
   }
 
 
-  #skipspace() {
-    while (this.#peek() === ' ') this.#i++
-  }
-
   #match(r: RegExp) {
     r.lastIndex = this.#i
     return r.exec(this.#s)
@@ -291,6 +285,8 @@ class Twism {
     return m
   }
 
+  #restline() { return this.#consume(/[^\n]+/y) }
+  #skipspace() { while (this.#peek() === ' ') this.#i++ }
   #peek(n = 1) { return this.#s.slice(this.#i, this.#i + n) }
 
 }
