@@ -29,7 +29,7 @@ const file = {
 }
 
 const panel = await api.sys.makePanel({ name: "editor" },
-  <panel file={file} size={{ w: 100, h: 70 }}>
+  <panel file={file} size={{ w: 200, h: 120 }}>
     <api.Scroll
       background={0xffffff11}
       onMouseDown={function (b) { this.content.onMouseDown?.(b) }}
