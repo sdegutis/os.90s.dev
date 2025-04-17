@@ -4,7 +4,46 @@ import { fsPathOf, GroupY, Scroll, View } from "/api.js"
 
 export default (browser: Browser) => {
   return <DocsPage browser={browser} current={fsPathOf(import.meta.url)}>
+
     {twism`
+
+### header text ###
+
+"" this
+"" that
+
+1. this
+2. that
+
+- this
+- that
+
+and some code in >file< is:
+
+> (example.tsx)
+> line 2
+> run()
+
+=== section, part 2? ===
+
+and another
+
+asdfadf *asdf*
+and [[what about](./readme2.txt)] a link
+
+
+this is the top
+
+--- section ---
+
+cool
+
+asfd #this is NOT a comment
+just /one/ line though
+
+`}
+
+    {/* {twism`
       ### 90s.dev ###
 
       welcome to 90s.dev, a retrofuturistic dev env
@@ -43,7 +82,7 @@ export default (browser: Browser) => {
       
       * lists?
       * not sure
-    `}
+    `} */}
   </DocsPage>
 }
 
@@ -118,11 +157,11 @@ class Twism {
       src = src.replace(r, '\n')
     }
     this.#s = src.trim().replaceAll('\r', '')
-    console.log('done2')
+    console.log('done2', this.#s.split('\n'))
     while (this.#i < this.#s.length) {
-      this.#any()
+      this.#start()
     }
-    console.log('done')
+    console.log('done', this.nodes)
   }
 
   withVars(vars: Record<string, any>) {
@@ -132,15 +171,83 @@ class Twism {
     })
   }
 
-  #any() {
-    const ch = this.#ch()
-    switch (ch) {
-      // case ''
-    }
+  #start() {
+    if (this.#peek(4) === '### ') return this.#header('#', this.#rh1, 'header')
+    if (this.#peek(4) === '=== ') return this.#header('=', this.#rh2, 'subheader')
+    if (this.#peek(4) === '--- ') return this.#header('-', this.#rh3, 'subsubheader')
+    if (this.#peek(3) === '"" ') return this.#blockquote()
+    if (this.#peek(2) === '> ') return this.#codeblock()
+    if (this.#peek(2) === '- ') return this.#listitem()
+    if (this.#peek(5).match(this.#rln)) return this.#listitemn()
+    if (this.#consume(this.#rnl)) return this.#newline()
+
     this.#i++
   }
 
-  #ch() { return this.#s[this.#i] }
+  #newline() {
+    this.nodes.push({ type: 'break' })
+  }
+
+  #rnl = /\n+/y
+  #rln = /\d+\. /y
+  #rh1 = /[^#\n]+/y
+  #rh2 = /[^=\n]+/y
+  #rh3 = /[^-\n]+/y
+
+  #header<N extends TwismNode>(tok: string, r: RegExp, type: N extends { text: string } ? N['type'] extends `${string}header` ? N['type'] : never : never) {
+    this.#i += 4
+    this.#skipspace()
+    const text = this.#mustconsume(r, `Expected text, got ${this.#peek()}`).trimEnd()
+    this.#skipspace()
+
+    while (this.#peek() === tok) this.#i++
+
+    const last = this.#peek()
+    if (last !== '\n' && last !== undefined) {
+      throw new SyntaxError(`Expected header to end with ${tok} but got: ${last}`)
+    }
+    this.#i++
+
+    this.nodes.push({ type, text })
+
+    return text
+  }
+
+  #blockquote() {
+    this.#i++
+  }
+
+  #codeblock() {
+    this.#i++
+  }
+
+  #listitem() {
+    this.#i++
+  }
+
+  #listitemn() {
+    this.#i++
+  }
+
+
+  #skipspace() {
+    while (this.#peek() === ' ') this.#i++
+  }
+
+  #consume(r: RegExp) {
+    r.lastIndex = this.#i
+    const m = r.exec(this.#s)
+    if (m) this.#i += m[0].length
+    return m?.[0]
+  }
+
+  #mustconsume(r: RegExp, e: string) {
+    const m = this.#consume(r)
+    if (!m) throw new Error(e)
+    return m
+  }
+
+  #peek(n = 1) { return this.#s.slice(this.#i, this.#i + n) }
 
 }
 
