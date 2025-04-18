@@ -222,7 +222,7 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
   0, 1, 1, 1, 0,
 ]))
 
-export function PanelResizerComp() {
+export function PanelResizerComp(data: { panelFocused: Ref<boolean> }) {
   return <ImageView
     canMouse
     presented={function (panel) {
@@ -232,6 +232,7 @@ export function PanelResizerComp() {
       })))
     }}
     bitmap={adjImage}
+    alpha={data.panelFocused.adapt<number>(f => f ? 1 : 0.3)}
     onMouseEnter={function () { this.panel!.pushCursor(adjCursor) }}
     onMouseExit={function () { this.panel!.popCursor(adjCursor) }}
     onMouseDown={function (b) {
