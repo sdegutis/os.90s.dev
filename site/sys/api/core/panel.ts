@@ -314,7 +314,7 @@ export class Panel {
     const alpha = this.ctx.alpha
     this.ctx.alpha *= node.alpha
 
-    let allContained = true
+    node.draw(this.ctx)
 
     for (const child of node.children) {
       child.panelOffset = {
@@ -322,21 +322,15 @@ export class Panel {
         y: y + child.point.y,
       }
 
-      if (allContained && !fullyContains(node, child)) {
-        allContained = false
-      }
-    }
+      const contained = fullyContains(node, child)
 
-    node.draw(this.ctx)
-
-    for (const child of node.children) {
-      if (!allContained) this.ctx.pushClip(node.size.w, node.size.h)
+      if (!contained) this.ctx.pushClip(node.size.w, node.size.h)
       this.ctx.pushTranslate(child.point)
 
       this.drawTree(child, child.panelOffset.x, child.panelOffset.y)
 
       this.ctx.popTranslate(child.point)
-      if (!allContained) this.ctx.popClip()
+      if (!contained) this.ctx.popClip()
     }
 
     this.ctx.alpha = alpha
