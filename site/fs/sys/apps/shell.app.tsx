@@ -74,10 +74,10 @@ class Panel {
 
   async reposition() {
     const saved = await savedPanelInfo.get(this.name)
-    if (!saved) return false
+    if (!saved) return
 
     this.adjust(saved.x, saved.y, saved.w, saved.h)
-    return true
+    this.save()
   }
 
   adjust(x: number, y: number, w: number, h: number) {
@@ -121,9 +121,7 @@ panelevents.onmessage = (msg => {
   }
   else if (type === 'renamed') {
     panel.name = data.name
-    if (!panel.reposition()) {
-      panel.save()
-    }
+    panel.reposition()
   }
   else if (type === 'toggled') {
     panel.visible = data.visible
