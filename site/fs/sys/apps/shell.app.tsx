@@ -55,21 +55,29 @@ class Panel {
   }
 
   async position() {
-    let cascadedPoint: api.Point | undefined
-    if (this.point.x === 0 && this.point.y === 0) {
-      const from = $focused.val.findLast(p => p.id !== this.id)
-      if (from) cascadedPoint = { x: from.point.x + 10, y: from.point.y + 10 }
-    }
-
+    let next = { ...this.size, ...this.point }
     const saved = await savedPanelInfo.get(this.name)
 
-    if (cascadedPoint || saved) {
-      const nextPoint = saved ? saved : (cascadedPoint ?? this.point)
-      const nextSize = saved ?? this.size
-      this.adjust(nextPoint.x, nextPoint.y, nextSize.w, nextSize.h)
+    if (saved) {
+      next = saved
+    }
+    else if (this.point.x === 0 && this.point.y === 0) {
+      next.x = desktopSize.val.w / 2 - next.w / 2
+      next.y = desktopSize.val.h / 2 - next.h / 2
     }
 
-    this.save()
+    while ($focused.val
+      .filter(panel => panel.id !== this.id)
+      .findLast(p => p.point.x === next.x && p.point.y === next.y)
+    ) {
+      next.x += 10
+      next.y += 10
+    }
+
+    if (!api.pointEquals(next, this.point) || api.sizeEquals(next, this.size)) {
+      this.adjust(next.x, next.y, next.w, next.h)
+      this.save()
+    }
   }
 
   async reposition() {
