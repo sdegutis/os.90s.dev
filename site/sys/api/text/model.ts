@@ -66,6 +66,7 @@ export class TextModel {
     })
 
     this.highlighter?.highlight(this, 0)
+    this.onTextChanged.dispatch()
   }
 
   insertText(text: string) {
