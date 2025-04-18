@@ -322,6 +322,8 @@ export class Panel {
         y: y + child.point.y,
       }
 
+      const contained = contains(node, child)
+
       this.ctx.setClipport(child.panelOffset.x, child.panelOffset.y, child.size.w, child.size.h)
 
       this.drawTree(child, child.panelOffset.x, child.panelOffset.y)
@@ -410,4 +412,12 @@ export class Panel {
 export type CursorLock = {
   push(): void
   pop(): void
+}
+
+function contains(outer: View, inner: View) {
+  if (inner.panelOffset.x < outer.panelOffset.x) return false
+  if (inner.panelOffset.y < outer.panelOffset.y) return false
+  if (inner.panelOffset.x + inner.size.w > outer.panelOffset.x + outer.size.w) return false
+  if (inner.panelOffset.y + inner.size.h > outer.panelOffset.y + outer.size.h) return false
+  return true
 }
