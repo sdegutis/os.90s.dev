@@ -58,8 +58,8 @@ export class Panel {
     this.$point = root.$point
     this.$size = root.$size
 
-    this.$point.equals = pointEquals
-    this.$size.equals = sizeEquals
+    // this.$point.equals = pointEquals
+    // this.$size.equals = sizeEquals
 
     this.$mouse = multiplex([sys.$mouse, this.$point], () => ({
       x: sys.mouse.x - this.point.x,
@@ -105,10 +105,8 @@ export class Panel {
         const pointChanged = !pointEquals(this.point, point)
         const sizeChanged = !sizeEquals(this.size, size)
 
-        if (pointChanged) this.point = point
-        if (sizeChanged) this.size = size
-
-        this.ctx.size = size
+        this.point = point
+        this.size = size
 
         if (pointChanged || sizeChanged) this.checkUnderMouse()
         if (sizeChanged) this.blit()
