@@ -128,6 +128,7 @@ export class Panel {
 
       blur: () => {
         this.isFocused = false
+        clearTimeout(this.#repeater)
         this.root.onPanelBlur?.()
         this.focused?.onBlur?.()
         doneWatchingKeyPresses?.()
