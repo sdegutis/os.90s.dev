@@ -62,6 +62,7 @@ export class TextModel {
 
     this.doMove(false, c => {
       c.row = Math.min(c.row, this.lines.length - 1)
+      c.col = Math.min(c.col, this.lines[c.row].text.length)
     })
 
     this.highlighter?.highlight(this, 0)
