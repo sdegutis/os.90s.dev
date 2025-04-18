@@ -1,28 +1,28 @@
 import type { Ref } from "../core/ref.js"
 import type { Point, Size } from "../core/types.js"
 
-export function dragMove(anchor: Ref<Point>, o: Ref<Point>) {
-  const start = o.val
-  const offx = anchor.val.x - start.x
-  const offy = anchor.val.y - start.y
-  return anchor.watch(() => {
-    const diffx = anchor.val.x - start.x
-    const diffy = anchor.val.y - start.y
+export function dragMove(mouse: Ref<Point>, point: Ref<Point>) {
+  const start = { ...point.val }
+  const offx = mouse.val.x - start.x
+  const offy = mouse.val.y - start.y
+  return mouse.watch(() => {
+    const diffx = mouse.val.x - start.x
+    const diffy = mouse.val.y - start.y
     const x = start.x + diffx - offx
     const y = start.y + diffy - offy
-    o.val = { x, y }
+    point.val = { x, y }
   })
 }
 
-export function dragResize(anchor: Ref<Point>, o: Ref<Size>) {
-  const start = o.val
-  const offx = anchor.val.x - start.w
-  const offy = anchor.val.y - start.h
-  return anchor.watch(() => {
-    const diffx = anchor.val.x - start.w
-    const diffy = anchor.val.y - start.h
+export function dragResize(mouse: Ref<Point>, size: Ref<Size>) {
+  const start = { ...size.val }
+  const offx = mouse.val.x - start.w
+  const offy = mouse.val.y - start.h
+  return mouse.watch(() => {
+    const diffx = mouse.val.x - start.w
+    const diffy = mouse.val.y - start.h
     const w = start.w + diffx - offx
     const h = start.h + diffy - offy
-    o.val = { w, h }
+    size.val = { w, h }
   })
 }
