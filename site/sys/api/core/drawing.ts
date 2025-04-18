@@ -1,3 +1,5 @@
+import { Point } from "./types.js"
+
 export class DrawingContext {
 
   public canvas
@@ -13,10 +15,12 @@ export class DrawingContext {
     this.ctx.fillRect(x, y, w, h)
   }
 
-  setClipport(x: number, y: number, w: number, h: number) {
+  pushTranslate(point: Point) {
+    this.ctx.translate(point.x, point.y)
+  }
+
+  pushClip(w: number, h: number) {
     this.ctx.save()
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0)
-    this.ctx.translate(x, y)
     this.ctx.beginPath()
     this.ctx.rect(0, 0, w, h)
     this.ctx.clip()
@@ -25,8 +29,12 @@ export class DrawingContext {
   get alpha() { return this.ctx.globalAlpha }
   set alpha(n) { this.ctx.globalAlpha = n }
 
-  clearClipport() {
+  popClip() {
     this.ctx.restore()
+  }
+
+  popTranslate(point: Point) {
+    this.ctx.translate(-point.x, -point.y)
   }
 
   drawImage(canvas: CanvasImageSource, x: number, y: number) {

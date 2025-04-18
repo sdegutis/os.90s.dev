@@ -314,7 +314,7 @@ export class Panel {
     const alpha = this.ctx.alpha
     this.ctx.alpha *= node.alpha
 
-    node.draw(this.ctx)
+    let allContained = true
 
     for (const child of node.children) {
       child.panelOffset = {
@@ -322,17 +322,24 @@ export class Panel {
         y: y + child.point.y,
       }
 
-      const contained = contains(node, child)
+      if (allContained && !fullyContains(node, child)) {
+        allContained = false
+      }
+    }
 
-      this.ctx.setClipport(child.panelOffset.x, child.panelOffset.y, child.size.w, child.size.h)
+    node.draw(this.ctx)
+
+    for (const child of node.children) {
+      if (!allContained) this.ctx.pushClip(node.size.w, node.size.h)
+      this.ctx.pushTranslate(child.point)
 
       this.drawTree(child, child.panelOffset.x, child.panelOffset.y)
 
-      this.ctx.clearClipport()
+      this.ctx.popTranslate(child.point)
+      if (!allContained) this.ctx.popClip()
     }
 
     this.ctx.alpha = alpha
-
   }
 
   needsRedraw = debounce(() => {
@@ -414,7 +421,7 @@ export type CursorLock = {
   pop(): void
 }
 
-function contains(outer: View, inner: View) {
+function fullyContains(outer: View, inner: View) {
   if (inner.panelOffset.x < outer.panelOffset.x) return false
   if (inner.panelOffset.y < outer.panelOffset.y) return false
   if (inner.panelOffset.x + inner.size.w > outer.panelOffset.x + outer.size.w) return false
