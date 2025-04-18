@@ -1,9 +1,21 @@
-import { Point } from "./types.js"
+import { Point, Size } from "./types.js"
 
 export class DrawingContext {
 
-  public canvas
+  private canvas
   private ctx
+
+  #size: Size = { w: 0, h: 0 }
+  get size() { return this.#size }
+  set size(s) {
+    this.#size = s
+    this.canvas.width = s.w
+    this.canvas.height = s.h
+  }
+
+  transferToImageBitmap() {
+    return this.canvas.transferToImageBitmap()
+  }
 
   constructor(w = 0, h = 0) {
     this.canvas = new OffscreenCanvas(w, h)

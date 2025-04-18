@@ -66,8 +66,7 @@ export class Panel {
       y: sys.mouse.y - this.point.y,
     }))
 
-    this.ctx.canvas.width = root.$size.val.w
-    this.ctx.canvas.height = root.$size.val.h
+    this.ctx.size = root.$size.val
 
     const internalAdjusts = new Set<string>()
     const addInternalAdjust = () => {
@@ -82,8 +81,7 @@ export class Panel {
     this.$size.watch(debounce((size) => {
       addInternalAdjust()
       sys.adjustPanel(this.id, this.point.x, this.point.y, size.w, size.h)
-      this.ctx.canvas.width = size.w
-      this.ctx.canvas.height = size.h
+      this.ctx.size = size
       this.checkUnderMouse()
       this.blit()
     }))
@@ -110,8 +108,7 @@ export class Panel {
         if (pointChanged) this.point = point
         if (sizeChanged) this.size = size
 
-        this.ctx.canvas.width = size.w
-        this.ctx.canvas.height = size.h
+        this.ctx.size = size
 
         if (pointChanged || sizeChanged) this.checkUnderMouse()
         if (sizeChanged) this.blit()
@@ -369,7 +366,7 @@ export class Panel {
 
   blit() {
     this.drawTree(this.root, 0, 0)
-    const bmp = this.ctx.canvas.transferToImageBitmap()
+    const bmp = this.ctx.transferToImageBitmap()
     this.rpc.send('blit', [bmp], [bmp])
   }
 

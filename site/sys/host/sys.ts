@@ -308,7 +308,7 @@ export class Sys {
     this.font.print(ctx, px + 1, py + 1, 0x000000ff, str)
     this.font.print(ctx, px, py, 0xffffffff, str)
 
-    const img = ctx.canvas.transferToImageBitmap()
+    const img = ctx.transferToImageBitmap()
 
     this.ctx.drawImage(img, 0, 0)
   }

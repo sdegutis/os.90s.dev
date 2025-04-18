@@ -119,7 +119,7 @@ export class Panel {
     font.print(ctx, px + 1, py + 1, 0x000000ff, str)
     font.print(ctx, px, py, 0xffffffff, str)
 
-    this.img = ctx.canvas.transferToImageBitmap()
+    this.img = ctx.transferToImageBitmap()
   }
 
   hideSpinner() {
