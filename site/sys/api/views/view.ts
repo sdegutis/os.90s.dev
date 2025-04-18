@@ -101,6 +101,8 @@ export class View {
     this.$size.equals = sizeEquals
   }
 
+  name = ''
+
   panel: Panel | null = null; $panel = makeRef(this, 'panel')
   parent: View | null = null; $parent = makeRef(this, 'parent')
 
