@@ -51,7 +51,16 @@ class Panel {
   }
 
   save() {
-    savedPanelInfo.set(this.name, { ...this.point, ...this.size })
+    const sames = $panels.val.filter(p => p.name === this.name)
+    const highest = sames.sort((a, b) => {
+      if (a.point.y < b.point.y) return -1
+      if (a.point.y > b.point.y) return +1
+      if (a.point.x < b.point.x) return -1
+      if (a.point.x > b.point.x) return +1
+      return 0
+    })[0]
+
+    savedPanelInfo.set(this.name, { ...highest.point, ...highest.size })
   }
 
   async position() {
