@@ -97,15 +97,15 @@ export function multiplex<
 }
 
 export function makeRef<T, K extends keyof T>(o: T, k: K) {
-  const rk = `$${k as string}` as keyof T
   const val = o[k]
+  const ref = $(val)
   Object.defineProperty(o, k, {
     enumerable: true,
     configurable: false,
-    get: () => (o[rk] as Ref<any>).val,
-    set: (v) => (o[rk] as Ref<any>).val = v,
+    get: () => ref.val,
+    set: (v) => ref.val = v,
   })
-  return $(val)
+  return ref
 }
 
 export type MaybeRef<T> = T | Ref<T>
