@@ -97,8 +97,7 @@ export function multiplex<
 }
 
 export function makeRef<T, K extends keyof T>(o: T, k: K) {
-  const val = o[k]
-  const ref = $(val)
+  const ref = $(o[k])
   Object.defineProperty(o, k, {
     enumerable: true,
     configurable: false,
