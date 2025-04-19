@@ -14,13 +14,11 @@ const panel = await api.sys.makePanel({ name: "test 1" },
           <api.Margin
             canMouse
             onMouseDown={function (b) {
-              this.onMouseUp = b
-                ? api.debounce(api.dragResize(api.sys.$mouse, this.$size))
-                : api.debounce(api.dragMove(api.sys.$mouse, this.$point))
+              this.onMouseUp = api.debounce(api.dragResize(api.sys.$mouse, this.$size))
             }}
             padding={1}
             paddingColor={0xffffff11}
-            point={{ x: 10, y: 10 }}
+            // point={{ x: 10, y: 10 }}
             size={{ w: 50, h: 50 }}
             background={0x00990099}
           />

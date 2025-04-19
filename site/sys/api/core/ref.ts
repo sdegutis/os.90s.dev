@@ -84,10 +84,14 @@ export class Ref<T> {
 
 export const $ = <T>(val: T, equals?: Equals<T>) => new Ref(val, equals)
 
-export function multiplex<T>(refs: Ref<any>[], fn: () => T) {
-  const ref = $(fn())
+export function multiplex<
+  T,
+  const R extends Ref<any>[],
+  A extends { [N in keyof R]: R[N] extends Ref<infer V> ? V : never }
+>(refs: R, fn: (...args: A) => T) {
+  const ref = $(fn(...refs.map(r => r.val) as A))
   for (const r of refs) {
-    r.watch(() => ref.val = fn())
+    r.watch(() => ref.val = fn(...refs.map(r => r.val) as A))
   }
   return ref
 }

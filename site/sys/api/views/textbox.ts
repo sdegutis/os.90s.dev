@@ -179,8 +179,8 @@ export class TextBox extends View {
       cy += node.point.y
     }
 
-    const maxy = scroll.area.size.h - cursor.size.h
-    const maxx = scroll.area.size.w - cursor.size.w
+    const maxy = scroll.size.h - cursor.size.h
+    const maxx = scroll.size.w - cursor.size.w
 
     if (cy < 0) scroll.scrolly -= -cy
     if (cx < 0) scroll.scrollx -= -cx

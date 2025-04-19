@@ -4,7 +4,6 @@ import { sys } from "../core/sys.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { Button } from "./button.js"
-import { PanedXB, PanedYB } from "./paned.js"
 import { View } from "./view.js"
 
 export class Scroll extends View {
@@ -18,52 +17,51 @@ export class Scroll extends View {
   override init(): void {
     super.init()
 
-    this.content = this.children[0]
-    this.area.children = [this.content]
+    this.children = [this.content, this.trackv, this.trackh, this.corner]
 
-    const panea = new PanedYB({ children: [this.area, this.trackh] })
-    const paneb = new PanedYB({ children: [this.trackv, this.corner] })
-    this.children = [new PanedXB({ children: [panea, paneb] })]
 
-    const reflectTracksShown = () => {
-      this.trackh.size = { w: 0, h: this.showh ? 3 : 0 }
-      this.corner.size = { w: 0, h: this.showh ? 3 : 0 }
-      paneb.size = { w: this.showv ? 3 : 0, h: 0 }
-    }
 
-    reflectTracksShown()
-    this.$showh.watch(reflectTracksShown)
-    this.$showv.watch(reflectTracksShown)
 
-    const percent = multiplex([
-      this.area.$size,
-      this.content.$size,
-    ], () => ({
-      w: this.area.size.w / this.content.size.w,
-      h: this.area.size.h / this.content.size.h,
-    }))
 
-    multiplex([
-      percent,
-      this.$scrollx,
-      this.$scrolly,
-    ], () => {
-      const as = this.area.size
+    this.trackv.$point.defer(this.$size.adapt(size => ({ x: size.w - 3, y: 0 })))
+    this.trackv.$size.defer(this.$size.adapt(size => ({ w: 3, h: size.h - 3 })))
+    this.trackh.$point.defer(this.$size.adapt(size => ({ x: 0, y: size.h - 3 })))
+    this.trackh.$size.defer(this.$size.adapt(size => ({ w: size.w - 3, h: 3 })))
+    this.corner.$point.defer(this.$size.adapt(size => ({ x: size.w - 3, y: size.h - 3 })))
 
-      const ph = Math.min(1, percent.val.h)
-      const h = Math.max(3, Math.floor(as.h * ph))
-      const y = Math.floor((as.h - h) * (this.scrolly / (this.content.size.h - as.h)))
-      this.barv.visible = ph < 1
-      this.barv.point = { x: this.barv.point.x, y }
-      this.barv.size = { w: this.barv.size.w, h }
-
-      const pw = Math.min(1, percent.val.w)
-      const w = Math.max(3, Math.floor(as.w * pw))
-      const x = Math.floor((as.w - w) * (this.scrollx / (this.content.size.w - as.w)))
-      this.barh.visible = pw < 1
-      this.barh.point = { x, y: this.barh.point.y }
-      this.barh.size = { w, h: this.barh.size.h }
+    const $perc = multiplex([this.$size, this.content.$size], (mySize, contentSize) => {
+      const pw = Math.min(1, (mySize.w - 3) / contentSize.w)
+      const ph = Math.min(1, (mySize.h - 3) / contentSize.h)
+      return { w: pw, h: ph }
     })
+
+    this.barv.$size.defer(multiplex([$perc, this.trackv.$size], (p, s) => ({ w: 3, h: Math.round(p.h * s.h) })))
+    this.barh.$size.defer(multiplex([$perc, this.trackh.$size], (p, s) => ({ w: Math.round(p.w * s.w), h: 3 })))
+
+    this.barv.$point.defer(multiplex([$perc, this.$scrolly], (p, y) => ({ x: 0, y: Math.round(p.h * y) })))
+    this.barh.$point.defer(multiplex([$perc, this.$scrollx], (p, x) => ({ x: Math.round(p.w * x), y: 0 })))
+
+    this.content.$size.watch(() => {
+      this.constrainContent()
+    })
+
+
+
+
+
+
+
+
+
+    // const reflectTracksShown = () => {
+    //   this.trackh.size = { w: 0, h: this.showh ? 3 : 0 }
+    //   this.corner.size = { w: 0, h: this.showh ? 3 : 0 }
+    //   paneb.size = { w: this.showv ? 3 : 0, h: 0 }
+    // }
+
+    // reflectTracksShown()
+    // this.$showh.watch(reflectTracksShown)
+    // this.$showv.watch(reflectTracksShown)
 
     for (const xy of ['x', 'y'] as const) {
       const wh = xy === 'x' ? 'w' : 'h'
@@ -86,7 +84,7 @@ export class Scroll extends View {
 
         $point.watch(p => {
           const per = p[xy] / (track.size[wh] - bar.size[wh])
-          view[scroll] = per * (view.content.size[wh] - view.area.size[wh])
+          view[scroll] = per * (view.content.size[wh] - view.size[wh])
         })
 
         bar.onMouseUp = () => {
@@ -96,8 +94,6 @@ export class Scroll extends View {
       }
     }
 
-    paneb.$size.watch(() => this.constrainContent())
-    this.content.$size.watch(() => this.constrainContent())
     this.$size.watch(() => this.constrainContent())
     this.$scrollx.watch(() => this.constrainContent())
     this.$scrolly.watch(() => this.constrainContent())
@@ -110,19 +106,18 @@ export class Scroll extends View {
   showh = true; $showh = makeRef(this, 'showh')
   showv = true; $showv = makeRef(this, 'showv')
 
-  content!: View
-  area = new View({})
+  get content() { return this.firstChild! }
 
-  barv = new Button({ adjust: () => { }, size: { w: 3, h: 0 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
-  barh = new Button({ adjust: () => { }, size: { w: 0, h: 3 }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22 })
+  barv = new Button({ adjust: () => { }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22, padding: 1, paddingColor: 0xffffff11 })
+  barh = new Button({ adjust: () => { }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22, padding: 1, paddingColor: 0xffffff11 })
 
   trackv = new View({ background: 0x00000033, children: [this.barv] })
   trackh = new View({ background: 0x00000033, children: [this.barh] })
-  corner = new View({ background: 0x00000033, size: { w: 0, h: 3 } })
+  corner = new View({ background: 0x00000033, size: { w: 3, h: 3 } })
 
   private constrainContent() {
-    const scrollx = Math.floor(Math.max(0, Math.min(this.content.size.w - this.area.size.w, this.scrollx)))
-    const scrolly = Math.floor(Math.max(0, Math.min(this.content.size.h - this.area.size.h, this.scrolly)))
+    const scrollx = Math.floor(Math.max(0, Math.min(this.content.size.w - this.size.w + 3, this.scrollx)))
+    const scrolly = Math.floor(Math.max(0, Math.min(this.content.size.h - this.size.h + 3, this.scrolly)))
     if (scrollx !== this.scrollx) this.scrollx = scrollx
     if (scrolly !== this.scrolly) this.scrolly = scrolly
     this.layout()
@@ -137,12 +132,6 @@ export class Scroll extends View {
   }
 
   override layout(): void {
-    const c = this.firstChild
-    if (c) {
-      c.point = { x: 0, y: 0 }
-      c.size = this.size
-    }
-
     this.content.point = {
       x: -this.scrollx,
       y: -this.scrolly,
