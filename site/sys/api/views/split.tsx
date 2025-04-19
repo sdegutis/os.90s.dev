@@ -91,7 +91,7 @@ export class Split extends View {
       return Math.max(min, Math.min(pos, max))
     }, [this.$min, this.$max, this.$size])
 
-    this.resizer = new SplitDivider({ split: this })
+    this.resizer = <SplitDivider split={this} /> as SplitDivider
     this.children = [...this.children, this.resizer]
   }
 
