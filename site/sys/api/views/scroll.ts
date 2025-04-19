@@ -8,6 +8,22 @@ import { View } from "./view.js"
 
 export class Scroll extends View {
 
+  scrollBy: number = 6 * 3
+
+  scrollx = 0; $scrollx = makeRef(this, 'scrollx')
+  scrolly = 0; $scrolly = makeRef(this, 'scrolly')
+  showh = true; $showh = makeRef(this, 'showh')
+  showv = true; $showv = makeRef(this, 'showv')
+
+  get content() { return this.firstChild! }
+
+  barv = new Button({ adjust: () => { }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22, padding: 1, paddingColor: 0xffffff11 })
+  barh = new Button({ adjust: () => { }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22, padding: 1, paddingColor: 0xffffff11 })
+
+  trackv = new View({ background: 0x00000033, children: [this.barv] })
+  trackh = new View({ background: 0x00000033, children: [this.barh] })
+  corner = new View({ background: 0x00000033, size: { w: 3, h: 3 } })
+
   constructor(config?: JsxAttrs<Scroll>) {
     super()
     this.canMouse = true
@@ -87,22 +103,6 @@ export class Scroll extends View {
       this.content.point = { x: -x, y: -y }
     })
   }
-
-  scrollBy: number = 6 * 3
-
-  scrollx = 0; $scrollx = makeRef(this, 'scrollx')
-  scrolly = 0; $scrolly = makeRef(this, 'scrolly')
-  showh = true; $showh = makeRef(this, 'showh')
-  showv = true; $showv = makeRef(this, 'showv')
-
-  get content() { return this.firstChild! }
-
-  barv = new Button({ adjust: () => { }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22, padding: 1, paddingColor: 0xffffff11 })
-  barh = new Button({ adjust: () => { }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22, padding: 1, paddingColor: 0xffffff11 })
-
-  trackv = new View({ background: 0x00000033, children: [this.barv] })
-  trackh = new View({ background: 0x00000033, children: [this.barh] })
-  corner = new View({ background: 0x00000033, size: { w: 3, h: 3 } })
 
   override onWheel(px: number, py: number): void {
     px = px / 100 * this.scrollBy
