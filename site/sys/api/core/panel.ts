@@ -43,7 +43,10 @@ export class Panel {
   private clicking: View | null = null
   focused: View | null = null
 
+  // #internalAdjusts = new Set<string>()
+
   #sendAdjust = debounce(() => {
+    // this.#internalAdjusts.add([this.point.x, this.point.y, this.size.w, this.size.h].join(','))
     sys.adjustPanel(this.id, this.point.x, this.point.y, this.size.w, this.size.h)
   })
 
@@ -83,6 +86,8 @@ export class Panel {
     this.rpc = new wRPC<ClientPanel, ServerPanel>(port, {
 
       adjusted: (x, y, w, h) => {
+        // if (this.#internalAdjusts.delete([x, y, w, h].join(','))) return
+
         adjustedFromRpc = true
         this.point = { x, y }
         this.size = { w, h }
