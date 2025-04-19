@@ -5,6 +5,7 @@ import { Button } from "../views/button.js"
 import { GroupY } from "../views/group.js"
 import { Label } from "../views/label.js"
 import { View } from "../views/view.js"
+import { subpanel } from "./subpanel.js"
 
 export type MenuItem = { text: string, onClick(): void, disabled?: boolean } | '-'
 
@@ -22,10 +23,10 @@ export async function showMenu(panel: Panel, items: MenuItem[], from?: Point) {
             <View size={{ w: 0, h: 1 }} />,
           ]
         }
-        return <Button padding={2} onClick={() => {
+        return <Button padding={2} onClick={async () => {
           if (item.disabled) return
+          await sub.close()
           item.onClick()
-          close()
         }}>
           <Label text={item.text} />
         </Button>
@@ -36,11 +37,11 @@ export async function showMenu(panel: Panel, items: MenuItem[], from?: Point) {
   const menu = (
     <Border
       onKeyPress={key => {
-        if (key === 'escape') close()
+        if (key === 'escape') sub.close()
         return true
       }}
       canFocus={true}
-      onPanelBlur={() => { close() }}
+      onPanelBlur={() => { sub.close() }}
       paddingColor={borderColor}
       padding={1}
       background={bgColor}
@@ -51,30 +52,5 @@ export async function showMenu(panel: Panel, items: MenuItem[], from?: Point) {
     </Border>
   )
 
-  let pos = { ...(from ?? panel.mouse) }
-  if (pos.y + menu.size.h > panel.size.h) pos.y -= menu.size.h
-  if (pos.x + menu.size.w > panel.size.w) pos.x -= menu.size.w
-  menu.point = pos
-
-  const root = <View
-    onKeyPress={key => {
-      if (key === 'escape') { close(); return true }
-      return false
-    }}
-    canFocus
-    background={0x00000033}
-    canMouse
-    onMouseDown={() => close()}
-    size={panel.$size}
-  >
-    {menu}
-  </View>
-
-  const focused = panel.focused
-  const close = () => {
-    panel.root.removeChild(root)
-    focused?.focus()
-  }
-  panel.root.addChild(root)
-  root.focus()
+  const sub = subpanel(panel, menu, from ?? panel.mouse)
 }

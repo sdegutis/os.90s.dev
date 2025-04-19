@@ -5,6 +5,7 @@ import { Center } from "../views/center.js"
 import { GroupX, GroupY } from "../views/group.js"
 import { Label } from "../views/label.js"
 import { dragMove } from "./drag.js"
+import { subpanel } from "./subpanel.js"
 
 export async function showPrompt(panel: Panel, text: string) {
   const result = Promise.withResolvers<string | null>()
@@ -20,12 +21,7 @@ export async function showPrompt(panel: Panel, text: string) {
   const length = Math.max(buttons.size.w, prompt.size.w)
   const field = <textfield length={length} model={model} autofocus onEnter={ok} />
 
-  const host = <Center
-    canMouse
-    size={panel.root.$size}
-    background={0x00000077}
-    onMouseDown={no}
-  >
+  const host = <Center size={panel.root.$size} canMouse onMouseDown={no}>
     <Border
       canMouse
       onMouseDown={function () {
@@ -36,7 +32,9 @@ export async function showPrompt(panel: Panel, text: string) {
         if (key === 'escape') no()
         return true
       }}
-      background={0x222222ff} padding={1} paddingColor={0x005599ff}
+      background={0x222222ff}
+      padding={1}
+      paddingColor={0x005599ff}
     >
       <Border padding={3}>
         <GroupY align={'m'} gap={4}>
@@ -50,11 +48,10 @@ export async function showPrompt(panel: Panel, text: string) {
     </Border>
   </Center>
 
-  const close = () => panel.root.removeChild(host)
-  function ok() { close(); result.resolve(model.getText()) }
-  function no() { close(); result.resolve(null) }
+  const sub = subpanel(panel, host, { x: 0, y: 0 })
 
-  panel.root.addChild(host)
+  function ok() { sub.close(); result.resolve(model.getText()) }
+  function no() { sub.close(); result.resolve(null) }
 
   return result.promise
 }
