@@ -35,6 +35,9 @@ export class Scroll extends View {
 
     this.children = [this.content, this.trackv, this.trackh, this.corner]
 
+    this.$scrollx.intercept((x) => Math.floor(Math.max(0, Math.min(this.content.size.w - this.size.w, x))), [this.content.$size, this.$size])
+    this.$scrolly.intercept((y) => Math.floor(Math.max(0, Math.min(this.content.size.h - this.size.h, y))), [this.content.$size, this.$size])
+
     // setInterval(() => { this.$showh.val = !this.$showh.val }, 3000)
     // setInterval(() => { this.$showv.val = !this.$showv.val }, 2000)
 
@@ -95,9 +98,6 @@ export class Scroll extends View {
         }
       }
     }
-
-    this.$scrollx.intercept((x) => Math.floor(Math.max(0, Math.min(this.content.size.w - this.size.w, x))), [this.content.$size, this.$size])
-    this.$scrolly.intercept((y) => Math.floor(Math.max(0, Math.min(this.content.size.h - this.size.h, y))), [this.content.$size, this.$size])
 
     multiplex([this.$scrollx, this.$scrolly], (x, y) => {
       this.content.point = { x: -x, y: -y }
