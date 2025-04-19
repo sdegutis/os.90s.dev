@@ -164,8 +164,8 @@ export const fs = new FS()
 
 export const pathFns = {
   normalize: (path: string) => path.replace(/\/{2,}/g, '/'),
-  orphan: (path: string) => path.match(/\/(\w+\/?)$/)?.[1],
-  parent: (path: string) => path.match(/(\w+\/(?!$))+/)?.[0],
+  orphan: (path: string) => path.match(/\/([\w._$]+\/?)$/)?.[1],
+  parent: (path: string) => path.match(/([\w._$]+\/(?!$))+/)?.[0],
   adopt: (parent: string, orphan: string) => pathFns.normalize(parent) + orphan,
   isDir: (path: string) => path.endsWith('/'),
   isRel: (path: string) => path.indexOf('/') === -1 || path.indexOf('/') === path.length - 1,
