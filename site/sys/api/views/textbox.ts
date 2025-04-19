@@ -45,13 +45,13 @@ export class TextBox extends View {
   model = new TextModel()
 
   font = sys.$font.val
-  $font = makeRef(this, 'font')
+  readonly $font = makeRef(this, 'font')
 
   cursorColor = 0x0000ff99
-  $cursorColor = makeRef(this, 'cursorColor')
+  readonly $cursorColor = makeRef(this, 'cursorColor')
 
   textColor = 0xffffffff
-  $textColor = makeRef(this, 'textColor')
+  readonly $textColor = makeRef(this, 'textColor')
 
   editable = true
 

@@ -26,16 +26,16 @@ export class Grid extends View {
   }
 
   cols = Infinity
-  $cols = makeRef(this, 'cols')
+  readonly $cols = makeRef(this, 'cols')
 
   flow = false
-  $flow = makeRef(this, 'flow')
+  readonly $flow = makeRef(this, 'flow')
 
   xgap = 0
-  $xgap = makeRef(this, 'xgap')
+  readonly $xgap = makeRef(this, 'xgap')
 
   ygap = 0
-  $ygap = makeRef(this, 'ygap')
+  readonly $ygap = makeRef(this, 'ygap')
 
 
   override adopted(parent: View): void {

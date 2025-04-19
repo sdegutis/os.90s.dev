@@ -48,12 +48,12 @@ export class Margin extends View {
   }
 
   paddingColor = 0x00000000
-  $paddingColor = makeRef(this, 'paddingColor')
+  readonly $paddingColor = makeRef(this, 'paddingColor')
 
-  up = 0; $up = makeRef(this, 'up')
-  down = 0; $down = makeRef(this, 'down')
-  left = 0; $left = makeRef(this, 'left')
-  right = 0; $right = makeRef(this, 'right')
+  up = 0; readonly $up = makeRef(this, 'up')
+  down = 0; readonly $down = makeRef(this, 'down')
+  left = 0; readonly $left = makeRef(this, 'left')
+  right = 0; readonly $right = makeRef(this, 'right')
 
   override layout(): void {
     if (this.size.w === 0 || this.size.h === 0) return

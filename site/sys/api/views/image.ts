@@ -19,7 +19,7 @@ export class ImageView extends View {
   }
 
   bitmap: Bitmap | null = null
-  $bitmap = makeRef(this, 'bitmap')
+  readonly $bitmap = makeRef(this, 'bitmap')
 
   override adjust(): void {
     this.size = {

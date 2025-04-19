@@ -20,13 +20,13 @@ export class Button extends Border {
   }
 
   hoverBackground = 0xffffff22
-  $hoverBackground = makeRef(this, 'hoverBackground')
+  readonly $hoverBackground = makeRef(this, 'hoverBackground')
 
   pressBackground = 0xffffff11
-  $pressBackground = makeRef(this, 'pressBackground')
+  readonly $pressBackground = makeRef(this, 'pressBackground')
 
   selectedBackground = 0xffffff33
-  $selectedBackground = makeRef(this, 'selectedBackground')
+  readonly $selectedBackground = makeRef(this, 'selectedBackground')
 
   onClick?(button: number): void
 

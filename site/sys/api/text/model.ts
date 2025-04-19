@@ -314,9 +314,9 @@ export class TextCursor {
 
   begin: CursorPos | undefined
 
-  row = 0; $row = makeRef(this, 'row')
-  col = 0; $col = makeRef(this, 'col')
-  end = 0; $end = makeRef(this, 'end')
+  row = 0; readonly $row = makeRef(this, 'row')
+  col = 0; readonly $col = makeRef(this, 'col')
+  end = 0; readonly $end = makeRef(this, 'end')
 
   constructor(row = 0, col = 0, end = 0) {
     this.row = row

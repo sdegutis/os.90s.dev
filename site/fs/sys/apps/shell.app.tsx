@@ -16,9 +16,9 @@ desktopSize.watch(setWorkspaceSize)
 
 class Panel {
 
-  $focused
-  $visible
-  $name
+  readonly $focused
+  readonly $visible
+  readonly $name
 
   constructor(
     public name: string,

@@ -19,7 +19,7 @@ export class Spaced extends View {
   }
 
   dir: 'x' | 'y' = 'x'
-  $dir = makeRef(this, 'dir')
+  readonly $dir = makeRef(this, 'dir')
 
   override adjust(): void {
     const dh = this.dir === 'x' ? 'h' : 'w'

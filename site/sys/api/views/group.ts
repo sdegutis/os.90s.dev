@@ -23,13 +23,13 @@ export class Group extends View {
   }
 
   gap = 0
-  $gap = makeRef(this, 'gap')
+  readonly $gap = makeRef(this, 'gap')
 
   dir: 'x' | 'y' = 'x'
-  $dir = makeRef(this, 'dir')
+  readonly $dir = makeRef(this, 'dir')
 
   align: 'a' | 'm' | 'z' | '+' = 'm'
-  $align = makeRef(this, 'align')
+  readonly $align = makeRef(this, 'align')
 
 
   override adjust(): void {

@@ -98,15 +98,15 @@ export class Split extends View {
   dividerColorHovered = 0xffffff11
   dividerColorPressed = 0x1177ffcc
 
-  pos = 20; $pos = makeRef(this, 'pos')
-  min = 10; $min = makeRef(this, 'min')
-  max = -10; $max = makeRef(this, 'max')
+  pos = 20; readonly $pos = makeRef(this, 'pos')
+  min = 10; readonly $min = makeRef(this, 'min')
+  max = -10; readonly $max = makeRef(this, 'max')
 
   dir: 'x' | 'y' = 'y'
-  $dir = makeRef(this, 'dir')
+  readonly $dir = makeRef(this, 'dir')
 
   stick: 'a' | 'b' = 'a'
-  $stick = makeRef(this, 'stick')
+  readonly $stick = makeRef(this, 'stick')
 
 
   resizer?: SplitDivider

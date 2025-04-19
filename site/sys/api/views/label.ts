@@ -22,13 +22,13 @@ export class Label extends View {
   }
 
   color = 0xffffffff
-  $color = makeRef(this, 'color')
+  readonly $color = makeRef(this, 'color')
 
   font = sys.$font.val
-  $font = makeRef(this, 'font')
+  readonly $font = makeRef(this, 'font')
 
   text = ''
-  $text = makeRef(this, 'text')
+  readonly $text = makeRef(this, 'text')
 
   override adjust() {
     this.size = this.font.calcSize(this.text)

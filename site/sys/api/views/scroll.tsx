@@ -10,10 +10,10 @@ export class Scroll extends View {
 
   scrollBy: number = 6 * 3
 
-  scrollx = 0; $scrollx = makeRef(this, 'scrollx')
-  scrolly = 0; $scrolly = makeRef(this, 'scrolly')
-  showh = true; $showh = makeRef(this, 'showh')
-  showv = true; $showv = makeRef(this, 'showv')
+  scrollx = 0; readonly $scrollx = makeRef(this, 'scrollx')
+  scrolly = 0; readonly $scrolly = makeRef(this, 'scrolly')
+  showh = true; readonly $showh = makeRef(this, 'showh')
+  showv = true; readonly $showv = makeRef(this, 'showv')
 
   get content() { return this.firstChild! }
 

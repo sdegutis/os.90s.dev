@@ -27,13 +27,13 @@ export class Paned extends View {
   }
 
   gap = 0
-  $gap = makeRef(this, 'gap')
+  readonly $gap = makeRef(this, 'gap')
 
   dir: 'x' | 'y' = 'x'
-  $dir = makeRef(this, 'dir')
+  readonly $dir = makeRef(this, 'dir')
 
   vacuum: 'a' | 'b' = 'a'
-  $vacuum = makeRef(this, 'vacuum')
+  readonly $vacuum = makeRef(this, 'vacuum')
 
   override layout(): void {
     const [a, b] = this.children

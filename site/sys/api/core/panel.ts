@@ -26,7 +26,7 @@ export class Panel {
   set mouse(p: Point) { this.$mouse.val = p }
 
   name
-  $name
+  readonly $name
 
   id
   rpc
@@ -34,7 +34,7 @@ export class Panel {
   didClose = new Listener()
 
   isFocused = false
-  $isFocused = makeRef(this, 'isFocused')
+  readonly $isFocused = makeRef(this, 'isFocused')
 
   readonly ctx = new DrawingContext()
 

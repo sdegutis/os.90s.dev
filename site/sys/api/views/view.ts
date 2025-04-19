@@ -103,39 +103,39 @@ export class View {
 
   name = ''
 
-  panel: Panel | null = null; $panel = makeRef(this, 'panel')
-  parent: View | null = null; $parent = makeRef(this, 'parent')
+  panel: Panel | null = null; readonly $panel = makeRef(this, 'panel')
+  parent: View | null = null; readonly $parent = makeRef(this, 'parent')
 
   children: View[] = []
-  $children = makeRef(this, 'children')
+  readonly $children = makeRef(this, 'children')
 
   point: Point = { x: 0, y: 0 }
-  $point = makeRef(this, 'point')
+  readonly $point = makeRef(this, 'point')
 
   size: Size = { w: 0, h: 0 }
-  $size = makeRef(this, 'size')
+  readonly $size = makeRef(this, 'size')
 
-  canFocus = false; $canFocus = makeRef(this, 'canFocus')
-  canMouse = false; $canMouse = makeRef(this, 'canMouse')
-  visible = true; $visible = makeRef(this, 'visible')
-  autofocus = false; $autofocus = makeRef(this, 'autofocus')
+  canFocus = false; readonly $canFocus = makeRef(this, 'canFocus')
+  canMouse = false; readonly $canMouse = makeRef(this, 'canMouse')
+  visible = true; readonly $visible = makeRef(this, 'visible')
+  autofocus = false; readonly $autofocus = makeRef(this, 'autofocus')
 
-  hovered = false; $hovered = makeRef(this, 'hovered')
-  pressed = false; $pressed = makeRef(this, 'pressed')
-  selected = false; $selected = makeRef(this, 'selected')
+  hovered = false; readonly $hovered = makeRef(this, 'hovered')
+  pressed = false; readonly $pressed = makeRef(this, 'pressed')
+  selected = false; readonly $selected = makeRef(this, 'selected')
 
 
   alpha = 1
-  $alpha = makeRef(this, 'alpha')
+  readonly $alpha = makeRef(this, 'alpha')
 
   background = 0x00000000
-  $background = makeRef(this, 'background')
+  readonly $background = makeRef(this, 'background')
 
   panelOffset: Point = { x: 0, y: 0 }
-  $panelOffset = makeRef(this, 'panelOffset')
+  readonly $panelOffset = makeRef(this, 'panelOffset')
 
   mouse: Point = { x: 0, y: 0 }
-  $mouse = makeRef(this, 'mouse')
+  readonly $mouse = makeRef(this, 'mouse')
 
 
   onPanelFocus?(): void
