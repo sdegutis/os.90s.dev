@@ -17,8 +17,8 @@ export class Scroll extends View {
 
   get content() { return this.firstChild! }
 
-  barv = <Button adjust={() => { }} background={0xffffff33} pressBackground={0xffffff11} hoverBackground={0xffffff22} /* padding={1} paddingColor={0xffffff11}  */ />
-  barh = <Button adjust={() => { }} background={0xffffff33} pressBackground={0xffffff11} hoverBackground={0xffffff22} /* padding={1} paddingColor={0xffffff11}  */ />
+  barv = <Button adjust={() => { }} background={0xffffff33} pressBackground={0xffffff11} hoverBackground={0xffffff22} />
+  barh = <Button adjust={() => { }} background={0xffffff33} pressBackground={0xffffff11} hoverBackground={0xffffff22} />
 
   trackv = <View background={0x00000033} children={[this.barv]} />
   trackh = <View background={0x00000033} children={[this.barh]} />
@@ -37,9 +37,6 @@ export class Scroll extends View {
 
     this.$scrollx.intercept((x) => Math.floor(Math.max(0, Math.min(this.content.size.w - this.size.w, x))), [this.content.$size, this.$size])
     this.$scrolly.intercept((y) => Math.floor(Math.max(0, Math.min(this.content.size.h - this.size.h, y))), [this.content.$size, this.$size])
-
-    // setInterval(() => { this.$showh.val = !this.$showh.val }, 3000)
-    // setInterval(() => { this.$showv.val = !this.$showv.val }, 2000)
 
     this.trackh.$visible.defer(this.$showh)
     this.trackv.$visible.defer(this.$showv)
