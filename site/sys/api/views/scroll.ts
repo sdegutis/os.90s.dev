@@ -80,10 +80,8 @@ export class Scroll extends View {
       }
     }
 
-    this.content.$size.watch(() => this.constrainContent())
-    this.$size.watch(() => this.constrainContent())
-    this.$scrollx.watch(() => this.constrainContent())
-    this.$scrolly.watch(() => this.constrainContent())
+    this.$scrollx.intercept((x) => Math.floor(Math.max(0, Math.min(this.content.size.w - this.size.w, x))), [this.content.$size, this.$size])
+    this.$scrolly.intercept((y) => Math.floor(Math.max(0, Math.min(this.content.size.h - this.size.h, y))), [this.content.$size, this.$size])
 
     multiplex([this.$scrollx, this.$scrolly], (x, y) => {
       this.content.point = { x: -x, y: -y }
@@ -105,13 +103,6 @@ export class Scroll extends View {
   trackv = new View({ background: 0x00000033, children: [this.barv] })
   trackh = new View({ background: 0x00000033, children: [this.barh] })
   corner = new View({ background: 0x00000033, size: { w: 3, h: 3 } })
-
-  private constrainContent() {
-    const scrollx = Math.floor(Math.max(0, Math.min(this.content.size.w - this.size.w, this.scrollx)))
-    const scrolly = Math.floor(Math.max(0, Math.min(this.content.size.h - this.size.h, this.scrolly)))
-    if (scrollx !== this.scrollx) this.scrollx = scrollx
-    if (scrolly !== this.scrolly) this.scrolly = scrolly
-  }
 
   override onWheel(px: number, py: number): void {
     px = px / 100 * this.scrollBy
