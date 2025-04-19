@@ -17,12 +17,12 @@ export class Scroll extends View {
 
   get content() { return this.firstChild! }
 
-  barv = new Button({ adjust: () => { }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22, padding: 1, paddingColor: 0xffffff11 })
-  barh = new Button({ adjust: () => { }, background: 0xffffff33, pressBackground: 0xffffff11, hoverBackground: 0xffffff22, padding: 1, paddingColor: 0xffffff11 })
+  barv = <Button adjust={() => { }} background={0xffffff33} pressBackground={0xffffff11} hoverBackground={0xffffff22} /* padding={1} paddingColor={0xffffff11}  */ />
+  barh = <Button adjust={() => { }} background={0xffffff33} pressBackground={0xffffff11} hoverBackground={0xffffff22} /* padding={1} paddingColor={0xffffff11}  */ />
 
-  trackv = new View({ background: 0x00000033, children: [this.barv] })
-  trackh = new View({ background: 0x00000033, children: [this.barh] })
-  corner = new View({ background: 0x00000033, size: { w: 3, h: 3 } })
+  trackv = <View background={0x00000033} children={[this.barv]} />
+  trackh = <View background={0x00000033} children={[this.barh]} />
+  corner = <View background={0x00000033} size={{ w: 3, h: 3 }} />
 
   constructor(config?: JsxAttrs<Scroll>) {
     super()
