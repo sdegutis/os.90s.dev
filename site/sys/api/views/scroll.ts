@@ -49,10 +49,6 @@ export class Scroll extends View {
     this.barv.$point.defer(multiplex([$perc, this.$scrolly], (p, y) => ({ x: 0, y: Math.floor(p.h * y) })))
     this.barh.$point.defer(multiplex([$perc, this.$scrollx], (p, x) => ({ x: Math.floor(p.w * x), y: 0 })))
 
-    this.content.$size.watch(() => {
-      this.constrainContent()
-    })
-
     for (const xy of ['x', 'y'] as const) {
       const wh = xy === 'x' ? 'w' : 'h'
       const bar = xy === 'x' ? this.barh : this.barv
@@ -84,6 +80,7 @@ export class Scroll extends View {
       }
     }
 
+    this.content.$size.watch(() => this.constrainContent())
     this.$size.watch(() => this.constrainContent())
     this.$scrollx.watch(() => this.constrainContent())
     this.$scrolly.watch(() => this.constrainContent())
