@@ -1,4 +1,3 @@
-import { debounce } from "../util/throttle.js"
 import { View } from "../views/view.js"
 import { sysConfig } from "./config.js"
 import { Font } from "./font.js"
@@ -203,8 +202,7 @@ class Sys {
     return text
   }
 
-  adjustPanel = debounce(this.#adjustPanel.bind(this))
-  #adjustPanel(panid: number, x: number, y: number, w: number, h: number) {
+  adjustPanel(panid: number, x: number, y: number, w: number, h: number) {
     this.rpc.send('adjust', [panid, x, y, w, h])
   }
 

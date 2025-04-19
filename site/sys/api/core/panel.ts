@@ -43,6 +43,10 @@ export class Panel {
   private clicking: View | null = null
   focused: View | null = null
 
+  #sendAdjust = debounce(() => {
+    sys.adjustPanel(this.id, this.point.x, this.point.y, this.size.w, this.size.h)
+  })
+
   constructor(port: MessagePort, id: number, root: View, name: string) {
     Panel.all.set(id, this)
 
@@ -58,21 +62,20 @@ export class Panel {
     this.$point = root.$point
     this.$size = root.$size
 
-    // this.$point.equals = pointEquals
-    // this.$size.equals = sizeEquals
-
     this.$mouse = multiplex([sys.$mouse, this.$point], (m, p) => ({ x: m.x - p.x, y: m.y - p.y }))
 
     this.ctx.size = root.$size.val
 
     let adjustedFromRpc = false
 
-    this.$size.watch((size) => {
-      if (!adjustedFromRpc) sys.adjustPanel(this.id, this.point.x, this.point.y, size.w, size.h)
+    this.$size.watch(() => {
+      if (!adjustedFromRpc) this.#sendAdjust()
+      this.#onSizeChanged()
     })
 
-    this.$point.watch((point) => {
-      if (!adjustedFromRpc) sys.adjustPanel(this.id, point.x, point.y, this.size.w, this.size.h)
+    this.$point.watch(() => {
+      if (!adjustedFromRpc) this.#sendAdjust()
+      this.#onPointChanged()
     })
 
     let doneWatchingKeyPresses: ListenerDone
@@ -80,25 +83,10 @@ export class Panel {
     this.rpc = new wRPC<ClientPanel, ServerPanel>(port, {
 
       adjusted: (x, y, w, h) => {
-        const point = { x, y }
-        const size = { w, h }
-
-        const pointChanged = !pointEquals(this.point, point)
-        const sizeChanged = !sizeEquals(this.size, size)
-
         adjustedFromRpc = true
-        this.point = point
-        this.size = size
+        this.point = { x, y }
+        this.size = { w, h }
         adjustedFromRpc = false
-
-        if (pointChanged || sizeChanged) {
-          this.checkUnderMouse()
-        }
-
-        if (sizeChanged) {
-          this.ctx.size = size
-          this.blit()
-        }
       },
 
       focus: () => {
@@ -183,6 +171,16 @@ export class Panel {
     this.hovered = this.root
 
     this.blit()
+  }
+
+  #onSizeChanged() {
+    this.checkUnderMouse()
+    this.ctx.size = this.size
+    this.blit()
+  }
+
+  #onPointChanged() {
+    this.checkUnderMouse()
   }
 
   adoptTree(node: View) {
