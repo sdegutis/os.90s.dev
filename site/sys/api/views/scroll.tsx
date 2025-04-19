@@ -79,14 +79,13 @@ export class Scroll extends View {
       bar.onMouseDown = (b) => {
         if (b !== 0) return
         this.panel?.pushCursor(cursor)
-        const view = this
 
         const $point = $(bar.point)
         const done = dragMove(this.panel!.$mouse, $point)
 
         $point.watch(p => {
           const per = p[xy] / (track.size[wh] - bar.size[wh])
-          view[scroll] = per * (view.content.size[wh] - view.size[wh])
+          this[scroll] = per * (this.content.size[wh] - this.size[wh])
         })
 
         bar.onMouseUp = () => {
