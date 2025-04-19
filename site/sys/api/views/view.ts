@@ -47,9 +47,9 @@ export class View {
 
     this.$panel.watch((panel) => {
       if (panel) {
-        this.$mouse.defer(multiplex([this.$panelOffset, panel.$mouse], () => ({
-          x: panel.mouse.x - this.panelOffset.x,
-          y: panel.mouse.y - this.panelOffset.y,
+        this.$mouse.defer(multiplex([this.$panelOffset, panel.$mouse], (o, m) => ({
+          x: m.x - o.x,
+          y: m.y - o.y,
         })))
 
         this.presented?.(panel)

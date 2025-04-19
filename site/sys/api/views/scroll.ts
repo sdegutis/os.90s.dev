@@ -19,49 +19,39 @@ export class Scroll extends View {
 
     this.children = [this.content, this.trackv, this.trackh, this.corner]
 
+    // setInterval(() => { this.$showh.val = !this.$showh.val }, 3000)
+    // setInterval(() => { this.$showv.val = !this.$showv.val }, 2000)
 
-
-
+    this.trackh.$visible.defer(this.$showh)
+    this.trackv.$visible.defer(this.$showv)
+    this.corner.$visible.defer(multiplex([this.$showh, this.$showv], (h, v) => h || v))
 
     this.trackv.$point.defer(this.$size.adapt(size => ({ x: size.w - 3, y: 0 })))
-    this.trackv.$size.defer(this.$size.adapt(size => ({ w: 3, h: size.h - 3 })))
     this.trackh.$point.defer(this.$size.adapt(size => ({ x: 0, y: size.h - 3 })))
+
+    this.trackv.$size.defer(this.$size.adapt(size => ({ w: 3, h: size.h - 3 })))
     this.trackh.$size.defer(this.$size.adapt(size => ({ w: size.w - 3, h: 3 })))
+
     this.corner.$point.defer(this.$size.adapt(size => ({ x: size.w - 3, y: size.h - 3 })))
 
     const $perc = multiplex([this.$size, this.content.$size], (mySize, contentSize) => {
-      const pw = Math.min(1, (mySize.w - 3) / contentSize.w)
-      const ph = Math.min(1, (mySize.h - 3) / contentSize.h)
+      const pw = Math.min(1, mySize.w / contentSize.w)
+      const ph = Math.min(1, mySize.h / contentSize.h)
       return { w: pw, h: ph }
     })
+
+    this.barv.$visible.defer($perc.adapt(p => p.h < 1))
+    this.barh.$visible.defer($perc.adapt(p => p.w < 1))
 
     this.barv.$size.defer(multiplex([$perc, this.trackv.$size], (p, s) => ({ w: 3, h: Math.round(p.h * s.h) })))
     this.barh.$size.defer(multiplex([$perc, this.trackh.$size], (p, s) => ({ w: Math.round(p.w * s.w), h: 3 })))
 
-    this.barv.$point.defer(multiplex([$perc, this.$scrolly], (p, y) => ({ x: 0, y: Math.round(p.h * y) })))
-    this.barh.$point.defer(multiplex([$perc, this.$scrollx], (p, x) => ({ x: Math.round(p.w * x), y: 0 })))
+    this.barv.$point.defer(multiplex([$perc, this.$scrolly], (p, y) => ({ x: 0, y: Math.floor(p.h * y) })))
+    this.barh.$point.defer(multiplex([$perc, this.$scrollx], (p, x) => ({ x: Math.floor(p.w * x), y: 0 })))
 
     this.content.$size.watch(() => {
       this.constrainContent()
     })
-
-
-
-
-
-
-
-
-
-    // const reflectTracksShown = () => {
-    //   this.trackh.size = { w: 0, h: this.showh ? 3 : 0 }
-    //   this.corner.size = { w: 0, h: this.showh ? 3 : 0 }
-    //   paneb.size = { w: this.showv ? 3 : 0, h: 0 }
-    // }
-
-    // reflectTracksShown()
-    // this.$showh.watch(reflectTracksShown)
-    // this.$showv.watch(reflectTracksShown)
 
     for (const xy of ['x', 'y'] as const) {
       const wh = xy === 'x' ? 'w' : 'h'
@@ -116,8 +106,8 @@ export class Scroll extends View {
   corner = new View({ background: 0x00000033, size: { w: 3, h: 3 } })
 
   private constrainContent() {
-    const scrollx = Math.floor(Math.max(0, Math.min(this.content.size.w - this.size.w + 3, this.scrollx)))
-    const scrolly = Math.floor(Math.max(0, Math.min(this.content.size.h - this.size.h + 3, this.scrolly)))
+    const scrollx = Math.floor(Math.max(0, Math.min(this.content.size.w - this.size.w, this.scrollx)))
+    const scrolly = Math.floor(Math.max(0, Math.min(this.content.size.h - this.size.h, this.scrolly)))
     if (scrollx !== this.scrollx) this.scrollx = scrollx
     if (scrolly !== this.scrolly) this.scrolly = scrolly
     this.layout()

@@ -286,10 +286,10 @@ function ScreenSize() {
 function Clock() {
   const $date = api.$(false)
   const $time = api.$(new Date())
-  const $text = api.multiplex([$date, $time], () =>
-    ($date.val
-      ? $time.val.toLocaleString()
-      : $time.val.toLocaleTimeString()
+  const $text = api.multiplex([$date, $time], (date, time) =>
+    (date
+      ? time.toLocaleString()
+      : time.toLocaleTimeString()
     ).toLowerCase())
   setInterval(() => $time.val = new Date(), 1000)
   const toggle = () => $date.val = !$date.val

@@ -190,15 +190,12 @@ function CharView(
     background={0x00000033}
     onMouseEnter={function () { this.panel?.pushCursor(api.Cursor.NONE); hover(char) }}
     onMouseExit={function () { this.panel?.popCursor(api.Cursor.NONE) }}
-    size={api.multiplex([width, height, zoom], () => ({
-      w: width.val * zoom.val,
-      h: height.val * zoom.val,
-    }))}
+    size={api.multiplex([width, height, zoom], (w, h, z) => ({ w: w * z, h: h * z }))}
   />
 
-  const $spot = api.multiplex([view.$mouse, zoom], () => {
-    const x = Math.floor(view.mouse.x / zoom.val)
-    const y = Math.floor(view.mouse.y / zoom.val)
+  const $spot = api.multiplex([view.$mouse, zoom], (m, z) => {
+    const x = Math.floor(m.x / z)
+    const y = Math.floor(m.y / z)
     return { x, y }
   })
   $spot.equals = api.pointEquals

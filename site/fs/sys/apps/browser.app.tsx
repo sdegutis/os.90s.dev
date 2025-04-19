@@ -3,7 +3,7 @@ await api.appReady
 
 const $paths = api.$<string[]>([])
 const $pathi = api.$(-1)
-const $path = api.multiplex([$paths, $pathi], () => $paths.val[$pathi.val])
+const $path = api.multiplex([$paths, $pathi], (ps, i) => ps[i])
 
 const emptyPage = <api.Center background={0x111111ff}>
   <api.Label text='[no page]' color={0x777777ff} />

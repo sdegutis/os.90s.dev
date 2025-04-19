@@ -66,9 +66,9 @@ export class TextBox extends View {
       const view = new View({
         visible: this.$focused,
         background: this.$cursorColor,
-        point: multiplex([c.$row, c.$col], () => ({
-          x: c.col * (this.font.cw + this.xgap),
-          y: c.row * (this.font.ch + this.ygap),
+        point: multiplex([this.$font, c.$row, c.$col], (font, row, col) => ({
+          x: col * (font.cw + this.xgap),
+          y: row * (font.ch + this.ygap),
         })),
         size: this.$font.adapt(font => ({
           w: font.cw + this.xgap,

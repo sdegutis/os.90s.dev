@@ -61,10 +61,7 @@ export class Panel {
     // this.$point.equals = pointEquals
     // this.$size.equals = sizeEquals
 
-    this.$mouse = multiplex([sys.$mouse, this.$point], () => ({
-      x: sys.mouse.x - this.point.x,
-      y: sys.mouse.y - this.point.y,
-    }))
+    this.$mouse = multiplex([sys.$mouse, this.$point], (m, p) => ({ x: m.x - p.x, y: m.y - p.y }))
 
     this.ctx.size = root.$size.val
 
