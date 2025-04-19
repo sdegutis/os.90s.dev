@@ -43,6 +43,8 @@ function processSite() {
     files.with(/\.tsx?$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
     files.with(/\.html$/).do(file => { file.text = `<!-- ${copyright} -->\n\n` + file.text })
 
+    const src = files.with('^/sys/api/').copy()
+
     files.with(/\.tsx?$/).without('^/fs/sys/').do(compileTsx)
 
     files.with(/\.tsx?$/).do(file => { file.path = file.path.replace(/\.tsx?$/, '.js') })
@@ -50,6 +52,8 @@ function processSite() {
     const apis = files.with('^/sys/api/').paths()
     fs.writeFileSync('./site/fs/api.ts', apis.map(p => `export * from "..${p}"`).join('\n'))
     files.add('/api.js', apis.map(p => `export * from "${p}"`).join('\n'))
+
+    src.do(f => { files.add('/fs/sys/api' + f.path.slice('/sys/api'.length).replace(/\.tsx?$/, '.js'), f.text) })
 
     const sysdata = JSON.stringify((files
       .with('^/fs/sys')
