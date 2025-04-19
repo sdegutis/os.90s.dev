@@ -29,7 +29,7 @@ export type UserState =
 
 export const $userState = $<UserState>({ type: 'guest' })
 
-const persisted = await pobject<UserState>('_persisted')
+const persisted = await pobject<UserState>('accountinfo')
 await persisted.get().then(state => {
   if (state) $userState.val = state
 })
