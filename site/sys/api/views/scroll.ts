@@ -43,8 +43,8 @@ export class Scroll extends View {
     this.barv.$visible.defer($perc.adapt(p => p.h < 1))
     this.barh.$visible.defer($perc.adapt(p => p.w < 1))
 
-    this.barv.$size.defer(multiplex([$perc, this.trackv.$size], (p, s) => ({ w: 3, h: Math.round(p.h * s.h) })))
-    this.barh.$size.defer(multiplex([$perc, this.trackh.$size], (p, s) => ({ w: Math.round(p.w * s.w), h: 3 })))
+    this.barv.$size.defer(multiplex([$perc, this.trackv.$size], (p, s) => ({ w: 3, h: Math.floor(p.h * s.h) })))
+    this.barh.$size.defer(multiplex([$perc, this.trackh.$size], (p, s) => ({ w: Math.floor(p.w * s.w), h: 3 })))
 
     this.barv.$point.defer(multiplex([$perc, this.$scrolly], (p, y) => ({ x: 0, y: Math.floor(p.h * y) })))
     this.barh.$point.defer(multiplex([$perc, this.$scrollx], (p, x) => ({ x: Math.floor(p.w * x), y: 0 })))
@@ -87,6 +87,10 @@ export class Scroll extends View {
     this.$size.watch(() => this.constrainContent())
     this.$scrollx.watch(() => this.constrainContent())
     this.$scrolly.watch(() => this.constrainContent())
+
+    multiplex([this.$scrollx, this.$scrolly], (x, y) => {
+      this.content.point = { x: -x, y: -y }
+    })
   }
 
   scrollBy: number = 6 * 3
@@ -110,7 +114,6 @@ export class Scroll extends View {
     const scrolly = Math.floor(Math.max(0, Math.min(this.content.size.h - this.size.h, this.scrolly)))
     if (scrollx !== this.scrollx) this.scrollx = scrollx
     if (scrolly !== this.scrolly) this.scrolly = scrolly
-    this.layout()
   }
 
   override onWheel(px: number, py: number): void {
@@ -119,13 +122,6 @@ export class Scroll extends View {
     if (sys.pressedKeys.has('Shift')) [px, py] = [py, px]
     this.scrollx += px
     this.scrolly += py
-  }
-
-  override layout(): void {
-    this.content.point = {
-      x: -this.scrollx,
-      y: -this.scrolly,
-    }
   }
 
 }
