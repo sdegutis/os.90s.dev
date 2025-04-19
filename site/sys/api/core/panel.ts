@@ -65,28 +65,14 @@ export class Panel {
 
     this.ctx.size = root.$size.val
 
-    const internalAdjusts = new Set<string>()
-    const addInternalAdjust = () => {
-      const key = [this.point.x, this.point.y, this.size.w, this.size.h].join(',')
-      internalAdjusts.add(key)
-    }
-    const wasInternalAdjust = (x: number, y: number, w: number, h: number) => {
-      const key = [x, y, w, h].join(',')
-      return internalAdjusts.delete(key)
-    }
+    let adjustedFromRpc = false
 
-    this.$size.watch(debounce((size) => {
-      addInternalAdjust()
-      sys.adjustPanel(this.id, this.point.x, this.point.y, size.w, size.h)
-      this.ctx.size = size
-      this.checkUnderMouse()
-      this.blit()
-    }))
+    this.$size.watch((size) => {
+      if (!adjustedFromRpc) sys.adjustPanel(this.id, this.point.x, this.point.y, size.w, size.h)
+    })
 
     this.$point.watch((point) => {
-      addInternalAdjust()
-      sys.adjustPanel(this.id, point.x, point.y, this.size.w, this.size.h)
-      this.checkUnderMouse()
+      if (!adjustedFromRpc) sys.adjustPanel(this.id, point.x, point.y, this.size.w, this.size.h)
     })
 
     let doneWatchingKeyPresses: ListenerDone
@@ -94,19 +80,25 @@ export class Panel {
     this.rpc = new wRPC<ClientPanel, ServerPanel>(port, {
 
       adjusted: (x, y, w, h) => {
-        if (wasInternalAdjust(x, y, w, h)) return
-
         const point = { x, y }
         const size = { w, h }
 
         const pointChanged = !pointEquals(this.point, point)
         const sizeChanged = !sizeEquals(this.size, size)
 
+        adjustedFromRpc = true
         this.point = point
         this.size = size
+        adjustedFromRpc = false
 
-        if (pointChanged || sizeChanged) this.checkUnderMouse()
-        if (sizeChanged) this.blit()
+        if (pointChanged || sizeChanged) {
+          this.checkUnderMouse()
+        }
+
+        if (sizeChanged) {
+          this.ctx.size = size
+          this.blit()
+        }
       },
 
       focus: () => {
