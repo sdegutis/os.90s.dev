@@ -26,6 +26,8 @@ function processSite() {
 
     files.with('^/fs/api\.ts$').remove()
 
+    files.with(/\.tsx?$/).do(f => f.text = f.text.replace(/\r/g, ''))
+
     files.add('/sys/sw/wasm.js', swc1)
     files.add('/sys/sw/wasm_bg.wasm', swc2)
 
