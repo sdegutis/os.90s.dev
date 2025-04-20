@@ -5,7 +5,8 @@ await navigator.serviceWorker.register('/sw.js', { type: 'classic', updateViaCac
 await navigator.serviceWorker.ready
 
 const sys = new Sys(sysConfig.$size)
-
+sys.runShell()
+sys.runStartupApps()
 await sys.loadAppsFromUrl()
 
 

@@ -54,22 +54,25 @@ export class Sys {
 
     this.installEventHandlers(canvas, $point, $scale)
 
-    this.launch(sysConfig.$shell.val, {})
-    sysConfig.$shell.watch(shell => {
-      this.launch(shell, {})
-    })
-
-    for (const path of sysConfig.startup ?? []) {
-      runJsFile(path)
-    }
-
     new BroadcastChannel('procevents').onmessage = msg => {
       this.updateLocation()
     }
   }
 
-  async loadAppsFromUrl() {
+  runShell() {
+    this.launch(sysConfig.$shell.val, {})
+    sysConfig.$shell.watch(shell => {
+      this.launch(shell, {})
+    })
+  }
 
+  runStartupApps() {
+    for (const path of sysConfig.startup ?? []) {
+      runJsFile(path)
+    }
+  }
+
+  async loadAppsFromUrl() {
     type RunApp = {
       path: string
       params: Record<string, string>
