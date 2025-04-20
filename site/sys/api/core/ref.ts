@@ -110,6 +110,5 @@ export function makeRef<T, K extends keyof T>(o: T, k: K) {
 export type MaybeRef<T> = T | Ref<T>
 
 export function defRef<T>(t: MaybeRef<T>): Ref<T> {
-  if (t instanceof Ref) return t
-  return $(t)
+  return t instanceof Ref ? t : $(t)
 }
