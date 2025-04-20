@@ -24,8 +24,7 @@ const NETHOST = isDev ? 'http://localhost:8088' : 'https://net.90s.dev'
 function processSite() {
   return tree.processFiles(files => {
 
-    const apidts = files.with('^/sys/out/.+\.d\.ts$').copy()
-    const apiexports = JSON.stringify(Object.fromEntries(apidts.all().map(f => [f.path.replace(/^\/sys\/out\//, '/sys/'), f.text])))
+    const apidts = files.with('^/sys/out/api/.+\.d\.ts$').copy()
 
     files.with('^/fs/api\.ts$').remove()
 
@@ -79,6 +78,10 @@ function processSite() {
 
     const toinsert = [...datas, ...modules, iconlink].map(s => `  ${s}`).join('\n')
     files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
+
+    const apidts2 = Object.fromEntries(apidts.all().map(f => [f.path.replace(/^\/sys\/out\//, '/sys/'), f.text]))
+    apidts2['/api.d.ts'] = apis.map(p => `export * from "${p}"`).join('\n')
+    const apiexports = JSON.stringify(apidts2)
 
     files.add('/api.d.ts.json', apiexports)
 
