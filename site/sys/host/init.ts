@@ -8,10 +8,7 @@ const params = new URLSearchParams(location.search)
 
 if (params.has('embed')) {
   const sys = new Sys({ w: window.innerWidth, h: window.innerHeight })
-
-  sys.initialize([
-    sys.launch('run' + location.search, {}),
-  ])
+  sys.launch('run' + location.search, {})
 
   const resizeParent = () => {
     const { w, h } = sys.size

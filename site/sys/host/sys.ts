@@ -52,8 +52,6 @@ export class Sys {
     const { $point, $scale, ctx } = setupCanvas(this.$size)
     this.ctx = ctx
 
-    this.showLoadingScreen(0)
-
     this.installEventHandlers($point, $scale)
 
     new BroadcastChannel('procevents').onmessage = msg => {
@@ -62,6 +60,7 @@ export class Sys {
   }
 
   async initialize(steps: Promise<any>[]) {
+    this.showLoadingScreen(0)
     for (const [i, step] of steps.entries()) {
       await step
       this.showLoadingScreen(i / steps.length)
