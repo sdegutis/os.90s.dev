@@ -7,10 +7,8 @@ await navigator.serviceWorker.ready
 const params = new URLSearchParams(location.search)
 
 if (params.has('embed')) {
-  const w = +(params.get('w') ?? 100)
-  const h = +(params.get('h') ?? 100)
-  const sys = new Sys({ w, h })
-  await sys.launch(`run` + location.search, {})
+  const sys = new Sys(sysConfig.$size.val)
+  await sys.launch('run' + location.search, {})
 }
 else {
   const sys = new Sys(sysConfig.$size)
