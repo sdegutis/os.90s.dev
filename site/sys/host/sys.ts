@@ -40,6 +40,10 @@ export class Sys {
   initialAppsLoaded = false
 
   static async init() {
+
+    await navigator.serviceWorker.register('/sw.js', { type: 'classic', updateViaCache: 'none' })
+    await navigator.serviceWorker.ready
+
     updateAccountFromServer()
     const sys = new Sys()
 
