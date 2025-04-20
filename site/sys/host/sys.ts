@@ -49,12 +49,12 @@ export class Sys {
 
     this.desktop = { x: 0, y: 0, ...this.size }
 
-    const { $point, $scale, canvas, ctx } = setupCanvas(this.$size)
+    const { $point, $scale, ctx } = setupCanvas(this.$size)
     this.ctx = ctx
 
     this.showLoadingScreen()
 
-    this.installEventHandlers(canvas, $point, $scale)
+    this.installEventHandlers($point, $scale)
 
     new BroadcastChannel('procevents').onmessage = msg => {
       this.updateLocation()
@@ -72,6 +72,10 @@ export class Sys {
     for (const path of sysConfig.startup ?? []) {
       runJsFile(path)
     }
+  }
+
+  focus() {
+    this.ctx.canvas.focus()
   }
 
   async loadAppsFromUrl() {
@@ -96,7 +100,8 @@ export class Sys {
     this.#initialAppsLoaded = true
   }
 
-  private installEventHandlers(canvas: HTMLCanvasElement, $point: Ref<Point>, $scale: Ref<number>) {
+  private installEventHandlers($point: Ref<Point>, $scale: Ref<number>) {
+    const canvas = this.ctx.canvas
 
     window.onblur = (e) => {
       const keys = [...this.keymap.values()]

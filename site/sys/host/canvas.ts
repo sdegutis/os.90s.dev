@@ -20,7 +20,6 @@ export function setupCanvas(size: Ref<Size>) {
   document.body.replaceChildren(canvas)
 
   canvas.tabIndex = 1
-  canvas.focus()
 
   const $point = $({ x: 0, y: 0 })
   const updatePoint = () => {
@@ -50,6 +49,6 @@ export function setupCanvas(size: Ref<Size>) {
   new ResizeObserver(resize).observe(canvas.parentElement!)
 
   const ctx = canvas.getContext('2d')!
-  return { ctx, canvas, $point, $scale }
+  return { ctx, $point, $scale }
 
 }

@@ -17,4 +17,5 @@ else {
   sys.runShell()
   sys.runStartupApps()
   await sys.loadAppsFromUrl()
+  sys.focus()
 }
