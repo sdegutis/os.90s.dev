@@ -7,7 +7,7 @@ await navigator.serviceWorker.ready
 const params = new URLSearchParams(location.search)
 
 if (params.has('embed')) {
-  const sys = new Sys({ w: 100, h: 100 })
+  const sys = new Sys({ w: window.innerWidth, h: window.innerHeight })
   await sys.launch('run' + location.search, {})
 
   const resizeParent = () => {
