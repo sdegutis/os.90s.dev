@@ -35,31 +35,7 @@ export class Sys {
 
   desktop: Point & Size
 
-
   #initialAppsLoaded = false
-
-  async loadAppsFromUrl() {
-
-    type RunApp = {
-      path: string
-      params: Record<string, string>
-    }
-    const runApps: RunApp[] = []
-    let runApp: RunApp | undefined
-    for (const [k, v] of new URLSearchParams(location.search)) {
-      if (k === 'app') {
-        runApps.push(runApp = { path: v, params: {} })
-      }
-      else if (runApp) {
-        runApp.params[k] = v
-      }
-    }
-
-    const launches = runApps.map(app => this.launch(app.path, app.params))
-    await Promise.all(launches)
-
-    this.#initialAppsLoaded = true
-  }
 
   constructor() {
     this.$size = $(sysConfig.$size.val)
@@ -90,6 +66,29 @@ export class Sys {
     new BroadcastChannel('procevents').onmessage = msg => {
       this.updateLocation()
     }
+  }
+
+  async loadAppsFromUrl() {
+
+    type RunApp = {
+      path: string
+      params: Record<string, string>
+    }
+    const runApps: RunApp[] = []
+    let runApp: RunApp | undefined
+    for (const [k, v] of new URLSearchParams(location.search)) {
+      if (k === 'app') {
+        runApps.push(runApp = { path: v, params: {} })
+      }
+      else if (runApp) {
+        runApp.params[k] = v
+      }
+    }
+
+    const launches = runApps.map(app => this.launch(app.path, app.params))
+    await Promise.all(launches)
+
+    this.#initialAppsLoaded = true
   }
 
   private installEventHandlers(canvas: HTMLCanvasElement, $point: Ref<Point>, $scale: Ref<number>) {
