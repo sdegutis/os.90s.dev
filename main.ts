@@ -26,7 +26,6 @@ function processSite() {
 
     const apidts = files.with('^/sys/out/.+\.d\.ts$').copy()
     const apiexports = JSON.stringify(Object.fromEntries(apidts.all().map(f => [f.path.replace(/^\/sys\/out\//, '/sys/'), f.text])))
-    files.add('/api.d.ts.json', apiexports)
 
     files.with('^/fs/api\.ts$').remove()
 
@@ -80,6 +79,8 @@ function processSite() {
 
     const toinsert = [...datas, ...modules, iconlink].map(s => `  ${s}`).join('\n')
     files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
+
+    files.add('/api.d.ts.json', apiexports)
 
   })
 }
