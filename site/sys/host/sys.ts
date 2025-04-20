@@ -190,7 +190,6 @@ export class Sys {
     this.$size.val = { w, h }
     this.sysevents.postMessage({ type: 'resized', size: [w, h] })
     this.redrawAllPanels()
-    parent.postMessage({ resized: { w, h } }, '*')
   }
 
   private findHovered() {
