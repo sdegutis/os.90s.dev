@@ -9,8 +9,8 @@ const params = new URLSearchParams(location.search)
 if (params.has('embed')) {
   const w = +(params.get('w') ?? 100)
   const h = +(params.get('h') ?? 100)
-  new Sys({ w, h })
-  import('/fs/run?' + new URLSearchParams([['code', params.get('code')!]]))
+  const sys = new Sys({ w, h })
+  await sys.launch(`run` + location.search, {})
 }
 else {
   const sys = new Sys(sysConfig.$size)
