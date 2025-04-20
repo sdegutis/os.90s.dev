@@ -1,9 +1,11 @@
+import { sysConfig } from "../api/core/config.js"
 import { Sys } from "./sys.js"
 
 await navigator.serviceWorker.register('/sw.js', { type: 'classic', updateViaCache: 'none' })
 await navigator.serviceWorker.ready
 
-const sys = new Sys()
+const sys = new Sys(sysConfig.$size)
+
 await sys.loadAppsFromUrl()
 
 

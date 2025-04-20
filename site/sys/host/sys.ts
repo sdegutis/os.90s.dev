@@ -2,7 +2,7 @@ import { sysConfig } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { runJsFile } from "../api/core/open.js"
-import { Ref } from "../api/core/ref.js"
+import { defRef, MaybeRef, Ref } from "../api/core/ref.js"
 import { PanelEvent } from "../api/core/rpc.js"
 import { Point, Size } from "../api/core/types.js"
 import { debounce } from "../api/util/throttle.js"
@@ -37,9 +37,9 @@ export class Sys {
 
   #initialAppsLoaded = false
 
-  constructor() {
-    this.$size = sysConfig.$size
-    sysConfig.$size.watch(size => {
+  constructor(size: MaybeRef<Size>) {
+    this.$size = defRef(size)
+    this.$size.watch(size => {
       this.resize(size.w, size.h)
     })
 
