@@ -35,12 +35,12 @@ const panel = await api.sys.makePanel({ name: "procman" },
   <panel size={{ w: 100, h: 70 }}>
     <api.PanedYA>
       <api.GroupX>
-        <api.Button onClick={async () => {
+        <button action={async () => {
           const path = await api.showPrompt(panel, 'path to run?')
           if (path) api.sys.launch(path)
         }}>
-          <api.Label text="run" />
-        </api.Button>
+          run
+        </button>
       </api.GroupX>
       <api.Scroll background={0xffffff11}>
         <api.GroupY align="a" children={$procs.adapt(procs => (
