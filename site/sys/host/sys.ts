@@ -303,8 +303,6 @@ export class Sys {
   }
 
   private showLoadingScreen(percent: number) {
-    console.log(percent)
-
     const w = this.ctx.canvas.width
     const h = this.ctx.canvas.height
 
