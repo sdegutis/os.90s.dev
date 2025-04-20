@@ -24,6 +24,10 @@ const NETHOST = isDev ? 'http://localhost:8088' : 'https://net.90s.dev'
 function processSite() {
   return tree.processFiles(files => {
 
+    const apidts = files.with('^/sys/out/.+\.d\.ts$').copy()
+    const apiexports = JSON.stringify(Object.fromEntries(apidts.all().map(f => [f.path, f.text])))
+    files.add('/api.d.ts.json', apiexports)
+
     files.with('^/fs/api\.ts$').remove()
 
     files.with(/\.tsx?$/).do(f => f.text = f.text.replace(/\r/g, ''))
