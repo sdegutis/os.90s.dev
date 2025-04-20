@@ -4,7 +4,7 @@ import { DrawingContext } from "../api/core/drawing.js"
 import { runJsFile } from "../api/core/open.js"
 import { defRef, MaybeRef, Ref } from "../api/core/ref.js"
 import { PanelEvent } from "../api/core/rpc.js"
-import { Point, Size } from "../api/core/types.js"
+import { Point, Size, sizeEquals } from "../api/core/types.js"
 import { debounce } from "../api/util/throttle.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
@@ -39,6 +39,8 @@ export class Sys {
 
   constructor(size: MaybeRef<Size>) {
     this.$size = defRef(size)
+    this.$size.equals = sizeEquals
+
     this.$size.watch(size => {
       this.resize(size.w, size.h)
     })
@@ -180,6 +182,7 @@ export class Sys {
   }
 
   resize(w: number, h: number) {
+    this.$size.val = { w, h }
     this.sysevents.postMessage({ type: 'resized', size: [w, h] })
     this.redrawAllPanels()
   }
