@@ -52,7 +52,7 @@ export class Sys {
     const { $point, $scale, ctx } = setupCanvas(this.$size)
     this.ctx = ctx
 
-    this.showLoadingScreen()
+    this.showLoadingScreen(0)
 
     this.installEventHandlers($point, $scale)
 
@@ -61,14 +61,21 @@ export class Sys {
     }
   }
 
-  runShell() {
-    this.launch(sysConfig.$shell.val, {})
+  async initialize(steps: Promise<any>[]) {
+    for (const [i, step] of steps.entries()) {
+      await step
+      this.showLoadingScreen(i / steps.length)
+    }
+  }
+
+  async runShell() {
+    await this.launch(sysConfig.$shell.val, {})
     sysConfig.$shell.watch(shell => {
       this.launch(shell, {})
     })
   }
 
-  runStartupApps() {
+  async runStartupApps() {
     for (const path of sysConfig.startup ?? []) {
       runJsFile(path)
     }
@@ -295,7 +302,9 @@ export class Sys {
     this.sysevents.postMessage({ type: 'desktop', desktop: { x, y, w, h } })
   }
 
-  private showLoadingScreen() {
+  private showLoadingScreen(percent: number) {
+    console.log(percent)
+
     const w = this.ctx.canvas.width
     const h = this.ctx.canvas.height
 
@@ -313,6 +322,10 @@ export class Sys {
 
     this.font.print(ctx, px + 1, py + 1, 0x000000ff, str)
     this.font.print(ctx, px, py, 0xffffffff, str)
+
+    const bar = { h: 4, y: 10 }
+    ctx.fillRect(px, py + bar.y, size.w, bar.h, 0x000000ff)
+    ctx.fillRect(px, py + bar.y, Math.round(size.w * percent), bar.h, 0xffffffff)
 
     const img = ctx.transferToImageBitmap()
 

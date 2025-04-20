@@ -8,7 +8,10 @@ const params = new URLSearchParams(location.search)
 
 if (params.has('embed')) {
   const sys = new Sys({ w: window.innerWidth, h: window.innerHeight })
-  await sys.launch('run' + location.search, {})
+
+  sys.initialize([
+    sys.launch('run' + location.search, {}),
+  ])
 
   const resizeParent = () => {
     const { w, h } = sys.size
@@ -20,8 +23,10 @@ if (params.has('embed')) {
 }
 else {
   const sys = new Sys(sysConfig.$size)
-  sys.runShell()
-  sys.runStartupApps()
-  await sys.loadAppsFromUrl()
-  sys.focus()
+  sys.initialize([
+    sys.runShell(),
+    sys.runStartupApps(),
+    sys.loadAppsFromUrl(),
+    Promise.resolve(sys.focus()),
+  ])
 }
