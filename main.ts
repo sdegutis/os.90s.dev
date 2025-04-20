@@ -25,7 +25,7 @@ function processSite() {
   return tree.processFiles(files => {
 
     const apidts = files.with('^/sys/out/.+\.d\.ts$').copy()
-    const apiexports = JSON.stringify(Object.fromEntries(apidts.all().map(f => [f.path, f.text])))
+    const apiexports = JSON.stringify(Object.fromEntries(apidts.all().map(f => [f.path.replace(/^\/sys\/out\//, '/sys/'), f.text])))
     files.add('/api.d.ts.json', apiexports)
 
     files.with('^/fs/api\.ts$').remove()
