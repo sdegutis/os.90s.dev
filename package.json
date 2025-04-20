@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "generate": "node --disable-warning=ExperimentalWarning main.ts generate",
+    "build": "tsc --build",
     "watch": "tsc --build --watch"
   },
   "type": "module",
