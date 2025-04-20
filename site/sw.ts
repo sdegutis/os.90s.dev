@@ -73,6 +73,15 @@ async function jsResponse(url: URL, text: string) {
 }
 
 async function handleRoute(url: URL, req: Request) {
+  if (url.pathname === '/fs/run') {
+    const compressed = url.searchParams.get('code')!
+    const bstring = atob(compressed)
+    const bytes = new Uint8Array(Array(bstring.length).keys().map(i => bstring.charCodeAt(i)))
+    const blob = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))
+    const code = await new Response(blob).text()
+    return await jsResponse(url, code)
+  }
+
   if (url.pathname.startsWith('/fs/sys/')) {
     if (url.pathname.endsWith('.js')) {
       const res = await fetch(req)
