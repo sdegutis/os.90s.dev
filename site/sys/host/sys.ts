@@ -5,7 +5,6 @@ import { runJsFile } from "../api/core/open.js"
 import { $, Ref } from "../api/core/ref.js"
 import { PanelEvent } from "../api/core/rpc.js"
 import { Point, Size } from "../api/core/types.js"
-import { updateAccountFromServer } from "../api/util/account.js"
 import { debounce } from "../api/util/throttle.js"
 import { setupCanvas } from "./canvas.js"
 import { Panel } from "./panel.js"
@@ -37,15 +36,9 @@ export class Sys {
   desktop: Point & Size
 
 
-  initialAppsLoaded = false
+  #initialAppsLoaded = false
 
-  static async init() {
-
-    await navigator.serviceWorker.register('/sw.js', { type: 'classic', updateViaCache: 'none' })
-    await navigator.serviceWorker.ready
-
-    updateAccountFromServer()
-    const sys = new Sys()
+  async loadAppsFromUrl() {
 
     type RunApp = {
       path: string
@@ -62,13 +55,13 @@ export class Sys {
       }
     }
 
-    const launches = runApps.map(app => sys.launch(app.path, app.params))
+    const launches = runApps.map(app => this.launch(app.path, app.params))
     await Promise.all(launches)
 
-    sys.initialAppsLoaded = true
+    this.#initialAppsLoaded = true
   }
 
-  private constructor() {
+  constructor() {
     this.$size = $(sysConfig.$size.val)
     sysConfig.$size.watch(size => {
       this.resize(size.w, size.h)
@@ -242,7 +235,7 @@ export class Sys {
 
   updateLocation = debounce(() => this.#updateLocation(), 33)
   #updateLocation() {
-    if (!this.initialAppsLoaded) return
+    if (!this.#initialAppsLoaded) return
 
     const params = new URLSearchParams()
     const apps = Panel.ordered
