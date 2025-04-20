@@ -85,7 +85,14 @@ function processSite() {
 }
 
 if (isDev) {
-  const server = new immaculata.DevServer(8080, '/_reload')
+  const server = new immaculata.DevServer(8080, {
+    hmrPath: '/_reload',
+    onRequest(res) {
+      if (res.req.url?.startsWith('/api.d.ts.json')) {
+        res.setHeader('Access-Control-Allow-Origin', '*')
+      }
+    },
+  })
   server.files = await processSite()
   server.notFound = () => '/404.html'
 
