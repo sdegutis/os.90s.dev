@@ -38,8 +38,10 @@ export class Process {
     // this.worker.onerror = (e) => console.error('WORKER ERROR', this.id, this.path, e)
 
     fetch(absurl).then(r => {
-      this.ready.reject(new Error('404'))
-      if (r.status === 404) this.terminate()
+      if (r.status === 404) {
+        this.ready.reject(new Error(`404: ${this.path}`))
+        this.terminate()
+      }
     })
 
     this.procevents.postMessage({ type: 'started', pid: this.id, path: this.path })
