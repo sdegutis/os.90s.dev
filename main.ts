@@ -100,9 +100,10 @@ if (isDev) {
   server.files = await processSite()
   server.notFound = () => '/404.html'
 
-  tree.watch({
-    ignored: (str) => str.includes('/out/') || str === '/fs/api.ts'
-  }, async (paths) => {
+  tree.watch({}, async (paths) => {
+    if (paths.has('/fs/api.ts') && paths.size === 1) return
+    if ([...paths].every(p => p.endsWith('.tsbuildinfo'))) return
+
     const start = Date.now()
     try { server.files = await processSite() }
     catch (e) { console.error(e) }
