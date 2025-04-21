@@ -16,6 +16,7 @@ export interface ServerProgram {
   init(): Promise<[sysid: string, id: number, w: number, h: number, desktop: Point & Size, keymap: string[], opts: Record<string, any>]>
   newpanel(name: string, ord: PanelOrdering, x: number, y: number, w: number, h: number): Promise<[id: number, port: MessagePort]>
   adjust(panid: number, x: number, y: number, w: number, h: number): void
+  sendtohost(data: any): void
   focuspanel(id: number): void
   terminate(pid: number): void
   hidepanel(panid: number): void
