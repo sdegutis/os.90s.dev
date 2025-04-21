@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Program",
+      "name": "Launch os.90s.dev",
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/main.ts",
