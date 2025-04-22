@@ -108,4 +108,23 @@ export class Scroll extends View {
     this.scrolly += py
   }
 
+  scrollVisible(inner: View) {
+    let x1 = inner.point.x
+    let y1 = inner.point.y
+    let node: View | null = inner.parent
+    while (node && node !== this) {
+      x1 += node.point.x
+      y1 += node.point.y
+      node = node.parent
+    }
+
+    const x2 = x1 + inner.size.w
+    const y2 = y1 + inner.size.h
+
+    // console.log(x1, y1, x2, y2)
+
+    // if (x1 < 0) this.scrollx -= x1
+    // if (y1 < 0) this.scrolly -= y1
+  }
+
 }
