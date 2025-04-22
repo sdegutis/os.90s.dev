@@ -7,7 +7,7 @@ import { sys } from "./sys.js"
 
 let next = Promise.resolve()
 
-export async function print(...args: any[]) {
+export function print(...args: any[]) {
   next = next.then(prepare).then(() => {
     lazy.addLine(args.join(' '))
   })
@@ -27,9 +27,7 @@ async function prepare() {
   )
 
   function addLine(text: string) {
-    console.log('a', $lines.val)
     $lines.val = [...$lines.val, <Label text={text} />]
-    console.log('ab', $lines.val)
   }
 
   lazy = { addLine }
