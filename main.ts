@@ -1,4 +1,5 @@
 import { transformSync } from '@swc/core'
+import Zip from 'adm-zip'
 import { randomUUID } from 'crypto'
 import * as fs from 'fs'
 import * as immaculata from 'immaculata'
@@ -23,6 +24,8 @@ const NETHOST = isDev ? 'http://localhost:8088' : 'https://net.90s.dev'
 
 function processSite() {
   return tree.processFiles(files => {
+
+    files.with('^/sample/').remove()
 
     const apidts = files.with('^/sys/out/api/.+\.d\.ts$').copy()
 
@@ -84,6 +87,14 @@ function processSite() {
     const apiexports = JSON.stringify(apidts2)
 
     files.add('/api.d.ts.json', apiexports)
+
+    const zip = new Zip()
+    zip.addLocalFolder('site/sys/out/api/', 'sys/api/')
+    zip.addLocalFolder('site/sample/', 'app/')
+    zip.addLocalFile('./site/fs/api.ts', 'fs')
+    zip.addFile('.vscode/settings.json', Buffer.from(`{ "typescript.preferences.importModuleSpecifierEnding": "js" }`))
+    zip.addFile('sys/api/core/nethost.ts', Buffer.from(`export const NETHOST = ${JSON.stringify(NETHOST)}`))
+    files.add('/helloworld.zip', zip.toBuffer())
 
   })
 }

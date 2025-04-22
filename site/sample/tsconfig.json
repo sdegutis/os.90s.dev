@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "lib": [ "ESNext", "DOM" ],
+    "moduleDetection": "force",
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-native",
+    "noEmit": true,
+    "paths": { "/api.js": [ "../fs/api.js" ], },
+
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "isolatedModules": true,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+  },
+  "include": [ "../fs/api.js", "../sys/api/**/*", "." ]
+}

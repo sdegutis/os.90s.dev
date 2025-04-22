@@ -11,11 +11,15 @@
   "devDependencies": {
     "@swc/core": "^1.11.13",
     "@swc/wasm-web": "^1.11.13",
+    "@types/adm-zip": "^0.5.7",
     "@types/node": "^22.13.16",
     "@types/serviceworker": "^0.0.127",
     "@types/wicg-file-system-access": "^2023.10.5",
     "@webgpu/types": "^0.1.56",
     "immaculata": "^0.1.9",
     "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16"
   }
 }
