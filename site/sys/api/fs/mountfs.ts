@@ -21,11 +21,21 @@ export class MountDrive implements Drive {
   }
 
   async putDir(path: string[]): Promise<boolean> {
-    throw new Error("Method not implemented.")
+    return await safely(async () => {
+      const folder = await this.#getFolderForPath(path.slice(0, -1))
+      const name = path.at(-2)!
+      await folder.getDirectoryHandle(name, { create: true })
+      return true
+    }) ?? false
   }
 
   async delDir(path: string[]): Promise<boolean> {
-    throw new Error("Method not implemented.")
+    return await safely(async () => {
+      const folder = await this.#getFolderForPath(path.slice(0, -1))
+      const name = path.at(-2)!
+      await folder.removeEntry(name)
+      return true
+    }) ?? false
   }
 
   async getFile(path: string[]): Promise<string | null> {
