@@ -185,6 +185,20 @@ export class View {
     this.panel?.needsRedraw()
   }
 
+  forceLayoutTree() {
+    this.forceAdjust()
+  }
+
+  private forceAdjust() {
+    this.children.forEach(c => c.forceAdjust())
+    this.adjust?.()
+  }
+
+  private forceLayout() {
+    this.layout?.()
+    this.children.forEach(c => c.forceLayout())
+  }
+
   get firstChild(): View | undefined { return this.children[0] }
   get lastChild(): View | undefined { return this.children[this.children.length - 1] }
 

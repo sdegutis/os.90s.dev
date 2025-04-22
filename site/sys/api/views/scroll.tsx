@@ -121,10 +121,10 @@ export class Scroll extends View {
     const x2 = x1 + inner.size.w
     const y2 = y1 + inner.size.h
 
-    // console.log(x1, y1, x2, y2)
-
-    // if (x1 < 0) this.scrollx -= x1
-    // if (y1 < 0) this.scrolly -= y1
+    if (x1 < 0) { this.scrollx -= x1 }
+    if (y1 < 0) { this.scrolly -= y1 }
+    if (x2 > this.size.w) { this.scrollx += (x2 - this.size.w) }
+    if (y2 > this.size.h) { this.scrolly += (y2 - this.size.h) }
   }
 
 }
