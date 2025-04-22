@@ -8,16 +8,17 @@ import { sys } from "./sys.js"
 let next = Promise.resolve()
 
 export function print(...args: any[]) {
-  next = next.then(prepare).then(() => {
-    lazy.addLine(args.join(' '))
+  next = next.then(ensure).then(con => {
+    con.addLine(args.join(' '))
   })
 }
 
-let lazy: { addLine: (text: string) => void }
+ensure.lazy = undefined as Awaited<ReturnType<typeof make>> | undefined
+async function ensure() {
+  return ensure.lazy ??= await make()
+}
 
-async function prepare() {
-  if (lazy) return
-
+async function make() {
   const $lines = $<View[]>([])
 
   const panel = await sys.makePanel({ name: 'fake console' },
@@ -30,5 +31,5 @@ async function prepare() {
     $lines.val = [...$lines.val, <Label text={text} />]
   }
 
-  lazy = { addLine }
+  return { addLine }
 }
