@@ -7,15 +7,15 @@ import { $ } from "./ref.js"
 import { sys } from "./sys.js"
 
 let next = Promise.resolve()
-const ensure = ensured(make)
+const ensured = ensure(make)
 
 export function print(...args: any[]) {
-  next = next.then(ensure).then(con => {
+  next = next.then(ensured).then(con => {
     con.addLine(args.join(' '))
   })
 }
 
-function ensured<T>(fn: () => T) {
+function ensure<T>(fn: () => T) {
   let lazy: T
   return () => lazy ??= fn()
 }
