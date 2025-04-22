@@ -49,7 +49,12 @@ export class MountDrive implements Drive {
   }
 
   async delFile(path: string[]): Promise<boolean> {
-    throw new Error("Method not implemented.")
+    return await safely(async () => {
+      const folder = await this.#getFolderForPath(path)
+      const name = this.#filename(path)
+      await folder.removeEntry(name)
+      return true
+    }) ?? false
   }
 
   async #getFolderForPath(path: string[]) {
@@ -60,9 +65,13 @@ export class MountDrive implements Drive {
     return folder
   }
 
+  #filename(path: string[]) {
+    return path.at(-1)!.replace(/\.js$/, '.tsx')
+  }
+
   async #getFileHandleForPath(path: string[], create = false) {
     const folder = await this.#getFolderForPath(path)
-    const name = path.at(-1)!.replace(/\.js$/, '.tsx')
+    const name = this.#filename(path)
     return safely(() => folder.getFileHandle(name, { create }))
   }
 
