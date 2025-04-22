@@ -4,11 +4,13 @@ await api.appReady
 const panel = await api.sys.makePanel({ name: 'account' },
   <panel size={{ w: 150, h: 120 }}>
     <api.Margin children={api.$userState.adapt(state => {
+      console.log(state)
       switch (state.type) {
-        case 'guest': return [<SigninView />]
         case 'registering': return [<RegisterView state={state} />]
         case 'verifying': return [<VerifyView state={state} />]
         case 'known': return [<WelcomeView state={state} />]
+        case 'guest':
+        default: return [<SigninView />]
       }
     })} />
   </panel>
