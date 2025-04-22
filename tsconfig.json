@@ -5,6 +5,7 @@
     "types": [
       "node",
       "serviceworker",
+      "@types/wicg-file-system-access",
       "@webgpu/types"
     ],
     "moduleDetection": "force",

@@ -9,6 +9,7 @@ importScripts('./sys/sw/nethost.js')
 
 const ready = __wbg_init()
 const usrdb = opendb<{ path: string, content?: string }>('usr', 'path')
+const mountdb = opendb<{ name: string, folder: FileSystemDirectoryHandle }>('mounts', 'name')
 
 async function compile(url: URL, tsx: string) {
   await ready
@@ -113,5 +114,27 @@ async function handleRoute(url: URL, req: Request) {
     return new Response(text, { headers: { 'content-type': contentType } })
   }
 
-  return new Response('TEST')
+  if (url.pathname.startsWith('/fs/')) {
+    const m = url.pathname.match(/\/fs\/(.+?)\/(.+)/)
+    if (!m) return new Response('', { status: 404 })
+    const [, drive, path] = m
+    const parts = path.split('/')
+
+    const mounts = await mountdb
+    const item = await mounts.get(drive)
+    if (!item) return new Response('', { status: 404 })
+
+    let folder = item.folder
+    for (const part of parts.slice(0, -1)) {
+      folder = await folder.getDirectoryHandle(part)
+    }
+
+    const name = parts.at(-1)!.replace(/\.js$/, '.tsx')
+    const fh = await folder.getFileHandle(name)
+    const file = await fh.getFile()
+    return jsResponse(url, await file.text())
+  }
+
+  console.error('Not found:', url)
+  return new Response('', { status: 404 })
 }
