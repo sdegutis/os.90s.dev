@@ -2,11 +2,7 @@
   "compilerOptions": {
     "composite": true,
     "lib": [ "ESNext", "DOM", "DOM.Iterable" ],
-    "types": [
-      "@types/serviceworker",
-      "@types/wicg-file-system-access",
-      "@webgpu/types"
-    ],
+    "types": [ "@types/wicg-file-system-access" ],
     "moduleDetection": "force",
     "target": "ESNext",
     "module": "ESNext",
@@ -21,15 +17,11 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitOverride": true,
-    // "noUnusedParameters": true,
-    // "noUnusedLocals": true,
     "isolatedModules": true,
     "exactOptionalPropertyTypes": true,
     "esModuleInterop": true,
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": true,
     "skipLibCheck": true,
-
-    "paths": { "/*": [ "../*" ], },
   },
 }

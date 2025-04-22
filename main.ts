@@ -89,9 +89,11 @@ function processSite() {
     files.add('/api.d.ts.json', apiexports)
 
     const zip = new Zip()
-    zip.addLocalFolder('site/sys/out/api/', 'sys/api/')
+    zip.addLocalFolder('node_modules/@types/wicg-file-system-access', 'node_modules/@types/wicg-file-system-access')
+    zip.addLocalFolder('site/sys/api/', 'sys/api/')
+    zip.addLocalFile('site/sys/tsconfig.json', 'sys/')
     zip.addLocalFolder('site/sample/', 'app/')
-    zip.addLocalFile('./site/fs/api.ts', 'fs')
+    zip.addLocalFolder('./site/fs/', 'fs', path => !path.startsWith('fs\\out\\'))
     zip.addFile('.vscode/settings.json', Buffer.from(`{ "typescript.preferences.importModuleSpecifierEnding": "js" }`))
     zip.addFile('sys/api/core/nethost.ts', Buffer.from(`export const NETHOST = ${JSON.stringify(NETHOST)}`))
     files.add('/helloworld.zip', zip.toBuffer())
