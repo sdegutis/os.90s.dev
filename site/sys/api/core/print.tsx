@@ -21,15 +21,15 @@ async function ensure() {
 async function make() {
   const $lines = $<View[]>([])
 
-  const panel = await sys.makePanel({ name: 'fake console' },
-    <Scroll size={sys.$size} background={0x111111ff}>
-      <GroupY children={$lines} gap={2} />
-    </Scroll>
-  )
+  const scroll = <Scroll size={sys.$size} background={0x111111ff}>
+    <GroupY children={$lines} gap={2} />
+  </Scroll> as Scroll
 
-  function addLine(text: string) {
-    $lines.val = [...$lines.val, <Label text={text} />]
+  await sys.makePanel({ name: 'fake console' }, scroll)
+
+  return {
+    addLine: (text: string) => {
+      $lines.val = [...$lines.val, <Label text={text} />]
+    },
   }
-
-  return { addLine }
 }
