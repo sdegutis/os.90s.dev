@@ -188,7 +188,8 @@ export class Sys {
 
   async launch(path: string, opts: Record<string, any>) {
     const proc = new Process(this, path, opts)
-    await proc.ready.promise
+    try { await proc.ready.promise }
+    catch { return null }
     return proc.id
   }
 

@@ -26,7 +26,7 @@ export interface ServerProgram {
   thisfile(path: string): void
   getprocs(): Promise<[procs: { pid: number, path: string }[]]>
   getpanels(): Promise<[panels: PanelInfo[]]>
-  launch(path: string, opts: Record<string, any>): Promise<[number]>
+  launch(path: string, opts: Record<string, any>): Promise<[number | null]>
   askdir(opts: DirectoryPickerOptions | undefined): Promise<[dir: FileSystemDirectoryHandle | null]>
   readcliptext(): Promise<[text: string]>
 }
