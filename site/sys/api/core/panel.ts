@@ -65,6 +65,11 @@ export class Panel {
     this.$point = root.$point
     this.$size = root.$size
 
+    this.$point.intercept(point => ({
+      x: Math.max(0, Math.min(point.x, sys.desktop.w - sys.desktop.x - 20)),
+      y: Math.max(0, Math.min(point.y, sys.desktop.h - sys.desktop.y - 10)),
+    }))
+
     this.$mouse = multiplex([sys.$mouse, this.$point], (m, p) => ({ x: m.x - p.x, y: m.y - p.y }))
 
     this.ctx.size = root.$size.val
