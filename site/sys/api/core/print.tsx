@@ -1,4 +1,4 @@
-import { GroupY } from "../views/group.js"
+import { GroupYA } from "../views/group.js"
 import { Label } from "../views/label.js"
 import { Scroll } from "../views/scroll.js"
 import { View } from "../views/view.js"
@@ -22,7 +22,7 @@ async function make() {
   const $lines = $<View[]>([])
 
   const scroll = <Scroll size={sys.$size} background={0x111111ff}>
-    <GroupY children={$lines} gap={2} />
+    <GroupYA children={$lines} gap={2} />
   </Scroll> as Scroll
 
   await sys.makePanel({ name: 'fake console' }, scroll)

@@ -91,3 +91,39 @@ export class GroupY extends Group {
     this.setup(config)
   }
 }
+
+export class GroupXA extends Group {
+  constructor(config?: JsxAttrs<Group>) {
+    super()
+    this.dir = 'x'
+    this.align = 'a'
+    this.setup(config)
+  }
+}
+
+export class GroupXZ extends Group {
+  constructor(config?: JsxAttrs<Group>) {
+    super()
+    this.dir = 'x'
+    this.align = 'z'
+    this.setup(config)
+  }
+}
+
+export class GroupYA extends Group {
+  constructor(config?: JsxAttrs<Group>) {
+    super()
+    this.dir = 'y'
+    this.align = 'a'
+    this.setup(config)
+  }
+}
+
+export class GroupYZ extends Group {
+  constructor(config?: JsxAttrs<Group>) {
+    super()
+    this.dir = 'y'
+    this.align = 'z'
+    this.setup(config)
+  }
+}
