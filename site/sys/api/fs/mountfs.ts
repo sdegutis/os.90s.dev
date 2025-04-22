@@ -1,4 +1,49 @@
-export { }
+import { Drive } from "./drive.js"
+
+export class MountDrive implements Drive {
+
+  constructor(public folder: FileSystemDirectoryHandle) { }
+
+  async getDir(path: string[]): Promise<string[] | null> {
+    let folder = this.folder
+    for (let part of path.slice(0, -1)) {
+      folder = await folder.getDirectoryHandle(part)
+    }
+
+    const entries: string[] = []
+    for await (let [name, item] of folder.entries()) {
+      if (item.kind === 'directory') {
+        name += '/'
+      }
+      else {
+        name = name.replace(/\.tsx?$/, '.js')
+      }
+      entries.push(name)
+    }
+    return entries
+  }
+
+  async putDir(path: string[]): Promise<boolean> {
+    throw new Error("Method not implemented.")
+  }
+
+  async delDir(path: string[]): Promise<boolean> {
+    throw new Error("Method not implemented.")
+  }
+
+  async getFile(path: string[]): Promise<string | null> {
+    throw new Error("Method not implemented.")
+  }
+
+  async putFile(path: string[], content: string): Promise<boolean> {
+    throw new Error("Method not implemented.")
+  }
+
+  async delFile(path: string[]): Promise<boolean> {
+    throw new Error("Method not implemented.")
+  }
+
+}
 
 // not ready
 

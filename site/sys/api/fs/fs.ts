@@ -1,8 +1,15 @@
 import { Listener } from "../core/listener.js"
+import { opendb } from "../util/db.js"
 import { Drive } from "./drive.js"
+import { MountDrive } from "./mountfs.js"
 import { NetDrive } from "./netfs.js"
 import { SysDrive } from "./sysfs.js"
 import { UsrDrive } from "./usrfs.js"
+
+const mounts = await opendb<{
+  name: string,
+  folder: FileSystemDirectoryHandle,
+}>('mounts', 'name')
 
 class FS {
 
@@ -14,6 +21,12 @@ class FS {
     this.#drives.set('sys', new SysDrive())
     this.#drives.set('usr', new UsrDrive())
     this.#drives.set('net', new NetDrive())
+
+    mounts.all().then(mounts => {
+      mounts.forEach(mount => {
+        this.#drives.set(mount.name, new MountDrive(mount.folder))
+      })
+    })
 
     const fsevents = new BroadcastChannel('fsevents')
     this.#syncfs = (path, op) => fsevents.postMessage([path, op])
@@ -95,6 +108,23 @@ class FS {
     if (!drivename || !this.#drives.has(drivename))
       throw new Error('No such drive for: ' + path)
     return [this.#drives.get(drivename)!, parts]
+  }
+
+  async mount(name: string, folder: FileSystemDirectoryHandle) {
+    if (this.#drives.has(name)) return false
+    this.#drives.set(name, new MountDrive(folder))
+    this.#notify(name, 'mount')
+    await mounts.set({ name, folder })
+    return true
+  }
+
+  async unmount(name: string) {
+    name = name.replace(/\/+$/, '')
+    if (['sys', 'usr', 'net'].includes(name)) return false
+    this.#drives.delete(name)
+    await mounts.del(name)
+    this.#notify(name, 'unmount')
+    return true
   }
 
   async move(from: string, to: string) {

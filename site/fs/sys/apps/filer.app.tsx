@@ -13,6 +13,7 @@ const $drives = api.$<string[]>(api.fs.drives())
 
 const $dirs = api.$<string[]>([])
 api.fs.watchTree('', () => $dirs.val = [...$dirs.val])
+api.fs.watchTree('', () => $drives.val = api.fs.drives())
 
 const initpath = api.program.opts['file'] as string
 $dirs.val = initpath?.split('/').slice(0, -1).map(p => p + '/') ?? ['usr/']
@@ -24,6 +25,11 @@ const $driveButtons = $drives.adapt(drives => drives.map(d => d + '/').map(d =>
   <api.Button padding={2} onClick={(b) => {
     if (b === 0) {
       $dirs.val = [d]
+    }
+    else {
+      api.showMenu(panel, [
+        { text: 'unmount', onClick: () => api.fs.unmount(d.slice(0, -1)) },
+      ])
     }
   }}>
     <api.Label text={d} />
@@ -104,13 +110,17 @@ function Sidebar() {
   return <api.View background={0x00000077}>
     <api.GroupY align={'a'}>
       <api.GroupY align={'+'} children={$driveButtons} />
-      {/* <button action={async function (this: api.View) {
+      <button action={async function (this: api.View) {
         const name = await api.showPrompt(this.panel!, 'drive name?')
         if (!name) return
         const folder = await api.sys.askdir()
-        console.log(folder)
-        console.log('mount', name)
-      }}>mount</button> */}
+        if (!folder) {
+          console.log('Failed to get folder: error, cancelled, or using Firefox.')
+          return
+        }
+        await folder.requestPermission({ mode: 'readwrite' })
+        api.fs.mount(name, folder)
+      }}>mount</button>
     </api.GroupY>
   </api.View>
 }
