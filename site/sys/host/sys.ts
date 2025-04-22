@@ -37,6 +37,8 @@ export class Sys {
 
   #initialAppsLoaded = false
 
+  loading = 0
+
   constructor(size: MaybeRef<Size>) {
     this.$size = defRef(size)
     this.$size.equals = sizeEquals
@@ -188,8 +190,12 @@ export class Sys {
 
   async launch(path: string, opts: Record<string, any>) {
     const proc = new Process(this, path, opts)
+    this.loading++
     try { await proc.ready.promise }
     catch { return null }
+    finally {
+      this.loading--
+    }
     return proc.id
   }
 
@@ -231,7 +237,8 @@ export class Sys {
   }
 
   private drawCursor() {
-    cursor.draw(this.ctx, this.mouse.x, this.mouse.y)
+    const c = this.loading ? loadingCursor : cursor
+    c.draw(this.ctx, this.mouse.x, this.mouse.y)
   }
 
   focusPanel(panel: Panel) {
@@ -361,6 +368,21 @@ pixels=
 1 2 2 1
 1 2 1 1
 1 1 1 0
+`.trimStart())
+
+const loadingCursor = Cursor.fromString(`
+offx=1
+offy=1
+colors[]=0x000000ff
+colors[]=0xffffffff
+pixels=
+
+1 1 1 1 0 0
+1 2 2 1 0 0
+1 2 1 1 0 0
+1 1 1 0 1 0
+0 0 0 1 2 1
+0 0 0 0 1 0
 `.trimStart())
 
 let cursor = defaultCursor
