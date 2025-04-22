@@ -14,7 +14,7 @@ const $drives = api.$<string[]>(api.fs.drives())
 const $dirs = api.$<string[]>([])
 
 $dirs.intercept(dirs => {
-  const cdrive = $drives.val[0].slice(0, -1)
+  const cdrive = $drives.val[0]
   if (!$drives.val.includes(cdrive)) return ['usr/']
   return [...dirs]
 })
