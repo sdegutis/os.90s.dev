@@ -32,7 +32,21 @@ export class MountDrive implements Drive {
   }
 
   async getFile(path: string[]): Promise<string | null> {
-    throw new Error("Method not implemented.")
+    let folder = this.folder
+    for (let part of path.slice(0, -1)) {
+      folder = await folder.getDirectoryHandle(part)
+    }
+
+    const name = path.at(-1)!.replace(/\.js$/, '.tsx')
+    try {
+      const fh = await folder.getFileHandle(name)
+      const file = await fh.getFile()
+      return await file.text()
+    }
+    catch (e) {
+      console.error(e)
+      return null
+    }
   }
 
   async putFile(path: string[], content: string): Promise<boolean> {
