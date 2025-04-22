@@ -140,6 +140,7 @@ class Sys {
   async makePanel(config: {
     name: string,
     order?: PanelOrdering,
+    constrainToDesktop?: boolean,
   }, root: View) {
     const [id, port] = await this.rpc.call('newpanel', [
       config.name,
@@ -148,7 +149,9 @@ class Sys {
       root.size.w, root.size.h,
     ])
 
-    const panel = new Panel(port, id, root, config.name)
+    const constrainToDesktop = config.constrainToDesktop ?? true
+
+    const panel = new Panel(port, id, root, config.name, constrainToDesktop)
 
     program.panels.add(panel)
     panel.didClose.watch(() => {

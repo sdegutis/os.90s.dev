@@ -43,6 +43,8 @@ export class Panel {
   private clicking: View | null = null
   focused: View | null = null
 
+  constrainToDesktop
+
   // #internalAdjusts = new Set<string>()
 
   #sendAdjust = debounce(() => {
@@ -50,9 +52,10 @@ export class Panel {
     sys.adjustPanel(this.id, this.point.x, this.point.y, this.size.w, this.size.h)
   })
 
-  constructor(port: MessagePort, id: number, root: View, name: string) {
+  constructor(port: MessagePort, id: number, root: View, name: string, constrainToDesktop: boolean) {
     Panel.all.set(id, this)
 
+    this.constrainToDesktop = constrainToDesktop
     this.id = id
 
     this.name = name
@@ -65,10 +68,12 @@ export class Panel {
     this.$point = root.$point
     this.$size = root.$size
 
-    this.$point.intercept(point => ({
-      x: Math.max(0, Math.min(point.x, sys.desktop.w - sys.desktop.x - 20)),
-      y: Math.max(0, Math.min(point.y, sys.desktop.h - sys.desktop.y - 10)),
-    }))
+    if (this.constrainToDesktop) {
+      this.$point.intercept(point => ({
+        x: Math.max(0, Math.min(point.x, sys.desktop.w - sys.desktop.x - 20)),
+        y: Math.max(0, Math.min(point.y, sys.desktop.h - sys.desktop.y - 10)),
+      }))
+    }
 
     this.$mouse = multiplex([sys.$mouse, this.$point], (m, p) => ({ x: m.x - p.x, y: m.y - p.y }))
 

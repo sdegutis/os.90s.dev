@@ -226,6 +226,7 @@ const desktopButtons = <api.GroupY align={'a'} gap={2} />
 const desktop = await api.sys.makePanel({
   name: 'desktop',
   order: 'bottom',
+  constrainToDesktop: false,
 }, (
   <api.Margin
     size={desktopSize}
@@ -265,6 +266,7 @@ const showRun = () => api.sys.launch('sys/apps/filer.app.js', 'sys/apps/')
 const taskbar = await api.sys.makePanel({
   name: 'taskbar',
   order: 'top',
+  constrainToDesktop: false,
 }, (
   <api.SpacedX
     size={api.sys.$size.adapt(s => ({ ...s, h: 10 }), api.sizeEquals)}
