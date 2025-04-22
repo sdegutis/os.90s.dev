@@ -44,6 +44,11 @@ class Panel {
     api.sys.hidePanel(this.id)
   }
 
+  center() {
+    this.adjust(0, 0, desktopSize.val.w, desktopSize.val.h)
+    this.focus()
+  }
+
   focus() {
     this.visible = true
     this.focused = true
@@ -194,7 +199,12 @@ const $buttons = $panels.adapt(panels =>
     return <api.Button
       background={p.$focused.adapt<number>(focused => focused ? 0x99000099 : 0x000000ff)}
       padding={2}
-      onClick={() => {
+      onClick={(b) => {
+        if (b !== 0) {
+          p.center()
+          return
+        }
+
         if (p.focused) {
           findPanel(p.id)?.hide()
           const toFocus = $panels.val.findLast(panel => panel !== p && panel.visible)
