@@ -35,19 +35,21 @@ export const jsxs = createNode
 export const jsx = createNode
 
 function createNode(tag: any, data: Record<string, any>): JSX.Element {
-  if (typeof tag === 'function') {
-    if (canConstruct(tag)) {
-      return new tag(data)
-    }
-    else {
-      return tag(data)
-    }
+  if (typeof tag === 'string') {
+    const comp = composites[tag] ?? undefined
+    if (!comp) throw new Error(`Composite "${tag}" not found`)
+    return comp(data)
   }
 
-  const comp = composites[tag] ?? undefined
-  if (comp) return comp(data)
+  if (canConstruct(tag)) {
+    return new tag(data)
+  }
 
-  throw new Error(`Composite "${tag}" not found`)
+  if (typeof tag === 'function') {
+    return tag(data)
+  }
+
+  throw new Error(`Unsupported JSX tag: ${tag}`)
 }
 
 function canConstruct(f: any) {
