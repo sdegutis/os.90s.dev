@@ -115,24 +115,30 @@ async function handleRoute(url: URL, req: Request) {
   }
 
   if (url.pathname.startsWith('/fs/')) {
-    const m = url.pathname.match(/\/fs\/(.+?)\/(.+)/)
-    if (!m) return new Response('', { status: 404 })
-    const [, drive, path] = m
-    const parts = path.split('/')
+    try {
+      const m = url.pathname.match(/\/fs\/(.+?)\/(.+)/)
+      if (!m) return new Response('', { status: 404 })
+      const [, drive, path] = m
+      const parts = path.split('/')
 
-    const mounts = await mountdb
-    const item = await mounts.get(drive)
-    if (!item) return new Response('', { status: 404 })
+      const mounts = await mountdb
+      const item = await mounts.get(drive)
+      if (!item) return new Response('', { status: 404 })
 
-    let folder = item.folder
-    for (const part of parts.slice(0, -1)) {
-      folder = await folder.getDirectoryHandle(part)
+      let folder = item.folder
+      for (const part of parts.slice(0, -1)) {
+        folder = await folder.getDirectoryHandle(part)
+      }
+
+      const name = parts.at(-1)!.replace(/\.js$/, '.tsx')
+      const fh = await folder.getFileHandle(name)
+      const file = await fh.getFile()
+      return jsResponse(url, await file.text())
     }
-
-    const name = parts.at(-1)!.replace(/\.js$/, '.tsx')
-    const fh = await folder.getFileHandle(name)
-    const file = await fh.getFile()
-    return jsResponse(url, await file.text())
+    catch (e) {
+      console.error(e)
+      return new Response('', { status: 500 })
+    }
   }
 
   console.error('Not found:', url)

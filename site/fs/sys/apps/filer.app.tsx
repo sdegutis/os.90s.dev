@@ -12,17 +12,16 @@ const EMPTY = <api.Border padding={2}>
 const $drives = api.$<string[]>(api.fs.drives())
 
 const $dirs = api.$<string[]>([])
+
+$dirs.intercept(dirs => {
+  const cdrive = $drives.val[0].slice(0, -1)
+  if (!$drives.val.includes(cdrive)) return ['usr/']
+  return [...dirs]
+})
+
 api.fs.watchTree('', () => {
   $drives.val = api.fs.drives()
-  console.log($dirs.val)
-
-  const cdrive = $drives.val[0].slice(0, -1)
-  if (!$drives.val.includes(cdrive)) {
-    $dirs.val = ['usr/']
-  }
-  else {
-    $dirs.val = [...$dirs.val]
-  }
+  $dirs.val = [...$dirs.val]
 })
 
 const initpath = api.program.opts['file'] as string
