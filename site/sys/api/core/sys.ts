@@ -218,10 +218,6 @@ class Sys {
     this.rpc.send('setdesktop', [point.x, point.y, size.w, size.h])
   }
 
-  sendToEmbedHost(data: any, ts?: Transferable[]) {
-    this.rpc.send('sendtohost', [data], ts)
-  }
-
 }
 
 export const sys = new Sys()

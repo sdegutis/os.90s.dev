@@ -167,10 +167,6 @@ export class Process {
         this.sys.setDesktop(x, y, w, h)
       },
 
-      sendtohost: (data) => {
-        parent.postMessage(data, '*')
-      },
-
     })
 
     this.heartbeat = setInterval(async () => {
