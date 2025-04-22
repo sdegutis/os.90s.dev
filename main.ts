@@ -82,7 +82,7 @@ function processSite() {
     const toinsert = [...datas, ...modules, iconlink].map(s => `  ${s}`).join('\n')
     files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
 
-    const apidts2 = Object.fromEntries(apidts.all().map(f => [f.path.replace(/^(\\|\/)sys(\\|\/)out(\\|\/)/, '/sys/'), f.text]))
+    const apidts2 = Object.fromEntries(apidts.all().map(f => [f.path.replace(/^\/sys\/out\//, '/sys/'), f.text]))
     apidts2['/api.d.ts'] = apis.map(p => `export * from "${p}"`).join('\n')
     const apiexports = JSON.stringify(apidts2)
 
@@ -93,7 +93,7 @@ function processSite() {
     zip.addLocalFolder('site/sys/api/', 'sys/api/')
     zip.addLocalFile('site/sys/tsconfig.json', 'sys/')
     zip.addLocalFolder('site/sample/', 'app/')
-    zip.addLocalFolder('./site/fs/', 'fs', path => !path.startsWith('fs\\out\\'))
+    zip.addLocalFolder('./site/fs/', 'fs', path => !path.match(/fs(\\|\/)out(\\|\/)/))
     zip.addFile('.vscode/settings.json', Buffer.from(`{ "typescript.preferences.importModuleSpecifierEnding": "js" }`))
     zip.addFile('sys/api/core/nethost.ts', Buffer.from(`export const NETHOST = ${JSON.stringify(NETHOST)}`))
     files.add('/helloworld.zip', zip.toBuffer())
