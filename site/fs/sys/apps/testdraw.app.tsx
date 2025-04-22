@@ -15,6 +15,7 @@ class MyView extends api.View {
   }
 
   override draw(ctx: api.DrawingContext): void {
+
     for (let i = 0; i < 10000; i++) {
       const x = rint(0, this.size.w / 2)
       const w = rint(10, this.size.w / 2)
@@ -29,7 +30,12 @@ class MyView extends api.View {
 
 const panel = await api.sys.makePanel({ name: "testdraw" },
   <panel size={{ w: 100, h: 70 }}>
-    <MyView />
+    <api.Center>
+      <button action={function (this: api.View) {
+        const contentView = this.parent!.parent!
+        contentView.children = [<MyView />]
+      }}>begin strobe rect test</button>
+    </api.Center>
   </panel>
 )
 
