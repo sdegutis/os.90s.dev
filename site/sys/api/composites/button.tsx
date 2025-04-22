@@ -20,7 +20,7 @@ export function ButtonComp(data: {
 
   const background = data.style === 'submit' ? 0xffffff33 :
     data.style === 'cancel' ? 0x99000099 :
-      undefined
+      0xffffff11
 
   return <Button background={background} padding={2} onClick={data.action}>
     {children}

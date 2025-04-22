@@ -15,14 +15,16 @@ const $itemViews = $items.adapt<api.View[]>(items => {
 
 const panel = await api.sys.makePanel({ name: "todo" },
   <panel size={{ w: 70, h: 50 }}>
-    <api.PanedYA>
-      <api.GroupX>
-        <api.Button padding={2} onClick={clear}><api.Label text='clear' /></api.Button>
-        <api.Button padding={2} onClick={inverse}><api.Label text='inverse' /></api.Button>
+    <api.PanedYA gap={2}>
+      <api.GroupX gap={2}>
+        <button action={clear}>clear</button>
+        <button action={inverse}>inverse</button>
       </api.GroupX>
       <api.PanedYB>
-        <api.Scroll showh={false}>
-          <api.GroupY align={'a'} children={$itemViews} />
+        <api.Scroll showh={false} background={0xffffff33}>
+          <api.Border padding={2}>
+            <api.GroupY align={'a'} children={$itemViews} />
+          </api.Border>
         </api.Scroll>
         <api.Border padding={2} background={0x00000033}>
           <api.TextBox model={textModel} autofocus onEnter={add} />
