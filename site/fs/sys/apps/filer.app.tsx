@@ -118,7 +118,6 @@ function Sidebar() {
           console.log('Failed to get folder: error, cancelled, or using Firefox.')
           return
         }
-        await folder.requestPermission({ mode: 'readwrite' })
         api.fs.mount(name, folder)
       }}>mount</button>
     </api.GroupY>

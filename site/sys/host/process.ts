@@ -137,6 +137,7 @@ export class Process {
       askdir: async (reply, opts) => {
         try {
           const folder = await self.showDirectoryPicker(opts)
+          await folder.requestPermission({ mode: 'readwrite' })
           reply([folder])
         }
         catch (e) {
