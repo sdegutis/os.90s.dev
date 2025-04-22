@@ -7,6 +7,7 @@ import { $ } from "./ref.js"
 import { sys } from "./sys.js"
 
 let next = Promise.resolve()
+const ensure = ensured(make)
 
 export function print(...args: any[]) {
   next = next.then(ensure).then(con => {
@@ -14,9 +15,9 @@ export function print(...args: any[]) {
   })
 }
 
-ensure.lazy = undefined as Awaited<ReturnType<typeof make>> | undefined
-async function ensure() {
-  return ensure.lazy ??= await make()
+function ensured<T>(fn: () => T) {
+  let lazy: T
+  return () => lazy ??= fn()
 }
 
 async function make() {
