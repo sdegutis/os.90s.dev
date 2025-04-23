@@ -263,9 +263,8 @@ export class Sys {
       if (app.file) file = `@${app.file}`
       return `${app.path}${file}`
     }).join(',')
-    if (url) url = '#' + url
 
-    history.replaceState({}, '', url)
+    history.replaceState({}, '', url ? `/#${url}` : `/`)
   }
 
   removePanel(panel: Panel) {
