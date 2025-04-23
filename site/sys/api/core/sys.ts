@@ -1,4 +1,5 @@
 import { View } from "../views/view.js"
+import { BC } from "./bc.js"
 import { sysConfig } from "./config.js"
 import { Font } from "./font.js"
 import { Listener } from "./listener.js"
@@ -33,11 +34,12 @@ class Program {
       await new Promise(r => { })
     })
 
-    const quit = new BroadcastChannel('shell')
-    quit.onmessage = msg => { if (msg.data === sys.sysid) this.terminate() }
+    type ShellEvent = { type: 'newshell' }
+    const quit = new BC<ShellEvent>('shell', sys.sysid)
+    quit.handle(msg => this.terminate())
 
     await Promise.race([isUnlocked.promise, isLocked]).then(need => {
-      if (need) quit.postMessage(sys.sysid)
+      if (need) quit.emit({ type: 'newshell' })
     })
   }
 
