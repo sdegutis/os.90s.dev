@@ -1,3 +1,4 @@
+import { BC } from "../core/bc.js"
 import { Listener } from "../core/listener.js"
 import { opendb } from "../util/db.js"
 import { Drive } from "./drive.js"
@@ -28,9 +29,10 @@ class FS {
       })
     })
 
-    const fsevents = new BroadcastChannel('fsevents')
-    this.#syncfs = (path, op) => fsevents.postMessage([path, op])
-    fsevents.onmessage = (e) => this.#notify(...e.data as [string, string], false)
+    type FsEvent = { type: 'sync', op: string, path: string }
+    const fsevents = new BC<FsEvent>('fsevents', null)
+    this.#syncfs = (path, op) => fsevents.emit({ type: 'sync', path, op })
+    fsevents.handle((e) => this.#notify(e.path, e.op, false))
   }
 
   drives() {

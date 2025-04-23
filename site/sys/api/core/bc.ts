@@ -27,18 +27,18 @@ export class BC<T extends { type: string }> {
 
   private chan
 
-  constructor(channel: string, public pid: string) {
+  constructor(channel: string, public sysid: string | null) {
     this.chan = new BroadcastChannel(channel)
   }
 
   emit(event: T) {
-    this.chan.postMessage([this.pid, event])
+    this.chan.postMessage([this.sysid, event])
   }
 
   handle(fn: (event: T) => void) {
     this.chan.onmessage = msg => {
-      const [pid, event] = msg.data
-      if (pid === this.pid) {
+      const [id, event] = msg.data
+      if (this.sysid === null || id === this.sysid) {
         fn(event)
       }
     }

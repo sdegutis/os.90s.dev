@@ -1,3 +1,4 @@
+import { BC } from "../core/bc.js"
 import { $ } from "../core/ref.js"
 import { pobject } from "./kvs.js"
 import { GET } from "./net.js"
@@ -57,17 +58,19 @@ export async function updateAccountFromServer() {
 
 // setInterval(updateAccountFromServer, 1000 * 60)
 
-const b = new BroadcastChannel('userstate')
+type UserStateEvent = { type: 'sync', state: UserState }
+
+const b = new BC<UserStateEvent>('userstate', null)
 let syncing = false
 
-b.onmessage = msg => {
+b.handle(data => {
   syncing = true
-  $userState.$ = msg.data
+  $userState.$ = data.state
   syncing = false
-}
+})
 
 $userState.watch(state => {
   if (syncing) return
-  b.postMessage(state)
+  b.emit({ type: 'sync', state })
   persisted.set(state)
 })
