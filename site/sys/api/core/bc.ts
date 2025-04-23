@@ -1,6 +1,11 @@
 import { PanelInfo } from "./rpc.js"
 import { Point, Size } from "./types.js"
 
+export type ProcEvent =
+  | { type: 'started', pid: number, path: string }
+  | { type: 'init', pid: number }
+  | { type: 'ended', pid: number }
+
 export type PanelEvent =
   | { type: 'new' } & PanelInfo
   | { type: 'focused', id: number }

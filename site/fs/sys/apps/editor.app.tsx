@@ -2,17 +2,6 @@ import * as api from "/api.js"
 await api.appReady
 
 
-const procevents = new BroadcastChannel('procevents')
-
-procevents.addEventListener('message', async msg => {
-  if (msg.data.type === 'init') {
-    const port = await api.sys.openIpc(msg.data.pid)
-    console.log('got it', port)
-  }
-})
-
-// api.sys.openIpc()
-
 api.preferences['panel-body-gap'] = 2
 // api.preferences['panel-body-gap-color'] = 0x333333ff
 // api.preferences['panel-body-gap-color-focused'] = 0x990000ff

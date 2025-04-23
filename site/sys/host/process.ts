@@ -1,3 +1,4 @@
+import { BC, ProcEvent } from "../api/core/bc.js"
 import type { Cursor } from "../api/core/cursor.js"
 import { PanelInfo, wRPC, type ClientProgram, type ServerProgram } from "../api/core/rpc.js"
 import { Panel } from "./panel.js"
@@ -23,7 +24,7 @@ export class Process {
 
   ready = Promise.withResolvers<void>()
 
-  procevents = new BroadcastChannel('procevents')
+  procevents
 
   constructor(sys: Sys, path: string, opts: Record<string, any>, optsTs: Transferable[]) {
     this.id = ++Process.id
@@ -32,6 +33,8 @@ export class Process {
     this.sys = sys
     this.path = path
     this.file = opts["file"]
+
+    this.procevents = new BC<ProcEvent>('procevents', this.sys.id)
 
     const absurl = new URL('/fs/' + path, import.meta.url)
     this.worker = new Worker(absurl, { type: 'module' })
@@ -44,14 +47,14 @@ export class Process {
       }
     })
 
-    this.procevents.postMessage({ type: 'started', pid: this.id, path: this.path })
+    this.procevents.emit({ type: 'started', pid: this.id, path: this.path })
 
     const rpc = this.rpc = new wRPC<ServerProgram, ClientProgram>(this.worker, {
 
       init: (reply) => {
         opts["app"] = path
         this.ready.resolve()
-        this.procevents.postMessage({ type: 'init', pid: this.id })
+        this.procevents.emit({ type: 'init', pid: this.id })
         reply([sys.id, this.id, this.sys.size.w, this.sys.size.h, this.sys.desktop, [...this.sys.keymap], opts], optsTs)
       },
 
@@ -241,7 +244,7 @@ export class Process {
     for (const panel of this.panels) {
       this.closePanel(panel)
     }
-    this.procevents.postMessage({ type: 'ended', pid: this.id })
+    this.procevents.emit({ type: 'ended', pid: this.id })
   }
 
   closePanel(panel: Panel) {

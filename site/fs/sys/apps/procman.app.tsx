@@ -1,7 +1,7 @@
 import * as api from "/api.js"
 await api.appReady
 
-const procevents = new BroadcastChannel('procevents')
+const procevents = new api.BC<api.ProcEvent>('procevents', api.sys.sysid)
 
 type Proc = {
   pid: number,
@@ -14,22 +14,22 @@ const $procs = api.$<Proc[]>([])
 const initial = await api.sys.getprocs()
 $procs.$ = initial.map(p => ({ state: 'ready', ...p }))
 
-procevents.onmessage = msg => {
-  const { pid } = msg.data
+procevents.handle(data => {
+  const { pid } = data
   const idx = $procs.$.findIndex(p => p.pid === pid)
 
-  if (msg.data.type === 'started') {
-    const { path } = msg.data
+  if (data.type === 'started') {
+    const { path } = data
     if (idx === -1) $procs.$ = [...$procs.$, ({ pid, path, state: 'starting' })]
   }
-  else if (msg.data.type === 'init') {
+  else if (data.type === 'init') {
     const proc = $procs.$[idx]
     if (idx !== -1) $procs.$ = $procs.$.toSpliced(idx, 1, { ...proc, state: 'ready' })
   }
-  else if (msg.data.type === 'ended') {
+  else if (data.type === 'ended') {
     if (idx !== -1) $procs.$ = $procs.$.toSpliced(idx, 1)
   }
-}
+})
 
 const panel = await api.sys.makePanel({ name: "procman" },
   <panel size={{ w: 100, h: 70 }}>

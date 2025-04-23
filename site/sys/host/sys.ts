@@ -1,4 +1,4 @@
-import { BC, PanelEvent } from "../api/core/bc.js"
+import { BC, PanelEvent, ProcEvent } from "../api/core/bc.js"
 import { sysConfig } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
@@ -56,9 +56,9 @@ export class Sys {
 
     this.installEventHandlers($point, $scale)
 
-    new BroadcastChannel('procevents').onmessage = msg => {
+    new BC<ProcEvent>('procevents', this.id).handle(() => {
       this.updateLocation()
-    }
+    })
   }
 
   async initialize(steps: Promise<any>[]) {
