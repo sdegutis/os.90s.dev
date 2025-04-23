@@ -2,6 +2,9 @@ import { Listener, ListenerDone } from "./listener.js"
 
 export type Equals<T> = (a: T, b: T) => boolean
 
+/**
+ * A pointer with events
+ */
 export class Ref<T> {
 
   private defers: Ref<T> | undefined
@@ -10,6 +13,7 @@ export class Ref<T> {
   private val: T
   equals?: Equals<T> | undefined
 
+  /** It's easier to use `$` */
   constructor(val: T, equals?: Equals<T>) {
     this.equals = equals
     this.val = val
@@ -20,6 +24,11 @@ export class Ref<T> {
     return this.val
   }
 
+  /**
+   * Sets or gets the current value.
+   * 
+   * Setting also notifies watchers/adapters/etc.
+   */
   set $(val: T) {
     if (this.defers) {
       this.defers.$ = val
