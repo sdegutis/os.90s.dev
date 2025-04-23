@@ -57,6 +57,10 @@ class Sys {
       reply([n % 2 === 0 ? n + 2 : n + 1])
     },
 
+    gotipc: (port) => {
+      this.onIpc.dispatch(port)
+    },
+
   })
 
   pressedKeys = new Set<string>()
@@ -78,6 +82,8 @@ class Sys {
   desktop!: Point & Size
 
   sysevents = new BroadcastChannel('sysevents')
+
+  onIpc = new Listener<MessagePort>()
 
   async init() {
     this.keyevents.onmessage = msg => {
@@ -188,6 +194,11 @@ class Sys {
 
   noteCurrentFile(path: string) {
     this.rpc.send('thisfile', [path])
+  }
+
+  async openIpc(pid: number) {
+    const [port] = await this.rpc.call('openipc', [pid])
+    return port
   }
 
   async launch(path: string, file?: string, opts?: Record<string, any>, optsTs?: Transferable[]) {

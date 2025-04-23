@@ -25,6 +25,7 @@ export interface ServerProgram {
   thisfile(path: string): void
   getprocs(): Promise<[procs: { pid: number, path: string }[]]>
   getpanels(): Promise<[panels: PanelInfo[]]>
+  openipc(pid: number): Promise<[MessagePort | null]>
   launch(path: string, opts: Record<string, any>, optsTs: Transferable[]): Promise<[number | null]>
   askdir(opts: DirectoryPickerOptions | undefined): Promise<[dir: FileSystemDirectoryHandle | null]>
   readcliptext(): Promise<[text: string]>
@@ -32,6 +33,7 @@ export interface ServerProgram {
 
 export interface ClientProgram {
   ping(n: number): Promise<[n: number]>
+  gotipc(port: MessagePort): void
 }
 
 export interface ServerPanel {

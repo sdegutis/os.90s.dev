@@ -118,6 +118,15 @@ export class Process {
         reply([pid])
       },
 
+      openipc: async (reply, pid) => {
+        const other = Process.all.get(pid)
+        if (!other) return reply([null])
+
+        const c = new MessageChannel()
+        reply([c.port1], [c.port1])
+        other.rpc.send('gotipc', [c.port2], [c.port2])
+      },
+
       terminate: (pid) => {
         Process.all.get(pid)?.terminate()
       },
