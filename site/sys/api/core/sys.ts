@@ -1,5 +1,5 @@
 import { View } from "../views/view.js"
-import { BC, KeyEvent } from "./bc.js"
+import { BC, KeyEvent, SysEvent } from "./bc.js"
 import { sysConfig } from "./config.js"
 import { Font } from "./font.js"
 import { Listener } from "./listener.js"
@@ -83,7 +83,7 @@ class Sys {
 
   desktop!: Point & Size
 
-  sysevents = new BroadcastChannel('sysevents')
+  sysevents!: BC<SysEvent>
 
   onIpc = new Listener<MessagePort>()
 
@@ -108,15 +108,18 @@ class Sys {
       }
     })
 
+    this.sysevents = new BC<SysEvent>('sysevents', sysid)
+
+
     this.$size.equals = sizeEquals
 
-    this.sysevents.addEventListener('message', msg => {
-      if (msg.data.type === 'resized') {
-        const [w, h] = msg.data.size
+    this.sysevents.handle(data => {
+      if (data.type === 'resized') {
+        const [w, h] = data.size
         this.size = { w, h }
       }
-      else if (msg.data.type === 'desktop') {
-        this.desktop = msg.data.desktop
+      else if (data.type === 'desktop') {
+        this.desktop = data.desktop
       }
     })
 

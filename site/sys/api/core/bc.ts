@@ -1,6 +1,10 @@
 import { PanelInfo } from "./rpc.js"
 import { Point, Size } from "./types.js"
 
+export type SysEvent =
+  | { type: 'resized', size: [w: number, h: number] }
+  | { type: 'desktop', desktop: Point & Size }
+
 export type KeyEvent =
   | { type: 'keydown', key: string }
   | { type: 'keyup', key: string }

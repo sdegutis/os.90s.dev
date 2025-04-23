@@ -1,4 +1,4 @@
-import { BC, KeyEvent, PanelEvent, ProcEvent } from "../api/core/bc.js"
+import { BC, KeyEvent, PanelEvent, ProcEvent, SysEvent } from "../api/core/bc.js"
 import { sysConfig } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
@@ -23,7 +23,7 @@ export class Sys {
   clicking: Panel | null = null
   prevFocused: Panel | null = null
 
-  sysevents = new BroadcastChannel('sysevents')
+  sysevents = new BC<SysEvent>('sysevents', this.id)
   keyevents = new BC<KeyEvent>('keyevents', this.id)
   panelevents = new BC<PanelEvent>('panelevents', this.id)
 
@@ -192,7 +192,7 @@ export class Sys {
 
   resize(w: number, h: number) {
     this.$size.$ = { w, h }
-    this.sysevents.postMessage({ type: 'resized', size: [w, h] })
+    this.sysevents.emit({ type: 'resized', size: [w, h] })
     this.redrawAllPanels()
   }
 
@@ -294,7 +294,7 @@ export class Sys {
 
   setDesktop(x: number, y: number, w: number, h: number) {
     this.desktop = { x, y, w, h }
-    this.sysevents.postMessage({ type: 'desktop', desktop: { x, y, w, h } })
+    this.sysevents.emit({ type: 'desktop', desktop: { x, y, w, h } })
   }
 
   private showLoadingScreen(percent: number) {
