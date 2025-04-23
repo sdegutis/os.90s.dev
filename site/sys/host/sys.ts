@@ -93,7 +93,7 @@ export class Sys {
     }
     const runApps: RunApp[] = []
     let runApp: RunApp | undefined
-    for (const [k, v] of new URLSearchParams(location.search)) {
+    for (const [k, v] of new URLSearchParams(location.hash.slice(1))) {
       if (k === 'app') {
         runApps.push(runApp = { path: v, params: {} })
       }
@@ -274,7 +274,7 @@ export class Sys {
     }
 
     const q = params.toString().replaceAll('%2F', '/')
-    window.history.replaceState({}, '', location.origin + '/' + (q ? '?' + q : ''))
+    window.history.replaceState({}, '', location.origin + (q ? '#' + q : ''))
   }
 
   removePanel(panel: Panel) {
