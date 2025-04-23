@@ -87,20 +87,11 @@ export class Sys {
   }
 
   async loadAppsFromUrl() {
-    type RunApp = {
-      path: string
-      params: Record<string, string>
-    }
-    const runApps: RunApp[] = []
-    let runApp: RunApp | undefined
-    for (const [k, v] of new URLSearchParams(location.hash.slice(1))) {
-      if (k === 'app') {
-        runApps.push(runApp = { path: v, params: {} })
-      }
-      else if (runApp) {
-        runApp.params[k] = v
-      }
-    }
+    type RunApp = { path: string, params: Record<string, string> }
+    const runApps: RunApp[] = location.hash.slice(1).split(',').map((app) => {
+      const [path, file] = app.split('@')
+      return { path, params: { file } }
+    })
 
     const launches = runApps.map(app => this.launch(app.path, app.params, []))
     await Promise.all(launches)
@@ -260,7 +251,6 @@ export class Sys {
   #updateLocation() {
     if (!this.#initialAppsLoaded) return
 
-    const params = new URLSearchParams()
     const apps = Panel.ordered
       .values()
       .filter(p => p.visible)
@@ -268,13 +258,14 @@ export class Sys {
       .filter(p => !p.path.endsWith('/shell.app.js'))
       .toArray()
 
-    for (const app of apps) {
-      params.append('app', app.path)
-      if (app.file) params.append('file', app.file)
-    }
+    let url = apps.map(app => {
+      let file = ''
+      if (app.file) file = `@${app.file}`
+      return `${app.path}${file}`
+    }).join(',')
+    if (url) url = '#' + url
 
-    const q = params.toString().replaceAll('%2F', '/')
-    window.history.replaceState({}, '', location.origin + (q ? '#' + q : ''))
+    history.replaceState({}, '', url)
   }
 
   removePanel(panel: Panel) {
