@@ -7,7 +7,7 @@ const params = new URLSearchParams(location.search)
 
 if (params.has('embed')) {
   const sys = new Sys({ w: window.innerWidth / 2, h: window.innerHeight / 2 })
-  sys.launch('run' + location.search, {})
+  sys.launch('run' + location.search, {}, [])
 }
 else {
   const sys = new Sys(sysConfig.$size)

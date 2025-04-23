@@ -70,9 +70,9 @@ export class Sys {
   }
 
   async runShell() {
-    await this.launch(sysConfig.$shell.val, {})
+    await this.launch(sysConfig.$shell.val, {}, [])
     sysConfig.$shell.watch(shell => {
-      this.launch(shell, {})
+      this.launch(shell, {}, [])
     })
   }
 
@@ -102,7 +102,7 @@ export class Sys {
       }
     }
 
-    const launches = runApps.map(app => this.launch(app.path, app.params))
+    const launches = runApps.map(app => this.launch(app.path, app.params, []))
     await Promise.all(launches)
 
     this.#initialAppsLoaded = true
@@ -188,8 +188,8 @@ export class Sys {
 
   }
 
-  async launch(path: string, opts: Record<string, any>) {
-    const proc = new Process(this, path, opts)
+  async launch(path: string, opts: Record<string, any>, optsTs: Transferable[]) {
+    const proc = new Process(this, path, opts, optsTs)
     this.loading++
     try { await proc.ready.promise }
     catch { return null }

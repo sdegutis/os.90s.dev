@@ -190,8 +190,9 @@ class Sys {
     this.rpc.send('thisfile', [path])
   }
 
-  async launch(path: string, file?: string) {
-    const [pid] = await this.rpc.call('launch', [path, { file }])
+  async launch(path: string, file?: string, opts?: Record<string, any>, optsTs?: Transferable[]) {
+    const ts = optsTs ?? []
+    const [pid] = await this.rpc.call('launch', [path, { file, ...opts }, ts], ts)
     return pid
   }
 

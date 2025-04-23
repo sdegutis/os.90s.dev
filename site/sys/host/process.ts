@@ -25,7 +25,7 @@ export class Process {
 
   procevents = new BroadcastChannel('procevents')
 
-  constructor(sys: Sys, path: string, opts: Record<string, any>) {
+  constructor(sys: Sys, path: string, opts: Record<string, any>, optsTs: Transferable[]) {
     this.id = ++Process.id
     Process.all.set(this.id, this)
 
@@ -52,7 +52,7 @@ export class Process {
         opts["app"] = path
         this.ready.resolve()
         this.procevents.postMessage({ type: 'init', pid: this.id })
-        reply([sys.id, this.id, this.sys.size.w, this.sys.size.h, this.sys.desktop, [...this.sys.keymap], opts], [])
+        reply([sys.id, this.id, this.sys.size.w, this.sys.size.h, this.sys.desktop, [...this.sys.keymap], opts], optsTs)
       },
 
       newpanel: (reply, name, ord, x, y, w, h) => {
@@ -113,8 +113,8 @@ export class Process {
         if (panel) this.focus(panel)
       },
 
-      launch: async (reply, path, opts) => {
-        const pid = await this.sys.launch(path, opts)
+      launch: async (reply, path, opts, optsTs) => {
+        const pid = await this.sys.launch(path, opts, optsTs)
         reply([pid])
       },
 
