@@ -57,14 +57,6 @@ export interface ClientPanel {
   needblit(): void
 }
 
-export type PanelEvent =
-  | { type: 'new' } & PanelInfo
-  | { type: 'focused', id: number }
-  | { type: 'renamed', id: number, name: string }
-  | { type: 'closed', id: number }
-  | { type: 'toggled', id: number, visible: boolean }
-  | { type: 'adjusted', id: number, point: Point, size: Size }
-
 type EventMap<T> = { [K in keyof T]: (...args: any) => void }
 
 type Reply<A> = (data: A, ts?: Transferable[]) => void

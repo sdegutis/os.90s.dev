@@ -1,7 +1,7 @@
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { Listener } from "../api/core/listener.js"
-import { PanelEvent, wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../api/core/rpc.js"
+import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../api/core/rpc.js"
 import type { Process } from "./process.js"
 
 export class Panel {
@@ -56,11 +56,11 @@ export class Panel {
 
       renamed: (name) => {
         this.name = name
-        proc.sys.panelevents.postMessage({
+        proc.sys.panelevents.emit({
           type: 'renamed',
           id: this.id,
           name,
-        } satisfies PanelEvent)
+        })
       },
 
       blit: (img) => {

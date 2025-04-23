@@ -1,9 +1,9 @@
+import { BC, PanelEvent } from "../api/core/bc.js"
 import { sysConfig } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { runJsFile } from "../api/core/open.js"
 import { defRef, MaybeRef, Ref } from "../api/core/ref.js"
-import { PanelEvent } from "../api/core/rpc.js"
 import { Point, Size, sizeEquals } from "../api/core/types.js"
 import { debounce } from "../api/util/throttle.js"
 import { setupCanvas } from "./canvas.js"
@@ -25,7 +25,7 @@ export class Sys {
 
   sysevents = new BroadcastChannel('sysevents')
   keyevents = new BroadcastChannel('keyevents')
-  panelevents = new BroadcastChannel('panelevents')
+  panelevents = new BC<PanelEvent>('panelevents', this.id)
 
   $font
   get font() { return this.$font.$ }
@@ -238,9 +238,7 @@ export class Sys {
       this.focused?.rpc.send('blur', [])
       this.focused = panel
       this.focused.visible = true
-      this.panelevents.postMessage({
-        type: 'focused', id: panel.id
-      } satisfies PanelEvent)
+      this.panelevents.emit({ type: 'focused', id: panel.id })
       this.focused.rpc.send('focus', [])
       this.updateLocation()
     }

@@ -114,9 +114,8 @@ const $panels = api.$<Panel[]>([])
 
 const savedPanelInfo = await api.kvs<api.Point & api.Size>('panels')
 
-const panelevents = new BroadcastChannel('panelevents')
-panelevents.onmessage = (msg => {
-  const data = msg.data as api.PanelEvent
+const panelevents = new api.BC<api.PanelEvent>('panelevents', api.sys.sysid)
+panelevents.handle (data => {
   const { type } = data
 
   if (type === 'new') {
