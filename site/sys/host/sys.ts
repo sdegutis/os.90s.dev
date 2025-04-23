@@ -1,4 +1,4 @@
-import { BC, PanelEvent, ProcEvent } from "../api/core/bc.js"
+import { BC, KeyEvent, PanelEvent, ProcEvent } from "../api/core/bc.js"
 import { sysConfig } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
@@ -24,7 +24,7 @@ export class Sys {
   prevFocused: Panel | null = null
 
   sysevents = new BroadcastChannel('sysevents')
-  keyevents = new BroadcastChannel('keyevents')
+  keyevents = new BC<KeyEvent>('keyevents', this.id)
   panelevents = new BC<PanelEvent>('panelevents', this.id)
 
   $font
@@ -107,7 +107,7 @@ export class Sys {
       this.keymap.clear()
 
       for (const key of keys) {
-        this.keyevents.postMessage(['keyup', key])
+        this.keyevents.emit({ type: 'keyup', key })
       }
     }
 
@@ -118,7 +118,7 @@ export class Sys {
 
       if (e.repeat) return
       this.keymap.add(e.key)
-      this.keyevents.postMessage(['keydown', e.key])
+      this.keyevents.emit({ type: 'keydown', key: e.key })
       this.redrawAllPanels()
     }
 
@@ -126,7 +126,7 @@ export class Sys {
       const wasDown = this.keymap.delete(e.key)
       if (!wasDown) return
 
-      this.keyevents.postMessage(['keyup', e.key])
+      this.keyevents.emit({ type: 'keyup', key: e.key })
       this.redrawAllPanels()
     }
 

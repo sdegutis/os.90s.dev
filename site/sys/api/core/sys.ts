@@ -1,5 +1,5 @@
 import { View } from "../views/view.js"
-import { BC } from "./bc.js"
+import { BC, KeyEvent } from "./bc.js"
 import { sysConfig } from "./config.js"
 import { Font } from "./font.js"
 import { Listener } from "./listener.js"
@@ -51,7 +51,7 @@ class Sys {
 
   sysid!: string
 
-  keyevents = new BroadcastChannel('keyevents')
+  keyevents!: BC<KeyEvent>
 
   private rpc = new wRPC<ClientProgram, ServerProgram>(self, {
 
@@ -88,25 +88,25 @@ class Sys {
   onIpc = new Listener<MessagePort>()
 
   async init() {
-    this.keyevents.onmessage = msg => {
-      const [fn, key] = msg.data
-      if (fn === 'keydown') {
-        this.pressedKeys.add(key)
-        program.focusedPanel?.onKeyDown(key)
-        this.handleKeyPress(key)
-      }
-      else if (fn === 'keyup') {
-        this.pressedKeys.delete(key)
-        program.focusedPanel?.onKeyUp(key)
-      }
-    }
-
     const [sysid, id, w, h, desktop, keymap, opts] = await this.rpc.call('init', [])
     this.sysid = sysid
     this.size = { w, h }
     this.desktop = desktop
     program.opts = opts
     program.pid = id
+
+    this.keyevents = new BC<KeyEvent>('keyevents', sysid)
+    this.keyevents.handle(msg => {
+      if (msg.type === 'keydown') {
+        this.pressedKeys.add(msg.key)
+        program.focusedPanel?.onKeyDown(msg.key)
+        this.handleKeyPress(msg.key)
+      }
+      else if (msg.type === 'keyup') {
+        this.pressedKeys.delete(msg.key)
+        program.focusedPanel?.onKeyUp(msg.key)
+      }
+    })
 
     this.$size.equals = sizeEquals
 

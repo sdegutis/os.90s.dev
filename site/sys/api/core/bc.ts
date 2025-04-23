@@ -1,6 +1,10 @@
 import { PanelInfo } from "./rpc.js"
 import { Point, Size } from "./types.js"
 
+export type KeyEvent =
+  | { type: 'keydown', key: string }
+  | { type: 'keyup', key: string }
+
 export type ProcEvent =
   | { type: 'started', pid: number, path: string }
   | { type: 'init', pid: number }
