@@ -40,16 +40,16 @@ export function PanelViewComp(data: {
     }
 
     async function save() {
-      if (!file.$path.val) return saveAs()
-      fs.putFile(file.$path.val, file.getContents())
+      if (!file.$path.$) return saveAs()
+      fs.putFile(file.$path.$, file.getContents())
     }
 
     async function saveAs() {
       const path = await askFilePath()
       if (!path) return
-      file.$path.val = path
-      fs.putFile(file.$path.val, file.getContents())
-      sys.noteCurrentFile(file.$path.val)
+      file.$path.$ = path
+      fs.putFile(file.$path.$, file.getContents())
+      sys.noteCurrentFile(file.$path.$)
     }
 
     async function askFilePath() {
@@ -100,12 +100,12 @@ export function PanelViewComp(data: {
         const file = data.file
         if (file) {
           p.$name.defer(file.$path.adapt(() =>
-            `${initial}: ${file.$path.val ?? '[no file]'}`
+            `${initial}: ${file.$path.$ ?? '[no file]'}`
           ))
         }
       }}
-      onPanelFocus={() => $focused.val = true}
-      onPanelBlur={() => $focused.val = false}
+      onPanelFocus={() => $focused.$ = true}
+      onPanelBlur={() => $focused.$ = false}
       background={0x111111ff}
     >
       <PanedYA>

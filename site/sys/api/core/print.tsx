@@ -34,7 +34,7 @@ async function make() {
   return {
     addLine: (text: string) => {
       const label = <Label text={text} />
-      $lines.val = [...$lines.val, label]
+      $lines.$ = [...$lines.$, label]
       scroll.forceLayoutTree()
       scroll.scrollVisible(label)
     },

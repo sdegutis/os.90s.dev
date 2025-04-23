@@ -31,7 +31,7 @@ export const $userState = $<UserState>({ type: 'guest' })
 
 const persisted = await pobject<UserState>('accountinfo')
 await persisted.get().then(state => {
-  if (state) $userState.val = state
+  if (state) $userState.$ = state
 })
 
 export async function updateAccountFromServer() {
@@ -43,15 +43,15 @@ export async function updateAccountFromServer() {
     }
 
     if (state) {
-      $userState.val = {
+      $userState.$ = {
         type: state.verified ? 'known' : 'verifying',
         username: state.username,
       }
     }
     else {
-      $userState.val = { type: 'guest' }
+      $userState.$ = { type: 'guest' }
     }
-    await persisted.set($userState.val)
+    await persisted.set($userState.$)
   })
 }
 
@@ -62,7 +62,7 @@ let syncing = false
 
 b.onmessage = msg => {
   syncing = true
-  $userState.val = msg.data
+  $userState.$ = msg.data
   syncing = false
 }
 

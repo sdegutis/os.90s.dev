@@ -44,7 +44,7 @@ export class TextBox extends View {
 
   model = new TextModel()
 
-  font = sys.$font.val
+  font = sys.$font.$
   readonly $font = makeRef(this, 'font')
 
   cursorColor = 0x0000ff99
@@ -237,12 +237,12 @@ export class TextBox extends View {
   $focused = $(false)
 
   override onFocus(): void {
-    this.$focused.val = true
+    this.$focused.$ = true
     this.restartCursorBlink.dispatch()
   }
 
   override onBlur(): void {
-    this.$focused.val = false
+    this.$focused.$ = false
   }
 
 }

@@ -12,22 +12,22 @@ type Proc = {
 const $procs = api.$<Proc[]>([])
 
 const initial = await api.sys.getprocs()
-$procs.val = initial.map(p => ({ state: 'ready', ...p }))
+$procs.$ = initial.map(p => ({ state: 'ready', ...p }))
 
 procevents.onmessage = msg => {
   const { pid } = msg.data
-  const idx = $procs.val.findIndex(p => p.pid === pid)
+  const idx = $procs.$.findIndex(p => p.pid === pid)
 
   if (msg.data.type === 'started') {
     const { path } = msg.data
-    if (idx === -1) $procs.val = [...$procs.val, ({ pid, path, state: 'starting' })]
+    if (idx === -1) $procs.$ = [...$procs.$, ({ pid, path, state: 'starting' })]
   }
   else if (msg.data.type === 'init') {
-    const proc = $procs.val[idx]
-    if (idx !== -1) $procs.val = $procs.val.toSpliced(idx, 1, { ...proc, state: 'ready' })
+    const proc = $procs.$[idx]
+    if (idx !== -1) $procs.$ = $procs.$.toSpliced(idx, 1, { ...proc, state: 'ready' })
   }
   else if (msg.data.type === 'ended') {
-    if (idx !== -1) $procs.val = $procs.val.toSpliced(idx, 1)
+    if (idx !== -1) $procs.$ = $procs.$.toSpliced(idx, 1)
   }
 }
 

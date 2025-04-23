@@ -8,7 +8,7 @@ const $bgcolor = api.$usrConfig.adapt(config => {
 
 const desktopSize = api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }), api.sizeEquals)
 
-const setWorkspaceSize = () => api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
+const setWorkspaceSize = () => api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.$)
 setWorkspaceSize()
 desktopSize.watch(setWorkspaceSize)
 
@@ -45,7 +45,7 @@ class Panel {
   }
 
   center() {
-    this.adjust(0, 0, desktopSize.val.w, desktopSize.val.h)
+    this.adjust(0, 0, desktopSize.$.w, desktopSize.$.h)
     this.focus()
   }
 
@@ -56,7 +56,7 @@ class Panel {
   }
 
   save() {
-    const sames = $panels.val.filter(p => p.name === this.name)
+    const sames = $panels.$.filter(p => p.name === this.name)
     const highest = sames.sort((a, b) => {
       if (a.point.y < b.point.y) return -1
       if (a.point.y > b.point.y) return +1
@@ -76,11 +76,11 @@ class Panel {
       next = saved
     }
     else if (this.point.x === 0 && this.point.y === 0) {
-      next.x = desktopSize.val.w / 2 - next.w / 2
-      next.y = desktopSize.val.h / 2 - next.h / 2
+      next.x = desktopSize.$.w / 2 - next.w / 2
+      next.y = desktopSize.$.h / 2 - next.h / 2
     }
 
-    while ($focused.val
+    while ($focused.$
       .filter(panel => panel.id !== this.id)
       .findLast(p => p.point.x === next.x && p.point.y === next.y)
     ) {
@@ -126,7 +126,7 @@ panelevents.onmessage = (msg => {
     if (name === 'menu') return
 
     const panel = new Panel(name, id, pid, focused, visible, point, size)
-    $panels.val = [...$panels.val, panel]
+    $panels.$ = [...$panels.$, panel]
 
     panel.position()
 
@@ -150,18 +150,18 @@ panelevents.onmessage = (msg => {
     panel.save()
   }
   else if (type === 'closed') {
-    const idx = $panels.val.findIndex(p => p === panel)
-    $panels.val = $panels.val.toSpliced(idx, 1)
+    const idx = $panels.$.findIndex(p => p === panel)
+    $panels.$ = $panels.$.toSpliced(idx, 1)
   }
   else if (type === 'focused') {
-    for (const p of $panels.val) {
+    for (const p of $panels.$) {
       p.focused = p === panel
     }
   }
 })
 
 function findPanel(id: number) {
-  return $panels.val.find(p => p.id === id)
+  return $panels.$.find(p => p.id === id)
 }
 
 const $focused = $panels.adapt(panels => {
@@ -173,18 +173,18 @@ const $focused = $panels.adapt(panels => {
     .toSpliced(panels.length - 1, 0, focused)
 })
 
-$panels.val = (await api.sys.getPanels())
+$panels.$ = (await api.sys.getPanels())
   .map(p => new Panel(p.name, p.id, p.pid, p.focused, p.visible, p.point, p.size))
   .filter(p => (p.pid !== api.program.pid))
 
-$panels.val.forEach(p => p.position())
+$panels.$.forEach(p => p.position())
 
 await api.program.becomeShell()
 
 
 api.sys.onKeyPress.watch(key => {
   if (key === 'ctrl `') {
-    const next = $focused.val.findLast(p => !p.focused)
+    const next = $focused.$.findLast(p => !p.focused)
     next?.focus()
   }
 })
@@ -207,7 +207,7 @@ const $buttons = $panels.adapt(panels =>
 
         if (p.focused) {
           findPanel(p.id)?.hide()
-          const toFocus = $panels.val.findLast(panel => panel !== p && panel.visible)
+          const toFocus = $panels.$.findLast(panel => panel !== p && panel.visible)
           if (toFocus) api.sys.focusPanel(toFocus.id)
         }
         else {
@@ -300,7 +300,7 @@ function ScreenSize() {
     api.sys.resize(w, h)
   })
 
-  const toggle = () => $i.val = 1 - $i.val
+  const toggle = () => $i.$ = 1 - $i.$
   return <api.Button padding={2} background={0x00000033} onClick={toggle}>
     <api.Label text={$text} />
   </api.Button>
@@ -314,8 +314,8 @@ function Clock() {
       ? time.toLocaleString()
       : time.toLocaleTimeString()
     ).toLowerCase())
-  setInterval(() => $time.val = new Date(), 1000)
-  const toggle = () => $date.val = !$date.val
+  setInterval(() => $time.$ = new Date(), 1000)
+  const toggle = () => $date.$ = !$date.$
   return <api.Button padding={2} background={0x00000033} onClick={toggle}>
     <api.Label text={$text} />
   </api.Button>

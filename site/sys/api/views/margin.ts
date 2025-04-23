@@ -32,7 +32,7 @@ export class Margin extends View {
 
   $padding = $(0)
 
-  get padding() { return this.$padding.val }
+  get padding() { return this.$padding.$ }
   set padding(ns: number | [number, number] | [number, number, number] | [number, number, number, number]) {
     const [u, r, d, l] =
       typeof ns === 'number' ? [ns, ns, ns, ns] :
@@ -40,7 +40,7 @@ export class Margin extends View {
           ns.length === 3 ? [...ns, ns[1]] :
             ns
 
-    this.$padding.val = u
+    this.$padding.$ = u
     this.up = u
     this.down = d
     this.left = l

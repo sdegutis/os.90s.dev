@@ -1,23 +1,35 @@
 import * as api from "/api.js"
 await api.appReady
 
+
+const procevents = new BroadcastChannel('procevents')
+
+procevents.addEventListener('message', async msg => {
+  if (msg.data.type === 'init') {
+    const port = await api.sys.openIpc(msg.data.pid)
+    console.log('got it', port)
+  }
+})
+
+// api.sys.openIpc()
+
 api.preferences['panel-body-gap'] = 2
 // api.preferences['panel-body-gap-color'] = 0x333333ff
 // api.preferences['panel-body-gap-color-focused'] = 0x990000ff
 
 let content = ''
 const $filepath = api.$<string | undefined>(api.program.opts["file"])
-if ($filepath.val) content = await api.fs.getFile($filepath.val) ?? ''
+if ($filepath.$) content = await api.fs.getFile($filepath.$) ?? ''
 
 const model = new api.TextModel(content)
 
-if ($filepath.val?.endsWith('.jsln')) {
+if ($filepath.$?.endsWith('.jsln')) {
   const hl = new api.Highlighter(api.langThemes.theme1, api.langGrammars.jslnGrammar)
   model.highlighter = hl
   hl.highlight(model, 0)
 }
 
-if ($filepath.val?.endsWith('.txt')) {
+if ($filepath.$?.endsWith('.txt')) {
   const hl = new api.Highlighter(api.langThemes.txtTheme1, api.langGrammars.txtGrammar)
   model.highlighter = hl
   hl.highlight(model, 0)

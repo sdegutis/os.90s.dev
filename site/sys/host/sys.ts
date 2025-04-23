@@ -28,10 +28,10 @@ export class Sys {
   panelevents = new BroadcastChannel('panelevents')
 
   $font
-  get font() { return this.$font.val }
+  get font() { return this.$font.$ }
 
   $size
-  get size() { return this.$size.val }
+  get size() { return this.$size.$ }
 
   desktop: Point & Size
 
@@ -70,7 +70,7 @@ export class Sys {
   }
 
   async runShell() {
-    await this.launch(sysConfig.$shell.val, {}, [])
+    await this.launch(sysConfig.$shell.$, {}, [])
     sysConfig.$shell.watch(shell => {
       this.launch(shell, {}, [])
     })
@@ -144,8 +144,8 @@ export class Sys {
       let y = e.offsetY
 
       if (e.target !== canvas) {
-        x = Math.round((e.offsetX - $point.val.x) / $scale.val)
-        y = Math.round((e.offsetY - $point.val.y) / $scale.val)
+        x = Math.round((e.offsetX - $point.$.x) / $scale.$)
+        y = Math.round((e.offsetY - $point.$.y) / $scale.$)
       }
 
       if (x === this.mouse.x && y === this.mouse.y) return
@@ -200,7 +200,7 @@ export class Sys {
   }
 
   resize(w: number, h: number) {
-    this.$size.val = { w, h }
+    this.$size.$ = { w, h }
     this.sysevents.postMessage({ type: 'resized', size: [w, h] })
     this.redrawAllPanels()
   }

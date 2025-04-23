@@ -48,7 +48,7 @@ function SigninView() {
         const [err, known] = await api.POST('/user/sign', username)
         if (err) { return err }
         const next = known ? 'verifying' : 'registering'
-        api.$userState.val = { type: next, username }
+        api.$userState.$ = { type: next, username }
       },
     }}
     label='username'
@@ -59,12 +59,12 @@ function RegisterView({ state }: { state: api.UserStateRegistering }) {
   return <SimpleForm
     buttons={{
       'go back': async () => {
-        api.$userState.val = { type: 'guest' }
+        api.$userState.$ = { type: 'guest' }
       },
       'register': async (email) => {
         const [err] = await api.POST('/user/register', `${state.username} ${email}`)
         if (err) { return err }
-        api.$userState.val = { type: 'verifying', username: state.username }
+        api.$userState.$ = { type: 'verifying', username: state.username }
       }
     }}
     label='email'
@@ -75,13 +75,13 @@ function VerifyView({ state }: { state: api.UserStateVerifying }) {
   return <SimpleForm
     buttons={{
       'go back': async () => {
-        console.log(api.$userState.val)
-        api.$userState.val = { type: 'guest' }
+        console.log(api.$userState.$)
+        api.$userState.$ = { type: 'guest' }
       },
       'verify': async (token) => {
         const [err] = await api.POST('/user/verify', token)
         if (err) { return err }
-        api.$userState.val = {
+        api.$userState.$ = {
           type: 'known',
           username: state.username,
         }
@@ -101,7 +101,7 @@ function SimpleForm(data: {
   function wrapSubmit(onSubmit: (val: string) => Promise<string | void>) {
     return async () => {
       const error = await onSubmit(model.getText())
-      if (error) $error.val = error
+      if (error) $error.$ = error
     }
   }
 

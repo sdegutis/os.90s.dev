@@ -1,6 +1,10 @@
 import * as api from '/api.js'
 await api.appReady
 
+api.sys.onIpc.watch(port => {
+  console.log('received', port)
+})
+
 const panel = await api.sys.makePanel({ name: "test 1" },
   <panel size={{ w: 70, h: 50 }}>
     <api.Margin padding={3}>

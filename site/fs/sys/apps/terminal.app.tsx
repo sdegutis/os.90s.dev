@@ -8,7 +8,7 @@ const textarea = <api.TextBox autofocus onEnter={submit} /> as api.TextBox
 const context = {}
 
 function append(view: api.View) {
-  $lines.val = [...$lines.val, view]
+  $lines.$ = [...$lines.$, view]
 }
 
 function submit() {

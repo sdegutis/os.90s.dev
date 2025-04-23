@@ -68,16 +68,16 @@ class Sys {
   onKeyPress = new Listener<string>()
 
   readonly $mouse: Ref<Point> = $({ x: 0, y: 0 })
-  get mouse() { return this.$mouse.val }
-  set mouse(p: Point) { this.$mouse.val = p }
+  get mouse() { return this.$mouse.$ }
+  set mouse(p: Point) { this.$mouse.$ = p }
 
   $font!: Ref<Font>
-  get font() { return this.$font.val }
-  set font(f: Font) { this.$font.val = f }
+  get font() { return this.$font.$ }
+  set font(f: Font) { this.$font.$ = f }
 
   $size: Ref<Size> = $({ w: 0, h: 0 })
-  get size() { return this.$size.val }
-  set size(s: Size) { this.$size.val = s }
+  get size() { return this.$size.$ }
+  set size(s: Size) { this.$size.$ = s }
 
   desktop!: Point & Size
 

@@ -5,8 +5,8 @@ export function setupCanvas(size: Ref<Size>) {
 
   const canvas = document.createElement('canvas')
 
-  canvas.width = size.val.w
-  canvas.height = size.val.h
+  canvas.width = size.$.w
+  canvas.height = size.$.h
 
   canvas.style.imageRendering = 'pixelated'
   canvas.style.backgroundColor = '#000'
@@ -24,19 +24,19 @@ export function setupCanvas(size: Ref<Size>) {
   const $point = $({ x: 0, y: 0 })
   const updatePoint = () => {
     const rect = canvas.getBoundingClientRect()
-    $point.val = { x: Math.round(rect.x), y: Math.round(rect.y) }
+    $point.$ = { x: Math.round(rect.x), y: Math.round(rect.y) }
   }
 
   const $scale = $(1)
 
   function resize() {
     const rect = canvas.parentElement!.getBoundingClientRect()
-    let w = size.val.w, h = size.val.h, s = 1
+    let w = size.$.w, h = size.$.h, s = 1
     while (
-      (w += size.val.w) <= rect.width &&
-      (h += size.val.h) <= rect.height) s++
+      (w += size.$.w) <= rect.width &&
+      (h += size.$.h) <= rect.height) s++
     canvas.style.transform = `scale(${s})`
-    $scale.val = s
+    $scale.$ = s
     updatePoint()
   }
 

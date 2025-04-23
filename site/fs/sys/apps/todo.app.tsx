@@ -40,21 +40,21 @@ function add() {
   const text = textModel.getText()
   if (!text) return
 
-  $items.val = [...$items.val, { done: api.$(false), text }]
+  $items.$ = [...$items.$, { done: api.$(false), text }]
   textModel.setText('')
 }
 
 function clear() {
-  $items.val = $items.val.filter(it => !it.done.val)
+  $items.$ = $items.$.filter(it => !it.done.$)
 }
 
 function inverse() {
-  $items.val.forEach(it => it.done.val = !it.done.val)
+  $items.$.forEach(it => it.done.$ = !it.done.$)
 }
 
 function ItemView({ item }: { item: Item }) {
   function toggleDone() {
-    item.done.val = !item.done.val
+    item.done.$ = !item.done.$
   }
 
   const $color = item.done.adapt<number>(done => done ? 0xffffff33 : 0xffffff77)
