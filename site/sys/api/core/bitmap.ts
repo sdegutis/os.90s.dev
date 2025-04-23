@@ -1,5 +1,6 @@
 import { colorFor } from "./drawing.js"
 
+/** Fundamental sprite class. */
 export class Bitmap {
 
   static fromString(colors: number[], pstr: string) {
@@ -12,6 +13,7 @@ export class Bitmap {
   height: number
 
   private original
+  /** @deprecated */
   canvas
   private ctx
 
@@ -64,6 +66,7 @@ export class Bitmap {
     return { colors, pixels: lines.join('') }
   }
 
+  /** Note: this mutates the existing bitmap. */
   colorize(col: number) {
     if (this.lastcol === col) return
     this.lastcol = col

@@ -1,5 +1,6 @@
 import { Label } from "../views/label.js"
 
+/** Experimental. */
 export function ImplicitComp(data: { children: string | string[] }) {
   const str = typeof data.children === 'string'
     ? data.children

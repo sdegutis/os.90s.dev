@@ -3,6 +3,7 @@ import { JSLN } from "./jsln.js"
 
 export class Cursor {
 
+  /** @deprecated */
   static readonly NONE = new Cursor(0, 0, new Bitmap([], 1, [0]))
 
   offx: number

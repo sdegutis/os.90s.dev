@@ -2,6 +2,7 @@ import { Ref } from "../core/ref.js"
 import { Button } from "../views/button.js"
 import { Label } from "../views/label.js"
 
+/** Experimental. */
 export function ButtonComp(data: {
   action: () => void
   style: 'submit' | 'cancel' | undefined

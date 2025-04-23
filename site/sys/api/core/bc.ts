@@ -23,9 +23,7 @@ export type PanelEvent =
   | { type: 'adjusted', id: number, point: Point, size: Size }
 
 
-/**
- * Wraps `BroadcastChannel` to the given sysid, unique per user-agent (e.g. tab)
- */
+/** Wraps `BroadcastChannel` to the given sysid, unique per user-agent (e.g. tab) */
 export class BC<T extends { type: string }> {
 
   private chan
@@ -38,10 +36,12 @@ export class BC<T extends { type: string }> {
     this.chan = new BroadcastChannel(channel)
   }
 
+  /** Broadcasts event to `sysid` scope. */
   emit(event: T) {
     this.chan.postMessage([this.sysid, event])
   }
 
+  /** Handle broadcasted events in `sysid` scope. */
   handle(fn: (event: T) => void) {
     this.chan.onmessage = msg => {
       const [id, event] = msg.data

@@ -3,6 +3,7 @@ import { runJsFile } from "./open.js"
 
 const init = Promise.withResolvers<void>()
 
+/** Resolves when all preludes have run. */
 export const appReady = init.promise
 
 async function loadPreludes() {
