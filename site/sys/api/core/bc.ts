@@ -23,10 +23,17 @@ export type PanelEvent =
   | { type: 'adjusted', id: number, point: Point, size: Size }
 
 
+/**
+ * Wraps `BroadcastChannel` to the given sysid, unique per user-agent (e.g. tab)
+ */
 export class BC<T extends { type: string }> {
 
   private chan
 
+  /**
+   * @param channel same as for `BroadcastChannel`
+   * @param sysid `sys.sysid`, or `null` to post to all tabs
+   */
   constructor(channel: string, public sysid: string | null) {
     this.chan = new BroadcastChannel(channel)
   }
