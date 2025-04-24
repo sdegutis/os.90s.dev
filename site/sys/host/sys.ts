@@ -123,6 +123,8 @@ export class Sys {
     }
 
     document.onmousemove = (e) => {
+      cursor ??= defaultCursor
+
       let x = e.offsetX
       let y = e.offsetY
 
@@ -222,7 +224,7 @@ export class Sys {
   private drawCursor() {
     const c = cursor
     // const c = this.loading ? loadingCursor : cursor
-    c.draw(this.ctx, this.mouse.x, this.mouse.y)
+    c?.draw(this.ctx, this.mouse.x, this.mouse.y)
   }
 
   focusPanel(panel: Panel) {
@@ -344,4 +346,4 @@ pixels=
 0 0 0 0 1 0
 `.trimStart())
 
-let cursor = defaultCursor
+let cursor: Cursor | undefined
