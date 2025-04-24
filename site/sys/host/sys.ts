@@ -39,7 +39,7 @@ export class Sys {
 
   loading = 0
 
-  constructor(size: MaybeRef<Size>) {
+  constructor(canvas: ReturnType<typeof setupCanvas>, size: MaybeRef<Size>) {
     this.$size = defRef(size)
     this.$size.equals = sizeEquals
 
@@ -51,7 +51,7 @@ export class Sys {
 
     this.desktop = { x: 0, y: 0, ...this.size }
 
-    const { $point, $scale, ctx } = setupCanvas(this.$size)
+    const { $point, $scale, ctx } = canvas
     this.ctx = ctx
 
     this.installEventHandlers($point, $scale)

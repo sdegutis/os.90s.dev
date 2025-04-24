@@ -2,6 +2,7 @@ import { sysConfig } from "../api/core/config.js"
 import { $ } from "../api/core/ref.js"
 import { Size } from "../api/core/types.js"
 import { debounce } from "../api/util/throttle.js"
+import { setupCanvas } from "./canvas.js"
 import { Sys } from "./sys.js"
 
 const reg = await navigator.serviceWorker.register('/sw.js', { type: 'classic', updateViaCache: 'none' })
@@ -15,11 +16,11 @@ if (params.has('embed')) {
   const $size = $(currentSize())
   new ResizeObserver(debounce(() => { $size.$ = currentSize() })).observe(document.body)
 
-  const sys = new Sys($size)
+  const sys = new Sys(setupCanvas($size), $size)
   sys.launch('run' + location.search, {}, [])
 }
 else {
-  const sys = new Sys(sysConfig.$size)
+  const sys = new Sys(setupCanvas(sysConfig.$size), sysConfig.$size)
   sys.initialize([
     sys.runShell(),
     sys.runStartupApps(),
