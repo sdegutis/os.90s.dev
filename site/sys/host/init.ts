@@ -4,7 +4,9 @@ import { Size } from "../api/core/types.js"
 import { debounce } from "../api/util/throttle.js"
 import { Sys } from "./sys.js"
 
-await Sys.installServiceWorker()
+const reg = await navigator.serviceWorker.register('/sw.js', { type: 'classic', updateViaCache: 'none' })
+await reg.update()
+await navigator.serviceWorker.ready
 
 const params = new URLSearchParams(location.search)
 

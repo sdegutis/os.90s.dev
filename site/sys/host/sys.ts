@@ -325,24 +325,6 @@ export class Sys {
     this.ctx.drawImage(img, 0, 0)
   }
 
-  static async installServiceWorker() {
-    const reg = await navigator.serviceWorker.register('/sw.js', { type: 'classic', updateViaCache: 'none' })
-    const incoming = reg.installing ?? reg.waiting
-
-    if (incoming) {
-      const ready = Promise.withResolvers<void>()
-      incoming.onstatechange = () => {
-        if (incoming.state === 'activated') {
-          ready.resolve()
-          incoming.onstatechange = null
-        }
-      }
-      await ready.promise
-    }
-
-    await navigator.serviceWorker.ready
-  }
-
 }
 
 const defaultCursor = Cursor.fromString(`
