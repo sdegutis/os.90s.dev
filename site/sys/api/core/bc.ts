@@ -28,27 +28,25 @@ export class BC<T extends { type: string }> {
 
   private chan
 
-  /**
-   * @param channel same as for `BroadcastChannel`
-   * @param sysid `sys.sysid`, or `null` to post to all tabs
-   */
   constructor(channel: string, public sysid: string | null) {
     this.chan = new BroadcastChannel(channel)
   }
 
-  /** Broadcasts event to `sysid` scope. */
   emit(event: T) {
     this.chan.postMessage([this.sysid, event])
   }
 
-  /** Handle broadcasted events in `sysid` scope. */
   handle(fn: (event: T) => void) {
-    this.chan.onmessage = msg => {
+    this.chan.addEventListener('message', msg => {
       const [id, event] = msg.data
       if (this.sysid === null || id === this.sysid) {
         fn(event)
       }
-    }
+    })
+  }
+
+  close() {
+    this.chan.close()
   }
 
 }
