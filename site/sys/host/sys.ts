@@ -40,6 +40,13 @@ export class Sys {
   loading = 0
 
   constructor(canvas: ReturnType<typeof setupCanvas>, size: MaybeRef<Size>) {
+    const { $point, $scale, ctx } = canvas
+    this.ctx = ctx
+
+    this.$font = sysConfig.$font
+
+    this.showLoadingScreen()
+
     this.$size = defRef(size)
     this.$size.equals = sizeEquals
 
@@ -47,26 +54,13 @@ export class Sys {
       this.resize(size.w, size.h)
     })
 
-    this.$font = sysConfig.$font
-
     this.desktop = { x: 0, y: 0, ...this.size }
-
-    const { $point, $scale, ctx } = canvas
-    this.ctx = ctx
 
     this.installEventHandlers($point, $scale)
 
     new BC<ProcEvent>('procevents', this.id).handle(() => {
       this.updateLocation()
     })
-  }
-
-  async initialize(steps: Promise<any>[]) {
-    this.showLoadingScreen(0)
-    for (const [i, step] of steps.entries()) {
-      await step
-      this.showLoadingScreen(i / steps.length)
-    }
   }
 
   async runShell() {
@@ -297,7 +291,7 @@ export class Sys {
     this.sysevents.emit({ type: 'desktop', desktop: { x, y, w, h } })
   }
 
-  private showLoadingScreen(percent: number) {
+  private showLoadingScreen() {
     const w = this.ctx.canvas.width
     const h = this.ctx.canvas.height
 
@@ -315,10 +309,6 @@ export class Sys {
 
     this.font.print(ctx, px + 1, py + 1, 0x000000ff, str)
     this.font.print(ctx, px, py, 0xffffffff, str)
-
-    const bar = { h: 4, y: 10 }
-    ctx.fillRect(px, py + bar.y, size.w, bar.h, 0x000000ff)
-    ctx.fillRect(px, py + bar.y, Math.round(size.w * percent), bar.h, 0xffffffff)
 
     const img = ctx.transferToImageBitmap()
 
