@@ -37,8 +37,6 @@ export class Sys {
 
   #initialAppsLoaded = false
 
-  loading = 0
-
   constructor(canvas: ReturnType<typeof setupCanvas>, size: MaybeRef<Size>) {
     const { $point, $scale, ctx } = canvas
     this.ctx = ctx
@@ -175,11 +173,11 @@ export class Sys {
 
   async launch(path: string, opts: Record<string, any>, optsTs: Transferable[]) {
     const proc = new Process(this, path, opts, optsTs)
-    this.loading++
+    // this.loading++
     try { await proc.ready.promise }
     catch { return null }
     finally {
-      this.loading--
+      // this.loading--
     }
     return proc.id
   }
@@ -222,7 +220,8 @@ export class Sys {
   }
 
   private drawCursor() {
-    const c = this.loading ? loadingCursor : cursor
+    const c = cursor
+    // const c = this.loading ? loadingCursor : cursor
     c.draw(this.ctx, this.mouse.x, this.mouse.y)
   }
 
