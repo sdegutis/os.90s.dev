@@ -88,7 +88,7 @@ export class Sys {
 
   async loadAppsFromUrl() {
     type RunApp = { path: string, params: Record<string, string> }
-    const runApps: RunApp[] = location.hash.slice(1).split(',').map((app) => {
+    const runApps: RunApp[] = location.hash.slice(1).split(';').map((app) => {
       const [path, file] = app.split('@')
       return { path, params: { file } }
     })
@@ -260,7 +260,7 @@ export class Sys {
       let file = ''
       if (app.file) file = `@${app.file}`
       return `${app.path}${file}`
-    }).join(',')
+    }).join(';')
 
     history.replaceState({}, '', url ? `/#${url}` : `/`)
   }
