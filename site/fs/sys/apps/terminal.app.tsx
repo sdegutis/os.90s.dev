@@ -1,4 +1,4 @@
-import * as api from "/api.js"
+import api from "/api.js"
 await api.appReady
 
 { (self as any).api = api }

@@ -1,4 +1,4 @@
-import * as api from "/api.js"
+import api from "/api.js"
 await api.appReady
 
 const rint = (min: number, max: number) => Math.round(Math.random() * (max - min)) + min

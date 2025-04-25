@@ -56,9 +56,11 @@ function processSite() {
 
     files.with(/\.tsx?$/).do(file => { file.path = file.path.replace(/\.tsx?$/, '.js') })
 
+    const defaultExport = "\nexport * as default from './api.js'"
+
     const apis = files.with('^/sys/api/').paths()
-    fs.writeFileSync('./site/fs/api.ts', apis.map(p => `export * from "..${p}"`).join('\n'))
-    files.add('/api.js', apis.map(p => `export * from "${p}"`).join('\n'))
+    fs.writeFileSync('./site/fs/api.ts', apis.map(p => `export * from "..${p}"`).join('\n') + defaultExport)
+    files.add('/api.js', apis.map(p => `export * from "${p}"`).join('\n') + defaultExport)
 
     src.do(f => { files.add('/fs/sys/api' + f.path.slice('/sys/api'.length).replace(/\.tsx?$/, '.js'), f.text) })
 
@@ -83,7 +85,7 @@ function processSite() {
     files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
 
     const apidts2 = Object.fromEntries(apidts.all().map(f => [f.path.replace(/^\/sys\/out\//, '/sys/'), f.text]))
-    apidts2['/api.d.ts'] = apis.map(p => `export * from "${p}"`).join('\n')
+    apidts2['/api.d.ts'] = apis.map(p => `export * from "${p}"`).join('\n') + defaultExport
     const apiexports = JSON.stringify(apidts2)
 
     files.add('/api.d.ts.json', apiexports)

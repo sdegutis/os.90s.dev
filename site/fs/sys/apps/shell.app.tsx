@@ -1,5 +1,7 @@
-import * as api from "/api.js"
+import api from "/api.js"
 await api.appReady
+
+console.log('h2')
 
 const $bgcolor = api.$usrConfig.adapt(config => {
   const c = api.as(config, 'shell.bgcolor', api.as.number)
@@ -115,7 +117,7 @@ const $panels = api.$<Panel[]>([])
 const savedPanelInfo = await api.kvs<api.Point & api.Size>('panels')
 
 const panelevents = new api.BC<api.PanelEvent>('panelevents', api.sys.sysid)
-panelevents.handle (data => {
+panelevents.handle(data => {
   const { type } = data
 
   if (type === 'new') {

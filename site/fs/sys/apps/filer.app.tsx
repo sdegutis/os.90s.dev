@@ -1,4 +1,4 @@
-import * as api from '/api.js'
+import api from '/api.js'
 await api.appReady
 
 const IMG_FOLDER = new api.Bitmap([0x990000ff], 1, [1])
