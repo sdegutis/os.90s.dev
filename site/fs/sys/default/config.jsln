@@ -2,5 +2,5 @@ sys.size=[320 180]
 sys.font="sys/data/crt34.font"
 sys.shell="sys/apps/shell.app.js"
 # shell.startup[]="usr/startup.js"
-# shell.bgcolor=0x000000ff
+# shell.bgcolor=0x330000ff
 # process.prelude[]="usr/prelude.js"
