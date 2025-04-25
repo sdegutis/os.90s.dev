@@ -2,7 +2,7 @@ import { BC, KeyEvent, PanelEvent, ProcEvent, SysEvent } from "../api/core/bc.js
 import { sysConfig } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
-import { defRef, MaybeRef, Ref } from "../api/core/ref.js"
+import { Ref } from "../api/core/ref.js"
 import { Point, Size, sizeEquals } from "../api/core/types.js"
 import { debounce } from "../api/util/throttle.js"
 import { setupCanvas } from "./canvas.js"
@@ -36,15 +36,15 @@ export class Sys {
 
   #initialAppsLoaded = false
 
-  constructor(canvas: ReturnType<typeof setupCanvas>, size: MaybeRef<Size>) {
+  constructor(canvas: ReturnType<typeof setupCanvas>, size: Ref<Size>) {
     const { $point, $scale, ctx } = canvas
-    this.ctx = ctx
 
+    this.ctx = ctx
     this.$font = sysConfig.$font
 
     this.showLoadingScreen()
 
-    this.$size = defRef(size)
+    this.$size = size
     this.$size.equals = sizeEquals
 
     this.$size.watch(size => {
