@@ -2,8 +2,8 @@ import { type Browser } from "../apps/browser.app.js"
 import { Button, GroupY, Label, Scroll, SplitXA, View } from "/api.js"
 
 const pages = {
-  Main: 'sys/docs/readme.page.js',
-  Page2: 'sys/docs/readme2.page.js',
+  Main: 'sys/experimental/docs/readme.page.js',
+  Page2: 'sys/experimental/docs/readme2.page.js',
 }
 
 function Sidebar(data: { current: string, browser: Browser }) {
