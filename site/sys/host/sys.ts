@@ -61,8 +61,12 @@ export class Sys {
     })
   }
 
+  embedded() {
+    return window.top !== window.self
+  }
+
   private getScreenSize() {
-    if (window.top === window.self) return sysConfig.$size
+    if (!this.embedded()) return sysConfig.$size
     const currentSize = (): Size => ({ w: window.innerWidth / 2, h: window.innerHeight / 2 })
     const $size = $(currentSize())
     new ResizeObserver(debounce(() => { $size.$ = currentSize() })).observe(document.body)

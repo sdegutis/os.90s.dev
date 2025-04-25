@@ -11,5 +11,8 @@ if (new URLSearchParams(location.search).has('code')) {
 else {
   await sys.runShell()
   await sys.loadAppsFromUrl()
+}
+
+if (!sys.embedded()) {
   sys.focus()
 }
