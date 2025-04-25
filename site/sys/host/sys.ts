@@ -2,7 +2,7 @@ import { BC, KeyEvent, PanelEvent, ProcEvent, SysEvent } from "../api/core/bc.js
 import { sysConfig } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
-import { Ref } from "../api/core/ref.js"
+import { $, Ref } from "../api/core/ref.js"
 import { Point, Size, sizeEquals } from "../api/core/types.js"
 import { debounce } from "../api/util/throttle.js"
 import { setupCanvas } from "./canvas.js"
@@ -36,7 +36,8 @@ export class Sys {
 
   #initialAppsLoaded = false
 
-  constructor(size: Ref<Size>) {
+  constructor() {
+    const size = this.getScreenSize()
     const { $point, $scale, ctx } = setupCanvas(size)
 
     this.ctx = ctx
@@ -58,6 +59,14 @@ export class Sys {
     new BC<ProcEvent>('procevents', this.id).handle(() => {
       this.updateLocation()
     })
+  }
+
+  private getScreenSize() {
+    if (window.top === window.self) return sysConfig.$size
+    const currentSize = (): Size => ({ w: window.innerWidth / 2, h: window.innerHeight / 2 })
+    const $size = $(currentSize())
+    new ResizeObserver(debounce(() => { $size.$ = currentSize() })).observe(document.body)
+    return $size
   }
 
   async runShell() {
