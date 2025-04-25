@@ -183,6 +183,9 @@ async function handleFile(path: string) {
   else if (path.endsWith('.txt')) {
     await api.sys.launch('sys/apps/editor.app.js', path)
   }
+  else if (path.endsWith('.jsln')) {
+    await api.sys.launch('sys/apps/editor.app.js', path)
+  }
 }
 
 let copying: string | undefined
