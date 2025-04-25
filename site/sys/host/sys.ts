@@ -2,7 +2,6 @@ import { BC, KeyEvent, PanelEvent, ProcEvent, SysEvent } from "../api/core/bc.js
 import { sysConfig } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
-import { runJsFile } from "../api/core/open.js"
 import { defRef, MaybeRef, Ref } from "../api/core/ref.js"
 import { Point, Size, sizeEquals } from "../api/core/types.js"
 import { debounce } from "../api/util/throttle.js"
@@ -66,12 +65,6 @@ export class Sys {
     sysConfig.$shell.watch(shell => {
       this.launch(shell, {}, [])
     })
-  }
-
-  async runStartupApps() {
-    for (const path of sysConfig.startup ?? []) {
-      runJsFile(path)
-    }
   }
 
   focus() {

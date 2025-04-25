@@ -12,16 +12,12 @@ const baseConfig = {
   }),
   font: new Font((await fs.getFile(baseConfigData.sys.font))!),
   shell: baseConfigData.sys.shell as string,
-  startup: baseConfigData.sys.startup as string[] | undefined,
-  prelude: baseConfigData.sys.prelude as string[] | undefined,
 }
 
 export const sysConfig = {
   $size: $(baseConfig.size),
   $font: $(baseConfig.font),
   $shell: $(baseConfig.shell),
-  startup: baseConfig.startup,
-  prelude: baseConfig.prelude,
 }
 
 export const $usrConfig = $<Record<string, any> | undefined>(undefined)
@@ -47,9 +43,6 @@ $usrConfig.watch(async (usrConfig) => {
 
   const shell = as(usrConfig, 'sys.shell', as.string)
   sysConfig.$shell.$ = shell || baseConfig.shell
-
-  const prelude = as(usrConfig, 'sys.prelude', as.strings())
-  sysConfig.prelude = prelude || baseConfig.prelude
 
 })
 

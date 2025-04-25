@@ -1,7 +1,5 @@
-import api from "/api.js"
+import api, { $usrConfig, as } from "/api.js"
 await api.appReady
-
-console.log('h2')
 
 const $bgcolor = api.$usrConfig.adapt(config => {
   const c = api.as(config, 'shell.bgcolor', api.as.number)
@@ -181,6 +179,10 @@ $panels.$ = (await api.sys.getPanels())
 $panels.$.forEach(p => p.position())
 
 await api.program.becomeShell()
+
+for (const path of as($usrConfig.$, 'shell.startup', as.strings()) ?? []) {
+  api.runJsFile(path)
+}
 
 
 api.sys.onKeyPress.watch(key => {

@@ -22,7 +22,6 @@ if (params.has('embed')) {
 else {
   const sys = new Sys(setupCanvas(sysConfig.$size), sysConfig.$size)
   await sys.runShell()
-  await sys.runStartupApps()
   await sys.loadAppsFromUrl()
   sys.focus()
 }
