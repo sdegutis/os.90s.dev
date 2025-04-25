@@ -36,8 +36,8 @@ export class Sys {
 
   #initialAppsLoaded = false
 
-  constructor(canvas: ReturnType<typeof setupCanvas>, size: Ref<Size>) {
-    const { $point, $scale, ctx } = canvas
+  constructor(size: Ref<Size>) {
+    const { $point, $scale, ctx } = setupCanvas(size)
 
     this.ctx = ctx
     this.$font = sysConfig.$font
