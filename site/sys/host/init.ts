@@ -5,7 +5,7 @@ await navigator.serviceWorker.ready
 const { Sys } = await import('./sys.js')
 const sys = new Sys()
 
-if (new URLSearchParams(location.search).has('embed')) {
+if (new URLSearchParams(location.search).has('code')) {
   sys.launch('run' + location.search, {}, [])
 }
 else {
