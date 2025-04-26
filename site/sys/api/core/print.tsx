@@ -23,7 +23,7 @@ function ensure<T>(fn: () => T) {
 async function make() {
   const $lines = $<View[]>([])
 
-  const scroll = <Scroll size={sys.$size} background={0x111111ff}>
+  const scroll = <Scroll size={sys.$size} background={0x555555ff}>
     <Border padding={2}>
       <GroupYA children={$lines} gap={2} />
     </Border>
