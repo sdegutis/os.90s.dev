@@ -281,7 +281,7 @@ const taskbar = await api.sys.makePanel({
     </api.GroupX>
     <api.GroupX gap={2}>
       <Clock />
-      <ScreenSize />
+      {/* <ScreenSize /> */}
     </api.GroupX>
   </api.SpacedX>
 ))
