@@ -1,7 +1,13 @@
-import { $, Ref } from "../api/core/ref.js"
+import { DrawingContext } from "../api/core/drawing.js"
+import { Font } from "../api/core/font.js"
+import { $ } from "../api/core/ref.js"
 import type { Size } from "../api/core/types.js"
+import { debounce } from "../api/util/throttle.js"
 
-export function setupCanvas(size: Ref<Size>) {
+export function setupCanvas() {
+  const embedded = window.top !== window.self
+
+  const size = getScreenSize(embedded)
 
   const canvas = document.createElement('canvas')
 
@@ -41,6 +47,7 @@ export function setupCanvas(size: Ref<Size>) {
   }
 
   size.watch(s => {
+    if (canvas.width === s.w && canvas.height === s.h) return
     canvas.width = s.w
     canvas.height = s.h
     resize()
@@ -49,6 +56,44 @@ export function setupCanvas(size: Ref<Size>) {
   new ResizeObserver(resize).observe(canvas.parentElement!)
 
   const ctx = canvas.getContext('2d')!
-  return { ctx, $point, $scale }
 
+  showLoadingScreen(ctx)
+
+  return { size, embedded, ctx, $point, $scale }
+
+}
+
+function getScreenSize(embedded: boolean) {
+  if (!embedded) return $({ w: 320, h: 180 })
+  const currentSize = (): Size => ({ w: window.innerWidth / 2, h: window.innerHeight / 2 })
+  const $size = $(currentSize())
+  new ResizeObserver(debounce(() => { $size.$ = currentSize() })).observe(document.body)
+  return $size
+}
+
+async function showLoadingScreen(ctx: CanvasRenderingContext2D) {
+  const fontsrc = await fetch('/fs/sys/data/crt34.font').then(r => r.text())
+  const font = new Font(fontsrc)
+
+  const w = ctx.canvas.width
+  const h = ctx.canvas.height
+
+  const context = new DrawingContext(w, h)
+
+  context.fillRect(0, 0, w, h, 0x333333ff)
+
+  const str = 'loading...'
+  const size = font.calcSize(str)
+
+  const px = Math.floor(w / 2 - size.w / 2)
+  const py = Math.floor(h / 2 - size.h / 2)
+
+  context.fillRect(px - 3, py - 3, size.w + 6, size.h + 6, 0x333333ff)
+
+  font.print(context, px + 1, py + 1, 0x000000ff, str)
+  font.print(context, px, py, 0xffffffff, str)
+
+  const img = context.transferToImageBitmap()
+
+  ctx.drawImage(img, 0, 0)
 }

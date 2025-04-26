@@ -81,7 +81,7 @@ function processSite() {
     const modules = paths.with('\.js$').without('^/sys/sw/').paths()
       .map(path => `<link rel="modulepreload" href="${path}" />`)
 
-    const toinsert = [...datas, ...modules, iconlink].map(s => `  ${s}`).join('\n')
+    const toinsert = [...datas, /* ...modules, */ iconlink].map(s => `  ${s}`).join('\n')
     files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
 
     const apidts2 = Object.fromEntries(apidts.all().map(f => [f.path.replace(/^\/sys\/out\//, '/sys/'), f.text]))

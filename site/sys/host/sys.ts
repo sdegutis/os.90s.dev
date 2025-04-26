@@ -1,8 +1,7 @@
 import { BC, KeyEvent, PanelEvent, ProcEvent, SysEvent } from "../api/core/bc.js"
 import { sysConfig } from "../api/core/config.js"
 import { Cursor } from "../api/core/cursor.js"
-import { DrawingContext } from "../api/core/drawing.js"
-import { $, Ref } from "../api/core/ref.js"
+import { Ref } from "../api/core/ref.js"
 import { Point, Size, sizeEquals } from "../api/core/types.js"
 import { debounce } from "../api/util/throttle.js"
 import { setupCanvas } from "./canvas.js"
@@ -36,14 +35,15 @@ export class Sys {
 
   #initialAppsLoaded = false
 
-  constructor() {
-    const size = this.getScreenSize()
-    const { $point, $scale, ctx } = setupCanvas(size)
+  constructor(canvas: ReturnType<typeof setupCanvas>) {
+    const { embedded, size, $point, $scale, ctx } = canvas
+
+    if (!embedded) {
+      size.defer(sysConfig.$size)
+    }
 
     this.ctx = ctx
     this.$font = sysConfig.$font
-
-    this.showLoadingScreen()
 
     this.$size = size
     this.$size.equals = sizeEquals
@@ -59,18 +59,6 @@ export class Sys {
     new BC<ProcEvent>('procevents', this.id).handle(() => {
       this.updateLocation()
     })
-  }
-
-  embedded() {
-    return window.top !== window.self
-  }
-
-  private getScreenSize() {
-    if (!this.embedded()) return sysConfig.$size
-    const currentSize = (): Size => ({ w: window.innerWidth / 2, h: window.innerHeight / 2 })
-    const $size = $(currentSize())
-    new ResizeObserver(debounce(() => { $size.$ = currentSize() })).observe(document.body)
-    return $size
   }
 
   async runShell() {
@@ -296,30 +284,6 @@ export class Sys {
   setDesktop(x: number, y: number, w: number, h: number) {
     this.desktop = { x, y, w, h }
     this.sysevents.emit({ type: 'desktop', desktop: { x, y, w, h } })
-  }
-
-  private showLoadingScreen() {
-    const w = this.ctx.canvas.width
-    const h = this.ctx.canvas.height
-
-    const ctx = new DrawingContext(w, h)
-
-    ctx.fillRect(0, 0, w, h, 0x333333ff)
-
-    const str = 'loading...'
-    const size = this.font.calcSize(str)
-
-    const px = Math.floor(w / 2 - size.w / 2)
-    const py = Math.floor(h / 2 - size.h / 2)
-
-    ctx.fillRect(px - 3, py - 3, size.w + 6, size.h + 6, 0x333333ff)
-
-    this.font.print(ctx, px + 1, py + 1, 0x000000ff, str)
-    this.font.print(ctx, px, py, 0xffffffff, str)
-
-    const img = ctx.transferToImageBitmap()
-
-    this.ctx.drawImage(img, 0, 0)
   }
 
 }
