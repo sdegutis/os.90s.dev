@@ -74,7 +74,7 @@ export class Sys {
 
   async loadAppsFromUrl() {
     type RunApp = { path: string, params: Record<string, string> }
-    const runApps: RunApp[] = location.hash.slice(1).split(';').map((app) => {
+    const runApps: RunApp[] = location.hash.slice(1).split(';').filter(s => s).map((app) => {
       const [path, file] = app.split('@')
       return { path, params: { file } }
     })
