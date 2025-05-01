@@ -125,6 +125,21 @@ gl.bindVertexArray(vao)
 gl.drawArrays(gl.POINTS, 0, 2)
 
 
+canvas.onmousemove = (e) => {
+  const x = Math.min(e.offsetX, 320 - 1)
+  const y = Math.min(e.offsetY, 180 - 1)
+
+
+  // gl.bindBuffer(gl.ARRAY_BUFFER, posBuf)
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    x, y,
+    x + 2, y + 1,
+  ]), gl.STATIC_DRAW)
+  gl.drawArrays(gl.POINTS, 0, 2)
+
+
+}
+
 
 
 // const vert = `#version 300 es
