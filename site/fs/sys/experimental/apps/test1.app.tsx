@@ -1,5 +1,5 @@
 import api from '/api.js'
-await api.appReady
+await api.preludesFinished
 
 api.sys.onIpc.watch(port => {
   console.log('received', port)

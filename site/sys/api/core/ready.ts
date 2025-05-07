@@ -5,7 +5,7 @@ import { as } from "./typesafe.js"
 const init = Promise.withResolvers<void>()
 
 /** Resolves when all preludes have run. */
-export const appReady = init.promise
+export const preludesFinished = init.promise
 
 async function loadPreludes() {
   const preludes = as($usrConfig.$, 'process.prelude', as.strings())

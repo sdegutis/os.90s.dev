@@ -1,5 +1,5 @@
 import api from "/api.js"
-await api.appReady
+await api.preludesFinished
 
 const procevents = new api.BC<api.ProcEvent>('procevents', api.sys.sysid)
 

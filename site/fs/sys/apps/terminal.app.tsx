@@ -1,5 +1,5 @@
 import api from "/api.js"
-await api.appReady
+await api.preludesFinished
 
 { (self as any).api = api }
 

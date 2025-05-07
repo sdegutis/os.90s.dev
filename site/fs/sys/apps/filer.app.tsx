@@ -1,5 +1,5 @@
 import api from '/api.js'
-await api.appReady
+await api.preludesFinished
 
 const IMG_FOLDER = new api.Bitmap([0x990000ff], 1, [1])
 const IMG_FILE = new api.Bitmap([0x009900ff], 1, [1])

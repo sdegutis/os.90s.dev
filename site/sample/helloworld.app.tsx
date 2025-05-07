@@ -1,5 +1,5 @@
 import api, { $, Center, GroupX, GroupY, Label } from '/api.js'
-await api.appReady
+await api.preludesFinished
 
 const $count = $(0)
 const inc = () => $count.$++

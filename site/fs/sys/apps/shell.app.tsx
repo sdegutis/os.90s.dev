@@ -1,5 +1,5 @@
 import api, { $usrConfig, as } from "/api.js"
-await api.appReady
+await api.preludesFinished
 
 const $bgcolor = api.$usrConfig.adapt(config => {
   const c = api.as(config, 'shell.bgcolor', api.as.number)

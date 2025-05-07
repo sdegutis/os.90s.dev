@@ -1,5 +1,5 @@
 import api from '/api.js'
-await api.appReady
+await api.preludesFinished
 
 interface Item {
   text: string
