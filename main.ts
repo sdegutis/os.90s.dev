@@ -16,7 +16,6 @@ swc1 = swc1.replace('import.meta.url', `location.origin + '/sys/sw/'`)
 const tree = new immaculata.FileTree('site', import.meta.url, {
   exclude: (path, stat) =>
     path === '/fs/api.ts' ||
-    path.includes('/out/') ||
     path.endsWith('.tsbuildinfo')
 })
 
