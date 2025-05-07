@@ -11,6 +11,8 @@ export function TextFieldComp(data: { length?: number } & ConstructorParameters<
     showh={false}
     showv={false}
     background={0x00000033}
+    canFocus={true}
+    onFocus={() => textbox.focus()}
     onMouseDown={function (...args) { textbox.onMouseDown(...args) }}
     onMouseMove={function (...args) { textbox.onMouseMove?.(...args) }}
     onMouseUp={function (...args) { textbox.onMouseUp?.(...args) }}
