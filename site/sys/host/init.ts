@@ -1,7 +1,7 @@
 import { setupCanvas } from './canvas.js'
 const canvas = setupCanvas()
 
-const sw = await navigator.serviceWorker.register('/sw.js', { type: 'classic', updateViaCache: 'none' })
+const sw = await navigator.serviceWorker.register('/os/sw.js', { type: 'classic', updateViaCache: 'none' })
 await sw.update()
 await navigator.serviceWorker.ready
 

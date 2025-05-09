@@ -1,4 +1,4 @@
-import api from '/api.js'
+import api from '/os/api.js'
 await api.preludesFinished
 
 const panel = await api.sys.makePanel({ name: 'account' },

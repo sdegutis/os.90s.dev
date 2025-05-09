@@ -1,11 +1,9 @@
 declare var __wbg_init: () => Promise<void>
 declare var transformSync: typeof import('@swc/wasm-web').transformSync
 declare var opendb: typeof import('./sys/api/util/db.js').opendb
-declare var NETHOST: typeof import('./sys/api/core/nethost.js').NETHOST
 
-importScripts('./sys/sw/wasm.js')
-importScripts('./sys/sw/db.js')
-importScripts('./sys/sw/nethost.js')
+importScripts('/os/sys/sw/wasm.js')
+importScripts('/os/sys/sw/db.js')
 
 const ready = __wbg_init()
 const usrdb = opendb<{ path: string, content?: string }>('usr', 'path')
@@ -30,7 +28,7 @@ async function compile(url: URL, tsx: string) {
       }
     }
   }).code
-  return transformed.replace('/FAKEIMPORT/jsx-runtime', '/sys/api/core/jsx.js')
+  return transformed.replace('/FAKEIMPORT/jsx-runtime', '/os/sys/api/core/jsx.js')
 }
 
 
@@ -52,7 +50,7 @@ self.addEventListener('fetch', (e: FetchEvent) => {
   }
 
   const url = new URL(e.request.url)
-  if (url.pathname.startsWith('/fs/')) {
+  if (url.pathname.startsWith('/os/fs/')) {
     e.respondWith(handleRoute(url, e.request))
   }
   else {
@@ -81,13 +79,13 @@ function decompress(compressed: string) {
 }
 
 async function handleRoute(url: URL, req: Request) {
-  if (url.pathname === '/fs/run') {
+  if (url.pathname === '/os/fs/run') {
     const compressed = url.searchParams.get('code')!
     const code = await decompress(compressed)
     return await jsResponse(url, code)
   }
 
-  if (url.pathname.startsWith('/fs/sys/')) {
+  if (url.pathname.startsWith('/os/fs/sys/')) {
     if (url.pathname.endsWith('.js')) {
       const res = await fetch(req)
       if (res.status !== 200) return res
@@ -97,17 +95,17 @@ async function handleRoute(url: URL, req: Request) {
     return fetch(req)
   }
 
-  if (url.pathname.startsWith('/fs/usr/')) {
-    const key = url.pathname.slice('/fs/usr/'.length)
+  if (url.pathname.startsWith('/os/fs/usr/')) {
+    const key = url.pathname.slice('/os/fs/usr/'.length)
     const fs = await usrdb
     const res = await fs.get(key)
     if (res === undefined) return new Response('', { status: 404 })
     return await jsResponse(url, res.content!)
   }
 
-  if (url.pathname.startsWith('/fs/net/')) {
-    const path = url.pathname.slice('/fs/usr/'.length)
-    const r = await fetch(`${NETHOST}/fs/${path}`)
+  if (url.pathname.startsWith('/os/fs/net/')) {
+    const path = url.pathname.slice('/os/fs/usr/'.length)
+    const r = await fetch(`/net/fs/${path}`)
     const text = await r.text()
 
     if (path.endsWith('.js')) {
@@ -118,9 +116,9 @@ async function handleRoute(url: URL, req: Request) {
     return new Response(text, { headers: { 'content-type': contentType } })
   }
 
-  if (url.pathname.startsWith('/fs/')) {
+  if (url.pathname.startsWith('/os/fs/')) {
     try {
-      const m = url.pathname.match(/\/fs\/(.+?)\/(.+)/)
+      const m = url.pathname.match(/\/os\/fs\/(.+?)\/(.+)/)
       if (!m) return new Response('', { status: 404 })
       const [, drive, path] = m
       const parts = path.split('/')

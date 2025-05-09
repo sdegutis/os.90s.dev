@@ -6,7 +6,7 @@
     "module": "ESNext",
     "jsx": "react-native",
     "noEmit": true,
-    "paths": { "/api.js": [ "../fs/api.js" ], },
+    "paths": { "/os/api.js": [ "../fs/api.js" ], },
 
     "forceConsistentCasingInFileNames": true,
     "strict": true,

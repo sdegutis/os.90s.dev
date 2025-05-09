@@ -1,6 +1,6 @@
 import { Browser } from "../apps/browser.app.js"
 import { DocsPage } from "./common.js"
-import { fsPathOf, GroupY, Scroll, View } from "/api.js"
+import { fsPathOf, GroupY, Scroll, View } from "/os/api.js"
 
 export default (browser: Browser) => {
   return <DocsPage browser={browser} current={fsPathOf(import.meta.url)}>

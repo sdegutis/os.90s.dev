@@ -1,4 +1,4 @@
-import api from "/api.js"
+import api from "/os/api.js"
 await api.preludesFinished
 
 { (self as any).api = api }

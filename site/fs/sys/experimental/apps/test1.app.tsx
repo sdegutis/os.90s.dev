@@ -1,4 +1,4 @@
-import api from '/api.js'
+import api from '/os/api.js'
 await api.preludesFinished
 
 api.sys.onIpc.watch(port => {

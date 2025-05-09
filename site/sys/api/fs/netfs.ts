@@ -1,4 +1,3 @@
-import { NETHOST } from "../core/nethost.js"
 import { GET, POST } from "../util/net.js"
 import { Drive } from "./drive.js"
 
@@ -23,7 +22,7 @@ export class NetDrive implements Drive {
   }
 
   async getFile(path: string[]): Promise<string | null> {
-    const res = await fetch(NETHOST + '/fs/' + path.join('/'), {
+    const res = await fetch('/net/fs/' + path.join('/'), {
       credentials: 'include',
     })
     if (res.status !== 200) return null

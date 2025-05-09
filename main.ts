@@ -11,7 +11,7 @@ let swc2 = fs.readFileSync('node_modules/@swc/wasm-web/wasm_bg.wasm')
 
 swc1 = swc1.replace(/\nexport function/g, 'function')
 swc1 = swc1.replace(/\nexport {[\s\S]+/, '')
-swc1 = swc1.replace('import.meta.url', `location.origin + '/sys/sw/'`)
+swc1 = swc1.replace('import.meta.url', `location.origin + '/os/sys/sw/'`)
 
 const tree = new immaculata.FileTree('site', import.meta.url, {
   exclude: (path, stat) =>
@@ -23,8 +23,6 @@ const copyright = `Copyright ©️ ${new Date().getFullYear()}. You're welcome a
 
 const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5"><path d="M1 0 L3 2 1 4 Z" fill="#19f" /></svg>`
 const iconlink = `<link rel="shortcut icon" href="${`data:image/svg+xml,${encodeURIComponent(icon)}`}" />`
-
-const NETHOST = isDev ? 'http://localhost:8088' : 'https://net.90s.dev'
 
 function processSite() {
   const files = immaculata.Pipeline.from(tree.files)
@@ -47,9 +45,6 @@ function processSite() {
   files.with('tsconfig\.json').remove()
   files.with(/\.d\.ts$/).remove()
 
-  files.add('/sys/api/core/nethost.ts', `export const NETHOST = ${JSON.stringify(NETHOST)}`)
-  files.add('/sys/sw/nethost.ts', `const NETHOST = ${JSON.stringify(NETHOST)}`)
-
   files.with(/\.js$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
   files.with(/\.tsx?$/).do(file => { file.text = `// ${copyright}\n\n` + file.text })
   files.with(/\.html$/).do(file => { file.text = `<!-- ${copyright} -->\n\n` + file.text })
@@ -64,7 +59,7 @@ function processSite() {
 
   const apis = files.with('^/sys/api/').paths()
   fs.writeFileSync('./site/fs/api.ts', apis.map(p => `export * from "..${p}"`).join('\n') + defaultExport)
-  files.add('/api.js', apis.map(p => `export * from "${p}"`).join('\n') + defaultExport)
+  files.add('/api.js', apis.map(p => `export * from "/os${p}"`).join('\n') + defaultExport)
 
   src.do(f => { files.add('/fs/sys/api' + f.path.slice('/sys/api'.length).replace(/\.tsx?$/, '.js'), f.text) })
 
@@ -88,8 +83,8 @@ function processSite() {
   const toinsert = [...datas, /* ...modules, */ iconlink].map(s => `  ${s}`).join('\n')
   files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
 
-  const apidts2 = Object.fromEntries(apidts.all().map(f => [f.path.replace(/^\/sys\/out\//, '/sys/'), f.text]))
-  apidts2['/api.d.ts'] = apis.map(p => `export * from "${p}"`).join('\n') + defaultExport
+  const apidts2 = Object.fromEntries(apidts.all().map(f => [f.path.replace(/^\/sys\/out\//, '/os/sys/'), f.text]))
+  apidts2['/os/api.d.ts'] = apis.map(p => `export * from "/os${p}"`).join('\n') + defaultExport
   const apiexports = JSON.stringify(apidts2)
 
   files.add('/api.d.ts.json', apiexports)
@@ -101,34 +96,28 @@ function processSite() {
   zip.addLocalFolder('site/sample/', 'app/')
   zip.addLocalFolder('./site/fs/', 'fs', path => !path.match(/fs(\\|\/)out(\\|\/)/))
   zip.addFile('.vscode/settings.json', Buffer.from(`{ "typescript.preferences.importModuleSpecifierEnding": "js" }`))
-  zip.addFile('sys/api/core/nethost.ts', Buffer.from(`export const NETHOST = ${JSON.stringify(NETHOST)}`))
   files.add('/helloworld.zip', zip.toBuffer())
+
+  files.do(f => f.path = '/os' + f.path)
 
   return files.results()
 }
 
 if (isDev) {
-  const server = new immaculata.DevServer(8080, {
-    hmrPath: '/_reload',
-    onRequest(res) {
-      if (res.req.url?.startsWith('/api.d.ts.json')) {
-        res.setHeader('Access-Control-Allow-Origin', '*')
-      }
-    },
-  })
-  server.files = await processSite()
+  const server = new immaculata.DevServer(8080, { hmrPath: '/_reload' })
+  server.files = processSite()
   server.notFound = () => '/404.html'
 
   tree.watch().on('filesUpdated', async () => {
     const start = Date.now()
-    try { server.files = await processSite() }
+    try { server.files = processSite() }
     catch (e) { console.error(e) }
     console.log('Reprocessed:', Date.now() - start + 'ms')
     server.reload()
   })
 }
 else {
-  immaculata.generateFiles(await processSite())
+  immaculata.generateFiles(processSite())
 }
 
 function compileTsx(file: { text: string, path: string }) {
@@ -157,5 +146,5 @@ function compileTsx(file: { text: string, path: string }) {
       }
     }
   }).code
-  file.text = file.text.replace(`${placeholder}/jsx-runtime`, '/sys/api/core/jsx.js')
+  file.text = file.text.replace(`${placeholder}/jsx-runtime`, '/os/sys/api/core/jsx.js')
 }

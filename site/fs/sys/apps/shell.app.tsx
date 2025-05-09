@@ -1,4 +1,4 @@
-import api, { $usrConfig, as } from "/api.js"
+import api, { $usrConfig, as } from "/os/api.js"
 await api.preludesFinished
 
 const $bgcolor = api.$usrConfig.adapt(config => {

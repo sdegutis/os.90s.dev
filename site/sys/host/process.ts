@@ -36,7 +36,7 @@ export class Process {
 
     this.procevents = new BC<ProcEvent>('procevents', this.sys.id)
 
-    const absurl = new URL('/fs/' + path, import.meta.url)
+    const absurl = new URL('/os/fs/' + path, import.meta.url)
     this.worker = new Worker(absurl, { type: 'module' })
     // this.worker.onerror = (e) => console.error('WORKER ERROR', this.id, this.path, e)
 

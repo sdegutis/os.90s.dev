@@ -23,7 +23,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "skipLibCheck": true,
 
-    "paths": { "/api.js": [ "./api.js" ], },
+    "paths": { "/os/api.js": [ "./api.js" ], },
   },
 
   "references": [ { "path": "../sys/" } ],

@@ -1,4 +1,4 @@
-import api, { $, Center, GroupX, GroupY, Label } from '/api.js'
+import api, { $, Center, GroupX, GroupY, Label } from '/os/api.js'
 await api.preludesFinished
 
 const $count = $(0)
