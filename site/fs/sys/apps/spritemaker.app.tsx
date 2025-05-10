@@ -1,7 +1,8 @@
-import api, { $, Button, Grid, GroupY, Label, multiplex, View } from '/os/api.js'
+import api, { $, Button, Grid, GroupY, Label, multiplex, Ref, View } from '/os/api.js'
 await api.preludesFinished
 
-export type Color = { p: keyof typeof palettes, i: number }
+type Palette = typeof palettes
+type PaletteName = keyof Palette
 
 export const palettes = {
 
@@ -21,7 +22,7 @@ export const palettes = {
 
 }
 
-const $pal = $<keyof typeof palettes>('sweet24')
+const $pal = $<PaletteName>('sweet24')
 const $i = $(0)
 const $color = multiplex([$pal, $i], (pal, i) => pal[i])
 
@@ -29,8 +30,8 @@ const panel = await api.sys.makePanel({ name: "sprite maker" },
   <panel size={{ w: 120, h: 70 }}>
     <api.Center>
       <GroupY>
-        <PalettePicker />
-        <ColorPicker />
+        <PalettePicker palettes={palettes} $pal={$pal} />
+        <ColorPicker palettes={palettes} $pal={$pal} $i={$i} />
       </GroupY>
     </api.Center>
   </panel>
@@ -38,13 +39,13 @@ const panel = await api.sys.makePanel({ name: "sprite maker" },
 
 panel.focusPanel()
 
-function PalettePicker() {
+function PalettePicker(data: { palettes: Palette, $pal: Ref<PaletteName> }) {
   return <GroupY>
-    {Object.keys(palettes).map(pal => {
+    {Object.keys(data.palettes).map(pal => {
       return <Button
         padding={2}
-        selected={$pal.adapt(p => p === pal)}
-        onClick={() => $pal.$ = pal as keyof typeof palettes}
+        selected={data.$pal.adapt(p => p === pal)}
+        onClick={() => data.$pal.$ = pal as PaletteName}
       >
         <Label text={pal} />
       </Button>
@@ -52,16 +53,16 @@ function PalettePicker() {
   </GroupY>
 }
 
-function ColorPicker() {
+function ColorPicker(data: { palettes: Palette, $pal: Ref<PaletteName>, $i: Ref<number> }) {
   return <Grid cols={4} flow xgap={-1} ygap={-1}>
-    {$pal.adapt(pal => {
-      return palettes[pal].map((col, coli) => {
+    {data.$pal.adapt(pal => {
+      return data.palettes[pal].map((col, coli) => {
         return <Button
           padding={1}
           hoverBackground={0xffffff77}
           selectedBackground={0xffffffff}
-          selected={$i.adapt(i => i === coli)}
-          onClick={() => $i.$ = coli}
+          selected={data.$i.adapt(i => i === coli)}
+          onClick={() => data.$i.$ = coli}
         >
           <View size={{ w: 7, h: 7 }} background={col} />
         </Button>
