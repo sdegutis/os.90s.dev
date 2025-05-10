@@ -11,9 +11,9 @@ const emptyPage = <api.Center background={0x111111ff}>
 const $page = api.$<api.View>(null!)
 
 function gotoPage(path: string) {
-  const i = $pathi.$ + 1
-  $paths.$ = [...$paths.$.slice(0, i), path]
-  $pathi.$ = $paths.$.length - 1
+  const i = $pathi.val + 1
+  $paths.set([...$paths.val.slice(0, i), path])
+  $pathi.set($paths.val.length - 1)
 }
 
 const browser: Browser = {
@@ -27,23 +27,23 @@ const browser: Browser = {
 $path.watch(path => {
   api.sys.noteCurrentFile(path)
   if (!path) {
-    $page.$ = emptyPage
+    $page.set(emptyPage)
     return
   }
   api.runJsFile(path).then(mod => {
-    $page.$ = mod.default(browser)
+    $page.set(mod.default(browser))
   }).catch(e => {
     console.error(e)
-    $page.$ = <api.Center>
+    $page.set(<api.Center>
       <api.GroupY gap={2}>
         <api.Label color={0x990000ff} text='Error loading page' />
         <api.Label text={String(e)} />
       </api.GroupY>
-    </api.Center>
+    </api.Center>)
   })
 })
 
-const pathModel = new api.TextModel($paths.$[0]!)
+const pathModel = new api.TextModel($paths.val[0]!)
 const goto = () => gotoPage(pathModel.getText())
 $path.watch(path => pathModel.setText(path))
 
@@ -59,8 +59,8 @@ const navbar = <api.GroupX background={0x222222ff}>
 </api.GroupX>
 
 
-function goPrev() { $pathi.$ = Math.max($pathi.$ - 1, 0) }
-function goNext() { $pathi.$ = Math.min($pathi.$ + 1, $paths.$.length - 1) }
+function goPrev() { $pathi.set(Math.max($pathi.val - 1, 0)) }
+function goNext() { $pathi.set(Math.min($pathi.val + 1, $paths.val.length - 1)) }
 
 const panel = await api.sys.makePanel({ name: "browser" },
   <panel size={{ w: 100, h: 70 }}>

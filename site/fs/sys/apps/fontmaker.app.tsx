@@ -4,10 +4,10 @@ await api.preludesFinished
 const font = api.$(api.sys.font)
 
 const filepath = api.$(api.program.opts["file"])
-if (filepath.$) {
-  const fontstr = await api.fs.getFile(filepath.$)
+if (filepath.val) {
+  const fontstr = await api.fs.getFile(filepath.val)
   if (fontstr) {
-    font.$ = new api.Font(fontstr)
+    font.set(new api.Font(fontstr))
   }
 }
 
@@ -21,8 +21,8 @@ const SAMPLE_TEXT = [
   `.,'!?-+/":;%*=_&#|\`$@~^\\`,
 ].join('\n')
 
-const width = api.$(font.$.cw)
-const height = api.$(font.$.ch)
+const width = api.$(font.val.cw)
+const height = api.$(font.val.ch)
 const zoom = api.$(2)
 const current = api.$(' ')
 
@@ -37,13 +37,13 @@ for (let i = 0; i < CHARSET.length; i++) {
   const spots: Record<string, boolean> = Object.create(null)
   sheet[i] = spots
 
-  const sy = Math.floor(i / 16) * width.$ * 16 * height.$
-  const sx = (i % 16) * width.$
+  const sy = Math.floor(i / 16) * width.val * 16 * height.val
+  const sx = (i % 16) * width.val
 
-  for (let y = 0; y < height.$; y++) {
-    for (let x = 0; x < width.$; x++) {
-      const oy = y * width.$ * 16
-      spots[`${x},${y}`] = font.$.spr.pixels[(sy + oy) + sx + x] === 1
+  for (let y = 0; y < height.val; y++) {
+    for (let x = 0; x < width.val; x++) {
+      const oy = y * width.val * 16
+      spots[`${x},${y}`] = font.val.spr.pixels[(sy + oy) + sx + x] === 1
     }
   }
 }
@@ -62,25 +62,25 @@ function rebuildNow() {
   for (let i = 0; i < 16 * 6; i++) {
     const char = sheet[i]!
 
-    const sy = Math.floor(i / 16) * width.$ * 16 * height.$
-    const sx = (i % 16) * width.$
+    const sy = Math.floor(i / 16) * width.val * 16 * height.val
+    const sx = (i % 16) * width.val
 
-    for (let y = 0; y < height.$; y++) {
-      for (let x = 0; x < width.$; x++) {
-        const oy = y * width.$ * 16
+    for (let y = 0; y < height.val; y++) {
+      for (let x = 0; x < width.val; x++) {
+        const oy = y * width.val * 16
         const on = char[`${x},${y}`]!
         grid[(sy + oy) + sx + x] = on
       }
     }
   }
 
-  const row = width.$ * 16
-  for (let i = 0; i < 16 * 6 * width.$ * height.$; i++) {
+  const row = width.val * 16
+  for (let i = 0; i < 16 * 6 * width.val * height.val; i++) {
     fontsrc += grid[i] ? '1' : '0'
     fontsrc += i % row === row - 1 ? '\n' : ' '
   }
 
-  font.$ = new api.Font(fontsrc)
+  font.set(new api.Font(fontsrc))
 }
 
 const file = {
@@ -104,12 +104,12 @@ const panel = await api.sys.makePanel({ name: "fontmaker" },
               zoom={zoom}
               width={width}
               height={height}
-              hover={ch => current.$ = ch}
+              hover={ch => current.set(ch)}
             />
           )} />
         </api.Border>
       </api.Scroll>
-      <api.Border padding={2} canMouse onWheel={(x, y) => zoom.$ += -y / 100}>
+      <api.Border padding={2} canMouse onWheel={(x, y) => zoom.set(zoom.val + -y / 100)}>
         <api.GroupY align='a' gap={4}>
           <api.TextBox autofocus font={font} model={new api.TextModel('sample text goes here (you can type in it)')} />
           <api.Label text={SAMPLE_TEXT} font={font} />
@@ -153,13 +153,13 @@ function Slider({ val, min, max }: { val: api.Ref<number>, min: number, max: num
 
   const $per = val.adapt(val => (val - min) / (max - min))
   $per.intercept(per => Math.max(0, Math.min(per, 1)))
-  $per.watch(per => val.$ = Math.round(per * (max - min) + min))
+  $per.watch(per => val.set(Math.round(per * (max - min) + min)))
 
   const knob = <api.ImageView bitmap={knobImage} point={$per.adapt(per => ({ x: Math.round(per * (w - kw)), y: 0 }))} />
 
   const onMouseDown = function (this: api.View): void {
     const $movepoint = api.$(knob.point)
-    $movepoint.watch(p => $per.$ = p.x / (w - kw))
+    $movepoint.watch(p => $per.set(p.x / (w - kw)))
     this.onMouseUp = api.dragMove(this.$mouse, $movepoint)
   }
 
@@ -208,7 +208,7 @@ function CharView(
   view.onMouseDown = function (b) {
     const on = b === 0
     const draw = () => {
-      spots[$key.$] = on
+      spots[$key.val] = on
       notifyDrew()
     }
     draw()
@@ -218,16 +218,16 @@ function CharView(
   view.draw = function (ctx) {
     api.View.prototype.draw.call(this, ctx)
 
-    for (let x = 0; x < width.$; x++) {
-      for (let y = 0; y < height.$; y++) {
+    for (let x = 0; x < width.val; x++) {
+      for (let y = 0; y < height.val; y++) {
         const key = `${x},${y}`
         const on = spots[key]
         if (on) {
           ctx.fillRect(
-            x * zoom.$,
-            y * zoom.$,
-            zoom.$,
-            zoom.$,
+            x * zoom.val,
+            y * zoom.val,
+            zoom.val,
+            zoom.val,
             0xffffffff
           )
         }
@@ -235,7 +235,7 @@ function CharView(
     }
 
     if (this.hovered) {
-      ctx.fillRect($spot.$.x * zoom.$, $spot.$.y * zoom.$, zoom.$, zoom.$, 0x0000ff99)
+      ctx.fillRect($spot.val.x * zoom.val, $spot.val.y * zoom.val, zoom.val, zoom.val, 0x0000ff99)
     }
   }
 

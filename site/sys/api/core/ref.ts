@@ -10,37 +10,35 @@ export class Ref<T> {
   private defers: Ref<T> | undefined
   private interceptors = new Set<(a: T) => T>()
   private listener = new Listener<[T, T], void>()
-  private val: T
+
+  /** The current value */
+  readonly val: T
+
+  /** Used instead of === if set */
   equals?: Equals<T> | undefined
 
-  /** It's easier to use `$` */
+  /** It's easier to use `$(...)` */
   constructor(val: T, equals?: Equals<T>) {
     this.equals = equals
     this.val = val
   }
 
-  get $() { return this.val }
-
-  /**
-   * Sets or gets the current value.
-   * 
-   * Setting also notifies watchers/adapters/etc.
-   */
-  set $(val: T) {
+  /** Notifies watchers/etc. */
+  set(val: T) {
     if (this.defers) {
-      this.defers.$ = val
+      this.defers.set(val)
       return
     }
 
     this.interceptors.forEach(fn => val = fn(val))
     if (this.equals?.(this.val, val) ?? this.val === val) return
     const old = this.val
-    this.val = val
+    { (this as { val: T }).val = val }
     this.listener.dispatch([val, old])
   }
 
-  update(fn: (data: T) => Partial<T>) {
-    this.$ = { ...this.$, ...fn(this.$) }
+  merge(fn: (data: T) => Partial<T>) {
+    this.set({ ...this.val, ...fn(this.val) })
   }
 
   watch(fn: (data: T, old: T) => void): ListenerDone {
@@ -53,9 +51,9 @@ export class Ref<T> {
     if (this.defers) return this.defers.intercept(fn)
 
     this.interceptors.add(fn)
-    this.$ = fn(this.$)
+    this.set(fn(this.val))
     multiplex(deps, () => {
-      this.$ = fn(this.$)
+      this.set(fn(this.val))
     })
     return () => this.interceptors.delete(fn)
   }
@@ -64,7 +62,7 @@ export class Ref<T> {
     if (this.defers) return this.defers.adapt(fn, equals)
 
     const r = $(fn(this.val, this.val), equals)
-    this.watch((data, old) => r.$ = fn(data, old))
+    this.watch((data, old) => r.set(fn(data, old)))
     return r
   }
 
@@ -73,16 +71,16 @@ export class Ref<T> {
 
     const init: U = await fn(this.val, this.val)
     const r = $(init, equals)
-    this.watch(async (data, old) => r.$ = await fn(data, old))
+    this.watch(async (data, old) => r.set(await fn(data, old)))
     return r
   }
 
   defer(other: Ref<T>) {
     while (other.defers) other = other.defers
 
-    other.watch(val => this.val = val)
+    other.watch(val => (this as { val: T }).val = val)
 
-    this.$ = other.$
+    this.set(other.val)
     this.defers = other
 
     this.listener.list.forEach(fn => other.listener.list.add(fn))
@@ -101,9 +99,9 @@ export function multiplex<
   const R extends Ref<any>[],
   A extends { [N in keyof R]: R[N] extends Ref<infer V> ? V : never }
 >(refs: R, fn: (...args: A) => T) {
-  const ref = $(fn(...refs.map(r => r.$) as A))
+  const ref = $(fn(...refs.map(r => r.val) as A))
   for (const r of refs) {
-    r.watch(() => ref.$ = fn(...refs.map(r => r.$) as A))
+    r.watch(() => ref.set(fn(...refs.map(r => r.val) as A)))
   }
   return ref
 }
@@ -113,8 +111,8 @@ export function makeRef<T, K extends keyof T>(o: T, k: K) {
   Object.defineProperty(o, k, {
     enumerable: true,
     configurable: false,
-    get: () => ref.$,
-    set: (v) => ref.$ = v,
+    get: () => ref.val,
+    set: (v) => ref.set(v),
   })
   return ref
 }

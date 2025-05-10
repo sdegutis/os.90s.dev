@@ -32,7 +32,7 @@ export const $userState = $<UserState>({ type: 'guest' })
 
 const persisted = await pobject<UserState>('accountinfo')
 await persisted.get().then(state => {
-  if (state) $userState.$ = state
+  if (state) $userState.set(state)
 })
 
 export async function updateAccountFromServer() {
@@ -44,15 +44,15 @@ export async function updateAccountFromServer() {
     }
 
     if (state) {
-      $userState.$ = {
+      $userState.set({
         type: state.verified ? 'known' : 'verifying',
         username: state.username,
-      }
+      })
     }
     else {
-      $userState.$ = { type: 'guest' }
+      $userState.set({ type: 'guest' })
     }
-    await persisted.set($userState.$)
+    await persisted.set($userState.val)
   })
 }
 
@@ -65,7 +65,7 @@ let syncing = false
 
 b.handle(data => {
   syncing = true
-  $userState.$ = data.state
+  $userState.set(data.state)
   syncing = false
 })
 

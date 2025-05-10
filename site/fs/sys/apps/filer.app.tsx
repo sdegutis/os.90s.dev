@@ -14,18 +14,18 @@ const $drives = api.$<string[]>(api.fs.drives())
 const $dirs = api.$<string[]>([])
 
 $dirs.intercept(dirs => {
-  const cdrive = $drives.$[0]
-  if (!$drives.$.includes(cdrive)) return ['usr/']
+  const cdrive = $drives.val[0]
+  if (!$drives.val.includes(cdrive)) return ['usr/']
   return [...dirs]
 })
 
 api.fs.watchTree('', () => {
-  $drives.$ = api.fs.drives()
-  $dirs.$ = [...$dirs.$]
+  $drives.set(api.fs.drives())
+  $dirs.set([...$dirs.val])
 })
 
 const initpath = api.program.opts['file'] as string
-$dirs.$ = initpath?.split('/').slice(0, -1).map(p => p + '/') ?? ['usr/']
+$dirs.set(initpath?.split('/').slice(0, -1).map(p => p + '/') ?? ['usr/'])
 $dirs.watch(dirs => api.sys.noteCurrentFile(dirs.join('')))
 
 const $items = await $dirs.adaptAsync(dirs => api.fs.getDir(dirs.join('')))
@@ -33,7 +33,7 @@ const $items = await $dirs.adaptAsync(dirs => api.fs.getDir(dirs.join('')))
 const $driveButtons = $drives.adapt(drives => drives.map(d => d + '/').map(d =>
   <api.Button padding={2} onClick={(b) => {
     if (b === 0) {
-      $dirs.$ = [d]
+      $dirs.set([d])
     }
     else {
       api.showMenu(panel, [
@@ -47,7 +47,7 @@ const $driveButtons = $drives.adapt(drives => drives.map(d => d + '/').map(d =>
 
 const $breadcrumbs = $dirs.adapt(dirs =>
   dirs.map((part, idx) =>
-    <api.Button padding={2} onClick={() => $dirs.$ = dirs.slice(0, idx + 1)}>
+    <api.Button padding={2} onClick={() => $dirs.set(dirs.slice(0, idx + 1))}>
       <api.Label text={part} />
     </api.Button>
   )
@@ -57,8 +57,8 @@ const $itemButtons = $items.adapt(items => {
   if (!items || items.length === 0) return [EMPTY]
   return items.map(name =>
     name.endsWith('/')
-      ? <FolderItem base={$dirs.$} name={name} />
-      : <FileItem base={$dirs.$} name={name} />
+      ? <FolderItem base={$dirs.val} name={name} />
+      : <FileItem base={$dirs.val} name={name} />
   )
 })
 
@@ -82,7 +82,7 @@ function Main() {
           text: 'paste',
           disabled: copying === undefined,
           onClick: async () => {
-            const curdir = $dirs.$.join('')
+            const curdir = $dirs.val.join('')
             const from = copying!
 
             let to = api.pathFns.adopt(curdir, api.pathFns.orphan(from)!)
@@ -137,7 +137,7 @@ function FolderItem({ base, name }: { base: string[], name: string }) {
   return (
     <api.Button padding={2} onClick={function (b) {
       const path = [...base, name]
-      if (b === 0) $dirs.$ = path
+      if (b === 0) $dirs.set(path)
       else showMenuForFolder(this, path.join(''))
     }}>
       <api.GroupX gap={2}>
@@ -216,13 +216,13 @@ async function rename(from: string) {
 async function newFile() {
   const name = await api.showPrompt(panel, 'file name?')
   if (!name) return
-  const full = [...$dirs.$, name].join('')
+  const full = [...$dirs.val, name].join('')
   await api.fs.putFile(full, '')
 }
 
 async function newFolder() {
   const name = await api.showPrompt(panel, 'folder name?')
   if (!name) return
-  const full = [...$dirs.$, name].join('')
+  const full = [...$dirs.val, name].join('')
   await api.fs.putDir(full)
 }

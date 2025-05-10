@@ -49,7 +49,7 @@ function PalettePicker(data: { palettes: Palette, $choice: Ref<Choice> }) {
         padding={1}
         left={2}
         selected={data.$choice.adapt(ch => ch.current === pal)}
-        onClick={() => { data.$choice.update(() => ({ current: pal as PaletteName })) }}
+        onClick={() => { data.$choice.merge(() => ({ current: pal as PaletteName })) }}
       >
         <Label text={pal} />
       </Button>
@@ -66,7 +66,7 @@ function ColorPicker(data: { palettes: Palette, $choice: Ref<Choice> }) {
           hoverBackground={0xffffff77}
           selectedBackground={0xffffffff}
           selected={ch[ch.current] === coli}
-          onClick={() => { data.$choice.update(ch => ({ [ch.current]: coli })) }}
+          onClick={() => { data.$choice.merge(ch => ({ [ch.current]: coli })) }}
         >
           <View size={{ w: 7, h: 7 }} background={col} />
         </Button>

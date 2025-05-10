@@ -8,7 +8,7 @@ const init = Promise.withResolvers<void>()
 export const preludesFinished = init.promise
 
 async function loadPreludes() {
-  const preludes = as($usrConfig.$, 'process.prelude', as.strings())
+  const preludes = as($usrConfig.val, 'process.prelude', as.strings())
   for (const path of preludes ?? []) {
     try {
       await runJsFile(path)

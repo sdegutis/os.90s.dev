@@ -16,7 +16,7 @@ export function TextFieldComp(data: { length?: number } & ConstructorParameters<
     onMouseDown={function (...args) { textbox.onMouseDown(...args) }}
     onMouseMove={function (...args) { textbox.onMouseMove?.(...args) }}
     onMouseUp={function (...args) { textbox.onMouseUp?.(...args) }}
-    size={border.$size.adapt(s => ({ w: length, h: border.$size.$.h }))}
+    size={border.$size.adapt(s => ({ w: length, h: border.$size.val.h }))}
     children={[border]}
   />
 }

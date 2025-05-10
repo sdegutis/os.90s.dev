@@ -32,9 +32,10 @@ export class Margin extends View {
 
   $padding = $(0)
 
-  get padding() { return this.$padding.$ }
+  get padding() { return this.$padding.val }
   set padding(n: number) {
-    this.up = this.down = this.left = this.right = this.$padding.$ = n
+    this.$padding.set(n)
+    this.up = this.down = this.left = this.right = n
   }
 
   set paddingAll(ns: number | [number, number] | [number, number, number] | [number, number, number, number]) {
@@ -44,7 +45,7 @@ export class Margin extends View {
           ns.length === 3 ? [...ns, ns[1]] :
             ns
 
-    this.$padding.$ = u
+    this.$padding.set(u)
     this.up = u
     this.down = d
     this.left = l

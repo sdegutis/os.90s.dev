@@ -14,16 +14,16 @@ export class Panel {
   static all = new Map<number, Panel>()
 
   readonly $point: Ref<Point>
-  get point() { return this.$point.$ }
-  set point(s: Point) { this.$point.$ = s }
+  get point() { return this.$point.val }
+  set point(s: Point) { this.$point.set(s) }
 
   readonly $size: Ref<Size>
-  get size() { return this.$size.$ }
-  set size(s: Size) { this.$size.$ = s }
+  get size() { return this.$size.val }
+  set size(s: Size) { this.$size.set(s) }
 
   readonly $mouse: Ref<Point>
-  get mouse() { return this.$mouse.$ }
-  set mouse(p: Point) { this.$mouse.$ = p }
+  get mouse() { return this.$mouse.val }
+  set mouse(p: Point) { this.$mouse.set(p) }
 
   name
   readonly $name
@@ -77,7 +77,7 @@ export class Panel {
 
     this.$mouse = multiplex([sys.$mouse, this.$point], (m, p) => ({ x: m.x - p.x, y: m.y - p.y }))
 
-    this.ctx.size = root.$size.$
+    this.ctx.size = root.$size.val
 
     let adjustedFromRpc = false
 

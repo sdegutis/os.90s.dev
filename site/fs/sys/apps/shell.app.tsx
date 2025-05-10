@@ -8,7 +8,7 @@ const $bgcolor = api.$usrConfig.adapt(config => {
 
 const desktopSize = api.sys.$size.adapt(s => ({ ...s, h: s.h - 10 }), api.sizeEquals)
 
-const setWorkspaceSize = () => api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.$)
+const setWorkspaceSize = () => api.sys.setWorkspaceArea({ x: 0, y: 0 }, desktopSize.val)
 setWorkspaceSize()
 desktopSize.watch(setWorkspaceSize)
 
@@ -45,7 +45,7 @@ class Panel {
   }
 
   center() {
-    this.adjust(0, 0, desktopSize.$.w, desktopSize.$.h)
+    this.adjust(0, 0, desktopSize.val.w, desktopSize.val.h)
     this.focus()
   }
 
@@ -56,7 +56,7 @@ class Panel {
   }
 
   save() {
-    const sames = $panels.$.filter(p => p.name === this.name)
+    const sames = $panels.val.filter(p => p.name === this.name)
     const highest = sames.sort((a, b) => {
       if (a.point.y < b.point.y) return -1
       if (a.point.y > b.point.y) return +1
@@ -76,11 +76,11 @@ class Panel {
       next = saved
     }
     else if (this.point.x === 0 && this.point.y === 0) {
-      next.x = desktopSize.$.w / 2 - next.w / 2
-      next.y = desktopSize.$.h / 2 - next.h / 2
+      next.x = desktopSize.val.w / 2 - next.w / 2
+      next.y = desktopSize.val.h / 2 - next.h / 2
     }
 
-    while ($focused.$
+    while ($focused.val
       .filter(panel => panel.id !== this.id)
       .findLast(p => p.point.x === next.x && p.point.y === next.y)
     ) {
@@ -125,7 +125,7 @@ panelevents.handle(data => {
     if (name === 'menu') return
 
     const panel = new Panel(name, id, pid, focused, visible, point, size)
-    $panels.$ = [...$panels.$, panel]
+    $panels.set([...$panels.val, panel])
 
     panel.position()
 
@@ -149,18 +149,18 @@ panelevents.handle(data => {
     panel.save()
   }
   else if (type === 'closed') {
-    const idx = $panels.$.findIndex(p => p === panel)
-    $panels.$ = $panels.$.toSpliced(idx, 1)
+    const idx = $panels.val.findIndex(p => p === panel)
+    $panels.set($panels.val.toSpliced(idx, 1))
   }
   else if (type === 'focused') {
-    for (const p of $panels.$) {
+    for (const p of $panels.val) {
       p.focused = p === panel
     }
   }
 })
 
 function findPanel(id: number) {
-  return $panels.$.find(p => p.id === id)
+  return $panels.val.find(p => p.id === id)
 }
 
 const $focused = $panels.adapt(panels => {
@@ -172,22 +172,22 @@ const $focused = $panels.adapt(panels => {
     .toSpliced(panels.length - 1, 0, focused)
 })
 
-$panels.$ = (await api.sys.getPanels())
+$panels.set((await api.sys.getPanels())
   .map(p => new Panel(p.name, p.id, p.pid, p.focused, p.visible, p.point, p.size))
-  .filter(p => (p.pid !== api.program.pid))
+  .filter(p => (p.pid !== api.program.pid)))
 
-$panels.$.forEach(p => p.position())
+$panels.val.forEach(p => p.position())
 
 await api.program.becomeShell()
 
-for (const path of as($usrConfig.$, 'shell.startup', as.strings()) ?? []) {
+for (const path of as($usrConfig.val, 'shell.startup', as.strings()) ?? []) {
   api.runJsFile(path)
 }
 
 
 api.sys.onKeyPress.watch(key => {
   if (key === 'ctrl `') {
-    const next = $focused.$.findLast(p => !p.focused)
+    const next = $focused.val.findLast(p => !p.focused)
     next?.focus()
   }
 })
@@ -210,7 +210,7 @@ const $buttons = $panels.adapt(panels =>
 
         if (p.focused) {
           findPanel(p.id)?.hide()
-          const toFocus = $panels.$.findLast(panel => panel !== p && panel.visible)
+          const toFocus = $panels.val.findLast(panel => panel !== p && panel.visible)
           if (toFocus) api.sys.focusPanel(toFocus.id)
         }
         else {
@@ -303,7 +303,7 @@ function ScreenSize() {
     api.sys.resize(w, h)
   })
 
-  const toggle = () => $i.$ = 1 - $i.$
+  const toggle = () => $i.set(1 - $i.val)
   return <api.Button padding={2} background={0x00000033} onClick={toggle}>
     <api.Label text={$text} />
   </api.Button>
@@ -317,8 +317,8 @@ function Clock() {
       ? time.toLocaleString()
       : time.toLocaleTimeString()
     ).toLowerCase())
-  setInterval(() => $time.$ = new Date(), 1000)
-  const toggle = () => $date.$ = !$date.$
+  setInterval(() => $time.set(new Date()), 1000)
+  const toggle = () => $date.set(!$date.val)
   return <api.Button padding={2} background={0x00000033} onClick={toggle}>
     <api.Label text={$text} />
   </api.Button>

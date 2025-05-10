@@ -23,7 +23,7 @@ export const sysConfig = {
 export const $usrConfig = $<Record<string, any> | undefined>(undefined)
 
 async function _load() {
-  $usrConfig.$ = await loadConfig('usr/config.jsln')
+  $usrConfig.set(await loadConfig('usr/config.jsln'))
 }
 
 $usrConfig.watch(async (usrConfig) => {
@@ -31,18 +31,18 @@ $usrConfig.watch(async (usrConfig) => {
   const dims = as(usrConfig, 'sys.size', as.numbers(2))
   const w = dims?.[0]
   const h = dims?.[1]
-  sysConfig.$size.$ = (w && h) ? { w, h } : baseConfig.size
+  sysConfig.$size.set((w && h) ? { w, h } : baseConfig.size)
 
   const fontpath = as(usrConfig, 'sys.font', as.string)
   if (fontpath) {
     const fontsrc = await fs.getFile(fontpath)
-    sysConfig.$font.$ = fontsrc
+    sysConfig.$font.set(fontsrc
       ? new Font(fontsrc)
-      : baseConfig.font
+      : baseConfig.font)
   }
 
   const shell = as(usrConfig, 'sys.shell', as.string)
-  sysConfig.$shell.$ = shell || baseConfig.shell
+  sysConfig.$shell.set(shell || baseConfig.shell)
 
 })
 

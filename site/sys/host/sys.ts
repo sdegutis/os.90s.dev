@@ -26,10 +26,10 @@ export class Sys {
   panelevents = new BC<PanelEvent>('panelevents', this.id)
 
   $font
-  get font() { return this.$font.$ }
+  get font() { return this.$font.val }
 
   $size
-  get size() { return this.$size.$ }
+  get size() { return this.$size.val }
 
   desktop: Point & Size
 
@@ -62,7 +62,7 @@ export class Sys {
   }
 
   async runShell() {
-    await this.launch(sysConfig.$shell.$, {}, [])
+    await this.launch(sysConfig.$shell.val, {}, [])
     sysConfig.$shell.watch(shell => {
       this.launch(shell, {}, [])
     })
@@ -123,8 +123,8 @@ export class Sys {
       let y = e.offsetY
 
       if (e.target !== canvas) {
-        x = Math.round((e.offsetX - $point.$.x) / $scale.$)
-        y = Math.round((e.offsetY - $point.$.y) / $scale.$)
+        x = Math.round((e.offsetX - $point.val.x) / $scale.val)
+        y = Math.round((e.offsetY - $point.val.y) / $scale.val)
       }
 
       if (x === this.mouse.x && y === this.mouse.y) return
@@ -179,7 +179,7 @@ export class Sys {
   }
 
   resize(w: number, h: number) {
-    this.$size.$ = { w, h }
+    this.$size.set({ w, h })
     this.sysevents.emit({ type: 'resized', size: [w, h] })
     this.redrawAllPanels()
   }

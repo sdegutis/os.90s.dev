@@ -24,7 +24,7 @@ export class Label extends View {
   color = 0xffffffff
   readonly $color = makeRef(this, 'color')
 
-  font = sys.$font.$
+  font = sys.$font.val
   readonly $font = makeRef(this, 'font')
 
   text = ''

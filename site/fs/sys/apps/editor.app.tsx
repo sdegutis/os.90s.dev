@@ -8,17 +8,17 @@ api.preferences['panel-body-gap'] = 2
 
 let content = ''
 const $filepath = api.$<string | undefined>(api.program.opts["file"])
-if ($filepath.$) content = await api.fs.getFile($filepath.$) ?? ''
+if ($filepath.val) content = await api.fs.getFile($filepath.val) ?? ''
 
 const model = new api.TextModel(content)
 
-if ($filepath.$?.endsWith('.jsln')) {
+if ($filepath.val?.endsWith('.jsln')) {
   const hl = new api.Highlighter(api.langThemes.theme1, api.langGrammars.jslnGrammar)
   model.highlighter = hl
   hl.highlight(model, 0)
 }
 
-if ($filepath.$?.endsWith('.txt')) {
+if ($filepath.val?.endsWith('.txt')) {
   const hl = new api.Highlighter(api.langThemes.txtTheme1, api.langGrammars.txtGrammar)
   model.highlighter = hl
   hl.highlight(model, 0)
