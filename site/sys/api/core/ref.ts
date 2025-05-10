@@ -19,10 +19,7 @@ export class Ref<T> {
     this.val = val
   }
 
-  get $() {
-    if (this.defers) return this.defers.$
-    return this.val
-  }
+  get $() { return this.val }
 
   /**
    * Sets or gets the current value.
@@ -82,6 +79,8 @@ export class Ref<T> {
 
   defer(other: Ref<T>) {
     while (other.defers) other = other.defers
+
+    other.watch(val => this.val = val)
 
     this.$ = other.$
     this.defers = other
