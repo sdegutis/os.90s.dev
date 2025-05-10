@@ -41,7 +41,7 @@ function add() {
   const text = textModel.getText()
   if (!text) return
 
-  $items.set([...$items.val, { done: api.$(false), text }])
+  $items.push({ done: api.$(false), text })
   textModel.setText('')
 }
 

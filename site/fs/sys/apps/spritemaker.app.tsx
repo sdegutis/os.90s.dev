@@ -27,8 +27,6 @@ type Choice = Readonly<{ [pal in PaletteName]: number } & { current: PaletteName
 const $choice = $<Choice>({ current: 'sweet24', sweet24: 0, vinik24: 0 })
 const $color = $choice.adapt(ch => palettes[ch.current][ch[ch.current]])
 
-$color.watch(c => console.log(c))
-
 const panel = await api.sys.makePanel({ name: "sprite maker" },
   <panel size={{ w: 120, h: 70 }}>
     <api.Center>

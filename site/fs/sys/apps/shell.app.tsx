@@ -125,7 +125,7 @@ panelevents.handle(data => {
     if (name === 'menu') return
 
     const panel = new Panel(name, id, pid, focused, visible, point, size)
-    $panels.set([...$panels.val, panel])
+    $panels.push(panel)
 
     panel.position()
 
