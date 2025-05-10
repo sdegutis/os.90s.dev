@@ -43,7 +43,8 @@ function PalettePicker(data: { palettes: Palette, $pal: Ref<PaletteName> }) {
   return <GroupY>
     {Object.keys(data.palettes).map(pal => {
       return <Button
-        padding={2}
+        padding={1}
+        left={2}
         selected={data.$pal.adapt(p => p === pal)}
         onClick={() => data.$pal.$ = pal as PaletteName}
       >
