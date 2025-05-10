@@ -1,4 +1,4 @@
-import api, { $, Button, Grid, GroupY, Label, multiplex, Ref, View } from '/os/api.js'
+import api, { $, Button, Grid, GroupY, Label, Ref, View } from '/os/api.js'
 await api.preludesFinished
 
 type Palette = typeof palettes
@@ -22,16 +22,19 @@ export const palettes = {
 
 }
 
-const $pal = $<PaletteName>('sweet24')
-const $i = $(0)
-const $color = multiplex([$pal, $i], (pal, i) => pal[i])
+type Choice = Readonly<{ [pal in PaletteName]: number } & { current: PaletteName }>
+
+const $choice = $<Choice>({ current: 'sweet24', sweet24: 0, vinik24: 0 })
+const $color = $choice.adapt(ch => palettes[ch.current][ch[ch.current]])
+
+$color.watch(c => console.log(c))
 
 const panel = await api.sys.makePanel({ name: "sprite maker" },
   <panel size={{ w: 120, h: 70 }}>
     <api.Center>
       <GroupY>
-        <PalettePicker palettes={palettes} $pal={$pal} />
-        <ColorPicker palettes={palettes} $pal={$pal} $i={$i} />
+        <PalettePicker palettes={palettes} $choice={$choice} />
+        <ColorPicker palettes={palettes} $choice={$choice} />
       </GroupY>
     </api.Center>
   </panel>
@@ -39,14 +42,17 @@ const panel = await api.sys.makePanel({ name: "sprite maker" },
 
 panel.focusPanel()
 
-function PalettePicker(data: { palettes: Palette, $pal: Ref<PaletteName> }) {
+function PalettePicker(data: { palettes: Palette, $choice: Ref<Choice> }) {
   return <GroupY>
     {Object.keys(data.palettes).map(pal => {
       return <Button
         padding={1}
         left={2}
-        selected={data.$pal.adapt(p => p === pal)}
-        onClick={() => data.$pal.$ = pal as PaletteName}
+        selected={data.$choice.adapt(ch => ch.current === pal)}
+        onClick={() => data.$choice.$ = {
+          ...data.$choice.$,
+          current: pal as PaletteName,
+        }}
       >
         <Label text={pal} />
       </Button>
@@ -54,16 +60,19 @@ function PalettePicker(data: { palettes: Palette, $pal: Ref<PaletteName> }) {
   </GroupY>
 }
 
-function ColorPicker(data: { palettes: Palette, $pal: Ref<PaletteName>, $i: Ref<number> }) {
+function ColorPicker(data: { palettes: Palette, $choice: Ref<Choice> }) {
   return <Grid cols={4} flow xgap={-1} ygap={-1}>
-    {data.$pal.adapt(pal => {
-      return data.palettes[pal].map((col, coli) => {
+    {data.$choice.adapt(ch => {
+      return data.palettes[ch.current].map((col, coli) => {
         return <Button
           padding={1}
           hoverBackground={0xffffff77}
           selectedBackground={0xffffffff}
-          selected={data.$i.adapt(i => i === coli)}
-          onClick={() => data.$i.$ = coli}
+          selected={ch[ch.current] === coli}
+          onClick={() => data.$choice.$ = {
+            ...data.$choice.$,
+            [data.$choice.$.current]: coli,
+          }}
         >
           <View size={{ w: 7, h: 7 }} background={col} />
         </Button>
