@@ -47,7 +47,12 @@ function PalettePicker(data: { palettes: Palette, $colorsel: Ref<ColorSel> }) {
         padding={1}
         left={2}
         selected={data.$colorsel.adapt(ch => ch.palette === pal)}
-        onClick={() => { data.$colorsel.merge(() => ({ palette: pal as PaletteName })) }}
+        onClick={() => {
+          data.$colorsel.set({
+            ...data.$colorsel.val,
+            palette: pal as PaletteName,
+          })
+        }}
       >
         <Label text={pal} />
       </Button>
@@ -65,12 +70,13 @@ function ColorPicker(data: { palettes: Palette, $colorsel: Ref<ColorSel> }) {
           selectedBackground={0xffffffff}
           selected={ch.choices[ch.palette] === coli}
           onClick={() => {
-            data.$colorsel.merge(ch => ({
+            data.$colorsel.set({
+              ...data.$colorsel.val,
               choices: {
                 ...ch.choices,
                 [ch.palette]: coli,
-              }
-            }))
+              },
+            })
           }}
         >
           <View size={{ w: 7, h: 7 }} background={col} />

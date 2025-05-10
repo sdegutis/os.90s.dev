@@ -37,15 +37,6 @@ export class Ref<T> {
     this.listener.dispatch([val, old])
   }
 
-  merge(fn: T extends Record<any, any> ? (data: T) => Partial<T> : never) {
-    this.set({ ...this.val, ...fn(this.val) })
-  }
-
-  push<A extends T extends Array<infer I> ? I[] : never>(item: A[number]) {
-    if (!(this.val instanceof Array)) return
-    this.set([...this.val, item] as T)
-  }
-
   watch(fn: (data: T, old: T) => void): ListenerDone {
     if (this.defers) return this.defers.watch(fn)
 
