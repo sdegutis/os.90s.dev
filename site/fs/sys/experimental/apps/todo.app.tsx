@@ -9,9 +9,6 @@ interface Item {
 const textModel = new api.TextModel()
 
 const $items = api.$<Item[]>([], api.arrayEquals)
-const $itemViews = $items.adapt<api.View[]>(items => {
-  return items.map(item => <ItemView item={item} />)
-}, api.arrayEquals)
 
 const panel = await api.sys.makePanel({ name: "todo" },
   <panel size={{ w: 70, h: 50 }}>
@@ -23,7 +20,11 @@ const panel = await api.sys.makePanel({ name: "todo" },
       <api.PanedYB>
         <api.Scroll showh={false} background={0xffffff33}>
           <api.Border padding={2}>
-            <api.GroupY align={'a'} children={$itemViews} />
+            <api.GroupY align={'a'}>
+              {$items.adapt<api.View[]>(items => {
+                return items.map(item => <ItemView item={item} />)
+              }, api.arrayEquals)}
+            </api.GroupY>
           </api.Border>
         </api.Scroll>
         <api.Border padding={2} background={0x00000033}>
