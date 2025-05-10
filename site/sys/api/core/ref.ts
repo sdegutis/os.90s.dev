@@ -37,7 +37,7 @@ export class Ref<T> {
     this.listener.dispatch([val, old])
   }
 
-  merge(fn: (data: T) => Partial<T>) {
+  merge(fn: T extends Record<any, any> ? (data: T) => Partial<T> : never) {
     this.set({ ...this.val, ...fn(this.val) })
   }
 
