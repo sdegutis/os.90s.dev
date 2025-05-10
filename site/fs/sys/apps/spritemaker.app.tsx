@@ -22,17 +22,17 @@ export const palettes = {
 
 }
 
-type Choice = Readonly<{ [pal in PaletteName]: number } & { current: PaletteName }>
+type ColorSel = Readonly<{ palette: PaletteName, choices: { [pal in PaletteName]: number } }>
 
-const $choice = $<Choice>({ current: 'sweet24', sweet24: 0, vinik24: 0 })
-const $color = $choice.adapt(ch => palettes[ch.current][ch[ch.current]])
+const $colorsel = $<ColorSel>({ palette: 'sweet24', choices: { sweet24: 0, vinik24: 0 } })
+const $color = $colorsel.adapt(ch => palettes[ch.palette][ch.choices[ch.palette]])
 
 const panel = await api.sys.makePanel({ name: "sprite maker" },
   <panel size={{ w: 120, h: 70 }}>
     <api.Center>
       <GroupY>
-        <PalettePicker palettes={palettes} $choice={$choice} />
-        <ColorPicker palettes={palettes} $choice={$choice} />
+        <PalettePicker palettes={palettes} $colorsel={$colorsel} />
+        <ColorPicker palettes={palettes} $colorsel={$colorsel} />
       </GroupY>
     </api.Center>
   </panel>
@@ -40,14 +40,14 @@ const panel = await api.sys.makePanel({ name: "sprite maker" },
 
 panel.focusPanel()
 
-function PalettePicker(data: { palettes: Palette, $choice: Ref<Choice> }) {
+function PalettePicker(data: { palettes: Palette, $colorsel: Ref<ColorSel> }) {
   return <GroupY>
     {Object.keys(data.palettes).map(pal => {
       return <Button
         padding={1}
         left={2}
-        selected={data.$choice.adapt(ch => ch.current === pal)}
-        onClick={() => { data.$choice.merge(() => ({ current: pal as PaletteName })) }}
+        selected={data.$colorsel.adapt(ch => ch.palette === pal)}
+        onClick={() => { data.$colorsel.merge(() => ({ palette: pal as PaletteName })) }}
       >
         <Label text={pal} />
       </Button>
@@ -55,16 +55,23 @@ function PalettePicker(data: { palettes: Palette, $choice: Ref<Choice> }) {
   </GroupY>
 }
 
-function ColorPicker(data: { palettes: Palette, $choice: Ref<Choice> }) {
+function ColorPicker(data: { palettes: Palette, $colorsel: Ref<ColorSel> }) {
   return <Grid cols={4} flow xgap={-1} ygap={-1}>
-    {data.$choice.adapt(ch => {
-      return data.palettes[ch.current].map((col, coli) => {
+    {data.$colorsel.adapt(ch => {
+      return data.palettes[ch.palette].map((col, coli) => {
         return <Button
           padding={1}
           hoverBackground={0xffffff77}
           selectedBackground={0xffffffff}
-          selected={ch[ch.current] === coli}
-          onClick={() => { data.$choice.merge(ch => ({ [ch.current]: coli })) }}
+          selected={ch.choices[ch.palette] === coli}
+          onClick={() => {
+            data.$colorsel.merge(ch => ({
+              choices: {
+                ...ch.choices,
+                [ch.palette]: coli,
+              }
+            }))
+          }}
         >
           <View size={{ w: 7, h: 7 }} background={col} />
         </Button>
