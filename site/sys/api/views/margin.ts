@@ -37,19 +37,19 @@ export class Margin extends View {
     this.up = this.down = this.left = this.right = this.$padding.$ = n
   }
 
-  // set paddingAll(ns: number | [number, number] | [number, number, number] | [number, number, number, number]) {
-  //   const [u, r, d, l] =
-  //     typeof ns === 'number' ? [ns, ns, ns, ns] :
-  //       ns.length === 2 ? [...ns, ...ns] :
-  //         ns.length === 3 ? [...ns, ns[1]] :
-  //           ns
+  set paddingAll(ns: number | [number, number] | [number, number, number] | [number, number, number, number]) {
+    const [u, r, d, l] =
+      typeof ns === 'number' ? [ns, ns, ns, ns] :
+        ns.length === 2 ? [...ns, ...ns] :
+          ns.length === 3 ? [...ns, ns[1]] :
+            ns
 
-  //   this.$padding.$ = u
-  //   this.up = u
-  //   this.down = d
-  //   this.left = l
-  //   this.right = r
-  // }
+    this.$padding.$ = u
+    this.up = u
+    this.down = d
+    this.left = l
+    this.right = r
+  }
 
   paddingColor = 0x00000000
   readonly $paddingColor = makeRef(this, 'paddingColor')
