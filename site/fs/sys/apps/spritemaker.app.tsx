@@ -29,38 +29,43 @@ const panel = await api.sys.makePanel({ name: "sprite maker" },
   <panel size={{ w: 120, h: 70 }}>
     <api.Center>
       <GroupY>
-
-        <GroupY>
-          {Object.keys(palettes).map(pal => {
-            return <Button
-              padding={2}
-              selected={$pal.adapt(p => p === pal)}
-              onClick={() => $pal.$ = pal as keyof typeof palettes}
-            >
-              <Label text={pal} />
-            </Button>
-          })}
-        </GroupY>
-
-        <Grid cols={4} flow xgap={-1} ygap={-1}>
-          {$pal.adapt(pal => {
-            return palettes[pal].map((col, coli) => {
-              return <Button
-                padding={1}
-                hoverBackground={0xffffff77}
-                selectedBackground={0xffffffff}
-                selected={$i.adapt(i => i === coli)}
-                onClick={() => $i.$ = coli}
-              >
-                <View size={{ w: 7, h: 7 }} background={col} />
-              </Button>
-            })
-          })}
-        </Grid>
-
+        <PalettePicker />
+        <ColorPicker />
       </GroupY>
     </api.Center>
   </panel>
 )
 
 panel.focusPanel()
+
+function PalettePicker() {
+  return <GroupY>
+    {Object.keys(palettes).map(pal => {
+      return <Button
+        padding={2}
+        selected={$pal.adapt(p => p === pal)}
+        onClick={() => $pal.$ = pal as keyof typeof palettes}
+      >
+        <Label text={pal} />
+      </Button>
+    })}
+  </GroupY>
+}
+
+function ColorPicker() {
+  return <Grid cols={4} flow xgap={-1} ygap={-1}>
+    {$pal.adapt(pal => {
+      return palettes[pal].map((col, coli) => {
+        return <Button
+          padding={1}
+          hoverBackground={0xffffff77}
+          selectedBackground={0xffffffff}
+          selected={$i.adapt(i => i === coli)}
+          onClick={() => $i.$ = coli}
+        >
+          <View size={{ w: 7, h: 7 }} background={col} />
+        </Button>
+      })
+    })}
+  </Grid>
+}
