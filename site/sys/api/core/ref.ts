@@ -42,6 +42,10 @@ export class Ref<T> {
     this.listener.dispatch([val, old])
   }
 
+  update(fn: (data: T) => Partial<T>) {
+    this.$ = { ...this.$, ...fn(this.$) }
+  }
+
   watch(fn: (data: T, old: T) => void): ListenerDone {
     if (this.defers) return this.defers.watch(fn)
 
