@@ -23,6 +23,10 @@ export class Ref<T> {
     this.val = val
   }
 
+  /** Convenience for .val and .set(val) */
+  get value() { return this.val }
+  set value(v) { this.set(v) }
+
   /** Notifies watchers/etc. */
   set(val: T) {
     if (this.defers) {
