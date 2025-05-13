@@ -191,7 +191,7 @@ preferences['panel-body-gap'] = 0
 preferences['panel-body-gap-color'] = 0x00000000
 
 export function PanelBodyComp(data: {
-  children: any
+  children: View
   panelFocused: Ref<boolean>
 }) {
   return <Margin
