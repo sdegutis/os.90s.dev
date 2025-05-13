@@ -10,6 +10,7 @@
     "outDir": "out",
     "emitDeclarationOnly": true,
     "moduleResolution": "Node",
+    "verbatimModuleSyntax": true,
 
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -23,7 +24,10 @@
     "noPropertyAccessFromIndexSignature": true,
     "skipLibCheck": true,
 
-    "paths": { "/os/api.js": [ "./api.js" ], },
+    "paths": {
+      "/os/api.js": [ "./api.js" ],
+      "/os/fs/sys/*": [ "./sys/*" ],
+    },
   },
 
   "references": [ { "path": "../sys/" } ],

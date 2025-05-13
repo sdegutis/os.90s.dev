@@ -18,5 +18,5 @@
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": true,
   },
-  "include": [ "../fs/api.js", "../sys/api/**/*", "." ]
+  "include": [ "../fs/api.ts", "../sys/api/**/*", "." ]
 }

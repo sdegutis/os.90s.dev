@@ -2,7 +2,7 @@ import api, { $, Center, GroupX, GroupY, Label } from '/os/api.js'
 await api.preludesFinished
 
 const $count = $(0)
-const inc = () => $count.val++
+const inc = () => $count.value++
 
 const panel = await api.sys.makePanel({ name: "hello world" },
   <panel size={{ w: 120, h: 120 }}>
