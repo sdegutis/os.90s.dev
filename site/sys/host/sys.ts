@@ -294,11 +294,12 @@ offy=1
 colors[]=0x000000ff
 colors[]=0xffffffff
 pixels=
-
+"""
 1 1 1 1
 1 2 2 1
 1 2 1 1
 1 1 1 0
+"""
 `.trimStart())
 
 const loadingCursor = Cursor.fromString(`
@@ -307,13 +308,14 @@ offy=1
 colors[]=0x000000ff
 colors[]=0xffffffff
 pixels=
-
+"""
 1 1 1 1 0 0
 1 2 2 1 0 0
 1 2 1 1 0 0
 1 1 1 0 1 0
 0 0 0 1 2 1
 0 0 0 0 1 0
+"""
 `.trimStart())
 
 let cursor: Cursor | undefined
