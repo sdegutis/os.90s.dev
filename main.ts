@@ -95,7 +95,10 @@ function processSite() {
   zip.addLocalFile('site/sys/tsconfig.json', 'sys/')
   zip.addLocalFolder('site/sample/', 'app/')
   zip.addLocalFolder('./site/fs/', 'fs', path => !path.match(/fs(\\|\/)out(\\|\/)/))
-  zip.addFile('.vscode/settings.json', Buffer.from(`{ "typescript.preferences.importModuleSpecifierEnding": "js" }`))
+  zip.addFile('.vscode/settings.json', Buffer.from(JSON.stringify({
+    "typescript.preferences.importModuleSpecifierEnding": "js",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+  }, null, 2)))
   files.add('/helloworld.zip', zip.toBuffer())
 
   files.do(f => f.path = '/os' + f.path)

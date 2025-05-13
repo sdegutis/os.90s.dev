@@ -6,7 +6,10 @@
     "module": "ESNext",
     "jsx": "react-native",
     "noEmit": true,
-    "paths": { "/os/api.js": [ "../fs/api.js" ], },
+    "paths": {
+      "/os/api.js": [ "../fs/api.js" ],
+      "/os/fs/sys/*": [ "../fs/sys/*" ],
+    },
 
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -18,5 +21,9 @@
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": true,
   },
-  "include": [ "../fs/api.ts", "../sys/api/**/*", "." ]
+  "include": [
+    "../fs/**/*",
+    "../sys/api/**/*",
+    ".",
+  ]
 }
