@@ -1,9 +1,11 @@
+import { composites } from "../core/composites.js"
 import { Ref } from "../core/ref.js"
 import { Button } from "../views/button.js"
 import { Label } from "../views/label.js"
 
-/** Experimental. */
-export function ButtonComp(data: {
+composites['button'] = ButtonComp
+
+function ButtonComp(data: {
   action: () => void
   style: 'submit' | 'cancel' | undefined
   children: any

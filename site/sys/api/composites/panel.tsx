@@ -1,4 +1,5 @@
 import { Bitmap } from "../core/bitmap.js"
+import { composites } from "../core/composites.js"
 import { Cursor } from "../core/cursor.js"
 import { currentAppPath } from "../core/open.js"
 import type { Panel } from "../core/panel.js"
@@ -20,8 +21,12 @@ import { PanedYA } from "../views/paned.js"
 import { SpacedX } from "../views/spaced.js"
 import type { View } from "../views/view.js"
 
+composites['panel'] = PanelViewComp
+composites['panel-resizer'] = PanelResizerComp
+composites['panel-body'] = PanelBodyComp
+composites['panel-titlebar'] = PanelTitlebarComp
 
-export function PanelViewComp(data: {
+function PanelViewComp(data: {
   file?: PanelFile,
   children: View,
   size?: MaybeRef<Size>,
@@ -123,7 +128,7 @@ const maxImage = new Bitmap([0xffffff33], 4, [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1
 const axeImage = new Bitmap([0xffffff33], 4, [1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1,])
 const mnuImage = new Bitmap([0xffffff33], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1])
 
-export function PanelTitlebarComp(data: {
+function PanelTitlebarComp(data: {
   title: MaybeRef<string>
   menuItems?: () => MenuItem[]
 }) {
@@ -190,7 +195,7 @@ export function PanelTitlebarComp(data: {
 preferences['panel-body-gap'] = 0
 preferences['panel-body-gap-color'] = 0x00000000
 
-export function PanelBodyComp(data: {
+function PanelBodyComp(data: {
   children: View
   panelFocused: Ref<boolean>
 }) {
@@ -222,7 +227,7 @@ const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
   0, 1, 1, 1, 0,
 ]))
 
-export function PanelResizerComp(data: { panelFocused: Ref<boolean> }) {
+function PanelResizerComp(data: { panelFocused: Ref<boolean> }) {
   return <ImageView
     canMouse
     presented={function (panel) {

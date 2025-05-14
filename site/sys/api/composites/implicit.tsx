@@ -1,7 +1,9 @@
+import { composites } from "../core/composites.js"
 import { Label } from "../views/label.js"
 
-/** Experimental. */
-export function ImplicitComp(data: { children: string | string[] }) {
+composites['implicit'] = ImplicitComp
+
+function ImplicitComp(data: { children: string | string[] }) {
   const str = typeof data.children === 'string'
     ? data.children
     : data.children.join('')

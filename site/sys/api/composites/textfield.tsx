@@ -1,9 +1,11 @@
+import { composites } from "../core/composites.js"
 import { Border } from "../views/border.js"
 import { Scroll } from "../views/scroll.js"
 import { TextBox } from "../views/textbox.js"
 
-/** Experimental. */
-export function TextFieldComp(data: { length?: number } & ConstructorParameters<typeof TextBox>[0]) {
+composites['textfield'] = TextFieldComp
+
+function TextFieldComp(data: { length?: number } & ConstructorParameters<typeof TextBox>[0]) {
   const length = data.length ?? 50
   const textbox = <TextBox {...data} /> as TextBox
   const border = <Border padding={2} children={[textbox]} /> as Border
