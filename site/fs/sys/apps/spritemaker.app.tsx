@@ -1,5 +1,4 @@
 import api, { $, Border, GroupX, GroupY, Label, Ref, type Size } from '/os/api.js'
-import '/os/fs/sys/libs/colorpicker.js'
 await api.preludesFinished
 
 const $color = $(0x00000000)

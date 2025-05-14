@@ -1,5 +1,4 @@
 import api, { $, Border, Button, GroupX, GroupY, Label, PanedXB, Ref, Scroll, View, type Size } from '/os/api.js'
-import '/os/fs/sys/libs/colorpicker.js'
 import { drawPinStripes } from '/os/fs/sys/libs/draw.js'
 await api.preludesFinished
 

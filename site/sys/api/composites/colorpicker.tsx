@@ -1,4 +1,10 @@
-import { $, Button, composites, Grid, GroupY, Label, Ref, View } from "/os/api.js"
+import { composites } from "../core/composites.js"
+import { $, Ref } from "../core/ref.js"
+import { Button } from "../views/button.js"
+import { Grid } from "../views/grid.js"
+import { GroupY } from "../views/group.js"
+import { Label } from "../views/label.js"
+import { View } from "../views/view.js"
 
 composites["colorpicker"] = ColorView
 
