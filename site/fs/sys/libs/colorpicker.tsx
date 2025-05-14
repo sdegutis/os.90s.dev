@@ -1,6 +1,8 @@
-import { $, Button, Grid, GroupY, Label, Ref, View } from "/os/api.js"
+import { $, Button, composites, Grid, GroupY, Label, Ref, View } from "/os/api.js"
 
-export function ColorView(data: { $color: Ref<number> }) {
+composites["colorpicker"] = ColorView
+
+function ColorView(data: { $color: Ref<number> }) {
 
   type Palette = keyof typeof palettes
 

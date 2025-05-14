@@ -1,5 +1,5 @@
-import api, { $, Border, GroupX, GroupY, Label, PanedXB, Ref, View, type Size } from '/os/api.js'
-import { ColorView } from '/os/fs/sys/libs/colorpicker.js'
+import api, { $, Border, Button, GroupX, GroupY, Label, PanedXB, Ref, Scroll, View, type Size } from '/os/api.js'
+import '/os/fs/sys/libs/colorpicker.js'
 import { drawPinStripes } from '/os/fs/sys/libs/draw.js'
 await api.preludesFinished
 
@@ -15,12 +15,17 @@ const file = {
 const panel = await api.sys.makePanel({ name: "paint" },
   <panel size={{ w: 220, h: 150 }} file={file}>
     <PanedXB>
-      <View draw={drawPinStripes()} />
+      <Scroll draw={drawPinStripes()}>
+        <View />
+      </Scroll>
       <GroupY background={0x333333ff}>
         <Border padding={2}>
           <GroupY gap={2}>
-            <ColorView $color={$color} />
+            <colorpicker $color={$color} />
             <SizeLabels $size={$<Size>({ w: 8, h: 8 })} />
+            <Button paddingAll={[2, 4]}>
+              <Label text='grid' />
+            </Button>
           </GroupY>
         </Border>
       </GroupY>

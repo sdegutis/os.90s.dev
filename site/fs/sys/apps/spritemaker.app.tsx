@@ -1,5 +1,5 @@
 import api, { $, Border, GroupX, GroupY, Label, Ref, type Size } from '/os/api.js'
-import { ColorView } from '/os/fs/sys/libs/colorpicker.js'
+import '/os/fs/sys/libs/colorpicker.js'
 await api.preludesFinished
 
 const $color = $(0x00000000)
@@ -16,7 +16,7 @@ const panel = await api.sys.makePanel({ name: "sprite maker" },
     <api.Center>
       <Border background={0xffffff11} padding={2} up={3}>
         <GroupY>
-          <ColorView $color={$color} />
+          <colorpicker $color={$color} />
           <SizeLabels $size={$<Size>({ w: 8, h: 8 })} />
         </GroupY>
       </Border>
