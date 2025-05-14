@@ -237,18 +237,7 @@ const desktop = await api.sys.makePanel({
     padding={2}
   // paddingColor={0xffffff11}
   >
-    <api.PanedXA>
-      {desktopButtons}
-      <api.Center>
-        <api.GroupY gap={2}>
-          <api.GroupX gap={4}>
-            <api.Label text='see' />
-            <api.Label text='90s.dev' color={0xffff00ff} />
-          </api.GroupX>
-          <api.Label text='for instructions' />
-        </api.GroupY>
-      </api.Center>
-    </api.PanedXA>
+    {desktopButtons}
   </api.Margin>
 ))
 
