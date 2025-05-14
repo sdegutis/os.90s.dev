@@ -7,6 +7,8 @@ import { NetDrive } from "./netfs.js"
 import { SysDrive } from "./sysfs.js"
 import { UsrDrive } from "./usrfs.js"
 
+export type FsEvent = { type: 'sync', op: string, path: string }
+
 const mounts = await opendb<{
   name: string,
   folder: FileSystemDirectoryHandle,
@@ -29,7 +31,6 @@ class FS {
       })
     })
 
-    type FsEvent = { type: 'sync', op: string, path: string }
     const fsevents = new BC<FsEvent>('fsevents', null)
     this.#syncfs = (path, op) => fsevents.emit({ type: 'sync', path, op })
     fsevents.handle((e) => this.#notify(e.path, e.op, false))

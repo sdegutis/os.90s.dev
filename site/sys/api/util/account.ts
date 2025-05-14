@@ -3,24 +3,17 @@ import { $ } from "../core/ref.js"
 import { pobject } from "./kvs.js"
 import { GET } from "./net.js"
 
-export type UserStateGuest = {
-  type: 'guest'
-}
+export type UserStateGuest =
+  { type: 'guest' }
 
-export type UserStateRegistering = {
-  type: 'registering'
-  username: string
-}
+export type UserStateRegistering =
+  { type: 'registering', username: string }
 
-export type UserStateVerifying = {
-  type: 'verifying'
-  username: string
-}
+export type UserStateVerifying =
+  { type: 'verifying', username: string }
 
-export type UserStateKnown = {
-  type: 'known'
-  username: string
-}
+export type UserStateKnown =
+  { type: 'known', username: string }
 
 export type UserState =
   | UserStateGuest
@@ -56,9 +49,11 @@ export async function updateAccountFromServer() {
   })
 }
 
+updateAccountFromServer()
+
 // setInterval(updateAccountFromServer, 1000 * 60)
 
-type UserStateEvent = { type: 'sync', state: UserState }
+export type UserStateEvent = { type: 'sync', state: UserState }
 
 const b = new BC<UserStateEvent>('userstate', null)
 let syncing = false
