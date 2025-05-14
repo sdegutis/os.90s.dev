@@ -45,14 +45,14 @@ export class Button extends Border {
   override draw(ctx: DrawingContext): void {
     super.draw(ctx)
 
-    if (this.selected) {
-      this.drawBackground(ctx, this.selectedBackground)
-    }
-    else if (this.pressed) {
+    if (this.pressed) {
       this.drawBackground(ctx, this.pressBackground)
     }
     else if (this.hovered) {
       this.drawBackground(ctx, this.hoverBackground)
+    }
+    else if (this.selected) {
+      this.drawBackground(ctx, this.selectedBackground)
     }
   }
 

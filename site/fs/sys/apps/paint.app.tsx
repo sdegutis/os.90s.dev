@@ -3,6 +3,7 @@ import { drawPinStripes } from '/os/fs/sys/libs/draw.js'
 await api.preludesFinished
 
 const $color = $(0x00000000)
+const $grid = $(true)
 
 const file = {
   $path: $(api.program.opts["file"] ?? 'usr/untitled1.bmp.jsln'),
@@ -22,7 +23,7 @@ const panel = await api.sys.makePanel({ name: "paint" },
           <GroupY gap={2}>
             <colorpicker $color={$color} />
             <SizeLabels $size={$<Size>({ w: 8, h: 8 })} />
-            <Button paddingAll={[2, 4]}>
+            <Button paddingAll={[2, 4]} selected={$grid} onClick={() => $grid.value = !$grid.value}>
               <Label text='grid' />
             </Button>
           </GroupY>
