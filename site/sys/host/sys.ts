@@ -49,7 +49,8 @@ export class Sys {
     this.$size.equals = sizeEquals
 
     this.$size.watch(size => {
-      this.resize(size.w, size.h)
+      this.sysevents.emit({ type: 'resized', size: [size.w, size.h] })
+      this.redrawAllPanels()
     })
 
     this.desktop = { x: 0, y: 0, ...this.size }
@@ -176,12 +177,6 @@ export class Sys {
       // this.loading--
     }
     return proc.id
-  }
-
-  resize(w: number, h: number) {
-    this.$size.set({ w, h })
-    this.sysevents.emit({ type: 'resized', size: [w, h] })
-    this.redrawAllPanels()
   }
 
   private findHovered() {

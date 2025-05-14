@@ -135,7 +135,7 @@ export class Process {
       },
 
       resize: (w, h) => {
-        sys.resize(w, h)
+        sys.$size.set({ w, h })
       },
 
       hidepanel: (panid) => {
