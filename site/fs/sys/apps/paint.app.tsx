@@ -1,5 +1,6 @@
-import api, { $, Border, GroupX, GroupY, Label, Ref, type Size } from '/os/api.js'
+import api, { $, Border, GroupX, GroupY, Label, PanedXB, Ref, View, type Size } from '/os/api.js'
 import { ColorView } from '/os/fs/sys/libs/colorpicker.js'
+import { drawPinStripes } from '/os/fs/sys/libs/draw.js'
 await api.preludesFinished
 
 const $color = $(0x00000000)
@@ -13,14 +14,17 @@ const file = {
 
 const panel = await api.sys.makePanel({ name: "paint" },
   <panel size={{ w: 220, h: 150 }} file={file}>
-    <api.Center>
-      <Border background={0xffffff11} padding={2} up={3}>
-        <GroupY>
-          <ColorView $color={$color} />
-          <SizeLabels $size={$<Size>({ w: 8, h: 8 })} />
-        </GroupY>
-      </Border>
-    </api.Center>
+    <PanedXB>
+      <View draw={drawPinStripes()} />
+      <GroupY background={0x333333ff}>
+        <Border padding={2}>
+          <GroupY gap={2}>
+            <ColorView $color={$color} />
+            <SizeLabels $size={$<Size>({ w: 8, h: 8 })} />
+          </GroupY>
+        </Border>
+      </GroupY>
+    </PanedXB>
   </panel>
 )
 
@@ -28,13 +32,8 @@ panel.focusPanel()
 
 function SizeLabels(data: { $size: Ref<Size> }) {
   return <GroupX gap={2}>
-    <GroupX gap={-1}>
-      <Label text='w:' color={0xffffff33} />
-      <Label text={data.$size.adapt(s => s.w.toString())} />
-    </GroupX>
-    <GroupX gap={-1}>
-      <Label text='h:' color={0xffffff33} />
-      <Label text={data.$size.adapt(s => s.h.toString())} />
-    </GroupX>
+    <Label text={data.$size.adapt(s => s.w.toString())} />
+    <Label text='*' color={0xffffff33} />
+    <Label text={data.$size.adapt(s => s.h.toString())} />
   </GroupX>
 }
