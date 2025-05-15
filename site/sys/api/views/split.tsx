@@ -1,6 +1,7 @@
 import type { DrawingContext } from "../core/drawing.js"
 import { JsxAttrs } from "../core/jsx.js"
 import { $, makeRef } from "../core/ref.js"
+import { sys } from "../core/sys.js"
 import { xresize, yresize } from "../util/cursors.js"
 import { dragMove } from "../util/drag.js"
 import { View } from "./view.js"
@@ -31,15 +32,15 @@ class SplitDivider extends View {
   }
 
   override onMouseEnter(): void {
-    this.panel?.pushCursor(this.cursor)
+    sys.pushCursor(this.cursor)
   }
 
   override onMouseExit(): void {
-    this.panel?.popCursor(this.cursor)
+    sys.popCursor(this.cursor)
   }
 
   override onMouseDown(button: number): void {
-    this.panel?.pushCursor(this.cursor)
+    sys.pushCursor(this.cursor)
     const split = this.split
     const dx = split.dir
     const dw = dx === 'x' ? 'w' : 'h'
@@ -54,7 +55,7 @@ class SplitDivider extends View {
     const done = dragMove(this.panel!.$mouse, $b)
     this.onMouseUp = () => {
       done()
-      this.panel?.popCursor(this.cursor)
+      sys.popCursor(this.cursor)
       this.pressed = false
       delete this.onMouseUp
     }

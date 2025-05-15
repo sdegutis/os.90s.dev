@@ -1,6 +1,7 @@
 import { BC, ProcEvent } from "../api/core/bc.js"
-import type { Cursor } from "../api/core/cursor.js"
+import { Cursor } from "../api/core/cursor.js"
 import { PanelInfo, wRPC, type ClientProgram, type ServerProgram } from "../api/core/rpc.js"
+import { cursors } from "./cursors.js"
 import { Panel } from "./panel.js"
 import type { Sys } from "./sys.js"
 
@@ -179,6 +180,14 @@ export class Process {
         this.sys.setDesktop(x, y, w, h)
       },
 
+      cursorinit: (name, data) => {
+        cursors[name] = Cursor.fromString(data)
+      },
+
+      cursor: (name) => {
+        sys.useCursor(name)
+      },
+
     })
 
     this.heartbeat = setInterval(async () => {
@@ -230,10 +239,6 @@ export class Process {
 
   focus(panel: Panel) {
     this.sys.focusPanel(panel)
-  }
-
-  useCursor(c: Cursor | null) {
-    this.sys.useCursor(c)
   }
 
   terminate() {

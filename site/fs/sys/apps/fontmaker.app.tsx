@@ -1,4 +1,4 @@
-import api from "/os/api.js"
+import api, { sys } from "/os/api.js"
 await api.preludesFinished
 
 const font = api.$(api.sys.font)
@@ -188,8 +188,8 @@ function CharView(
   const view: api.View = <api.View
     canMouse
     background={0x00000033}
-    onMouseEnter={function () { this.panel?.pushCursor(api.Cursor.NONE); hover(char) }}
-    onMouseExit={function () { this.panel?.popCursor(api.Cursor.NONE) }}
+    onMouseEnter={function () { sys.pushCursor(''); hover(char) }}
+    onMouseExit={function () { sys.popCursor('') }}
     size={api.multiplex([width, height, zoom], (w, h, z) => ({ w: w * z, h: h * z }))}
   />
 

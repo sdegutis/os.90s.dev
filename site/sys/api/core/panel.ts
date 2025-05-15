@@ -1,8 +1,6 @@
 import { debounce } from "../util/throttle.js"
 import type { View } from "../views/view.js"
-import type { Cursor } from "./cursor.js"
 import { DrawingContext } from "./drawing.js"
-import { JSLN } from "./jsln.js"
 import { Listener, ListenerDone } from "./listener.js"
 import { type Ref, makeRef, multiplex } from "./ref.js"
 import { type ClientPanel, type ServerPanel, wRPC } from "./rpc.js"
@@ -340,29 +338,6 @@ export class Panel {
   needsMouseCheck = debounce(() => {
     this.checkUnderMouse()
   })
-
-  private cursors: Cursor[] = []
-
-  pushCursor(c: Cursor) {
-    this.cursors.push(c)
-    if (this.cursors.length === 1) {
-      this.setCursor(c)
-    }
-  }
-
-  popCursor(c: Cursor) {
-    const idx = this.cursors.findIndex(cursor => cursor === c)
-    if (idx === -1) return
-    const oldFirst = this.cursors[0]
-    this.cursors.splice(idx, 1)
-    if (this.cursors[0] !== oldFirst) {
-      this.setCursor(this.cursors[0] ?? null)
-    }
-  }
-
-  private setCursor(c: Cursor | null) {
-    this.rpc.send('cursor', [c ? JSLN.stringify(c) : ''])
-  }
 
   blit() {
     this.drawTree(this.root, 0, 0)

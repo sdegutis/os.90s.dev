@@ -1,7 +1,9 @@
 import { View } from "../views/view.js"
 import { BC, KeyEvent, SysEvent } from "./bc.js"
 import { sysConfig } from "./config.js"
+import { Cursor } from "./cursor.js"
 import { Font } from "./font.js"
+import { JSLN } from "./jsln.js"
 import { Listener } from "./listener.js"
 import { Panel } from "./panel.js"
 import { $, Ref } from "./ref.js"
@@ -236,6 +238,34 @@ class Sys {
 
   setWorkspaceArea(point: Point, size: Size) {
     this.rpc.send('setdesktop', [point.x, point.y, size.w, size.h])
+  }
+
+  private cursors: string[] = []
+
+  registerCursor(name: string, c: Cursor) {
+    this.rpc.send('cursorinit', [name, JSLN.stringify(c)])
+    return name
+  }
+
+  pushCursor(c: string) {
+    this.cursors.push(c)
+    if (this.cursors.length === 1) {
+      this.setCursor(c)
+    }
+  }
+
+  popCursor(c: string) {
+    const idx = this.cursors.findIndex(cursor => cursor === c)
+    if (idx === -1) return
+    const oldFirst = this.cursors[0]
+    this.cursors.splice(idx, 1)
+    if (this.cursors[0] !== oldFirst) {
+      this.setCursor(this.cursors[0] ?? 'default')
+    }
+  }
+
+  private setCursor(c: string) {
+    this.rpc.send('cursor', [c])
   }
 
 }

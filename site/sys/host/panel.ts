@@ -1,4 +1,3 @@
-import { Cursor } from "../api/core/cursor.js"
 import { DrawingContext } from "../api/core/drawing.js"
 import { Listener } from "../api/core/listener.js"
 import { wRPC, type ClientPanel, type PanelOrdering, type ServerPanel } from "../api/core/rpc.js"
@@ -75,10 +74,6 @@ export class Panel {
 
       focus: () => {
         this.proc.focus(this)
-      },
-
-      cursor: (cstr) => {
-        proc.useCursor(cstr ? Cursor.fromString(cstr) : null)
       },
 
     })

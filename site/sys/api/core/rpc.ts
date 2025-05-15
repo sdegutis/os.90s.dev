@@ -21,6 +21,8 @@ export interface ServerProgram {
   hidepanel(panid: number): void
   showpanel(panid: number): void
   resize(w: number, h: number): void
+  cursorinit(name: string, data: string): void
+  cursor(name: string): void
   setdesktop(x: number, y: number, w: number, h: number): void
   thisfile(path: string): void
   getprocs(): Promise<[procs: { pid: number, path: string }[]]>
@@ -41,7 +43,6 @@ export interface ServerPanel {
   renamed(name: string): void
   close(): void
   focus(): void
-  cursor(data: string): void
 }
 
 export interface ClientPanel {

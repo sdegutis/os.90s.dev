@@ -1,10 +1,10 @@
 import { BC, KeyEvent, PanelEvent, ProcEvent, SysEvent } from "../api/core/bc.js"
 import { sysConfig } from "../api/core/config.js"
-import { Cursor } from "../api/core/cursor.js"
 import { Ref } from "../api/core/ref.js"
 import { Point, Size, sizeEquals } from "../api/core/types.js"
 import { debounce } from "../api/util/throttle.js"
 import { setupCanvas } from "./canvas.js"
+import { cursors } from "./cursors.js"
 import { Panel } from "./panel.js"
 import { Process } from "./process.js"
 
@@ -34,6 +34,8 @@ export class Sys {
   desktop: Point & Size
 
   #initialAppsLoaded = false
+
+  cursor = 'default'
 
   constructor(canvas: ReturnType<typeof setupCanvas>) {
     const { embedded, size, $point, $scale, ctx } = canvas
@@ -118,8 +120,6 @@ export class Sys {
     }
 
     document.onmousemove = (e) => {
-      cursor ??= defaultCursor
-
       let x = e.offsetX
       let y = e.offsetY
 
@@ -211,7 +211,7 @@ export class Sys {
   }
 
   private drawCursor() {
-    const c = cursor
+    const c = cursors[this.cursor]
     // const c = this.loading ? loadingCursor : cursor
     c?.draw(this.ctx, this.mouse.x, this.mouse.y)
   }
@@ -271,8 +271,8 @@ export class Sys {
     this.redrawAllPanels()
   }
 
-  useCursor(c: Cursor | null) {
-    cursor = c ?? defaultCursor
+  useCursor(name: string) {
+    this.cursor = name
     this.redrawAllPanels()
   }
 
@@ -282,35 +282,3 @@ export class Sys {
   }
 
 }
-
-const defaultCursor = Cursor.fromString(`
-offx=1
-offy=1
-colors[]=0x000000ff
-colors[]=0xffffffff
-pixels=
-"""
-1 1 1 1
-1 2 2 1
-1 2 1 1
-1 1 1 0
-"""
-`.trimStart())
-
-const loadingCursor = Cursor.fromString(`
-offx=1
-offy=1
-colors[]=0x000000ff
-colors[]=0xffffffff
-pixels=
-"""
-1 1 1 1 0 0
-1 2 2 1 0 0
-1 2 1 1 0 0
-1 1 1 0 1 0
-0 0 0 1 2 1
-0 0 0 0 1 0
-"""
-`.trimStart())
-
-let cursor: Cursor | undefined

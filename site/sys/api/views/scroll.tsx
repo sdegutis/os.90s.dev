@@ -73,12 +73,12 @@ export class Scroll extends View {
 
       const cursor = xy === 'x' ? xresize : yresize
 
-      bar.onMouseEnter = () => this.panel?.pushCursor(cursor)
-      bar.onMouseExit = () => this.panel?.popCursor(cursor)
+      bar.onMouseEnter = () => sys.pushCursor(cursor)
+      bar.onMouseExit = () => sys.popCursor(cursor)
 
       bar.onMouseDown = (b) => {
         if (b !== 0) return
-        this.panel?.pushCursor(cursor)
+        sys.pushCursor(cursor)
 
         const $point = $(bar.point)
         const done = dragMove(this.panel!.$mouse, $point)
@@ -89,7 +89,7 @@ export class Scroll extends View {
         })
 
         bar.onMouseUp = () => {
-          this.panel?.popCursor(cursor)
+          sys.popCursor(cursor)
           done()
         }
       }

@@ -219,13 +219,13 @@ function PanelBodyComp(data: {
 
 const adjImage = new Bitmap([0xffffff77], 3, [0, 0, 1, 0, 0, 1, 1, 1, 1,])
 
-const adjCursor = new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
+sys.registerCursor('adjCursor', new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
   0, 1, 1, 1, 0,
   1, 1, 2, 1, 1,
   1, 2, 2, 2, 1,
   1, 1, 2, 1, 1,
   0, 1, 1, 1, 0,
-]))
+])))
 
 function PanelResizerComp(data: { panelFocused: Ref<boolean> }) {
   return <ImageView
@@ -238,14 +238,14 @@ function PanelResizerComp(data: { panelFocused: Ref<boolean> }) {
     }}
     bitmap={adjImage}
     alpha={data.panelFocused.adapt<number>(f => f ? 1 : 0.3)}
-    onMouseEnter={function () { this.panel!.pushCursor(adjCursor) }}
-    onMouseExit={function () { this.panel!.popCursor(adjCursor) }}
+    onMouseEnter={function () { sys.pushCursor('adjCursor') }}
+    onMouseExit={function () { sys.popCursor('adjCursor') }}
     onMouseDown={function (b) {
       const panel = this.panel!
-      panel.pushCursor(adjCursor)
+      sys.pushCursor('adjCursor')
       const done = dragResize(panel.$mouse, panel.$size)
       this.onMouseUp = () => {
-        panel.popCursor(adjCursor)
+        sys.popCursor('adjCursor')
         done()
         delete this.onMouseUp
       }
