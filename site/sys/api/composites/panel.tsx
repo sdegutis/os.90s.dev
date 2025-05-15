@@ -1,6 +1,5 @@
 import { Bitmap } from "../core/bitmap.js"
 import { composites } from "../core/composites.js"
-import { Cursor } from "../core/cursor.js"
 import { currentAppPath } from "../core/open.js"
 import type { Panel } from "../core/panel.js"
 import { preferences } from "../core/preferences.js"
@@ -219,14 +218,6 @@ function PanelBodyComp(data: {
 
 const adjImage = new Bitmap([0xffffff77], 3, [0, 0, 1, 0, 0, 1, 1, 1, 1,])
 
-sys.registerCursor('adjCursor', new Cursor(2, 2, new Bitmap([0x000000cc, 0xffffffff], 5, [
-  0, 1, 1, 1, 0,
-  1, 1, 2, 1, 1,
-  1, 2, 2, 2, 1,
-  1, 1, 2, 1, 1,
-  0, 1, 1, 1, 0,
-])))
-
 function PanelResizerComp(data: { panelFocused: Ref<boolean> }) {
   return <ImageView
     canMouse
@@ -238,14 +229,14 @@ function PanelResizerComp(data: { panelFocused: Ref<boolean> }) {
     }}
     bitmap={adjImage}
     alpha={data.panelFocused.adapt<number>(f => f ? 1 : 0.3)}
-    onMouseEnter={function () { sys.pushCursor('adjCursor') }}
-    onMouseExit={function () { sys.popCursor('adjCursor') }}
+    onMouseEnter={function () { sys.pushCursor('move') }}
+    onMouseExit={function () { sys.popCursor('move') }}
     onMouseDown={function (b) {
       const panel = this.panel!
-      sys.pushCursor('adjCursor')
+      sys.pushCursor('move')
       const done = dragResize(panel.$mouse, panel.$size)
       this.onMouseUp = () => {
-        sys.popCursor('adjCursor')
+        sys.popCursor('move')
         done()
         delete this.onMouseUp
       }
