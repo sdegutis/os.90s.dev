@@ -1,5 +1,4 @@
 import { $usrConfig } from "./config.js"
-import { runJsFile } from "./open.js"
 import { as } from "./typesafe.js"
 
 const init = Promise.withResolvers<void>()
@@ -11,7 +10,7 @@ async function loadPreludes() {
   const preludes = as($usrConfig.val, 'process.prelude', as.strings())
   for (const path of preludes ?? []) {
     try {
-      await runJsFile(path)
+      await import('/os/fs/' + path)
     }
     catch (e) {
       console.error(`Prelude failed:`, path)

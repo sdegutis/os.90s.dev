@@ -30,7 +30,7 @@ $path.watch(path => {
     $page.set(emptyPage)
     return
   }
-  api.runJsFile(path).then(mod => {
+  import('/os/fs/' + path).then(mod => {
     $page.set(mod.default(browser))
   }).catch(e => {
     console.error(e)
