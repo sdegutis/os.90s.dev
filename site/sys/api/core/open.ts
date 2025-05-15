@@ -1,3 +1,4 @@
+/** @deprecated */
 export async function runJsFile(path: string, decache = true) {
   path = '/os/fs/' + path
   if (decache) path += '?decache=' + Date.now()
