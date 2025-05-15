@@ -48,11 +48,11 @@ export class Button extends Border {
     if (this.pressed) {
       this.drawBackground(ctx, this.pressBackground)
     }
-    else if (this.selected) {
-      this.drawBackground(ctx, this.selectedBackground)
-    }
     else if (this.hovered) {
       this.drawBackground(ctx, this.hoverBackground)
+    }
+    else if (this.selected) {
+      this.drawBackground(ctx, this.selectedBackground)
     }
   }
 
