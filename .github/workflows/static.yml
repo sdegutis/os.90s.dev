@@ -38,7 +38,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Install dependencies
-        run: npm ci && npm run build
+        run: npm ci
 
       - name: Build site
         run: node main.ts generate
