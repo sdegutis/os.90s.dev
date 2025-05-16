@@ -38,11 +38,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Build .d.ts files
-        uses: npm ci
-        run: npm run build
+        run: npm ci && npm run build
 
       - name: Build site
         run: node main.ts generate
