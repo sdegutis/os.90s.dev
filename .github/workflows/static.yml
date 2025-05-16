@@ -41,6 +41,7 @@ jobs:
         run: npm ci
 
       - name: Build .d.ts files
+        uses: npm ci
         run: npm run build
 
       - name: Build site
