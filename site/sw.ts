@@ -53,6 +53,11 @@ self.addEventListener('fetch', (e: FetchEvent) => {
   if (url.pathname.startsWith('/os/fs/')) {
     e.respondWith(handleRoute(url, e.request))
   }
+  else if (url.pathname.startsWith('/net/')) {
+    const origin = location.host.includes('localhost') ? 'http://localhost:8088' : 'https://net.90s.dev'
+    const newurl = origin + '/' + url.pathname.slice('/net/'.length)
+    e.respondWith(fetch(new Request(newurl, e.request)))
+  }
   else {
     e.respondWith(fetch(e.request))
   }
