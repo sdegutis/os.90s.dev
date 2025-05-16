@@ -25,7 +25,7 @@ const copyright = `Copyright ©️ ${new Date().getFullYear()}. You're welcome a
 const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5"><path d="M1 0 L3 2 1 4 Z" fill="#19f" /></svg>`
 const iconlink = `<link rel="shortcut icon" href="${`data:image/svg+xml,${encodeURIComponent(icon)}`}" />`
 
-execSync('npm run build')
+execSync('npm run build', { stdio: 'inherit' })
 
 function processSite() {
   const files = immaculata.Pipeline.from(tree.files)
