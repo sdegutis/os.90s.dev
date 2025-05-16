@@ -40,6 +40,8 @@ export class Sys {
   constructor(canvas: ReturnType<typeof setupCanvas>) {
     const { embedded, size, $point, $scale, ctx } = canvas
 
+    const hasLicense = localStorage.getItem('licensekey')
+
     if (!embedded) {
       size.defer(sysConfig.$size)
     }
