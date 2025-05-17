@@ -43,7 +43,7 @@ self.addEventListener('activate', (e) => {
 })
 
 self.addEventListener('fetch', (e: FetchEvent) => {
-  // console.log('fetch', e)
+  // console.log('fetch', e.request.url)
   if (!e.request.url.startsWith(location.origin)) {
     e.respondWith(fetch(e.request))
     return
@@ -53,9 +53,9 @@ self.addEventListener('fetch', (e: FetchEvent) => {
   if (url.pathname.startsWith('/os/fs/')) {
     e.respondWith(handleRoute(url, e.request))
   }
-  else if (url.pathname.startsWith('/net/')) {
+  else if (url.pathname.startsWith('/os/net/')) {
     const origin = location.host.includes('localhost') ? 'http://localhost:8088' : 'https://net.90s.dev'
-    const newurl = origin + '/' + url.pathname.slice('/net/'.length)
+    const newurl = origin + '/' + url.pathname.slice('/os/net/'.length)
     e.respondWith(fetch(new Request(newurl, e.request)))
   }
   else {

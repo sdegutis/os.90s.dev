@@ -22,7 +22,7 @@ export class NetDrive implements Drive {
   }
 
   async getFile(path: string[]): Promise<string | null> {
-    const res = await fetch('/net/fs/' + path.join('/'), {
+    const res = await fetch('/os/net/fs/' + path.join('/'), {
       credentials: 'include',
     })
     if (res.status !== 200) return null

@@ -1,6 +1,6 @@
 
 export async function POST(path: string, data: string) {
-  return fetch('/net' + path, {
+  return fetch('/os/net' + path, {
     method: 'post',
     body: data,
     credentials: 'include',
@@ -8,7 +8,7 @@ export async function POST(path: string, data: string) {
 }
 
 export async function GET(path: string) {
-  return fetch('/net' + path, {
+  return fetch('/os/net' + path, {
     credentials: 'include',
   }).then(r => r.json())
 }
