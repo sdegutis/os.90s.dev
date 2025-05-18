@@ -28,7 +28,7 @@ async function compile(url: URL, tsx: string) {
       }
     }
   }).code
-  return transformed.replace('/FAKEIMPORT/jsx-runtime', '/os/sys/api/core/jsx.js')
+  return transformed.replace('/FAKEIMPORT/jsx-runtime', location.origin + '/os/sys/api/core/jsx.js')
 }
 
 
@@ -45,6 +45,15 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e: FetchEvent) => {
   // console.log('fetch', e.request.url)
   if (!e.request.url.startsWith(location.origin)) {
+
+    if (e.request.url.match(/\.tsx?$/)) {
+      e.respondWith(fetch(e.request.url).then(async r => {
+        const text = await r.text()
+        return jsResponse(new URL(e.request.url), text)
+      }))
+      return
+    }
+
     e.respondWith(fetch(e.request))
     return
   }
