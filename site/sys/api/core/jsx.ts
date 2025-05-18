@@ -1,4 +1,4 @@
-import { View } from "../views/view.js"
+import { type View } from "../views/view.js"
 import { composites } from "./composites.js"
 import { MaybeRef, Ref } from "./ref.js"
 
@@ -20,7 +20,9 @@ export type JsxAttrs<T> = {
 
 declare global {
   namespace JSX {
-    type IntrinsicElements = { [key: string]: any }
+    interface IntrinsicElements {
+      [key: string]: any
+    }
     type ElementChildrenAttribute = { children: any }
     type Element = View
     type ElementType =
