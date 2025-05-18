@@ -20,6 +20,17 @@ import { PanedYA } from "../views/paned.js"
 import { SpacedX } from "../views/spaced.js"
 import type { View } from "../views/view.js"
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'panel': Parameters<typeof PanelViewComp>[0]
+      'panel-resizer': Parameters<typeof PanelResizerComp>[0]
+      'panel-body': Parameters<typeof PanelBodyComp>[0]
+      'panel-titlebar': Parameters<typeof PanelTitlebarComp>[0]
+    }
+  }
+}
+
 composites['panel'] = PanelViewComp
 composites['panel-resizer'] = PanelResizerComp
 composites['panel-body'] = PanelBodyComp
@@ -129,7 +140,8 @@ const mnuImage = new Bitmap([0xffffff33], 4, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0
 
 function PanelTitlebarComp(data: {
   title: MaybeRef<string>
-  menuItems?: () => MenuItem[]
+  panelFocused?: Ref<boolean>
+  menuItems?: (() => MenuItem[]) | undefined
 }) {
   let clicks = 0
   let counter: number | undefined

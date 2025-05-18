@@ -8,6 +8,14 @@ import { View } from "../views/view.js"
 
 composites["colorpicker"] = ColorView
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'colorpicker': Parameters<typeof ColorView>[0]
+    }
+  }
+}
+
 function ColorView(data: { $color: Ref<number> }) {
 
   type Palette = keyof typeof palettes

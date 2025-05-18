@@ -3,6 +3,14 @@ import { Border } from "../views/border.js"
 import { Scroll } from "../views/scroll.js"
 import { TextBox } from "../views/textbox.js"
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'textfield': Parameters<typeof TextFieldComp>[0]
+    }
+  }
+}
+
 composites['textfield'] = TextFieldComp
 
 function TextFieldComp(data: { length?: number } & ConstructorParameters<typeof TextBox>[0]) {

@@ -5,10 +5,18 @@ import { Label } from "../views/label.js"
 
 composites['button'] = ButtonComp
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'button': Parameters<typeof ButtonComp>[0]
+    }
+  }
+}
+
 function ButtonComp(data: {
   action: () => void
-  style: 'submit' | 'cancel' | undefined
-  children: any
+  style?: 'submit' | 'cancel'
+  children?: any
 }) {
   let children = data.children
   if (!(children instanceof Ref) && !(children instanceof Array)) {
