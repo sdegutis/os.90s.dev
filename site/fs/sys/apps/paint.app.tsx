@@ -8,6 +8,8 @@ const $grid = $(true)
 const $size = $<Size>({ w: 12, h: 12 })
 const $zoom = $(6)
 
+const spots: Record<string, number | undefined> = Object.create(null)
+
 $zoom.intercept(z => Math.max(1, z))
 
 const $canvasSize = multiplex([$size, $zoom], (size, zoom) => ({
@@ -95,7 +97,9 @@ function CanvasView(data: {
     canMouse
     onMouseDown={function () {
       const done = $currentPoint.watch(p => {
-        console.log(p)
+        const key = `${p.x},${p.y}`
+        spots[key] = data.color.val
+        this.needsRedraw()
       })
 
       this.onMouseUp = done
@@ -107,13 +111,23 @@ function CanvasView(data: {
     draw={function (ctx) {
       this.drawBackground(ctx, 0x00000033)
 
+      const z = data.zoom.val
+      const size = data.realSize.val
+
       if (data.grid.val && data.zoom.val > 2) {
-        const z = data.zoom.val
-        for (let y = 0; y < data.realSize.val.h * z; y += z) {
+        for (let y = 0; y < size.h * z; y += z) {
           ctx.fillRect(0, y, this.size.w, 1, 0xffffff11)
         }
         for (let x = 0; x < data.realSize.val.w * z; x += z) {
           ctx.fillRect(x, 0, 1, this.size.h, 0xffffff11)
+        }
+      }
+
+      for (let y = 0; y < size.h; y++) {
+        for (let x = 0; x < size.w; x++) {
+          const col = spots[`${x},${y}`]
+          if (col === undefined) continue
+          ctx.fillRect(x * z, y * z, z, z, col)
         }
       }
 
