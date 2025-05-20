@@ -24,7 +24,7 @@ const panel = await api.sys.makePanel({ name: "paint" },
   <panel size={{ w: 220, h: 150 }} file={file}>
     <PanedXB>
       <View draw={drawPinStripes()}>
-        <CanvasView grid={$grid} canvasSize={$canvasSize} />
+        <CanvasView grid={$grid} realSize={$size} canvasSize={$canvasSize} />
         <Resizer canvasSize={$canvasSize} realSize={$size} zoom={$zoom} />
       </View>
       <GroupY background={0x333333ff}>
@@ -52,13 +52,17 @@ function SizeLabels(data: { $size: Ref<Size> }) {
   </GroupX>
 }
 
-function CanvasView(data: { canvasSize: Ref<Size>, grid: Ref<boolean> }) {
+function CanvasView(data: { canvasSize: Ref<Size>, realSize: Ref<Size>, grid: Ref<boolean> }) {
   return <View
-    // draw={function () {
+    draw={function (ctx) {
+      this.drawBackground(ctx, 0x00000033)
 
-    // }}
+      if (data.grid.val) {
+        // const h = data.canvasSize.val.h / 
+        // for (let y = 0; y < )
+      }
+    }}
     size={data.canvasSize}
-    background={0x00000033}
   />
 }
 
@@ -72,8 +76,8 @@ function Resizer(data: { canvasSize: Ref<Size>, realSize: Ref<Size>, zoom: Ref<n
       const $size = $<Size>({ w: $canvasSize.val.w, h: $canvasSize.val.h })
       $size.watch(size => {
         data.realSize.value = {
-          w: Math.round(size.w / data.zoom.val),
-          h: Math.round(size.h / data.zoom.val),
+          w: Math.max(1, Math.round(size.w / data.zoom.val)),
+          h: Math.max(1, Math.round(size.h / data.zoom.val)),
         }
       })
       const done = dragResize(sys.$mouse, $size)
