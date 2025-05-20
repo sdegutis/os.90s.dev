@@ -8,6 +8,8 @@ const $grid = $(true)
 const $size = $<Size>({ w: 24, h: 24 })
 const $zoom = $(2)
 
+$zoom.intercept(z => Math.max(1, z))
+
 const $canvasSize = multiplex([$size, $zoom], (size, zoom) => ({
   w: size.w * zoom,
   h: size.h * zoom,
@@ -35,6 +37,7 @@ const panel = await api.sys.makePanel({ name: "paint" },
             <Button paddingAll={[2, 4]} selected={$grid} onClick={() => $grid.value = !$grid.value}>
               <Label text='grid' />
             </Button>
+            <Zoomer zoom={$zoom} />
           </GroupY>
         </Border>
       </GroupY>
@@ -43,6 +46,25 @@ const panel = await api.sys.makePanel({ name: "paint" },
 )
 
 panel.focusPanel()
+
+function Zoomer(data: { zoom: Ref<number> }) {
+  const DRAGFACTOR = -5
+
+  return <GroupX canMouse onMouseDown={clickZoom}>
+    <Label text='zoom:' color={0xffffff33} />
+    <Label text={data.zoom.adapt(z => z.toString())} />
+  </GroupX>
+
+  function clickZoom(this: View) {
+    const $size = $({ w: 0, h: data.zoom.val * DRAGFACTOR })
+    const done = dragResize(sys.$mouse, $size)
+    this.onMouseUp = done
+
+    $size.watch(size => {
+      data.zoom.value = Math.round(size.h / DRAGFACTOR)
+    })
+  }
+}
 
 function SizeLabels(data: { $size: Ref<Size> }) {
   return <GroupX gap={2}>
