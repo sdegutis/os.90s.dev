@@ -229,7 +229,14 @@ class JSLNEncoder {
   private multiline(o: string) {
     const lines = o.split('\n')
 
-    const key = maybekey().find(key => !lines.includes(key))!
+    const iter = maybekey()
+    // ugh firefox esr
+    let key: string
+    while (true) {
+      key = iter.next().value!
+      if (!lines.includes(key)) break
+    }
+
     lines.push(key)
     lines.unshift(key)
     lines.unshift('')

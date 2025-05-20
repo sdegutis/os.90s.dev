@@ -165,10 +165,10 @@ export class Process {
       },
 
       getprocs: (reply) => {
-        reply([Process.all.values().map(p => ({
+        reply([[...Process.all.values()].map(p => ({
           path: p.path,
           pid: p.id,
-        })).toArray()])
+        }))])
       },
 
       readcliptext: async (reply) => {

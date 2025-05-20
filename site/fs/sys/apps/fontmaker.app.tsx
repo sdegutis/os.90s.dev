@@ -30,7 +30,7 @@ const zoommin = 1
 const zoommax = 12
 zoom.intercept(n => Math.max(zoommin, Math.min(n, zoommax)))
 
-const CHARSET = Array(96).keys().map(i => String.fromCharCode(i + 32)).toArray()
+const CHARSET = [...Array(96).keys()].map(i => String.fromCharCode(i + 32))
 const sheet: Record<string, boolean>[] = []
 
 for (let i = 0; i < CHARSET.length; i++) {

@@ -235,12 +235,11 @@ export class Sys {
   #updateLocation() {
     if (!this.#initialAppsLoaded) return
 
-    const apps = Panel.ordered
-      .values()
+    const apps = [...Panel.ordered
+      .values()] // more firefox esr fun lol
       .filter(p => p.visible)
       .map(p => p.proc)
       .filter(p => !p.path.endsWith('/shell.app.js'))
-      .toArray()
 
     let url = apps.map(app => {
       let file = ''
