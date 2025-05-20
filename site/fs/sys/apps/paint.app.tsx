@@ -24,7 +24,7 @@ const panel = await api.sys.makePanel({ name: "paint" },
   <panel size={{ w: 220, h: 150 }} file={file}>
     <PanedXB>
       <View draw={drawPinStripes()}>
-        <CanvasView grid={$grid} realSize={$size} canvasSize={$canvasSize} />
+        <CanvasView grid={$grid} realSize={$size} zoom={$zoom} canvasSize={$canvasSize} />
         <Resizer canvasSize={$canvasSize} realSize={$size} zoom={$zoom} />
       </View>
       <GroupY background={0x333333ff}>
@@ -52,14 +52,19 @@ function SizeLabels(data: { $size: Ref<Size> }) {
   </GroupX>
 }
 
-function CanvasView(data: { canvasSize: Ref<Size>, realSize: Ref<Size>, grid: Ref<boolean> }) {
+function CanvasView(data: { zoom: Ref<number>, canvasSize: Ref<Size>, realSize: Ref<Size>, grid: Ref<boolean> }) {
   return <View
     draw={function (ctx) {
       this.drawBackground(ctx, 0x00000033)
 
-      if (data.grid.val) {
-        // const h = data.canvasSize.val.h / 
-        // for (let y = 0; y < )
+      if (data.grid.val && data.zoom.val > 2) {
+        const z = data.zoom.val
+        for (let y = 0; y < data.realSize.val.h * z; y += z) {
+          ctx.fillRect(0, y, this.size.w, 1, 0xffffff11)
+        }
+        for (let x = 0; x < data.realSize.val.w * z; x += z) {
+          ctx.fillRect(x, 0, 1, this.size.h, 0xffffff11)
+        }
       }
     }}
     size={data.canvasSize}
