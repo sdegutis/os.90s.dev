@@ -62,6 +62,21 @@ self.addEventListener('fetch', (e: FetchEvent) => {
   if (url.pathname.startsWith('/os/fs/')) {
     e.respondWith(handleRoute(url, e.request))
   }
+  // else if (url.pathname.startsWith('/os/cdn/')) {
+  //   // console.log(url)
+  //   // console.log(e.request)
+  //   const path = url.pathname.slice('/os/cdn/'.length)
+  //   const match = path.match(/^([^@][^/]+|@.+?\/[^/]+)/)
+  //   if (!match) throw new SyntaxError('Invalid CDN path: ' + path)
+  //   const spliti = match[0].length
+  //   const version = 'latest'
+  //   const newurl = 'https://cdn.jsdelivr.net/npm/' + path.slice(0, spliti) + '@' + version + path.slice(spliti)
+  //   e.respondWith(fetch(newurl).then(async r => {
+  //     const text = await r.text()
+  //     // console.log(newurl, text)
+  //     return jsResponse(new URL(newurl), text)
+  //   }))
+  // }
   else {
     e.respondWith(fetch(e.request))
   }
