@@ -169,16 +169,22 @@ function Resizer(data: { canvasSize: Ref<Size>, realSize: Ref<Size>, zoom: Ref<n
     size={{ w: 4, h: 4 }}
     canMouse
     onMouseDown={function () {
-      const initial: Size = { w: $canvasSize.val.w, h: $canvasSize.val.h }
-      const $size = $(initial)
-      $size.watch(size => {
-        data.realSize.value = {
-          w: Math.max(1, Math.round(size.w / data.zoom.val)),
-          h: Math.max(1, Math.round(size.h / data.zoom.val)),
-        }
-      })
-      const done = dragResize(sys.$mouse, $size)
-      this.onMouseUp = done
+      const initialSize: Size = { w: $canvasSize.val.w, h: $canvasSize.val.h }
+      const $literalSize = $(initialSize)
+
+      const $resizedTo = $literalSize.adapt(size => ({
+        w: Math.max(1, Math.round(size.w / data.zoom.val)),
+        h: Math.max(1, Math.round(size.h / data.zoom.val)),
+      }))
+
+      $resizedTo.watch(size => data.realSize.value = size)
+
+      const unlisten = dragResize(sys.$mouse, $literalSize)
+      this.onMouseUp = () => {
+        undoStack.push(() => data.realSize.set(initialSize))
+        redoStack.push(() => data.realSize.set($resizedTo.val))
+        unlisten()
+      }
     }}
   />
 }
@@ -247,8 +253,8 @@ async function tryLoadingFile(filepath: string, spots: Record<string, number | u
 
 
 
-const actions: (() => void)[] = []
-let actioni = -1
+const undoStack: (() => void)[] = []
+const redoStack: (() => void)[] = []
 
 function undo() {
 
