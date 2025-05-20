@@ -83,35 +83,26 @@ function CanvasView(data: {
 }) {
   let showMouse = false
 
-  return <View
+  const view = <View
     size={data.canvasSize}
-    onMouseEnter={() => sys.pushCursor('')}
+    onMouseEnter={() => {
+      sys.pushCursor('')
+    }}
     onMouseExit={() => {
       showMouse = false
       sys.popCursor('')
     }}
     canMouse
+    onMouseDown={function () {
+      const done = $currentPoint.watch(p => {
+        console.log(p)
+      })
+
+      this.onMouseUp = done
+    }}
     onMouseMove={function () {
       showMouse = true
       this.needsRedraw()
-    }}
-    onMouseDown={function () {
-
-      // const $point = $<Point>({
-      //   x: Math.floor(this.mouse.x / data.zoom.val),
-      //   y: Math.floor(this.mouse.y / data.zoom.val),
-      // })
-
-      // // console.log(this.mouse)
-
-      // $point.watch(p => {
-      //   console.log(p)
-      // })
-
-      // const done = dragMove(sys.$mouse, $point)
-
-      // this.onMouseUp = done
-
     }}
     draw={function (ctx) {
       this.drawBackground(ctx, 0x00000033)
@@ -134,6 +125,14 @@ function CanvasView(data: {
       }
     }}
   />
+
+  const $currentPoint = multiplex([view.$mouse, data.zoom], (mouse, z) => {
+    const x = Math.floor(mouse.x / z)
+    const y = Math.floor(mouse.y / z)
+    return { x, y }
+  })
+
+  return view
 }
 
 function Resizer(data: { canvasSize: Ref<Size>, realSize: Ref<Size>, zoom: Ref<number> }) {
