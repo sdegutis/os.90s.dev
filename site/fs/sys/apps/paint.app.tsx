@@ -5,8 +5,8 @@ await api.preludesFinished
 const $color = $(0x00000000)
 const $grid = $(true)
 
-const $size = $<Size>({ w: 24, h: 24 })
-const $zoom = $(2)
+const $size = $<Size>({ w: 12, h: 12 })
+const $zoom = $(6)
 
 $zoom.intercept(z => Math.max(1, z))
 
