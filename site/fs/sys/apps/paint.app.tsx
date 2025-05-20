@@ -18,7 +18,7 @@ const $canvasSize = multiplex([$size, $zoom], (size, zoom) => ({
 }))
 
 const file = {
-  $path: $(api.program.opts["file"] ?? 'usr/untitled1.bmp.jsln'),
+  $path: $(api.program.opts["file"]),
   getContents() {
 
     const colors: number[] = []
