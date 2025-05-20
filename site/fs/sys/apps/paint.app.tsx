@@ -17,68 +17,9 @@ const $canvasSize = multiplex([$size, $zoom], (size, zoom) => ({
   h: size.h * zoom,
 }))
 
-const file = {
-  $path: $(api.program.opts["file"]),
-  getContents() {
+const filepath = api.program.opts["file"]
+await tryLoadingFile(filepath, spots, $size)
 
-    const colors: number[] = []
-    const pixels: number[] = []
-    const size = $size.val
-
-    function colorIndex(col: number) {
-      const idx = colors.indexOf(col)
-      if (idx !== -1) return idx + 1
-      return colors.push(col)
-    }
-
-    for (let y = 0; y < size.h; y++) {
-      for (let x = 0; x < size.w; x++) {
-        const key = `${x},${y}`
-        const col = spots[key]
-        const idx = col === undefined ? 0 : colorIndex(col)
-        pixels.push(idx)
-      }
-    }
-
-    let pixelsString = ''
-    for (let i = 0; i < pixels.length; i++) {
-      const sep = (i % size.w) === (size.w - 1) ? '\n' : ' '
-      pixelsString += pixels[i].toString(16) + sep
-    }
-    pixelsString = pixelsString.trim()
-
-    const dataFile = JSLN.stringify({ colors, pixels: pixelsString })
-    console.log(dataFile)
-
-    return dataFile
-  }
-}
-
-if (file.$path.val) {
-  const content = await api.fs.getFile(file.$path.val)
-  if (content) {
-    const jsln = JSLN.parse(content)
-
-    const colors = as(jsln, 'colors', as.numbers())!
-    const pixelStr = as(jsln, 'pixels', as.string)!
-
-    const width = pixelStr.match(/([0-9a-f]+|\n)/g)!.indexOf('\n')
-
-    let x = 0, y = 0
-    for (const code of pixelStr.match(/[0-9a-f]+/g)!) {
-      const col = parseInt(code)
-
-      if (col > 0) {
-        const key = `${x},${y}`
-        spots[key] = colors[col - 1]
-      }
-
-      if (++x === width) x = 0, y++
-    }
-
-    $size.value = { w: width, h: y }
-  }
-}
 
 const actions: (() => void)[] = []
 let actioni = -1
@@ -92,12 +33,19 @@ function redo() {
 }
 
 const panel = await api.sys.makePanel({ name: "paint" },
-  <panel size={{ w: 220, h: 150 }} file={file} onKeyPress={(key) => {
-    if (key === 'ctrl z') { undo(); return true }
-    if (key === 'ctrl Z') { redo(); return true }
-    if (key === 'ctrl y') { redo(); return true }
-    return false
-  }}>
+  <panel
+    size={{ w: 220, h: 150 }}
+    file={{
+      $path: $(filepath),
+      getContents: () => serializeFile($size, spots),
+    }}
+    onKeyPress={(key) => {
+      if (key === 'ctrl z') { undo(); return true }
+      if (key === 'ctrl Z') { redo(); return true }
+      if (key === 'ctrl y') { redo(); return true }
+      return false
+    }}
+  >
     <PanedXB>
       <View draw={drawPinStripes()}>
         <CanvasView color={$color} grid={$grid} realSize={$size} zoom={$zoom} canvasSize={$canvasSize} />
@@ -228,7 +176,8 @@ function Resizer(data: { canvasSize: Ref<Size>, realSize: Ref<Size>, zoom: Ref<n
     size={{ w: 4, h: 4 }}
     canMouse
     onMouseDown={function () {
-      const $size = $<Size>({ w: $canvasSize.val.w, h: $canvasSize.val.h })
+      const initial: Size = { w: $canvasSize.val.w, h: $canvasSize.val.h }
+      const $size = $(initial)
       $size.watch(size => {
         data.realSize.value = {
           w: Math.max(1, Math.round(size.w / data.zoom.val)),
@@ -239,4 +188,66 @@ function Resizer(data: { canvasSize: Ref<Size>, realSize: Ref<Size>, zoom: Ref<n
       this.onMouseUp = done
     }}
   />
+}
+
+function serializeFile($size: Ref<Size>, spots: Record<string, number | undefined>) {
+  const colors: number[] = []
+  const pixels: number[] = []
+  const size = $size.val
+
+  function colorIndex(col: number) {
+    const idx = colors.indexOf(col)
+    if (idx !== -1) return idx + 1
+    return colors.push(col)
+  }
+
+  for (let y = 0; y < size.h; y++) {
+    for (let x = 0; x < size.w; x++) {
+      const key = `${x},${y}`
+      const col = spots[key]
+      const idx = col === undefined ? 0 : colorIndex(col)
+      pixels.push(idx)
+    }
+  }
+
+  let pixelsString = ''
+  for (let i = 0; i < pixels.length; i++) {
+    const sep = (i % size.w) === (size.w - 1) ? '\n' : ' '
+    pixelsString += pixels[i].toString(16) + sep
+  }
+  pixelsString = pixelsString.trim()
+
+  const dataFile = JSLN.stringify({ colors, pixels: pixelsString })
+  console.log(dataFile)
+
+  return dataFile
+}
+
+async function tryLoadingFile(filepath: string, spots: Record<string, number | undefined>, $size: Ref<Size>) {
+  if (!filepath) return
+
+  const content = await api.fs.getFile(filepath)
+  if (!content) return
+
+  const jsln = JSLN.parse(content)
+
+  const colors = as(jsln, 'colors', as.numbers())
+  const pixelStr = as(jsln, 'pixels', as.string)
+  if (!colors || !pixelStr) return
+
+  const width = pixelStr.match(/([0-9a-f]+|\n)/g)!.indexOf('\n')
+
+  let x = 0, y = 0
+  for (const code of pixelStr.match(/[0-9a-f]+/g)!) {
+    const col = parseInt(code)
+
+    if (col > 0) {
+      const key = `${x},${y}`
+      spots[key] = colors[col - 1]
+    }
+
+    if (++x === width) x = 0, y++
+  }
+
+  $size.value = { w: width, h: y }
 }
