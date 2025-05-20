@@ -99,7 +99,6 @@ function CanvasView(data: {
       const done = $currentPoint.watch(p => {
         const key = `${p.x},${p.y}`
         spots[key] = data.color.val
-        this.needsRedraw()
       })
 
       this.onMouseUp = done
