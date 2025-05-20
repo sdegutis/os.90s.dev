@@ -95,10 +95,10 @@ function CanvasView(data: {
       sys.popCursor('')
     }}
     canMouse
-    onMouseDown={function () {
+    onMouseDown={function (button) {
       const done = $currentPoint.watch(p => {
         const key = `${p.x},${p.y}`
-        spots[key] = data.color.val
+        spots[key] = button === 0 ? data.color.val : undefined
       })
 
       this.onMouseUp = done
