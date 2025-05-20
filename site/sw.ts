@@ -62,11 +62,6 @@ self.addEventListener('fetch', (e: FetchEvent) => {
   if (url.pathname.startsWith('/os/fs/')) {
     e.respondWith(handleRoute(url, e.request))
   }
-  else if (url.pathname.startsWith('/os/net/')) {
-    const origin = location.host.includes('localhost') ? 'http://localhost:8088' : 'https://net.90s.dev'
-    const newurl = origin + '/' + url.pathname.slice('/os/net/'.length)
-    e.respondWith(fetch(new Request(newurl, e.request)))
-  }
   else {
     e.respondWith(fetch(e.request))
   }
@@ -115,19 +110,6 @@ async function handleRoute(url: URL, req: Request) {
     const res = await fs.get(key)
     if (res === undefined) return new Response('', { status: 404 })
     return await jsResponse(url, res.content!)
-  }
-
-  if (url.pathname.startsWith('/os/fs/net/')) {
-    const path = url.pathname.slice('/os/fs/usr/'.length)
-    const r = await fetch(`/net/fs/${path}`)
-    const text = await r.text()
-
-    if (path.endsWith('.js')) {
-      return await jsResponse(url, text)
-    }
-
-    const contentType = r.headers.get('content-type')!
-    return new Response(text, { headers: { 'content-type': contentType } })
   }
 
   if (url.pathname.startsWith('/os/fs/')) {
