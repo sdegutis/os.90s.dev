@@ -1,4 +1,4 @@
-import api, { $, Border, Button, dragResize, GroupX, GroupY, JSLN, Label, multiplex, PanedXB, Ref, sys, View, type Size } from '/os/api.js'
+import api, { $, as, Border, Button, dragResize, GroupX, GroupY, JSLN, Label, multiplex, PanedXB, Ref, sys, View, type Size } from '/os/api.js'
 import { drawPinStripes } from '/os/fs/sys/libs/draw.js'
 await api.preludesFinished
 
@@ -45,11 +45,36 @@ const file = {
       const sep = (i % size.w) === (size.w - 1) ? '\n' : ' '
       pixelsString += pixels[i].toString(16) + sep
     }
+    pixelsString = pixelsString.trim()
 
     const dataFile = JSLN.stringify({ colors, pixels: pixelsString })
     console.log(dataFile)
 
     return dataFile
+  }
+}
+
+if (file.$path.val) {
+  const content = await api.fs.getFile(file.$path.val)
+  if (content) {
+    const jsln = JSLN.parse(content)
+
+    const colors = as(jsln, 'colors', as.numbers())!
+    const pixelStr = as(jsln, 'pixels', as.string)!
+
+    const width = pixelStr.match(/([0-9a-f]+|\n)/g)!.indexOf('\n')
+
+    let x = 0, y = 0
+    for (const code of pixelStr.match(/[0-9a-f]+/g)!) {
+      const col = parseInt(code)
+
+      if (col > 0) {
+        const key = `${x},${y}`
+        spots[key] = colors[col - 1]
+      }
+
+      if (++x === width) x = 0, y++
+    }
   }
 }
 
