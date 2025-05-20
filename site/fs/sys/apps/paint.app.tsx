@@ -17,20 +17,13 @@ const $canvasSize = multiplex([$size, $zoom], (size, zoom) => ({
   h: size.h * zoom,
 }))
 
+// We could just use all these as globals
+// instead of passing as data args to JSX
+// but this makes it easier to refactor.
+
 const filepath = api.program.opts["file"]
 await tryLoadingFile(filepath, spots, $size)
 
-
-const actions: (() => void)[] = []
-let actioni = -1
-
-function undo() {
-
-}
-
-function redo() {
-
-}
 
 const panel = await api.sys.makePanel({ name: "paint" },
   <panel
@@ -250,4 +243,17 @@ async function tryLoadingFile(filepath: string, spots: Record<string, number | u
   }
 
   $size.value = { w: width, h: y }
+}
+
+
+
+const actions: (() => void)[] = []
+let actioni = -1
+
+function undo() {
+
+}
+
+function redo() {
+
 }
