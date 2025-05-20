@@ -101,6 +101,7 @@ function PanelViewComp(data: {
 
   return (
     <Margin
+      canFocus={!!data.file}
       onKeyPress={data.onKeyPress}
       paddingColor={$focused.adapt<number>(b => b ? 0x005599ff : 0x00559944)}
       padding={1}

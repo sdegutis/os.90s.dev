@@ -104,6 +104,7 @@ const panel = await api.sys.makePanel({ name: "paint" },
 )
 
 panel.focusPanel()
+panel.root.focus()
 
 function Zoomer(data: { zoom: Ref<number> }) {
   const DRAGFACTOR = -5
@@ -142,7 +143,6 @@ function CanvasView(data: {
   let showMouse = false
 
   const view = <View
-    canFocus
     size={data.canvasSize}
     onMouseEnter={() => {
       sys.pushCursor('')
