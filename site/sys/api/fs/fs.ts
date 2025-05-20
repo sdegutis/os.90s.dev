@@ -3,7 +3,6 @@ import { Listener } from "../core/listener.js"
 import { opendb } from "../util/db.js"
 import { Drive } from "./drive.js"
 import { MountDrive } from "./mountfs.js"
-import { NetDrive } from "./netfs.js"
 import { SysDrive } from "./sysfs.js"
 import { UsrDrive } from "./usrfs.js"
 
@@ -23,7 +22,6 @@ class FS {
   constructor() {
     this.#drives.set('sys', new SysDrive())
     this.#drives.set('usr', new UsrDrive())
-    this.#drives.set('net', new NetDrive())
 
     mounts.all().then(mounts => {
       mounts.forEach(mount => {
