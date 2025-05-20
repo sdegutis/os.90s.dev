@@ -75,6 +75,8 @@ if (file.$path.val) {
 
       if (++x === width) x = 0, y++
     }
+
+    $size.value = { w: width, h: y }
   }
 }
 
