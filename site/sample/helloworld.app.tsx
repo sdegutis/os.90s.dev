@@ -1,5 +1,4 @@
 import api, { $, Center, GroupX, GroupY, Label } from '/os/api.js'
-import { ColorView } from '/os/fs/sys/libs/colorpicker.js'
 await api.preludesFinished
 
 const $count = $(0)
@@ -13,7 +12,7 @@ const panel = await api.sys.makePanel({ name: "hello world" },
     <Center>
       <GroupY gap={4}>
         <Label text='hello world!' />
-        <ColorView $color={$color} />
+        <colorpicker $color={$color} />
         <GroupX gap={2}>
           <button style='submit' action={inc}>click me</button>
           <Label text={$count.adapt(n => `clicked ${n} times`)} />
