@@ -95,6 +95,24 @@ function CanvasView(data: {
       showMouse = true
       this.needsRedraw()
     }}
+    onMouseDown={function () {
+
+      // const $point = $<Point>({
+      //   x: Math.floor(this.mouse.x / data.zoom.val),
+      //   y: Math.floor(this.mouse.y / data.zoom.val),
+      // })
+
+      // // console.log(this.mouse)
+
+      // $point.watch(p => {
+      //   console.log(p)
+      // })
+
+      // const done = dragMove(sys.$mouse, $point)
+
+      // this.onMouseUp = done
+
+    }}
     draw={function (ctx) {
       this.drawBackground(ctx, 0x00000033)
 
