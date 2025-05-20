@@ -80,8 +80,24 @@ if (file.$path.val) {
   }
 }
 
+const actions: (() => void)[] = []
+let actioni = -1
+
+function undo() {
+
+}
+
+function redo() {
+
+}
+
 const panel = await api.sys.makePanel({ name: "paint" },
-  <panel size={{ w: 220, h: 150 }} file={file}>
+  <panel size={{ w: 220, h: 150 }} file={file} onKeyPress={(key) => {
+    if (key === 'ctrl z') { undo(); return true }
+    if (key === 'ctrl Z') { redo(); return true }
+    if (key === 'ctrl y') { redo(); return true }
+    return false
+  }}>
     <PanedXB>
       <View draw={drawPinStripes()}>
         <CanvasView color={$color} grid={$grid} realSize={$size} zoom={$zoom} canvasSize={$canvasSize} />
