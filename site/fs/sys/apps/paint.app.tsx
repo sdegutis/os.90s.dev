@@ -1,4 +1,4 @@
-import api, { $, Border, Button, dragResize, GroupX, GroupY, Label, multiplex, PanedXB, Ref, sys, View, type Size } from '/os/api.js'
+import api, { $, Border, Button, dragResize, GroupX, GroupY, JSLN, Label, multiplex, PanedXB, Ref, sys, View, type Size } from '/os/api.js'
 import { drawPinStripes } from '/os/fs/sys/libs/draw.js'
 await api.preludesFinished
 
@@ -20,7 +20,36 @@ const $canvasSize = multiplex([$size, $zoom], (size, zoom) => ({
 const file = {
   $path: $(api.program.opts["file"] ?? 'usr/untitled1.bmp.jsln'),
   getContents() {
-    return ''
+
+    const colors: number[] = []
+    const pixels: number[] = []
+    const size = $size.val
+
+    function colorIndex(col: number) {
+      const idx = colors.indexOf(col)
+      if (idx !== -1) return idx + 1
+      return colors.push(col)
+    }
+
+    for (let y = 0; y < size.h; y++) {
+      for (let x = 0; x < size.w; x++) {
+        const key = `${x},${y}`
+        const col = spots[key]
+        const idx = col === undefined ? 0 : colorIndex(col)
+        pixels.push(idx)
+      }
+    }
+
+    let pixelsString = ''
+    for (let i = 0; i < pixels.length; i++) {
+      const sep = (i % size.w) === (size.w - 1) ? '\n' : ' '
+      pixelsString += pixels[i].toString(16) + sep
+    }
+
+    const dataFile = JSLN.stringify({ colors, pixels: pixelsString })
+    console.log(dataFile)
+
+    return dataFile
   }
 }
 
@@ -86,6 +115,7 @@ function CanvasView(data: {
   let showMouse = false
 
   const view = <View
+    canFocus
     size={data.canvasSize}
     onMouseEnter={() => {
       sys.pushCursor('')
