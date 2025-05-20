@@ -26,7 +26,7 @@ const panel = await api.sys.makePanel({ name: "paint" },
   <panel size={{ w: 220, h: 150 }} file={file}>
     <PanedXB>
       <View draw={drawPinStripes()}>
-        <CanvasView grid={$grid} realSize={$size} zoom={$zoom} canvasSize={$canvasSize} />
+        <CanvasView color={$color} grid={$grid} realSize={$size} zoom={$zoom} canvasSize={$canvasSize} />
         <Resizer canvasSize={$canvasSize} realSize={$size} zoom={$zoom} />
       </View>
       <GroupY background={0x333333ff}>
@@ -74,8 +74,27 @@ function SizeLabels(data: { $size: Ref<Size> }) {
   </GroupX>
 }
 
-function CanvasView(data: { zoom: Ref<number>, canvasSize: Ref<Size>, realSize: Ref<Size>, grid: Ref<boolean> }) {
+function CanvasView(data: {
+  color: Ref<number>,
+  zoom: Ref<number>,
+  canvasSize: Ref<Size>,
+  realSize: Ref<Size>,
+  grid: Ref<boolean>,
+}) {
+  let showMouse = false
+
   return <View
+    size={data.canvasSize}
+    onMouseEnter={() => sys.pushCursor('')}
+    onMouseExit={() => {
+      showMouse = false
+      sys.popCursor('')
+    }}
+    canMouse
+    onMouseMove={function () {
+      showMouse = true
+      this.needsRedraw()
+    }}
     draw={function (ctx) {
       this.drawBackground(ctx, 0x00000033)
 
@@ -88,8 +107,14 @@ function CanvasView(data: { zoom: Ref<number>, canvasSize: Ref<Size>, realSize: 
           ctx.fillRect(x, 0, 1, this.size.h, 0xffffff11)
         }
       }
+
+      if (showMouse) {
+        const z = data.zoom.val
+        const x = Math.floor(this.mouse.x / z)
+        const y = Math.floor(this.mouse.y / z)
+        ctx.fillRect(x * z, y * z, z, z, data.color.val)
+      }
     }}
-    size={data.canvasSize}
   />
 }
 
