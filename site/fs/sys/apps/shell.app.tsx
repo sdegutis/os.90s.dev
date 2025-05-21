@@ -1,4 +1,4 @@
-import api, { $usrConfig, as } from "/os/api.js"
+import api, { $usrConfig, as } from "/api.js"
 await api.preludesFinished
 
 const $bgcolor = api.$usrConfig.adapt(config => {
@@ -181,7 +181,7 @@ $panels.val.forEach(p => p.position())
 await api.program.becomeShell()
 
 for (const path of as($usrConfig.val, 'shell.startup', as.strings()) ?? []) {
-  import('/os/fs/' + path + '?decache=' + Date.now())
+  import('/fs/' + path + '?decache=' + Date.now())
 }
 
 

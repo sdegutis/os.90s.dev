@@ -1,4 +1,4 @@
-import api from "/os/api.js"
+import api from "/api.js"
 await api.preludesFinished
 
 const $paths = api.$<string[]>([])
@@ -18,7 +18,7 @@ function gotoPage(path: string) {
 
 const browser: Browser = {
   load: path => {
-    const absPrefix = `${location.origin}/os/fs/`
+    const absPrefix = `${location.origin}/fs/`
     if (path.startsWith(absPrefix)) path = path.slice(absPrefix.length)
     gotoPage(path)
   },
@@ -30,7 +30,7 @@ $path.watch(path => {
     $page.set(emptyPage)
     return
   }
-  import('/os/fs/' + path).then(mod => {
+  import('/fs/' + path).then(mod => {
     $page.set(mod.default(browser))
   }).catch(e => {
     console.error(e)

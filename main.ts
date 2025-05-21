@@ -11,7 +11,7 @@ let swc2 = fs.readFileSync('node_modules/@swc/wasm-web/wasm_bg.wasm')
 
 swc1 = swc1.replace(/\nexport function/g, 'function')
 swc1 = swc1.replace(/\nexport {[\s\S]+/, '')
-swc1 = swc1.replace('import.meta.url', `location.origin + '/os/sys/sw/'`)
+swc1 = swc1.replace('import.meta.url', `location.origin + '/sys/sw/'`)
 
 const tree = new immaculata.FileTree('site', import.meta.url, {
   exclude: (path, stat) =>
@@ -59,7 +59,7 @@ function processSite() {
 
   const apis = files.with('^/sys/api/').paths()
   fs.writeFileSync('./site/fs/api.ts', apis.map(p => `export * from "..${p}"`).join('\n') + defaultExport)
-  files.add('/api.js', apis.map(p => `export * from "/os${p}"`).join('\n') + defaultExport)
+  files.add('/api.js', apis.map(p => `export * from "${p}"`).join('\n') + defaultExport)
 
   src.do(f => { files.add('/fs/sys/api' + f.path.slice('/sys/api'.length).replace(/\.tsx?$/, '.js'), f.text) })
 
@@ -83,8 +83,8 @@ function processSite() {
   const toinsert = [...datas, /* ...modules, */ iconlink].map(s => `  ${s}`).join('\n')
   files.with(/\.html$/).do(file => file.text = file.text.replace('<head>', `<head>\n${toinsert}`))
 
-  const apidts2 = Object.fromEntries(apidts.all().map(f => [f.path.replace(/^\/sys\/out\//, '/os/sys/'), f.text]))
-  apidts2['/os/api.d.ts'] = apis.map(p => `export * from "/os${p}"`).join('\n') + defaultExport
+  const apidts2 = Object.fromEntries(apidts.all().map(f => [f.path.replace(/^\/sys\/out\//, '/sys/'), f.text]))
+  apidts2['/api.d.ts'] = apis.map(p => `export * from "${p}"`).join('\n') + defaultExport
   const apiexports = JSON.stringify(apidts2)
 
   files.add('/api.d.ts.json', apiexports)
@@ -100,8 +100,6 @@ function processSite() {
     "typescript.preferences.importModuleSpecifier": "non-relative",
   }, null, 2)))
   files.add('/helloworld.zip', zip.toBuffer())
-
-  files.do(f => f.path = '/os' + f.path)
 
   return files.results()
 }
@@ -149,5 +147,5 @@ function compileTsx(file: { text: string, path: string }) {
       }
     }
   }).code
-  file.text = file.text.replace(`${placeholder}/jsx-runtime`, '/os/sys/api/core/jsx.js')
+  file.text = file.text.replace(`${placeholder}/jsx-runtime`, '/sys/api/core/jsx.js')
 }

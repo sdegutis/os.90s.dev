@@ -1,5 +1,5 @@
-import * as api from '/os/api.js'
-import { drawPinStripes } from '/os/fs/sys/libs/draw.js'
+import * as api from '/api.js'
+import { drawPinStripes } from '/fs/sys/libs/draw.js'
 await api.preludesFinished
 
 const $color = api.$(0x00000000)

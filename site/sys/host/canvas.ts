@@ -72,7 +72,7 @@ function getScreenSize(embedded: boolean) {
 }
 
 async function showLoadingScreen(ctx: CanvasRenderingContext2D) {
-  const fontsrc = await fetch('/os/fs/sys/data/crt34.font').then(r => r.text())
+  const fontsrc = await fetch('/fs/sys/data/crt34.font').then(r => r.text())
   const font = new Font(fontsrc)
 
   const w = ctx.canvas.width

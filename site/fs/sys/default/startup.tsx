@@ -1,3 +1,3 @@
-import api from "/os/api.js"
+import api from "/api.js"
 
 console.log('currently running in', api.currentAppPath)

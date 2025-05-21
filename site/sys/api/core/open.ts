@@ -1,4 +1,4 @@
-const absPrefix = `${location.origin}/os/fs/`
+const absPrefix = `${location.origin}/fs/`
 export const currentAppPath = location.href.slice(absPrefix.length)
 
 export function fsPathOf(url: string) {

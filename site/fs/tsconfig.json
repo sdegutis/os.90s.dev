@@ -26,9 +26,9 @@
     "skipLibCheck": true,
 
     "paths": {
-      "/os/api.js": [ "./api.js" ],
-      "/os/fs/sys/*": [ "./sys/*" ],
-      // "/os/cdn/*": [ "../../node_modules/*" ],
+      "/api.js": [ "./api.js" ],
+      "/fs/sys/*": [ "./sys/*" ],
+      // "/cdn/*": [ "../../node_modules/*" ],
       // "https://cdn.jsdelivr.net/gh/sdegutis/test1@5fcd8f9/foo.ts": [ "../../node_modules/test1/foo2.ts" ],
       // "https://cdn.jsdelivr.net/gh/sdegutis/test2@master/foo2.ts": [ "../../node_modules/test2/foo2.ts" ],
     },

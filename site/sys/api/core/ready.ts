@@ -10,7 +10,7 @@ async function loadPreludes() {
   const preludes = as($usrConfig.val, 'process.prelude', as.strings())
   for (const path of preludes ?? []) {
     try {
-      await import('/os/fs/' + path)
+      await import('/fs/' + path)
     }
     catch (e) {
       console.error(`Prelude failed:`, path)

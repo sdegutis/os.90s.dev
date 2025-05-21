@@ -1,4 +1,4 @@
-import api from "/os/api.js"
+import api from "/api.js"
 await api.preludesFinished
 
 const procevents = new api.BC<api.ProcEvent>('procevents', api.sys.sysid)

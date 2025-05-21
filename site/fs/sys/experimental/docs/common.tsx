@@ -1,5 +1,5 @@
-import { Button, GroupY, Label, Scroll, SplitXA, View } from "/os/api.js"
-import type { Browser } from "/os/fs/sys/experimental/apps/browser.app.js"
+import { Button, GroupY, Label, Scroll, SplitXA, View } from "/api.js"
+import type { Browser } from "/fs/sys/experimental/apps/browser.app.js"
 
 const pages = {
   Main: 'sys/experimental/docs/readme.page.js',

@@ -1,4 +1,4 @@
-import api, { $, Border, GroupX, GroupY, Label, Ref, type Size } from '/os/api.js'
+import api, { $, Border, GroupX, GroupY, Label, Ref, type Size } from '/api.js'
 await api.preludesFinished
 
 const $color = $(0x00000000)

@@ -1,4 +1,4 @@
-import api, { sys } from "/os/api.js"
+import api, { sys } from "/api.js"
 await api.preludesFinished
 
 const font = api.$(api.sys.font)

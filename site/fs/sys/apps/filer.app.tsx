@@ -1,4 +1,4 @@
-import api from '/os/api.js'
+import api from '/api.js'
 await api.preludesFinished
 
 const IMG_FOLDER = new api.Bitmap([0x990000ff], 1, [1])
@@ -175,7 +175,7 @@ async function handleFile(path: string) {
     await api.sys.launch(path)
   }
   else if (path.endsWith('.js')) {
-    await import('/os/fs/' + path + '?decache=' + Date.now())
+    await import('/fs/' + path + '?decache=' + Date.now())
   }
   else if (path.endsWith('.font')) {
     await api.sys.launch('sys/apps/fontmaker.app.js', path)

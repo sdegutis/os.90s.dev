@@ -7,8 +7,8 @@
     "jsx": "react-native",
     "noEmit": true,
     "paths": {
-      "/os/api.js": [ "../fs/api.js" ],
-      "/os/fs/sys/*": [ "../fs/sys/*" ],
+      "/api.js": [ "../fs/api.js" ],
+      "/fs/sys/*": [ "../fs/sys/*" ],
     },
 
     "forceConsistentCasingInFileNames": true,

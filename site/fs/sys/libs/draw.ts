@@ -1,4 +1,4 @@
-import api from "/os/api.js"
+import api from "/api.js"
 
 export function drawPinStripes(w = 4, h = 3) {
   return function (this: api.View, ...[ctx]: Parameters<api.View['draw']>) {
