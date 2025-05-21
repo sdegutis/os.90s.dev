@@ -105,7 +105,12 @@ function processSite() {
 }
 
 if (isDev) {
-  const server = new immaculata.DevServer(8080, { hmrPath: '/_reload' })
+  const server = new immaculata.DevServer(8080, {
+    hmrPath: '/_reload',
+    onRequest(res) {
+      res.setHeader('Access-Control-Allow-Origin', '*')
+    },
+  })
   server.files = processSite()
   server.notFound = () => '/404.html'
 
