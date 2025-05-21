@@ -1,18 +1,18 @@
-import api, { $, as, Border, Button, dragResize, GroupX, GroupY, JSLN, Label, multiplex, PanedXB, Ref, Scroll, sys, View, type Size } from '/os/api.js'
+import * as api from '/os/api.js'
 import { drawPinStripes } from '/os/fs/sys/libs/draw.js'
 await api.preludesFinished
 
-const $color = $(0x00000000)
-const $grid = $(true)
+const $color = api.$(0x00000000)
+const $grid = api.$(true)
 
-const $size = $<Size>({ w: 12, h: 12 })
-const $zoom = $(6)
+const $size = api.$<api.Size>({ w: 12, h: 12 })
+const $zoom = api.$(6)
 
 const spots: Record<string, number | undefined> = Object.create(null)
 
 $zoom.intercept(z => Math.max(1, z))
 
-const $canvasSize = multiplex([$size, $zoom], (size, zoom) => ({
+const $canvasSize = api.multiplex([$size, $zoom], (size, zoom) => ({
   w: size.w * zoom,
   h: size.h * zoom,
 }))
@@ -29,7 +29,7 @@ const panel = await api.sys.makePanel({ name: "paint" },
   <panel
     size={{ w: 220, h: 150 }}
     file={{
-      $path: $(filepath),
+      $path: api.$(filepath),
       getContents: () => serializeFile($size, spots),
     }}
     onKeyPress={(key) => {
@@ -39,43 +39,43 @@ const panel = await api.sys.makePanel({ name: "paint" },
       return false
     }}
   >
-    <PanedXB>
-      <Scroll draw={drawPinStripes()}>
-        <View size={$canvasSize.adapt(size => ({ w: size.w + 10, h: size.h + 10 }))}>
+    <api.PanedXB>
+      <api.Scroll draw={drawPinStripes()}>
+        <api.View size={$canvasSize.adapt(size => ({ w: size.w + 10, h: size.h + 10 }))}>
           <CanvasView color={$color} grid={$grid} realSize={$size} zoom={$zoom} canvasSize={$canvasSize} />
           <Resizer canvasSize={$canvasSize} realSize={$size} zoom={$zoom} />
-        </View>
-      </Scroll>
-      <GroupY background={0x333333ff}>
-        <Border padding={2}>
-          <GroupY gap={2}>
+        </api.View>
+      </api.Scroll>
+      <api.GroupY background={0x333333ff}>
+        <api.Border padding={2}>
+          <api.GroupY gap={2}>
             <colorpicker $color={$color} />
             <SizeLabels $size={$size} />
-            <Button paddingAll={[2, 4]} selected={$grid} onClick={() => $grid.value = !$grid.value}>
-              <Label text='grid' />
-            </Button>
+            <api.Button paddingAll={[2, 4]} selected={$grid} onClick={() => $grid.value = !$grid.value}>
+              <api.Label text='grid' />
+            </api.Button>
             <Zoomer zoom={$zoom} />
-          </GroupY>
-        </Border>
-      </GroupY>
-    </PanedXB>
+          </api.GroupY>
+        </api.Border>
+      </api.GroupY>
+    </api.PanedXB>
   </panel>
 )
 
 panel.focusPanel()
 panel.root.focus()
 
-function Zoomer(data: { zoom: Ref<number> }) {
+function Zoomer(data: { zoom: api.Ref<number> }) {
   const DRAGFACTOR = -5
 
-  return <GroupX canMouse onMouseDown={clickZoom}>
-    <Label text='zoom:' color={0xffffff33} />
-    <Label text={data.zoom.adapt(z => z.toString())} />
-  </GroupX>
+  return <api.GroupX canMouse onMouseDown={clickZoom}>
+    <api.Label text='zoom:' color={0xffffff33} />
+    <api.Label text={data.zoom.adapt(z => z.toString())} />
+  </api.GroupX>
 
-  function clickZoom(this: View) {
-    const $size = $({ w: 0, h: data.zoom.val * DRAGFACTOR })
-    const done = dragResize(sys.$mouse, $size)
+  function clickZoom(this: api.View) {
+    const $size = api.$({ w: 0, h: data.zoom.val * DRAGFACTOR })
+    const done = api.dragResize(api.sys.$mouse, $size)
     this.onMouseUp = done
 
     $size.watch(size => {
@@ -84,31 +84,31 @@ function Zoomer(data: { zoom: Ref<number> }) {
   }
 }
 
-function SizeLabels(data: { $size: Ref<Size> }) {
-  return <GroupX gap={2}>
-    <Label text={data.$size.adapt(s => s.w.toString())} />
-    <Label text='*' color={0xffffff33} />
-    <Label text={data.$size.adapt(s => s.h.toString())} />
-  </GroupX>
+function SizeLabels(data: { $size: api.Ref<api.Size> }) {
+  return <api.GroupX gap={2}>
+    <api.Label text={data.$size.adapt(s => s.w.toString())} />
+    <api.Label text='*' color={0xffffff33} />
+    <api.Label text={data.$size.adapt(s => s.h.toString())} />
+  </api.GroupX>
 }
 
 function CanvasView(data: {
-  color: Ref<number>,
-  zoom: Ref<number>,
-  canvasSize: Ref<Size>,
-  realSize: Ref<Size>,
-  grid: Ref<boolean>,
+  color: api.Ref<number>,
+  zoom: api.Ref<number>,
+  canvasSize: api.Ref<api.Size>,
+  realSize: api.Ref<api.Size>,
+  grid: api.Ref<boolean>,
 }) {
   let showMouse = false
 
-  const view = <View
+  const view = <api.View
     size={data.canvasSize}
     onMouseEnter={() => {
-      sys.pushCursor('')
+      api.sys.pushCursor('')
     }}
     onMouseExit={() => {
       showMouse = false
-      sys.popCursor('')
+      api.sys.popCursor('')
     }}
     canMouse
     onMouseDown={function (button) {
@@ -155,7 +155,7 @@ function CanvasView(data: {
     }}
   />
 
-  const $currentPoint = multiplex([view.$mouse, data.zoom], (mouse, z) => {
+  const $currentPoint = api.multiplex([view.$mouse, data.zoom], (mouse, z) => {
     const x = Math.floor(mouse.x / z)
     const y = Math.floor(mouse.y / z)
     return { x, y }
@@ -164,15 +164,15 @@ function CanvasView(data: {
   return view
 }
 
-function Resizer(data: { canvasSize: Ref<Size>, realSize: Ref<Size>, zoom: Ref<number> }) {
-  return <View
+function Resizer(data: { canvasSize: api.Ref<api.Size>, realSize: api.Ref<api.Size>, zoom: api.Ref<number> }) {
+  return <api.View
     background={0x000000aa}
     point={data.canvasSize.adapt(size => ({ x: size.w, y: size.h }))}
     size={{ w: 4, h: 4 }}
     canMouse
     onMouseDown={function () {
-      const initialSize: Size = { w: $canvasSize.val.w, h: $canvasSize.val.h }
-      const $literalSize = $(initialSize)
+      const initialSize: api.Size = { w: $canvasSize.val.w, h: $canvasSize.val.h }
+      const $literalSize = api.$(initialSize)
 
       const $resizedTo = $literalSize.adapt(size => ({
         w: Math.max(1, Math.round(size.w / data.zoom.val)),
@@ -181,7 +181,7 @@ function Resizer(data: { canvasSize: Ref<Size>, realSize: Ref<Size>, zoom: Ref<n
 
       $resizedTo.watch(size => data.realSize.value = size)
 
-      const unlisten = dragResize(sys.$mouse, $literalSize)
+      const unlisten = api.dragResize(api.sys.$mouse, $literalSize)
       this.onMouseUp = () => {
         undoStack.push(() => data.realSize.set(initialSize))
         redoStack.push(() => data.realSize.set($resizedTo.val))
@@ -191,7 +191,7 @@ function Resizer(data: { canvasSize: Ref<Size>, realSize: Ref<Size>, zoom: Ref<n
   />
 }
 
-function serializeFile($size: Ref<Size>, spots: Record<string, number | undefined>) {
+function serializeFile($size: api.Ref<api.Size>, spots: Record<string, number | undefined>) {
   const colors: number[] = []
   const pixels: number[] = []
   const size = $size.val
@@ -218,22 +218,22 @@ function serializeFile($size: Ref<Size>, spots: Record<string, number | undefine
   }
   pixelsString = pixelsString.trim()
 
-  const dataFile = JSLN.stringify({ colors, pixels: pixelsString })
+  const dataFile = api.JSLN.stringify({ colors, pixels: pixelsString })
   console.log(dataFile)
 
   return dataFile
 }
 
-async function tryLoadingFile(filepath: string, spots: Record<string, number | undefined>, $size: Ref<Size>) {
+async function tryLoadingFile(filepath: string, spots: Record<string, number | undefined>, $size: api.Ref<api.Size>) {
   if (!filepath) return
 
   const content = await api.fs.getFile(filepath)
   if (!content) return
 
-  const jsln = JSLN.parse(content)
+  const jsln = api.JSLN.parse(content)
 
-  const colors = as(jsln, 'colors', as.numbers())
-  const pixelStr = as(jsln, 'pixels', as.string)
+  const colors = api.as(jsln, 'colors', api.as.numbers())
+  const pixelStr = api.as(jsln, 'pixels', api.as.string)
   if (!colors || !pixelStr) return
 
   const width = pixelStr.match(/([0-9a-f]+|\n)/g)!.indexOf('\n')
