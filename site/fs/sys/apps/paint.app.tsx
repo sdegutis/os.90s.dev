@@ -1,4 +1,4 @@
-import api, { $, as, Border, Button, dragResize, GroupX, GroupY, JSLN, Label, multiplex, PanedXB, Ref, sys, View, type Size } from '/os/api.js'
+import api, { $, as, Border, Button, dragResize, GroupX, GroupY, JSLN, Label, multiplex, PanedXB, Ref, Scroll, sys, View, type Size } from '/os/api.js'
 import { drawPinStripes } from '/os/fs/sys/libs/draw.js'
 await api.preludesFinished
 
@@ -40,10 +40,12 @@ const panel = await api.sys.makePanel({ name: "paint" },
     }}
   >
     <PanedXB>
-      <View draw={drawPinStripes()}>
-        <CanvasView color={$color} grid={$grid} realSize={$size} zoom={$zoom} canvasSize={$canvasSize} />
-        <Resizer canvasSize={$canvasSize} realSize={$size} zoom={$zoom} />
-      </View>
+      <Scroll draw={drawPinStripes()}>
+        <View size={$canvasSize.adapt(size => ({ w: size.w + 10, h: size.h + 10 }))}>
+          <CanvasView color={$color} grid={$grid} realSize={$size} zoom={$zoom} canvasSize={$canvasSize} />
+          <Resizer canvasSize={$canvasSize} realSize={$size} zoom={$zoom} />
+        </View>
+      </Scroll>
       <GroupY background={0x333333ff}>
         <Border padding={2}>
           <GroupY gap={2}>
