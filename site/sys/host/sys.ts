@@ -247,7 +247,7 @@ export class Sys {
       return `${app.path}${file}`
     }).join(';')
 
-    history.replaceState({}, '', url ? `/#${url}` : '')
+    history.replaceState({}, '', url ? `/#${url}` : '/')
   }
 
   removePanel(panel: Panel) {
