@@ -129,7 +129,7 @@ function CanvasView(data: {
       const z = data.zoom.val
       const size = data.realSize.val
 
-      if (data.grid.val && data.zoom.val > 2) {
+      if (data.grid.val && data.zoom.val > 1) {
         for (let y = 0; y < size.h * z; y += z) {
           ctx.fillRect(0, y, this.size.w, 1, 0xffffff11)
         }
