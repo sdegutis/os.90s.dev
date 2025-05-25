@@ -7,7 +7,7 @@ class JSLNParser {
   private current = this.root
 
   constructor(str: string) {
-    this.array = Array.from(str)
+    this.array = Array.from(str.replace(/\r\n/g, '\n'))
   }
 
   parse() {
